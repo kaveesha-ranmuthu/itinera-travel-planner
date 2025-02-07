@@ -32,7 +32,7 @@ export const Input: React.FC<InputProps> = ({
         type={isPasswordVisible || !isPassword ? "text" : "password"}
         id={inputId}
         {...register}
-        className="w-full h-11 rounded-md border border-secondary pl-2 mt-2 focus:outline-blue-munsell"
+        className="w-full h-11 rounded-md border border-secondary pl-2 mt-2"
       />
       {isPassword && (
         <button

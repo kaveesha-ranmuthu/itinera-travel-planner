@@ -21,6 +21,14 @@ input:-webkit-autofill:active {
   transition: background-color 5000s ease-in-out 0s;
 }
 
+:focus {
+  outline: 1px solid #05829e; /* Custom focus color */
+}
+
+::selection {
+  background: #85c5e2;
+}
+
 /* Google Icon Styles */
 .gsi-material-button {
   -moz-user-select: none;
