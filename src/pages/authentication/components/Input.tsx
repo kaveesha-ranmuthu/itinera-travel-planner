@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { twMerge } from "tailwind-merge";
+import { RiErrorWarningLine } from "react-icons/ri";
 
 interface InputProps {
   label: string;
@@ -9,6 +10,7 @@ interface InputProps {
   register: UseFormRegisterReturn;
   isPassword?: boolean;
   inputWidth?: string;
+  errorMessage?: string;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -16,6 +18,7 @@ export const Input: React.FC<InputProps> = ({
   inputId,
   register,
   isPassword,
+  errorMessage,
   inputWidth,
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -23,11 +26,18 @@ export const Input: React.FC<InputProps> = ({
   return (
     <div
       className={twMerge(
-        "text-secondary text-xl tracking-wide font-brand italic lowercase relative",
+        "text-secondary text-xl tracking-wide font-brand italic relative",
         inputWidth
       )}
     >
-      <label htmlFor={inputId}>{label}</label>
+      <label htmlFor={inputId} className="lowercase flex items-center">
+        <span>{label}</span>
+        {errorMessage && (
+          <span className="text-orange-fulvous ml-2">
+            <RiErrorWarningLine />
+          </span>
+        )}
+      </label>
       <input
         type={isPasswordVisible || !isPassword ? "text" : "password"}
         id={inputId}
