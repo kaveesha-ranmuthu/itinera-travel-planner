@@ -1,6 +1,7 @@
 import Logo from "../../components/Logo";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
 import { useNavigate } from "react-router-dom";
+import Button from "../../components/Button";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -8,13 +9,13 @@ const LandingPage = () => {
     <BackgroundWrapper>
       <div className="absolute bottom-5 left-0 flex items-center justify-center w-full h-full">
         <div className="text-center space-y-5">
-          <Logo />
-          <button
+          <Logo marginLeft="ml-24" />
+          <Button.Primary
             onClick={() => navigate("/login")}
-            className="hover:scale-98 transition ease-in-out duration-100  font-brand cursor-pointer italic uppercase bg-primary text-secondary px-7 py-1.5 rounded-lg"
+            className="hover:scale-98 transition ease-in-out duration-100"
           >
             Get Started
-          </button>
+          </Button.Primary>
         </div>
       </div>
     </BackgroundWrapper>

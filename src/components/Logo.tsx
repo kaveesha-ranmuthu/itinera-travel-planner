@@ -1,8 +1,14 @@
+import { twMerge } from "tailwind-merge";
 import frontPageLogo from "../assets/title.svg";
 
-const Logo = () => {
+interface LogoProps {
+  scale?: string;
+  marginLeft?: string;
+}
+
+const Logo: React.FC<LogoProps> = ({ scale, marginLeft }) => {
   return (
-    <div className="ml-24">
+    <div className={twMerge("ml-16", scale, marginLeft)}>
       <img src={frontPageLogo} alt="itinera travel planner" />
     </div>
   );

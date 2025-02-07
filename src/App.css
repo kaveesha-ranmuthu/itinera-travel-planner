@@ -8,5 +8,14 @@
 @theme {
   --color-primary: #f4f1e8;
   --color-secondary: #3b4043;
+  --color-blue-munsell: #05829e;
   --font-brand: "ZT Bros Oskon 90s", sans-serif;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-background-clip: text;
+  transition: background-color 5000s ease-in-out 0s;
 }
