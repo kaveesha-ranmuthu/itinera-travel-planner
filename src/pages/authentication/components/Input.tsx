@@ -3,6 +3,7 @@ import { UseFormRegisterReturn } from "react-hook-form";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { twMerge } from "tailwind-merge";
 import { RiErrorWarningLine } from "react-icons/ri";
+import StyledTooltip from "../../../components/StyledTooltip";
 
 interface InputProps {
   label: string;
@@ -33,9 +34,12 @@ export const Input: React.FC<InputProps> = ({
       <label htmlFor={inputId} className="lowercase flex items-center">
         <span>{label}</span>
         {errorMessage && (
-          <span className="text-orange-fulvous ml-2">
+          <StyledTooltip
+            iconStyles="text-orange-fulvous ml-2"
+            content="Invalid email"
+          >
             <RiErrorWarningLine />
-          </span>
+          </StyledTooltip>
         )}
       </label>
       <input

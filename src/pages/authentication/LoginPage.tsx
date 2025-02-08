@@ -1,10 +1,11 @@
-import { useForm } from "react-hook-form";
+import { get, useForm } from "react-hook-form";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
 import Logo from "../../components/Logo";
 import FormWrapper from "./components/FormWrapper";
 import { Input } from "./components/Input";
 import Button from "../../components/Button";
 import SignInWithGoogle from "./components/GoogleIcons";
+import { useState } from "react";
 
 type FormInput = {
   email: string;
@@ -15,24 +16,26 @@ const LoginPage = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<FormInput>();
+  const [emailError, setEmailError] = useState<string | undefined>();
 
   const emailRegEx = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
 
   const onSubmit = (data: FormInput) => {
+    data.preventDefault();
     console.log(data);
   };
-
-  console.log(errors);
 
   return (
     <BackgroundWrapper>
       <div className="absolute left-0 top-0 flex flex-col items-center justify-center w-full">
         <Logo scale="scale-70" />
         <FormWrapper>
-          <form className="text-secondary" onSubmit={handleSubmit(onSubmit)}>
+          <form
+            className="text-secondary"
+            onSubmit={() => handleSubmit(onSubmit)}
+          >
             <h1 className="font-brand uppercase italic text-3xl font-light text-center">
               Log in
             </h1>
@@ -43,6 +46,7 @@ const LoginPage = () => {
                 required: true,
                 pattern: emailRegEx,
               })}
+              errorMessage={emailError}
             />
             <div className="mt-6">
               <Input

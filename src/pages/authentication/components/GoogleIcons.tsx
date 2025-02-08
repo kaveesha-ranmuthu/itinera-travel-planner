@@ -1,5 +1,3 @@
-import React from "react";
-
 const SignInWithGoogle = () => {
   return (
     <button className="gsi-material-button">
