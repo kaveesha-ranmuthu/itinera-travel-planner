@@ -3,20 +3,22 @@ import Logo from "../../components/Logo";
 import FormWrapper from "./components/FormWrapper";
 import { Input } from "./components/Input";
 import Button from "../../components/Button";
-import { SignInWithGoogle } from "./components/GoogleSignIn";
 import { useFormik } from "formik";
+import { SignUpWithGoogle } from "./components/GoogleSignIn";
 import { Link } from "react-router-dom";
 
 type FormInput = {
   email: string;
   password: string;
+  confirmPassword: string;
 };
 
-const LoginPage = () => {
+const SignupPage = () => {
   const formik = useFormik<FormInput>({
     initialValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
     validate: (values) => {
       const errors = {} as FormInput;
@@ -29,8 +31,9 @@ const LoginPage = () => {
       }
       if (!values.password) {
         errors.password = "Please enter a password";
+      } else if (values.confirmPassword !== values.password) {
+        errors.confirmPassword = "Passwords do not match";
       }
-
       return errors;
     },
     onSubmit: (values) => {
@@ -45,7 +48,7 @@ const LoginPage = () => {
         <FormWrapper>
           <form className="text-secondary" onSubmit={formik.handleSubmit}>
             <h1 className="font-brand uppercase italic text-3xl font-light text-center">
-              Log in
+              sign up
             </h1>
             <Input
               label="email"
@@ -56,24 +59,40 @@ const LoginPage = () => {
                 formik.touched.email ? formik.errors.email : undefined
               }
             />
-            <div className="mt-6">
-              <Input
-                label="password"
-                inputId="password"
-                isPassword
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                errorMessage={
-                  formik.touched.password ? formik.errors.password : undefined
-                }
-              />
+            <div className="mt-6 flex space-x-5">
+              <div className="w-1/2">
+                <Input
+                  label="password"
+                  inputId="password"
+                  isPassword
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  errorMessage={
+                    formik.touched.password ? formik.errors.password : undefined
+                  }
+                />
+              </div>
+              <div className="w-1/2">
+                <Input
+                  label="confirm password"
+                  inputId="confirmPassword"
+                  isPassword
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  errorMessage={
+                    formik.touched.confirmPassword
+                      ? formik.errors.confirmPassword
+                      : undefined
+                  }
+                />
+              </div>
             </div>
             <div className="text-center mt-8">
               <Button.Secondary
                 type="submit"
                 className="hover:bg-secondary-hover transition ease-in-out duration-300"
               >
-                Log in
+                Sign up
               </Button.Secondary>
             </div>
           </form>
@@ -83,23 +102,18 @@ const LoginPage = () => {
               <p className="font-brand italic">OR</p>
               <hr className="border-0 border-b border-secondary w-28" />
             </div>
-            <SignInWithGoogle />
+            <SignUpWithGoogle />
           </div>
         </FormWrapper>
-        <div className="text-center mt-3 space-y-1">
-          <div className="cursor-pointer text-primary font-brand italic underline text-lg font-light tracking-wide">
-            Forgot password?
-          </div>
-          <div className="text-primary cursor-pointer font-brand italic text-lg font-light tracking-wide">
-            Need an account?{" "}
-            <Link to="/signup" className="underline">
-              Sign up
-            </Link>
-          </div>
+        <div className="text-center mt-10 text-primary cursor-pointer font-brand italic text-lg font-light tracking-wide">
+          Already have an account?{" "}
+          <Link to="/login" className="underline">
+            Log in
+          </Link>
         </div>
       </div>
     </BackgroundWrapper>
   );
 };
 
-export default LoginPage;
+export default SignupPage;

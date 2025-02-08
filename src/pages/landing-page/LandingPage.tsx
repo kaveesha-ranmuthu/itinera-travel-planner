@@ -11,7 +11,7 @@ const LandingPage = () => {
         <div className="text-center space-y-5">
           <Logo marginLeft="ml-24" />
           <Button.Primary
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/signup")}
             className="hover:scale-98 transition ease-in-out duration-100"
           >
             Get Started
