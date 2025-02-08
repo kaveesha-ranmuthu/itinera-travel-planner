@@ -23,7 +23,7 @@ const StyledTooltip: React.FC<PropsWithChildren<TooltipProps>> = ({
         <Tooltip.Portal>
           <Tooltip.Content
             side="bottom"
-            className="bg-primary/80 rounded-md p-3 text-secondary font-brand italic mt-1"
+            className="bg-red-sienna rounded-md p-3 text-primary font-brand italic mt-1 tracking-wide"
           >
             {content}
           </Tooltip.Content>

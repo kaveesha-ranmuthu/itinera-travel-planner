@@ -10,7 +10,7 @@
   --color-secondary: #3b4043;
   --color-secondary-hover: #2f3336;
   --color-blue-munsell: #05829e;
-  --color-orange-fulvous: #e78000;
+  --color-red-sienna: #b04a46;
   --font-brand: "ZT Bros Oskon 90s", sans-serif;
 }
 
@@ -22,9 +22,9 @@ input:-webkit-autofill:active {
   transition: background-color 5000s ease-in-out 0s;
 }
 
-:focus {
-  outline: 1px solid #05829e; /* Custom focus color */
-}
+/* :focus {
+  outline: 1px solid #3b4043; 
+} */
 
 ::selection {
   background: #85c5e2;

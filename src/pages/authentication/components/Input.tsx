@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { UseFormRegisterReturn } from "react-hook-form";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { twMerge } from "tailwind-merge";
 import { RiErrorWarningLine } from "react-icons/ri";
@@ -8,19 +7,21 @@ import StyledTooltip from "../../../components/StyledTooltip";
 interface InputProps {
   label: string;
   inputId: string;
-  register: UseFormRegisterReturn;
   isPassword?: boolean;
   inputWidth?: string;
   errorMessage?: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
 export const Input: React.FC<InputProps> = ({
   label,
   inputId,
-  register,
   isPassword,
   errorMessage,
   inputWidth,
+  onChange,
+  onBlur,
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -35,8 +36,8 @@ export const Input: React.FC<InputProps> = ({
         <span>{label}</span>
         {errorMessage && (
           <StyledTooltip
-            iconStyles="text-orange-fulvous ml-2"
-            content="Invalid email"
+            iconStyles="text-red-sienna ml-2"
+            content={errorMessage}
           >
             <RiErrorWarningLine />
           </StyledTooltip>
@@ -45,11 +46,18 @@ export const Input: React.FC<InputProps> = ({
       <input
         type={isPasswordVisible || !isPassword ? "text" : "password"}
         id={inputId}
-        {...register}
-        className="w-full h-11 rounded-md border border-secondary pl-2 mt-2"
+        onChange={onChange}
+        onBlur={onBlur}
+        className={twMerge(
+          "w-full h-11 rounded-md border pl-2 mt-2",
+          errorMessage
+            ? "border-red-sienna focus:outline-red-sienna"
+            : "border-secondary focus:outline-blue-munsell"
+        )}
       />
       {isPassword && (
         <button
+          type="button"
           onClick={() => setIsPasswordVisible(!isPasswordVisible)}
           className="absolute top-12 right-3 cursor-pointer "
         >

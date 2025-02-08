@@ -1,11 +1,10 @@
-import { get, useForm } from "react-hook-form";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
 import Logo from "../../components/Logo";
 import FormWrapper from "./components/FormWrapper";
 import { Input } from "./components/Input";
 import Button from "../../components/Button";
 import SignInWithGoogle from "./components/GoogleIcons";
-import { useState } from "react";
+import { useFormik } from "formik";
 
 type FormInput = {
   email: string;
@@ -13,47 +12,59 @@ type FormInput = {
 };
 
 const LoginPage = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormInput>();
-  const [emailError, setEmailError] = useState<string | undefined>();
+  const formik = useFormik<FormInput>({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validate: (values) => {
+      const errors = {} as FormInput;
+      const emailRegEx = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
 
-  const emailRegEx = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
+      if (!values.email) {
+        errors.email = "Please enter an email address";
+      } else if (!emailRegEx.test(values.email)) {
+        errors.email = "Please use a valid email like name@example.com.";
+      }
+      if (!values.password) {
+        errors.password = "Please enter a password";
+      }
 
-  const onSubmit = (data: FormInput) => {
-    data.preventDefault();
-    console.log(data);
-  };
+      return errors;
+    },
+    onSubmit: (values) => {
+      alert(JSON.stringify(values, null, 2));
+    },
+  });
 
   return (
     <BackgroundWrapper>
       <div className="absolute left-0 top-0 flex flex-col items-center justify-center w-full">
         <Logo scale="scale-70" />
         <FormWrapper>
-          <form
-            className="text-secondary"
-            onSubmit={() => handleSubmit(onSubmit)}
-          >
+          <form className="text-secondary" onSubmit={formik.handleSubmit}>
             <h1 className="font-brand uppercase italic text-3xl font-light text-center">
               Log in
             </h1>
             <Input
               label="email"
               inputId="email"
-              register={register("email", {
-                required: true,
-                pattern: emailRegEx,
-              })}
-              errorMessage={emailError}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              errorMessage={
+                formik.touched.email ? formik.errors.email : undefined
+              }
             />
             <div className="mt-6">
               <Input
                 label="password"
                 inputId="password"
-                register={register("password", { required: true })}
                 isPassword
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                errorMessage={
+                  formik.touched.password ? formik.errors.password : undefined
+                }
               />
             </div>
             <div className="text-center mt-8">
