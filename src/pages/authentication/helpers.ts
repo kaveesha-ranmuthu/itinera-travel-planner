@@ -9,10 +9,10 @@ export const getFirebaseErrorMessage = (error: FirebaseError) => {
     "auth/weak-password":
       "Your password is too weak. Use at least 6 characters for better security.",
     "auth/wrong-password": "Incorrect password. Double-check it and try again.",
-    "auth/user-not-found":
-      "No account found for this email. Try signing up instead.",
     "auth/network-request-failed":
       "Network issue detected. Check your connection and try again.",
+    "auth/invalid-credential":
+      "Incorrect email or password. Try again or reset your password.",
     "auth/popup-closed-by-user":
       "Sign-in process was interrupted. Please try again.",
   };

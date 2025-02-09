@@ -5,7 +5,12 @@ import { Input } from "./components/Input";
 import Button from "../../components/Button";
 import { ContinueWithGoogle } from "./components/GoogleSignIn";
 import { useFormik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase-config";
+import { useHotToast } from "../../hooks/useHotToast";
+import { FirebaseError } from "firebase/app";
+import { getFirebaseErrorMessage } from "./helpers";
 
 type FormInput = {
   email: string;
@@ -13,6 +18,9 @@ type FormInput = {
 };
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const { notify } = useHotToast();
+
   const formik = useFormik<FormInput>({
     initialValues: {
       email: "",
@@ -33,8 +41,18 @@ const LoginPage = () => {
 
       return errors;
     },
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: async (values) => {
+      try {
+        await signInWithEmailAndPassword(auth, values.email, values.password);
+        navigate("/");
+      } catch (error) {
+        if (error instanceof FirebaseError) {
+          const errorMessage = getFirebaseErrorMessage(error);
+          notify(errorMessage, "error");
+        } else {
+          notify("Something went wrong. Please try again.", "error");
+        }
+      }
     },
   });
 

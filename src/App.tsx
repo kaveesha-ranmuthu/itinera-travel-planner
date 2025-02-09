@@ -7,6 +7,7 @@ import { auth } from "./firebase-config";
 import TripsPage from "./pages/trips-page/TripsPage";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { useEffect, useState } from "react";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const [user, setUser] = useState<null | User>(null);
@@ -31,19 +32,28 @@ function App() {
   console.log(user);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            loading ? <LoadingState /> : user ? <TripsPage /> : <LandingPage />
-          }
-        />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              loading ? (
+                <LoadingState />
+              ) : user ? (
+                <TripsPage />
+              ) : (
+                <LandingPage />
+              )
+            }
+          />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+      <Toaster />
+    </>
   );
 }
 
