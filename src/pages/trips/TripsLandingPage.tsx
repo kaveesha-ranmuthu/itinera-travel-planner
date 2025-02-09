@@ -3,8 +3,9 @@ import { signOut } from "firebase/auth";
 import { auth } from "../../firebase-config";
 import { useHotToast } from "../../hooks/useHotToast";
 import { useNavigate } from "react-router-dom";
+import Header from "./components/Header";
 
-const TripsPage = () => {
+const TripsLandingPage = () => {
   const { notify } = useHotToast();
   const navigate = useNavigate();
 
@@ -18,10 +19,13 @@ const TripsPage = () => {
   };
 
   return (
-    <div className="p-10">
-      <Button.Secondary onClick={handleLogout}>Log out</Button.Secondary>
+    <div>
+      <Header />
     </div>
+    // <div className="p-10">
+    //   <Button.Secondary onClick={handleLogout}>Log out</Button.Secondary>
+    // </div>
   );
 };
 
-export default TripsPage;
+export default TripsLandingPage;

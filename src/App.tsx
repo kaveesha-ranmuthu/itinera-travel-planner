@@ -4,7 +4,7 @@ import LandingPage, { LoadingState } from "./pages/landing-page/LandingPage";
 import LoginPage from "./pages/authentication/LoginPage";
 import SignupPage from "./pages/authentication/SignupPage";
 import { auth } from "./firebase-config";
-import TripsPage from "./pages/trips-page/TripsPage";
+import TripsLandingPage from "./pages/trips/TripsLandingPage";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
@@ -42,7 +42,7 @@ function App() {
               loading ? (
                 <LoadingState />
               ) : user ? (
-                <TripsPage />
+                <TripsLandingPage />
               ) : (
                 <LandingPage />
               )
