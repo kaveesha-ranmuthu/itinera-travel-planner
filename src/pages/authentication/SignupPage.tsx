@@ -5,7 +5,10 @@ import { Input } from "./components/Input";
 import Button from "../../components/Button";
 import { useFormik } from "formik";
 import { SignUpWithGoogle } from "./components/GoogleSignIn";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase-config";
+import { FirebaseError } from "firebase/app";
 
 type FormInput = {
   email: string;
@@ -14,6 +17,7 @@ type FormInput = {
 };
 
 const SignupPage = () => {
+  const navigate = useNavigate();
   const formik = useFormik<FormInput>({
     initialValues: {
       email: "",
@@ -31,15 +35,31 @@ const SignupPage = () => {
       }
       if (!values.password) {
         errors.password = "Please enter a password";
+      } else if (values.password.length < 6) {
+        errors.password = "Password must be at least 6 characters";
       } else if (values.confirmPassword !== values.password) {
         errors.confirmPassword = "Passwords do not match";
       }
       return errors;
     },
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: async (values) => {
+      try {
+        await createUserWithEmailAndPassword(
+          auth,
+          values.email,
+          values.password
+        );
+        navigate("/");
+      } catch (e) {
+        const error = e as FirebaseError;
+        if (error.code === "auth/email-already-in-use") {
+          formik.errors.email = "This email is calready in use";
+        }
+      }
     },
   });
+
+
 
   return (
     <BackgroundWrapper>
