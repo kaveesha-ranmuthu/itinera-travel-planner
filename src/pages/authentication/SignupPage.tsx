@@ -4,13 +4,13 @@ import FormWrapper from "./components/FormWrapper";
 import { Input } from "./components/Input";
 import Button from "../../components/Button";
 import { useFormik } from "formik";
-import { SignUpWithGoogle } from "./components/GoogleSignIn";
 import { Link, useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase-config";
 import { FirebaseError } from "firebase/app";
 import { useHotToast } from "../../hooks/useHotToast";
 import { getFirebaseErrorMessage } from "./helpers";
+import { ContinueWithGoogle } from "./components/GoogleSignIn";
 
 type FormInput = {
   email: string;
@@ -122,7 +122,7 @@ const SignupPage = () => {
               <p className="font-brand italic">OR</p>
               <hr className="border-0 border-b border-secondary w-28" />
             </div>
-            <SignUpWithGoogle />
+            <ContinueWithGoogle />
           </div>
         </FormWrapper>
         <div className="text-center mt-10 text-primary cursor-pointer font-brand italic text-lg font-light tracking-wide">

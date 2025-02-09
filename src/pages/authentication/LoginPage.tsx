@@ -3,7 +3,7 @@ import Logo from "../../components/Logo";
 import FormWrapper from "./components/FormWrapper";
 import { Input } from "./components/Input";
 import Button from "../../components/Button";
-import { SignInWithGoogle } from "./components/GoogleSignIn";
+import { ContinueWithGoogle } from "./components/GoogleSignIn";
 import { useFormik } from "formik";
 import { Link } from "react-router-dom";
 
@@ -83,7 +83,7 @@ const LoginPage = () => {
               <p className="font-brand italic">OR</p>
               <hr className="border-0 border-b border-secondary w-28" />
             </div>
-            <SignInWithGoogle />
+            <ContinueWithGoogle />
           </div>
         </FormWrapper>
         <div className="text-center mt-3 space-y-1">
