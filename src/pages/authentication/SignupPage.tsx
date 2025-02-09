@@ -9,6 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase-config";
 import { FirebaseError } from "firebase/app";
+import { useHotToast } from "../../hooks/useHotToast";
 
 type FormInput = {
   email: string;
@@ -18,6 +19,8 @@ type FormInput = {
 
 const SignupPage = () => {
   const navigate = useNavigate();
+  const { notify } = useHotToast();
+
   const formik = useFormik<FormInput>({
     initialValues: {
       email: "",
@@ -53,13 +56,13 @@ const SignupPage = () => {
       } catch (e) {
         const error = e as FirebaseError;
         if (error.code === "auth/email-already-in-use") {
-          formik.errors.email = "This email is calready in use";
+          formik.errors.email = "This email is already in use";
+        } else {
+          notify("Something went wrong, please try again", "error");
         }
       }
     },
   });
-
-
 
   return (
     <BackgroundWrapper>
