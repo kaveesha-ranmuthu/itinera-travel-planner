@@ -49,10 +49,13 @@ const SignupPage = () => {
           values.password
         );
         navigate("/");
-      } catch (e) {
-        const error = e as FirebaseError;
-        const errorMessage = getFirebaseErrorMessage(error);
-        notify(errorMessage, "error");
+      } catch (error) {
+        if (error instanceof FirebaseError) {
+          const errorMessage = getFirebaseErrorMessage(error);
+          notify(errorMessage, "error");
+        } else {
+          notify("Something went wrong. Please try again.", "error");
+        }
       }
     },
   });

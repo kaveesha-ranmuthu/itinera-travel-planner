@@ -1,3 +1,10 @@
+import { signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "../../../firebase-config";
+import { getFirebaseErrorMessage } from "../helpers";
+import { useHotToast } from "../../../hooks/useHotToast";
+import { FirebaseError } from "firebase/app";
+import { useNavigate } from "react-router-dom";
+
 export const SignInWithGoogle = () => {
   return (
     <button className="gsi-material-button">
@@ -40,8 +47,29 @@ export const SignInWithGoogle = () => {
 };
 
 export const SignUpWithGoogle = () => {
+  const { notify } = useHotToast();
+  const navigate = useNavigate();
+
+  const handleGoogleSignup = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+      navigate("/");
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        const errorMessage = getFirebaseErrorMessage(error);
+        notify(errorMessage, "error");
+      } else {
+        notify("Something went wrong. Please try again.", "error");
+      }
+    }
+  };
+
   return (
-    <button className="gsi-material-button">
+    <button
+      className="gsi-material-button"
+      type="button"
+      onClick={handleGoogleSignup}
+    >
       <div className="gsi-material-button-state"></div>
       <div className="gsi-material-button-content-wrapper">
         <div className="gsi-material-button-icon">
