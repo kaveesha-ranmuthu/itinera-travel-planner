@@ -48,8 +48,30 @@ function App() {
               )
             }
           />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
+          <Route
+            path="/login"
+            element={
+              loading ? (
+                <LoadingState />
+              ) : user ? (
+                <Navigate to="/" />
+              ) : (
+                <LoginPage />
+              )
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              loading ? (
+                <LoadingState />
+              ) : user ? (
+                <Navigate to="/" />
+              ) : (
+                <SignupPage />
+              )
+            }
+          />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
