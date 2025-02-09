@@ -1,0 +1,90 @@
+import { Link } from "react-router-dom";
+import BackgroundWrapper from "../../components/BackgroundWrapper";
+import Button from "../../components/Button";
+import Logo from "../../components/Logo";
+import FormWrapper from "./components/FormWrapper";
+import { Input } from "./components/Input";
+import { useFormik } from "formik";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "../../firebase-config";
+import { FirebaseError } from "firebase/app";
+import { getFirebaseErrorMessage } from "./helpers";
+import { useHotToast } from "../../hooks/useHotToast";
+
+export interface ResetPasswordFormInput {
+  email: string;
+}
+
+const ResetPassword = () => {
+  const { notify } = useHotToast();
+
+  const formik = useFormik<ResetPasswordFormInput>({
+    initialValues: {
+      email: "",
+    },
+    validate: (values) => {
+      const errors = {} as ResetPasswordFormInput;
+      const emailRegEx = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
+
+      if (!values.email) {
+        errors.email = "Please enter an email address";
+      } else if (!emailRegEx.test(values.email)) {
+        errors.email = "Please use a valid email like name@example.com.";
+      }
+
+      return errors;
+    },
+    onSubmit: async (values) => {
+      try {
+        await sendPasswordResetEmail(auth, values.email);
+        notify("Reset link sent! Check your email.", "info");
+      } catch (error) {
+        if (error instanceof FirebaseError) {
+          const errorMessage = getFirebaseErrorMessage(error);
+          notify(errorMessage, "error");
+        } else {
+          notify("Something went wrong. Please try again.", "error");
+        }
+      }
+    },
+  });
+
+  return (
+    <BackgroundWrapper>
+      <div className="absolute left-0 top-0 flex flex-col items-center justify-center w-full">
+        <Logo scale="scale-70" />
+        <FormWrapper>
+          <form className="text-secondary" onSubmit={formik.handleSubmit}>
+            <h1 className="font-brand uppercase italic text-3xl font-light text-center">
+              Log in
+            </h1>
+            <Input
+              label="email"
+              inputId="email"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              errorMessage={
+                formik.touched.email ? formik.errors.email : undefined
+              }
+            />
+            <div className="text-center mt-8">
+              <Button.Secondary
+                type="submit"
+                className="hover:bg-secondary-hover transition ease-in-out duration-300"
+              >
+                send recovery email
+              </Button.Secondary>
+            </div>
+          </form>
+        </FormWrapper>
+        <div className="text-center mt-10 text-primary cursor-pointer font-brand italic text-lg font-light tracking-wide">
+          <Link to="/login" className="underline">
+            Back to log in
+          </Link>
+        </div>
+      </div>
+    </BackgroundWrapper>
+  );
+};
+
+export default ResetPassword;
