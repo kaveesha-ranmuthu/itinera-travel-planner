@@ -1,33 +1,29 @@
+import { Link } from "react-router-dom";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
+import Button from "../../components/Button";
 import Logo from "../../components/Logo";
 import FormWrapper from "./components/FormWrapper";
 import { Input } from "./components/Input";
-import Button from "../../components/Button";
-import { ContinueWithGoogle } from "./components/GoogleSignIn";
 import { useFormik } from "formik";
-import { Link, useNavigate } from "react-router-dom";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../../firebase-config";
-import { useHotToast } from "../../hooks/useHotToast";
 import { FirebaseError } from "firebase/app";
 import { getFirebaseErrorMessage } from "./helpers";
-import { ResetPasswordFormInput } from "./ResetPassword";
+import { useHotToast } from "../../hooks/useHotToast";
 
-export interface LoginFormInput extends ResetPasswordFormInput {
-  password: string;
+export interface ResetPasswordFormInput {
+  email: string;
 }
 
-const LoginPage = () => {
-  const navigate = useNavigate();
+const ResetPassword = () => {
   const { notify } = useHotToast();
 
-  const formik = useFormik<LoginFormInput>({
+  const formik = useFormik<ResetPasswordFormInput>({
     initialValues: {
       email: "",
-      password: "",
     },
     validate: (values) => {
-      const errors = {} as LoginFormInput;
+      const errors = {} as ResetPasswordFormInput;
       const emailRegEx = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
 
       if (!values.email) {
@@ -35,16 +31,13 @@ const LoginPage = () => {
       } else if (!emailRegEx.test(values.email)) {
         errors.email = "Please use a valid email like name@example.com.";
       }
-      if (!values.password) {
-        errors.password = "Please enter a password";
-      }
 
       return errors;
     },
     onSubmit: async (values) => {
       try {
-        await signInWithEmailAndPassword(auth, values.email, values.password);
-        navigate("/");
+        await sendPasswordResetEmail(auth, values.email);
+        notify("Reset link sent! Check your email.", "info");
       } catch (error) {
         if (error instanceof FirebaseError) {
           const errorMessage = getFirebaseErrorMessage(error);
@@ -74,53 +67,24 @@ const LoginPage = () => {
                 formik.touched.email ? formik.errors.email : undefined
               }
             />
-            <div className="mt-6">
-              <Input
-                label="password"
-                inputId="password"
-                isPassword
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                errorMessage={
-                  formik.touched.password ? formik.errors.password : undefined
-                }
-              />
-            </div>
             <div className="text-center mt-8">
               <Button.Secondary
                 type="submit"
                 className="hover:bg-secondary-hover transition ease-in-out duration-300"
               >
-                Log in
+                send recovery email
               </Button.Secondary>
             </div>
           </form>
-          <div className="flex flex-col items-center mt-6 space-y-6">
-            <div className="flex items-center space-x-4">
-              <hr className="border-0 border-b border-secondary w-28" />
-              <p className="font-brand italic">OR</p>
-              <hr className="border-0 border-b border-secondary w-28" />
-            </div>
-            <ContinueWithGoogle />
-          </div>
         </FormWrapper>
-        <div className="text-center mt-3 space-y-1">
-          <Link
-            to="/reset-password"
-            className="cursor-pointer text-primary font-brand italic underline text-lg font-light tracking-wide"
-          >
-            Forgot password?
+        <div className="text-center mt-10 text-primary cursor-pointer font-brand italic text-lg font-light tracking-wide">
+          <Link to="/login" className="underline">
+            Back to log in
           </Link>
-          <div className="text-primary cursor-pointer font-brand italic text-lg font-light tracking-wide">
-            Need an account?{" "}
-            <Link to="/signup" className="underline">
-              Sign up
-            </Link>
-          </div>
         </div>
       </div>
     </BackgroundWrapper>
   );
 };
 
-export default LoginPage;
+export default ResetPassword;

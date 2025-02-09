@@ -8,6 +8,7 @@ import TripsPage from "./pages/trips-page/TripsPage";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
+import ResetPassword from "./pages/authentication/ResetPassword";
 
 function App() {
   const [user, setUser] = useState<null | User>(null);
@@ -49,6 +50,7 @@ function App() {
           />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>

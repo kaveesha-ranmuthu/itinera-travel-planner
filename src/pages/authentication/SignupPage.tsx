@@ -11,25 +11,24 @@ import { FirebaseError } from "firebase/app";
 import { useHotToast } from "../../hooks/useHotToast";
 import { getFirebaseErrorMessage } from "./helpers";
 import { ContinueWithGoogle } from "./components/GoogleSignIn";
+import { LoginFormInput } from "./LoginPage";
 
-type FormInput = {
-  email: string;
-  password: string;
+interface SignupFormInput extends LoginFormInput {
   confirmPassword: string;
-};
+}
 
 const SignupPage = () => {
   const navigate = useNavigate();
   const { notify } = useHotToast();
 
-  const formik = useFormik<FormInput>({
+  const formik = useFormik<SignupFormInput>({
     initialValues: {
       email: "",
       password: "",
       confirmPassword: "",
     },
     validate: (values) => {
-      const errors = {} as FormInput;
+      const errors = {} as SignupFormInput;
 
       if (!values.email) {
         errors.email = "Please enter an email address";
