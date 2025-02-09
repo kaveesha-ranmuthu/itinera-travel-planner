@@ -14,7 +14,7 @@ export const useHotToast = () => {
     duration: 5000,
     style: {
       padding: "15px 30px",
-      maxWidth: "400px",
+      maxWidth: "700px",
       fontFamily: font,
       fontStyle: "italic",
       letterSpacing: "1px",

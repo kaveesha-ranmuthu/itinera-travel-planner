@@ -5,6 +5,7 @@ interface ButtonProps {
   onClick?: () => void;
   className?: string;
   type?: "button" | "submit" | "reset";
+  disabled?: boolean;
 }
 
 const DefaultButton: React.FC<PropsWithChildren<ButtonProps>> = ({
@@ -12,13 +13,15 @@ const DefaultButton: React.FC<PropsWithChildren<ButtonProps>> = ({
   onClick,
   className,
   type = "button",
+  disabled,
 }) => {
   return (
     <button
+      disabled={disabled}
       type={type}
       onClick={onClick}
       className={twMerge(
-        "font-brand cursor-pointer italic uppercase px-7 py-1.5 rounded-lg",
+        "disabled:cursor-default font-brand cursor-pointer italic uppercase px-7 py-1.5 rounded-lg",
         className
       )}
     >
@@ -31,14 +34,16 @@ const Primary: React.FC<PropsWithChildren<ButtonProps>> = ({
   children,
   onClick,
   className,
+  disabled,
   type = "button",
 }) => {
   return (
     <button
+      disabled={disabled}
       type={type}
       onClick={onClick}
       className={twMerge(
-        "font-brand cursor-pointer italic uppercase px-7 py-1.5 rounded-lg bg-primary text-secondary    ",
+        "disabled:bg-primary/70 disabled:cursor-default font-brand cursor-pointer italic uppercase px-7 py-1.5 rounded-lg bg-primary text-secondary    ",
         className
       )}
     >
@@ -51,14 +56,16 @@ const Secondary: React.FC<PropsWithChildren<ButtonProps>> = ({
   children,
   onClick,
   className,
+  disabled,
   type = "button",
 }) => {
   return (
     <button
+      disabled={disabled}
       type={type}
       onClick={onClick}
       className={twMerge(
-        "font-brand cursor-pointer italic uppercase px-7 py-1.5 rounded-lg text-primary bg-secondary    ",
+        "disabled:bg-secondary/70 disabled:cursor-default font-brand cursor-pointer italic uppercase px-7 py-1.5 rounded-lg text-primary bg-secondary",
         className
       )}
     >

@@ -10,6 +10,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase-config";
 import { FirebaseError } from "firebase/app";
 import { useHotToast } from "../../hooks/useHotToast";
+import { getFirebaseErrorMessage } from "./helpers";
 
 type FormInput = {
   email: string;
@@ -29,17 +30,12 @@ const SignupPage = () => {
     },
     validate: (values) => {
       const errors = {} as FormInput;
-      const emailRegEx = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
 
       if (!values.email) {
         errors.email = "Please enter an email address";
-      } else if (!emailRegEx.test(values.email)) {
-        errors.email = "Please use a valid email like name@example.com.";
       }
       if (!values.password) {
         errors.password = "Please enter a password";
-      } else if (values.password.length < 6) {
-        errors.password = "Password must be at least 6 characters";
       } else if (values.confirmPassword !== values.password) {
         errors.confirmPassword = "Passwords do not match";
       }
@@ -55,11 +51,8 @@ const SignupPage = () => {
         navigate("/");
       } catch (e) {
         const error = e as FirebaseError;
-        if (error.code === "auth/email-already-in-use") {
-          formik.errors.email = "This email is already in use";
-        } else {
-          notify("Something went wrong, please try again", "error");
-        }
+        const errorMessage = getFirebaseErrorMessage(error);
+        notify(errorMessage, "error");
       }
     },
   });
@@ -113,6 +106,7 @@ const SignupPage = () => {
             <div className="text-center mt-8">
               <Button.Secondary
                 type="submit"
+                disabled={!formik.isValid}
                 className="hover:bg-secondary-hover transition ease-in-out duration-300"
               >
                 Sign up
