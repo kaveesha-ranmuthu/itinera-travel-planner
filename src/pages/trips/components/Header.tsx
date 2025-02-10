@@ -1,7 +1,7 @@
 import React from "react";
 import { FontFamily } from "../../../types";
 import { PaperPlane } from "../assets/PaperPlane";
-import { LuEllipsisVertical } from "react-icons/lu";
+import { HiOutlineCog6Tooth } from "react-icons/hi2";
 import { twMerge } from "tailwind-merge";
 import Button from "../../../components/Button";
 import { useHotToast } from "../../../hooks/useHotToast";
@@ -31,7 +31,7 @@ const Header = () => {
       <PopoverMenu
         popoverTrigger={
           <button className="cursor-pointer hover:opacity-80 transition ease-in-out">
-            <LuEllipsisVertical fill="#3b4043" size={20} />
+            <HiOutlineCog6Tooth stroke="#3b4043" size={25} />
           </button>
         }
       >
