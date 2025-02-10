@@ -1,16 +1,17 @@
-import BackgroundWrapper from "../../components/BackgroundWrapper";
-import Logo from "../../components/Logo";
-import FormWrapper from "./components/FormWrapper";
-import { Input } from "./components/Input";
-import Button from "../../components/Button";
+import { FirebaseError } from "firebase/app";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import BackgroundWrapper from "../../components/BackgroundWrapper";
+import Button from "../../components/Button";
+import Logo from "../../components/Logo";
 import { auth } from "../../firebase-config";
-import { FirebaseError } from "firebase/app";
 import { useHotToast } from "../../hooks/useHotToast";
-import { getFirebaseErrorMessage } from "./helpers";
+import { FontFamily } from "../../types";
+import FormWrapper from "./components/FormWrapper";
 import { ContinueWithGoogle } from "./components/GoogleSignIn";
+import { Input } from "./components/Input";
+import { getFirebaseErrorMessage, setUserSettings } from "./helpers";
 import { LoginFormInput } from "./LoginPage";
 
 interface SignupFormInput extends LoginFormInput {
@@ -42,11 +43,14 @@ const SignupPage = () => {
     },
     onSubmit: async (values) => {
       try {
-        await createUserWithEmailAndPassword(
+        const userCredential = await createUserWithEmailAndPassword(
           auth,
           values.email,
           values.password
         );
+        setUserSettings(userCredential.user, {
+          font: FontFamily.HANDWRITTEN,
+        });
         navigate("/");
       } catch (error) {
         if (error instanceof FirebaseError) {

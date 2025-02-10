@@ -4,3 +4,7 @@ export enum FontFamily {
   SERIF_BRAND = "font-brand italic tracking-wider",
   SERIF = "font-family-serif",
 }
+
+export type UserSettings = {
+  font: FontFamily;
+};
