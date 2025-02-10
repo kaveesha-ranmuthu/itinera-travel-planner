@@ -14,7 +14,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
-        const userSettingsRef = doc(db, "settings", currentUser.uid);
+        const userSettingsRef = doc(db, "user-settings", currentUser.uid);
 
         const unsubscribeSettings = onSnapshot(userSettingsRef, (document) => {
           if (document.exists()) {
