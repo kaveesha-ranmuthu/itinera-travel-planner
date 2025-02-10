@@ -1,34 +1,15 @@
+import { Toaster } from "react-hot-toast";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
-import LandingPage, { LoadingState } from "./pages/landing-page/LandingPage";
 import LoginPage from "./pages/authentication/LoginPage";
-import SignupPage from "./pages/authentication/SignupPage";
-import { auth } from "./firebase-config";
-import TripsLandingPage from "./pages/trips/TripsLandingPage";
-import { onAuthStateChanged, User } from "firebase/auth";
-import { useEffect, useState } from "react";
-import { Toaster } from "react-hot-toast";
 import ResetPassword from "./pages/authentication/ResetPassword";
+import SignupPage from "./pages/authentication/SignupPage";
+import LandingPage, { LoadingState } from "./pages/landing-page/LandingPage";
+import TripsLandingPage from "./pages/trips/TripsLandingPage";
+import { useAuth } from "./hooks/useAuth";
 
 function App() {
-  const [user, setUser] = useState<null | User>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const MIN_LOADING_TIME = 3000;
-    const startTime = Date.now();
-
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-
-      const elapsedTime = Date.now() - startTime;
-      const remainingTime = Math.max(0, MIN_LOADING_TIME - elapsedTime);
-
-      setTimeout(() => setLoading(false), remainingTime);
-    });
-
-    return () => unsubscribe();
-  }, []);
+  const { user, loading } = useAuth();
 
   return (
     <>
