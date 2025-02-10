@@ -4,7 +4,7 @@ import { FontFamily } from "../../types";
 import Header from "./components/Header";
 import PopupModal from "./components/PopupModal";
 import art1 from "./images/art-1.jpg";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { sortBy } from "lodash";
 import { useHotToast } from "../../hooks/useHotToast";
 import MultiSelect, { MultiSelectOption } from "./components/MultiSelect";
@@ -14,22 +14,33 @@ const TripsLandingPage = () => {
   const [countries, setCountries] = useState<MultiSelectOption[]>([]);
   const { notify } = useHotToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCountries, setSelectedCountries] = useState<
+    MultiSelectOption[]
+  >([]);
 
-  axios
-    .get("https://restcountries.com/v3.1/all")
-    .then((response) => {
-      setCountries(
-        sortBy(
-          response.data.map((country) => ({
-            id: country.name.common,
-            name: country.name.common,
-          }))
-        )
-      );
-    })
-    .catch(() => {
-      notify("Some thing went wrong. Please try again.", "error");
-    });
+  useEffect(() => {
+    axios
+      .get("https://restcountries.com/v3.1/all")
+      .then((response) => {
+        setCountries(
+          sortBy(
+            response.data.map((country: { name: { common: string } }) => ({
+              id: country.name.common,
+              name: country.name.common,
+            }))
+          )
+        );
+      })
+      .catch(() => {
+        notify("Something went wrong. Please try again.", "error");
+      });
+  }, [notify]);
+
+  const handleCountryInputChange = (countries: MultiSelectOption[]) => {
+    if (!countries) return;
+
+    setSelectedCountries(countries);
+  };
 
   return (
     <div className={settings?.font ?? FontFamily.HANDWRITTEN}>
@@ -63,9 +74,13 @@ const TripsLandingPage = () => {
               />
             </div>
           </div>
-          <div>
-            <p>What countries will you visit?</p>
-            <MultiSelect onChange={() => null} options={countries} />
+          <div className="w-1/2">
+            <p className="mb-4">What countries will you visit?</p>
+            <MultiSelect
+              onChange={handleCountryInputChange}
+              options={countries}
+              currentlySelectedOptions={selectedCountries}
+            />
           </div>
         </div>
       </PopupModal>
