@@ -17,7 +17,7 @@ const PopoverMenu: React.FC<PropsWithChildren<PopoverProps>> = ({
       <Popover.Portal>
         <Popover.Content
           className={twMerge(
-            "PopoverContent mr-7 rounded-xl px-4 py-4 bg-primary border border-secondary w-2xs drop-shadow-(--drop-shadow-default)",
+            "PopoverContent mr-7 rounded-xl px-4 py-4 bg-primary border border-secondary w-xs drop-shadow-(--drop-shadow-default)",
             FontFamily.HANDWRITTEN
           )}
           side="top"

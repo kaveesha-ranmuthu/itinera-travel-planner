@@ -1,9 +1,12 @@
+import { useAuth } from "../../hooks/useAuth";
 import { FontFamily } from "../../types";
 import Header from "./components/Header";
 
 const TripsLandingPage = () => {
+  const { settings } = useAuth();
+
   return (
-    <div className={FontFamily.HANDWRITTEN}>
+    <div className={settings?.font ?? FontFamily.HANDWRITTEN}>
       <Header />
     </div>
   );

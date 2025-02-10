@@ -9,10 +9,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../firebase-config";
 import PopoverMenu from "./PopoverMenu";
+import { updateUserSettings } from "../helpers";
+import { useAuth } from "../../../hooks/useAuth";
 
 const Header = () => {
   const { notify } = useHotToast();
   const navigate = useNavigate();
+  const { settings, setSettings } = useAuth();
 
   const handleLogout = async () => {
     try {
@@ -20,6 +23,19 @@ const Header = () => {
       navigate("/login");
     } catch {
       notify("Something went wrong. Please try again.", "error");
+    }
+  };
+
+  const updateFont = async (newFont: FontFamily) => {
+    if (auth.currentUser) {
+      try {
+        await updateUserSettings(auth.currentUser.uid, {
+          font: newFont,
+        });
+        setSettings({ font: newFont });
+      } catch {
+        notify("Something went wrong. Please try again.", "error");
+      }
     }
   };
 
@@ -35,18 +51,19 @@ const Header = () => {
           </button>
         }
       >
-        <p className="lowercase text-3xl pb-3">settings</p>
+        <p className={twMerge("lowercase text-3xl pb-3", settings?.font)}>
+          settings
+        </p>
         <div>
-          <p>Change font</p>
+          <p className={settings?.font}>Change font</p>
           <div className="flex items-center space-x-3 mt-2">
             {Object.values(FontFamily).map((font) => {
-              // TODO: change selected
               return (
                 <FontDisplayBox
                   key={font}
                   fontFamily={font}
-                  selected={font === FontFamily.HANDWRITTEN}
-                  onClick={() => null}
+                  selected={font === settings?.font}
+                  onClick={() => updateFont(font)}
                 />
               );
             })}
@@ -54,15 +71,15 @@ const Header = () => {
           <div className="flex items-center space-x-2 mt-9">
             <Button.Secondary
               onClick={handleLogout}
-              className={twMerge("normal-case", FontFamily.HANDWRITTEN)}
+              className={twMerge("normal-case", settings?.font)}
             >
               Log Out
             </Button.Secondary>
             <Button.Primary
               onClick={handleLogout}
               className={twMerge(
-                "normal-case border border-secondary px-2",
-                FontFamily.HANDWRITTEN
+                "normal-case border border-secondary",
+                settings?.font
               )}
             >
               Update Profile
