@@ -11,7 +11,12 @@
   --color-secondary-hover: #2f3336;
   --color-blue-munsell: #05829e;
   --color-red-sienna: #b04a46;
-  --font-brand: "ZT Bros Oskon 90s", sans-serif;
+  --color-light-blue: #85c5e2;
+  --font-brand: "ZT Bros Oskon 90s", serif;
+  --font-family-handwritten: "Zen Kurenaido", sans-serif;
+  --font-family-sans: "Roboto Flex", sans-serif;
+  --font-family-serif: "Arapey", serif;
+  --drop-shadow-default: 2px 2px 2px rgba(0, 0, 0, 0.1);
 }
 
 input:-webkit-autofill,
@@ -22,12 +27,57 @@ input:-webkit-autofill:active {
   transition: background-color 5000s ease-in-out 0s;
 }
 
+body {
+  background-color: var(--color-primary);
+}
+
+.PopoverContent {
+  transform-origin: var(--radix-popover-content-transform-origin);
+  animation: scaleIn 0.1s ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.zen-kurenaido-regular {
+  font-family: "Zen Kurenaido", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.arapey-regular {
+  font-family: "Arapey", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.arapey-regular-italic {
+  font-family: "Arapey", serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.roboto-flex-tripspages {
+  font-family: "Roboto Flex", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings: "slnt" 0, "wdth" 100, "GRAD" 0, "XOPQ" 96, "XTRA" 468,
+    "YOPQ" 79, "YTAS" 750, "YTDE" -203, "YTFI" 738, "YTLC" 514, "YTUC" 712;
+}
+
 /* :focus {
   outline: 1px solid #3b4043; 
 } */
 
 ::selection {
-  background: #85c5e2;
+  background: var(--color-light-blue);
 }
 
 /* Google Icon Styles */

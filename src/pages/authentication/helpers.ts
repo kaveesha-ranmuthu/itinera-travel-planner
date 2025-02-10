@@ -1,4 +1,8 @@
 import { FirebaseError } from "firebase/app";
+import { User } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { UserSettings } from "../../types";
+import { db } from "../../firebase-config";
 
 export const getFirebaseErrorMessage = (error: FirebaseError) => {
   const errorMessages: Record<string, string> = {
@@ -18,4 +22,9 @@ export const getFirebaseErrorMessage = (error: FirebaseError) => {
   };
 
   return errorMessages[error.code] || "Something went wrong. Please try again.";
+};
+
+export const setUserSettings = async (user: User, settings: UserSettings) => {
+  const userSettingsRef = doc(db, "user-settings", user.uid);
+  await setDoc(userSettingsRef, settings);
 };
