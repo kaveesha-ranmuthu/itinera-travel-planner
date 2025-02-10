@@ -4,7 +4,7 @@ import { FontFamily } from "../../types";
 import Header from "./components/Header";
 import PopupModal from "./components/PopupModal";
 import art1 from "./images/art-1.jpg";
-import { useState } from "react";
+import React, { useState } from "react";
 import { sortBy } from "lodash";
 import { useHotToast } from "../../hooks/useHotToast";
 import MultiSelect, { MultiSelectOption } from "./components/MultiSelect";
@@ -13,6 +13,7 @@ const TripsLandingPage = () => {
   const { settings } = useAuth();
   const [countries, setCountries] = useState<MultiSelectOption[]>([]);
   const { notify } = useHotToast();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   axios
     .get("https://restcountries.com/v3.1/all")
@@ -36,7 +37,8 @@ const TripsLandingPage = () => {
       <div className="flex justify-center text-5xl tracking-widest">
         <h1>my trips</h1>
       </div>
-      <PopupModal triggerElement={<CreateNewTripButton />}>
+      <CreateNewTripButton onClick={() => setIsModalOpen(true)} />
+      <PopupModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <img
           src={art1}
           alt="background image"
@@ -71,11 +73,19 @@ const TripsLandingPage = () => {
   );
 };
 
-const CreateNewTripButton = () => {
+type CreateNewTripButtonProps = {
+  onClick: () => void;
+};
+const CreateNewTripButton: React.FC<CreateNewTripButtonProps> = ({
+  onClick,
+}) => {
   return (
-    <div className="hover:opacity-60 transition ease-in-out duration-400 cursor-pointer border border-secondary w-80 rounded-2xl h-48  flex items-center justify-center drop-shadow-(--drop-shadow-default)">
+    <button
+      onClick={onClick}
+      className="hover:opacity-60 transition ease-in-out duration-400 cursor-pointer border border-secondary w-80 rounded-2xl h-48  flex items-center justify-center drop-shadow-(--drop-shadow-default)"
+    >
       <p className="text-2xl text-secondary">Create new trip</p>
-    </div>
+    </button>
   );
 };
 
