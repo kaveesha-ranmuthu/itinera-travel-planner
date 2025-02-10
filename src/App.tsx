@@ -30,8 +30,6 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  console.log(user);
-
   return (
     <>
       <BrowserRouter>

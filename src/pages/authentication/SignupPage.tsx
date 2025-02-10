@@ -106,11 +106,7 @@ const SignupPage = () => {
               </div>
             </div>
             <div className="text-center mt-8">
-              <Button.Secondary
-                type="submit"
-                disabled={!formik.isValid}
-                className="hover:bg-secondary-hover transition ease-in-out duration-300"
-              >
+              <Button.Secondary type="submit" disabled={!formik.isValid}>
                 Sign up
               </Button.Secondary>
             </div>

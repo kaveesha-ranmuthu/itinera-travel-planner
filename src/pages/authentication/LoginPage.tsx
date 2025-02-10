@@ -87,12 +87,7 @@ const LoginPage = () => {
               />
             </div>
             <div className="text-center mt-8">
-              <Button.Secondary
-                type="submit"
-                className="hover:bg-secondary-hover transition ease-in-out duration-300"
-              >
-                Log in
-              </Button.Secondary>
+              <Button.Secondary type="submit">Log in</Button.Secondary>
             </div>
           </form>
           <div className="flex flex-col items-center mt-6 space-y-6">
