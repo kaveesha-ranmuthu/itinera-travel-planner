@@ -46,9 +46,9 @@ const Header = () => {
       </Link>
       <PopoverMenu
         popoverTrigger={
-          <button className="cursor-pointer hover:opacity-80 transition ease-in-out">
+          <div className="cursor-pointer hover:opacity-80 transition ease-in-out">
             <HiOutlineCog6Tooth stroke="#3b4043" size={25} />
-          </button>
+          </div>
         }
       >
         <p className={twMerge("lowercase text-3xl pb-3", settings?.font)}>

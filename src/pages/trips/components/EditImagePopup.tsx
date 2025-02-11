@@ -13,12 +13,9 @@ const EditImagePopup: React.FC<EditImagePopupProps> = ({ onImageClick }) => {
       className="absolute bottom-2 right-2"
       popoverWidth="w-md"
       popoverTrigger={
-        <button
-          type="button"
-          className="bg-primary absolute bottom-2 right-2 p-2 rounded-lg cursor-pointer hover:opacity-85 transition ease-in-out duration-300"
-        >
+        <div className="bg-primary absolute bottom-2 right-2 p-2 rounded-lg cursor-pointer hover:opacity-85 transition ease-in-out duration-300">
           <FiEdit stroke="#3b4043" size={20} />
-        </button>
+        </div>
       }
     >
       <h1 className="text-2xl font-brand italic tracking-wider mb-2">
@@ -26,7 +23,11 @@ const EditImagePopup: React.FC<EditImagePopupProps> = ({ onImageClick }) => {
       </h1>
       <div className="space-y-5">
         {images.map((image) => (
-          <ImageSection {...image} onImageClick={onImageClick} />
+          <ImageSection
+            key={image.artist}
+            {...image}
+            onImageClick={onImageClick}
+          />
         ))}
       </div>
     </PopoverMenu>
@@ -49,6 +50,7 @@ const ImageSection: React.FC<ImageSectionProps> = ({
         {images.map((image) => {
           return (
             <img
+              key={image}
               onClick={() => onImageClick(image)}
               src={image}
               className="object-cover w-24 h-14 rounded drop-shadow-(--drop-shadow-default) hover:opacity-90 cursor-pointer"
