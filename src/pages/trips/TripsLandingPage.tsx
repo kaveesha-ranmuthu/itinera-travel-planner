@@ -144,13 +144,10 @@ const TripsLandingPage = () => {
               <p className="mb-4">What's your budget?</p>
               <div className="relative">
                 <input
-                  placeholder="$"
+                  placeholder={selectedCurrency?.otherInfo?.symbol}
                   type="number"
-                  className=" border border-secondary rounded-xl pr-2 pl-9 py-1 w-30"
+                  className=" border border-secondary rounded-xl px-2 py-1 w-30"
                 />
-                {/* <p className="absolute top-0 mt-1.25 left-2 border-r border-secondary/30 pr-2">
-                  {selectedCurrency?.otherInfo?.symbol ?? "$"}
-                </p> */}
               </div>
             </div>
           </div>
