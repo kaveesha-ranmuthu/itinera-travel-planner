@@ -12,6 +12,7 @@ interface InputProps {
   errorMessage?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  inputType: string;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -22,6 +23,7 @@ export const Input: React.FC<InputProps> = ({
   inputWidth,
   onChange,
   onBlur,
+  inputType,
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
