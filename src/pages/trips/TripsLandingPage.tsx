@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { FiEdit } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
 import Button from "../../components/Button";
 import { useAuth } from "../../hooks/useAuth";
@@ -11,6 +10,7 @@ import MultiSelect, { SelectOption, SingleSelect } from "./components/Select";
 import { useGetCountries } from "./hooks/useGetCountries";
 import { useGetCurrencies } from "./hooks/useGetCurrencies";
 import art1 from "./images/jan-brueghel-the-younger/art-1.jpg";
+import EditImagePopup from "./components/EditImagePopup";
 
 const TripsLandingPage = () => {
   const { settings } = useAuth();
@@ -23,6 +23,7 @@ const TripsLandingPage = () => {
   const [selectedCurrency, setSelectedCurrency] = useState<SelectOption | null>(
     null
   );
+  const [selectedArt, setSelectedArt] = useState<string>(art1);
 
   if (countryFetchError || currencyFetchError) {
     return <ErrorPage />;
@@ -42,6 +43,10 @@ const TripsLandingPage = () => {
     setIsModalOpen(false);
   };
 
+  const handleImageSelect = (imageSrc: string) => {
+    setSelectedArt(imageSrc);
+  };
+
   return (
     <div className={settings?.font ?? FontFamily.HANDWRITTEN}>
       <Header />
@@ -52,16 +57,11 @@ const TripsLandingPage = () => {
       <PopupModal isOpen={isModalOpen} onClose={handleCloseModal}>
         <div className="relative">
           <img
-            src={art1}
+            src={selectedArt}
             alt="background image"
             className="h-40 w-full object-cover rounded-2xl drop-shadow-(--drop-shadow-default)"
           />
-          <button
-            type="button"
-            className="bg-primary absolute bottom-2 right-2 p-2 rounded-lg cursor-pointer hover:opacity-85 transition ease-in-out duration-300"
-          >
-            <FiEdit stroke="#3b4043" size={20} />
-          </button>
+          <EditImagePopup onImageClick={handleImageSelect} />
         </div>
         <div className="px-3 mt-3 text-secondary text-lg space-y-6">
           <input
