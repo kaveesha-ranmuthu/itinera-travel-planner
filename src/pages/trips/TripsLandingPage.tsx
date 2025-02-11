@@ -1,22 +1,26 @@
 import axios from "axios";
+import { sortBy, uniqBy } from "lodash";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
+import { useHotToast } from "../../hooks/useHotToast";
 import { FontFamily } from "../../types";
 import Header from "./components/Header";
 import PopupModal from "./components/PopupModal";
+import MultiSelect, { SelectOption, SingleSelect } from "./components/Select";
 import art1 from "./images/art-1.jpg";
-import React, { useEffect, useState } from "react";
-import { sortBy } from "lodash";
-import { useHotToast } from "../../hooks/useHotToast";
-import MultiSelect, { MultiSelectOption } from "./components/MultiSelect";
 
 const TripsLandingPage = () => {
   const { settings } = useAuth();
-  const [countries, setCountries] = useState<MultiSelectOption[]>([]);
+  const [countries, setCountries] = useState<SelectOption[]>([]);
+  const [currencies, setCurrencies] = useState<SelectOption[]>([]);
   const { notify } = useHotToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCountries, setSelectedCountries] = useState<
-    MultiSelectOption[]
-  >([]);
+  const [selectedCountries, setSelectedCountries] = useState<SelectOption[]>(
+    []
+  );
+  const [selectedCurrency, setSelectedCurrency] = useState<SelectOption | null>(
+    null
+  );
 
   useEffect(() => {
     axios
@@ -27,19 +31,51 @@ const TripsLandingPage = () => {
             response.data.map((country: { name: { common: string } }) => ({
               id: country.name.common,
               name: country.name.common,
-            }))
+            })),
+            "name"
           )
         );
+
+        const currencyData = sortBy(
+          response.data.map(
+            (country: {
+              currencies: { [x in string]: { symbol: string } };
+            }) => {
+              if (
+                !country.currencies ||
+                Object.keys(country.currencies).length === 0
+              )
+                return;
+
+              const currencyCode = Object.keys(country.currencies)[0];
+              const symbol = country.currencies[currencyCode].symbol;
+              return {
+                id: currencyCode,
+                name: currencyCode,
+                otherInfo: {
+                  symbol,
+                },
+              };
+            }
+          ),
+          "name"
+        );
+
+        setCurrencies(uniqBy(currencyData.filter(Boolean), "id"));
       })
       .catch(() => {
         notify("Something went wrong. Please try again.", "error");
       });
   }, [notify]);
 
-  const handleCountryInputChange = (countries: MultiSelectOption[]) => {
+  const handleCountryInputChange = (countries: SelectOption[]) => {
     if (!countries) return;
 
     setSelectedCountries(countries);
+  };
+
+  const handleCurrencyInputChange = (currency: SelectOption) => {
+    setSelectedCurrency(currency);
   };
 
   return (
@@ -74,13 +110,43 @@ const TripsLandingPage = () => {
               />
             </div>
           </div>
-          <div className="w-1/2">
-            <p className="mb-4">What countries will you visit?</p>
-            <MultiSelect
-              onChange={handleCountryInputChange}
-              options={countries}
-              currentlySelectedOptions={selectedCountries}
-            />
+          <div className="space-x-6 flex items-center mt-3.5">
+            <div className="w-1/2">
+              <p className="mb-4">What countries will you visit?</p>
+              <div className="w-56">
+                <MultiSelect
+                  onChange={handleCountryInputChange}
+                  options={countries}
+                  currentlySelectedOptions={selectedCountries}
+                />
+              </div>
+            </div>
+            <div>
+              <p className="mb-4">How many people are going?</p>
+              <input
+                type="number"
+                className="border border-secondary rounded-xl px-2 py-1 w-20"
+              />
+            </div>
+          </div>
+          <div className="space-x-6 flex items-center mt-3.5">
+            <div className="w-1/2">
+              <p className="mb-4">What's your currency?</p>
+              <div className="w-56">
+                <SingleSelect
+                  onChange={handleCurrencyInputChange}
+                  options={currencies}
+                  currentlySelectedOption={selectedCurrency}
+                />
+              </div>
+            </div>
+            <div>
+              <p className="mb-4">What's your budget?</p>
+              <input
+                type="number"
+                className="border border-secondary rounded-xl px-2 py-1 w-30"
+              />
+            </div>
           </div>
         </div>
       </PopupModal>
