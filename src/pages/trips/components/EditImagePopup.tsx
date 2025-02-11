@@ -2,6 +2,7 @@ import React from "react";
 import PopoverMenu from "./PopoverMenu";
 import { FiEdit } from "react-icons/fi";
 import { ImageInfo, images } from "../images/images";
+import Button from "../../../components/Button";
 
 interface EditImagePopupProps {
   onImageClick: (imageSrc: string) => void;
@@ -18,9 +19,14 @@ const EditImagePopup: React.FC<EditImagePopupProps> = ({ onImageClick }) => {
         </div>
       }
     >
-      <h1 className="text-2xl font-brand italic tracking-wider mb-2">
-        Edit Image
-      </h1>
+      <div className="flex items-center mb-2 justify-between">
+        <h1 className="text-2xl font-brand italic tracking-wider">
+          Edit Image
+        </h1>
+        <Button.Primary className="border border-secondary normal-case py-1 px-3">
+          Upload Image
+        </Button.Primary>
+      </div>
       <div className="space-y-5">
         {images.map((image) => (
           <ImageSection
