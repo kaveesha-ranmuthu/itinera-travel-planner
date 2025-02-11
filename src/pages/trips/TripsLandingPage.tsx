@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { FiEdit } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
 import Button from "../../components/Button";
 import { useAuth } from "../../hooks/useAuth";
@@ -49,11 +50,19 @@ const TripsLandingPage = () => {
       </div>
       <CreateNewTripButton onClick={() => setIsModalOpen(true)} />
       <PopupModal isOpen={isModalOpen} onClose={handleCloseModal}>
-        <img
-          src={art1}
-          alt="background image"
-          className="h-40 w-full object-cover rounded-2xl drop-shadow-(--drop-shadow-default)"
-        />
+        <div className="relative">
+          <img
+            src={art1}
+            alt="background image"
+            className="h-40 w-full object-cover rounded-2xl drop-shadow-(--drop-shadow-default)"
+          />
+          <button
+            type="button"
+            className="bg-primary absolute bottom-2 right-2 p-2 rounded-lg cursor-pointer hover:opacity-85 transition ease-in-out duration-300"
+          >
+            <FiEdit stroke="#3b4043" size={20} />
+          </button>
+        </div>
         <div className="px-3 mt-3 text-secondary text-lg space-y-6">
           <input
             className="text-4xl opacity-45 focus:opacity-100 focus:outline-0 underline underline-offset-4"
