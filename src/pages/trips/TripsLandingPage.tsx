@@ -67,6 +67,10 @@ const TripsLandingPage = () => {
     formik.setFieldValue("image", imageSrc);
   };
 
+  const handleImageUpload = (file: File) => {
+    formik.setFieldValue("image", URL.createObjectURL(file));
+  };
+
   return (
     <div className={settings?.font ?? FontFamily.HANDWRITTEN}>
       <Header />
@@ -82,7 +86,10 @@ const TripsLandingPage = () => {
               alt="background image"
               className="h-40 w-full object-cover rounded-2xl drop-shadow-(--drop-shadow-default)"
             />
-            <EditImagePopup onImageClick={handleImageSelect} />
+            <EditImagePopup
+              onImageClick={handleImageSelect}
+              onImageUpload={handleImageUpload}
+            />
           </div>
           <div className="px-3 mt-3 text-secondary text-lg space-y-6">
             <input

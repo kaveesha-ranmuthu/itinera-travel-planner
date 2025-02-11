@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import PopoverMenu from "./PopoverMenu";
 import { FiEdit } from "react-icons/fi";
 import { ImageInfo, images } from "../images/images";
@@ -6,9 +6,26 @@ import Button from "../../../components/Button";
 
 interface EditImagePopupProps {
   onImageClick: (imageSrc: string) => void;
+  onImageUpload: (file: File) => void;
 }
 
-const EditImagePopup: React.FC<EditImagePopupProps> = ({ onImageClick }) => {
+const EditImagePopup: React.FC<EditImagePopupProps> = ({
+  onImageClick,
+  onImageUpload,
+}) => {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleUploadButtonClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0];
+      onImageUpload(selectedFile);
+    }
+  };
+
   return (
     <PopoverMenu
       className="absolute bottom-2 right-2"
@@ -23,9 +40,19 @@ const EditImagePopup: React.FC<EditImagePopupProps> = ({ onImageClick }) => {
         <h1 className="text-2xl font-brand italic tracking-wider">
           Edit Image
         </h1>
-        <Button.Primary className="border border-secondary normal-case py-1 px-3">
+        <Button.Primary
+          className="border border-secondary normal-case py-1 px-3"
+          onClick={handleUploadButtonClick}
+        >
           Upload Image
         </Button.Primary>
+        <input
+          type="file"
+          accept="image/*"
+          className="hidden"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+        />
       </div>
       <div className="space-y-5">
         {images.map((image) => (
