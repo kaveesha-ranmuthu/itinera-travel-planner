@@ -1,4 +1,4 @@
-import { Dialog, DialogPanel } from "@headlessui/react";
+import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import React, { PropsWithChildren } from "react";
 import { useAuth } from "../../../hooks/useAuth";
 import { twMerge } from "tailwind-merge";
@@ -22,6 +22,7 @@ const PopupModal: React.FC<PropsWithChildren<PopupModalProps>> = ({
       className={twMerge("relative z-10", settings?.font)}
     >
       <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
+        <DialogBackdrop className="fixed inset-0 bg-secondary/80" />
         <DialogPanel className="absolute border border-secondary bg-primary w-xl rounded-2xl p-5">
           {children}
         </DialogPanel>

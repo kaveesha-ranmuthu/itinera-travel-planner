@@ -8,6 +8,8 @@ import Header from "./components/Header";
 import PopupModal from "./components/PopupModal";
 import MultiSelect, { SelectOption, SingleSelect } from "./components/Select";
 import art1 from "./images/art-1.jpg";
+import Button from "../../components/Button";
+import { twMerge } from "tailwind-merge";
 
 const TripsLandingPage = () => {
   const { settings } = useAuth();
@@ -78,6 +80,10 @@ const TripsLandingPage = () => {
     setSelectedCurrency(currency);
   };
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className={settings?.font ?? FontFamily.HANDWRITTEN}>
       <Header />
@@ -85,7 +91,7 @@ const TripsLandingPage = () => {
         <h1>my trips</h1>
       </div>
       <CreateNewTripButton onClick={() => setIsModalOpen(true)} />
-      <PopupModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <PopupModal isOpen={isModalOpen} onClose={handleCloseModal}>
         <img
           src={art1}
           alt="background image"
@@ -150,6 +156,22 @@ const TripsLandingPage = () => {
                 />
               </div>
             </div>
+          </div>
+          <div className="space-x-4 mt-14">
+            <Button.Secondary
+              className={twMerge("normal-case not-italic", settings?.font)}
+            >
+              Confirm
+            </Button.Secondary>
+            <Button.Primary
+              className={twMerge(
+                "normal-case not-italic border border-secondary",
+                settings?.font
+              )}
+              onClick={handleCloseModal}
+            >
+              Cancel
+            </Button.Primary>
           </div>
         </div>
       </PopupModal>
