@@ -1,21 +1,20 @@
-import axios from "axios";
-import { sortBy, uniqBy } from "lodash";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { twMerge } from "tailwind-merge";
+import Button from "../../components/Button";
 import { useAuth } from "../../hooks/useAuth";
-import { useHotToast } from "../../hooks/useHotToast";
 import { FontFamily } from "../../types";
+import ErrorPage from "../error/ErrorPage";
 import Header from "./components/Header";
 import PopupModal from "./components/PopupModal";
 import MultiSelect, { SelectOption, SingleSelect } from "./components/Select";
-import art1 from "./images/art-1.jpg";
-import Button from "../../components/Button";
-import { twMerge } from "tailwind-merge";
+import { useGetCountries } from "./hooks/useGetCountries";
+import { useGetCurrencies } from "./hooks/useGetCurrencies";
+import art1 from "./images/jan-brueghel-the-younger/art-1.jpg";
 
 const TripsLandingPage = () => {
   const { settings } = useAuth();
-  const [countries, setCountries] = useState<SelectOption[]>([]);
-  const [currencies, setCurrencies] = useState<SelectOption[]>([]);
-  const { notify } = useHotToast();
+  const { countries, error: countryFetchError } = useGetCountries();
+  const { currencies, error: currencyFetchError } = useGetCurrencies();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCountries, setSelectedCountries] = useState<SelectOption[]>(
     []
@@ -24,51 +23,9 @@ const TripsLandingPage = () => {
     null
   );
 
-  useEffect(() => {
-    axios
-      .get("https://restcountries.com/v3.1/all")
-      .then((response) => {
-        setCountries(
-          sortBy(
-            response.data.map((country: { name: { common: string } }) => ({
-              id: country.name.common,
-              name: country.name.common,
-            })),
-            "name"
-          )
-        );
-
-        const currencyData = sortBy(
-          response.data.map(
-            (country: {
-              currencies: { [x in string]: { symbol: string } };
-            }) => {
-              if (
-                !country.currencies ||
-                Object.keys(country.currencies).length === 0
-              )
-                return;
-
-              const currencyCode = Object.keys(country.currencies)[0];
-              const symbol = country.currencies[currencyCode].symbol;
-              return {
-                id: currencyCode,
-                name: currencyCode,
-                otherInfo: {
-                  symbol,
-                },
-              };
-            }
-          ),
-          "name"
-        );
-
-        setCurrencies(uniqBy(currencyData.filter(Boolean), "id"));
-      })
-      .catch(() => {
-        notify("Something went wrong. Please try again.", "error");
-      });
-  }, [notify]);
+  if (countryFetchError || currencyFetchError) {
+    return <ErrorPage />;
+  }
 
   const handleCountryInputChange = (countries: SelectOption[]) => {
     if (!countries) return;
