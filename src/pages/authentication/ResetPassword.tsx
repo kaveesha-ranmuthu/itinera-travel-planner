@@ -3,7 +3,7 @@ import BackgroundWrapper from "../../components/BackgroundWrapper";
 import Button from "../../components/Button";
 import Logo from "../../components/Logo";
 import FormWrapper from "./components/FormWrapper";
-import { Input } from "./components/Input";
+import { AuthenticationInput } from "./components/AuthenticationInput";
 import { useFormik } from "formik";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../../firebase-config";
@@ -58,7 +58,7 @@ const ResetPassword = () => {
             <h1 className="font-brand uppercase italic text-3xl font-light text-center">
               Log in
             </h1>
-            <Input
+            <AuthenticationInput
               label="email"
               inputId="email"
               onChange={formik.handleChange}

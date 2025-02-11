@@ -10,7 +10,7 @@ import { useHotToast } from "../../hooks/useHotToast";
 import { FontFamily } from "../../types";
 import FormWrapper from "./components/FormWrapper";
 import { ContinueWithGoogle } from "./components/GoogleSignIn";
-import { Input } from "./components/Input";
+import { AuthenticationInput } from "./components/AuthenticationInput";
 import { getFirebaseErrorMessage, setUserSettings } from "./helpers";
 import { LoginFormInput } from "./LoginPage";
 
@@ -72,7 +72,7 @@ const SignupPage = () => {
             <h1 className="font-brand uppercase italic text-3xl font-light text-center">
               sign up
             </h1>
-            <Input
+            <AuthenticationInput
               label="email"
               inputId="email"
               onChange={formik.handleChange}
@@ -83,7 +83,7 @@ const SignupPage = () => {
             />
             <div className="mt-6 flex space-x-5">
               <div className="w-1/2">
-                <Input
+                <AuthenticationInput
                   label="password"
                   inputId="password"
                   isPassword
@@ -95,7 +95,7 @@ const SignupPage = () => {
                 />
               </div>
               <div className="w-1/2">
-                <Input
+                <AuthenticationInput
                   label="confirm password"
                   inputId="confirmPassword"
                   isPassword

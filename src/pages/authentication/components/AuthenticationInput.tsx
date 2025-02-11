@@ -3,6 +3,7 @@ import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { twMerge } from "tailwind-merge";
 import { RiErrorWarningLine } from "react-icons/ri";
 import StyledTooltip from "../../../components/StyledTooltip";
+import { Field, Input, Label } from "@headlessui/react";
 
 interface InputProps {
   label: string;
@@ -12,10 +13,9 @@ interface InputProps {
   errorMessage?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
-  inputType: string;
 }
 
-export const Input: React.FC<InputProps> = ({
+export const AuthenticationInput: React.FC<InputProps> = ({
   label,
   inputId,
   isPassword,
@@ -23,19 +23,18 @@ export const Input: React.FC<InputProps> = ({
   inputWidth,
   onChange,
   onBlur,
-  inputType,
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   return (
-    <div
+    <Field
       className={twMerge(
         "text-secondary text-xl tracking-wide font-brand italic relative",
         inputWidth
       )}
     >
-      <label htmlFor={inputId} className="lowercase flex items-center">
-        <span>{label}</span>
+      <Label className="lowercase flex items-center">
+        {label}
         {errorMessage && (
           <StyledTooltip
             iconStyles="text-red-sienna ml-2"
@@ -44,18 +43,18 @@ export const Input: React.FC<InputProps> = ({
             <RiErrorWarningLine />
           </StyledTooltip>
         )}
-      </label>
-      <input
-        type={isPasswordVisible || !isPassword ? "text" : "password"}
-        id={inputId}
-        onChange={onChange}
-        onBlur={onBlur}
+      </Label>
+      <Input
         className={twMerge(
           "w-full h-11 rounded-md border pl-2 mt-2",
           errorMessage
             ? "border-red-sienna focus:outline-red-sienna"
             : "border-secondary focus:outline-blue-munsell"
         )}
+        name={inputId}
+        onChange={onChange}
+        onBlur={onBlur}
+        type={isPasswordVisible || !isPassword ? "text" : "password"}
       />
       {isPassword && (
         <button
@@ -66,6 +65,6 @@ export const Input: React.FC<InputProps> = ({
           {isPasswordVisible ? <IoEyeOffOutline /> : <IoEyeOutline />}
         </button>
       )}
-    </div>
+    </Field>
   );
 };
