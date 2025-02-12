@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import sortBy from "lodash/sortBy";
 import uniqBy from "lodash/uniqBy";
-import { SelectOption } from "../components/Select";
+import { SelectOption } from "../../components/Select";
 
 export const useGetCurrencies = () => {
   const [currencies, setCurrencies] = useState<SelectOption[]>([]);

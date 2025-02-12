@@ -7,28 +7,34 @@ import ErrorPage from "../error/ErrorPage";
 import Header from "./components/Header";
 import PopupModal from "./components/PopupModal";
 import MultiSelect, { SelectOption, SingleSelect } from "./components/Select";
-import { useGetCountries } from "./hooks/useGetCountries";
-import { useGetCurrencies } from "./hooks/useGetCurrencies";
+import { useGetCountries } from "./hooks/getters/useGetCountries";
+import { useGetCurrencies } from "./hooks/getters/useGetCurrencies";
 import art1 from "./images/jan-brueghel-the-younger/art-1.jpg";
 import EditImagePopup from "./components/EditImagePopup";
 import { useFormik } from "formik";
+import { convertToBase64 } from "./helpers";
+import { useSaveTrip } from "./hooks/setters/useSaveTrips";
+import { useHotToast } from "../../hooks/useHotToast";
 
-type TripFormInput = {
+export interface TripFormInput {
   tripName: string;
   startDate: string;
   endDate: string;
   countries: SelectOption[];
-  people: number;
+  numberOfPeople: number;
   currency: SelectOption | null;
   budget: number;
   image: string;
-};
+}
 
 const TripsLandingPage = () => {
   const { settings } = useAuth();
   const { countries, error: countryFetchError } = useGetCountries();
   const { currencies, error: currencyFetchError } = useGetCurrencies();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [displayImage, setDisplayImage] = useState(art1);
+  const { saveTrip } = useSaveTrip();
+  const { notify } = useHotToast();
 
   const formik = useFormik<TripFormInput>({
     initialValues: {
@@ -36,13 +42,28 @@ const TripsLandingPage = () => {
       startDate: "",
       endDate: "",
       countries: [],
-      people: 0,
+      numberOfPeople: 0,
       currency: null,
       budget: 0,
       image: art1,
     },
     validate: (values) => {},
-    onSubmit: async (values) => {},
+    onSubmit: async (values) => {
+      const error = await saveTrip({
+        tripName: values.tripName,
+        startDate: values.startDate,
+        endDate: values.endDate,
+        countries: values.countries,
+        numberOfPeople: values.numberOfPeople,
+        currency: values.currency,
+        budget: values.budget,
+        image: values.image,
+      });
+
+      if (error) {
+        notify("Something went wrong. Please try again.", "error");
+      }
+    },
   });
 
   if (countryFetchError || currencyFetchError) {
@@ -65,10 +86,13 @@ const TripsLandingPage = () => {
 
   const handleImageSelect = (imageSrc: string) => {
     formik.setFieldValue("image", imageSrc);
+    setDisplayImage(imageSrc);
   };
 
-  const handleImageUpload = (file: File) => {
-    formik.setFieldValue("image", URL.createObjectURL(file));
+  const handleImageUpload = async (file: File) => {
+    const imageData = await convertToBase64(file);
+    formik.setFieldValue("image", imageData);
+    setDisplayImage(URL.createObjectURL(file));
   };
 
   return (
@@ -82,7 +106,7 @@ const TripsLandingPage = () => {
         <form onSubmit={formik.handleSubmit}>
           <div className="relative">
             <img
-              src={formik.values.image}
+              src={displayImage}
               alt="background image"
               className="h-40 w-full object-cover rounded-2xl drop-shadow-(--drop-shadow-default)"
             />
@@ -95,17 +119,23 @@ const TripsLandingPage = () => {
             <input
               className="text-4xl opacity-45 focus:opacity-100 focus:outline-0 underline underline-offset-4"
               defaultValue={formik.values.tripName}
+              id="tripName"
+              onChange={formik.handleChange}
             />
             <div>
               <p>When are you going?</p>
               <div className="space-x-4 flex items-center mt-3.5">
                 <input
                   type="date"
+                  id="startDate"
+                  onChange={formik.handleChange}
                   className="border border-secondary rounded-xl px-2 py-1 w-1/2"
                 />
                 <p>to</p>
                 <input
                   type="date"
+                  id="endDate"
+                  onChange={formik.handleChange}
                   className="border border-secondary rounded-xl px-2 py-1 w-1/2"
                 />
               </div>
@@ -125,6 +155,8 @@ const TripsLandingPage = () => {
                 <p className="mb-4">How many people are going?</p>
                 <input
                   type="number"
+                  id="numberOfPeople"
+                  onChange={formik.handleChange}
                   className="border border-secondary rounded-xl px-2 py-1 w-20"
                 />
               </div>
@@ -144,6 +176,8 @@ const TripsLandingPage = () => {
                 <p className="mb-4">What's your budget?</p>
                 <div className="relative">
                   <input
+                    id="budget"
+                    onChange={formik.handleChange}
                     placeholder={formik.values.currency?.otherInfo?.symbol}
                     type="number"
                     className=" border border-secondary rounded-xl px-2 py-1 w-30"

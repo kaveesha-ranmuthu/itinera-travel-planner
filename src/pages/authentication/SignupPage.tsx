@@ -7,12 +7,12 @@ import Button from "../../components/Button";
 import Logo from "../../components/Logo";
 import { auth } from "../../firebase-config";
 import { useHotToast } from "../../hooks/useHotToast";
-import { FontFamily } from "../../types";
 import FormWrapper from "./components/FormWrapper";
 import { ContinueWithGoogle } from "./components/GoogleSignIn";
 import { AuthenticationInput } from "./components/AuthenticationInput";
-import { getFirebaseErrorMessage, setUserSettings } from "./helpers";
+import { getFirebaseErrorMessage } from "./helpers";
 import { LoginFormInput } from "./LoginPage";
+import { useCreateNewUser } from "./hooks/setters/useCreateNewUser";
 
 interface SignupFormInput extends LoginFormInput {
   confirmPassword: string;
@@ -21,6 +21,26 @@ interface SignupFormInput extends LoginFormInput {
 const SignupPage = () => {
   const navigate = useNavigate();
   const { notify } = useHotToast();
+  const { createUser } = useCreateNewUser();
+
+  const handleSignup = async (email: string, password: string) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      await createUser(userCredential.user);
+
+      return null;
+    } catch (error) {
+      if (auth.currentUser) {
+        await auth.currentUser.delete();
+      }
+      return error;
+    }
+  };
 
   const formik = useFormik<SignupFormInput>({
     initialValues: {
@@ -42,23 +62,16 @@ const SignupPage = () => {
       return errors;
     },
     onSubmit: async (values) => {
-      try {
-        const userCredential = await createUserWithEmailAndPassword(
-          auth,
-          values.email,
-          values.password
-        );
-        setUserSettings(userCredential.user, {
-          font: FontFamily.HANDWRITTEN,
-        });
-        navigate("/");
-      } catch (error) {
+      const error = await handleSignup(values.email, values.password);
+      if (error) {
         if (error instanceof FirebaseError) {
           const errorMessage = getFirebaseErrorMessage(error);
           notify(errorMessage, "error");
         } else {
           notify("Something went wrong. Please try again.", "error");
         }
+      } else {
+        navigate("/");
       }
     },
   });

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { SelectOption } from "../components/Select";
+import { SelectOption } from "../../components/Select";
 import { sortBy } from "lodash";
 
 export const useGetCountries = () => {
