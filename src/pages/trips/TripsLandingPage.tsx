@@ -62,6 +62,8 @@ const TripsLandingPage = () => {
 
       if (error) {
         notify("Something went wrong. Please try again.", "error");
+      } else {
+        setIsModalOpen(false);
       }
     },
   });
