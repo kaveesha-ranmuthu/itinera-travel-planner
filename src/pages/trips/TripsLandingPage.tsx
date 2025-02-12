@@ -127,113 +127,120 @@ const TripsLandingPage = () => {
   return (
     <div className={settings?.font ?? FontFamily.HANDWRITTEN}>
       <Header />
-      <div className="flex justify-center text-5xl tracking-widest">
-        <h1>my trips</h1>
+      <div className="px-20">
+        <div className="flex justify-center text-5xl tracking-widest">
+          <h1>my trips</h1>
+        </div>
+        <div className="py-14">
+          <CreateNewTripButton onClick={() => setIsModalOpen(true)} />
+          <PopupModal isOpen={isModalOpen} onClose={handleCloseModal}>
+            <form onSubmit={formik.handleSubmit}>
+              <div className="relative">
+                <img
+                  src={displayImage}
+                  alt="background image"
+                  className="h-40 w-full object-cover rounded-2xl drop-shadow-(--drop-shadow-default)"
+                />
+                <EditImagePopup
+                  onImageClick={handleImageSelect}
+                  onImageUpload={handleImageUpload}
+                />
+              </div>
+              <div className="px-3 mt-3 text-secondary text-lg space-y-6">
+                <input
+                  className="text-4xl opacity-45 focus:opacity-100 focus:outline-0 underline underline-offset-4"
+                  defaultValue={formik.values.tripName}
+                  id="tripName"
+                  onChange={formik.handleChange}
+                />
+                <div>
+                  <p>When are you going?</p>
+                  <div className="space-x-4 flex items-center mt-3.5">
+                    <input
+                      type="date"
+                      id="startDate"
+                      onChange={formik.handleChange}
+                      className="border border-secondary rounded-xl px-2 py-1 w-1/2"
+                    />
+                    <p>to</p>
+                    <input
+                      type="date"
+                      id="endDate"
+                      onChange={formik.handleChange}
+                      className="border border-secondary rounded-xl px-2 py-1 w-1/2"
+                    />
+                  </div>
+                </div>
+                <div className="space-x-6 flex items-center mt-3.5">
+                  <div className="w-1/2">
+                    <p className="mb-4">What countries will you visit?</p>
+                    <div className="w-56">
+                      <MultiSelect
+                        onChange={handleCountryInputChange}
+                        options={countries}
+                        currentlySelectedOptions={formik.values.countries}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <p className="mb-4">How many people are going?</p>
+                    <input
+                      type="number"
+                      id="numberOfPeople"
+                      onChange={formik.handleChange}
+                      className="border border-secondary rounded-xl px-2 py-1 w-20"
+                    />
+                  </div>
+                </div>
+                <div className="space-x-6 flex items-center mt-3.5">
+                  <div className="w-1/2">
+                    <p className="mb-4">What's your currency?</p>
+                    <div className="w-56">
+                      <SingleSelect
+                        onChange={handleCurrencyInputChange}
+                        options={currencies}
+                        currentlySelectedOption={formik.values.currency}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <p className="mb-4">What's your budget?</p>
+                    <div className="relative">
+                      <input
+                        id="budget"
+                        onChange={formik.handleChange}
+                        placeholder={formik.values.currency?.otherInfo?.symbol}
+                        type="number"
+                        className=" border border-secondary rounded-xl px-2 py-1 w-30"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="space-x-4 mt-14">
+                  <Button.Secondary
+                    className={twMerge(
+                      "normal-case not-italic",
+                      settings?.font
+                    )}
+                    type="submit"
+                  >
+                    Confirm
+                  </Button.Secondary>
+                  <Button.Primary
+                    className={twMerge(
+                      "normal-case not-italic border border-secondary",
+                      settings?.font
+                    )}
+                    onClick={handleCloseModal}
+                  >
+                    Cancel
+                  </Button.Primary>
+                </div>
+              </div>
+            </form>
+          </PopupModal>
+        </div>
       </div>
-      <CreateNewTripButton onClick={() => setIsModalOpen(true)} />
-      <PopupModal isOpen={isModalOpen} onClose={handleCloseModal}>
-        <form onSubmit={formik.handleSubmit}>
-          <div className="relative">
-            <img
-              src={displayImage}
-              alt="background image"
-              className="h-40 w-full object-cover rounded-2xl drop-shadow-(--drop-shadow-default)"
-            />
-            <EditImagePopup
-              onImageClick={handleImageSelect}
-              onImageUpload={handleImageUpload}
-            />
-          </div>
-          <div className="px-3 mt-3 text-secondary text-lg space-y-6">
-            <input
-              className="text-4xl opacity-45 focus:opacity-100 focus:outline-0 underline underline-offset-4"
-              defaultValue={formik.values.tripName}
-              id="tripName"
-              onChange={formik.handleChange}
-            />
-            <div>
-              <p>When are you going?</p>
-              <div className="space-x-4 flex items-center mt-3.5">
-                <input
-                  type="date"
-                  id="startDate"
-                  onChange={formik.handleChange}
-                  className="border border-secondary rounded-xl px-2 py-1 w-1/2"
-                />
-                <p>to</p>
-                <input
-                  type="date"
-                  id="endDate"
-                  onChange={formik.handleChange}
-                  className="border border-secondary rounded-xl px-2 py-1 w-1/2"
-                />
-              </div>
-            </div>
-            <div className="space-x-6 flex items-center mt-3.5">
-              <div className="w-1/2">
-                <p className="mb-4">What countries will you visit?</p>
-                <div className="w-56">
-                  <MultiSelect
-                    onChange={handleCountryInputChange}
-                    options={countries}
-                    currentlySelectedOptions={formik.values.countries}
-                  />
-                </div>
-              </div>
-              <div>
-                <p className="mb-4">How many people are going?</p>
-                <input
-                  type="number"
-                  id="numberOfPeople"
-                  onChange={formik.handleChange}
-                  className="border border-secondary rounded-xl px-2 py-1 w-20"
-                />
-              </div>
-            </div>
-            <div className="space-x-6 flex items-center mt-3.5">
-              <div className="w-1/2">
-                <p className="mb-4">What's your currency?</p>
-                <div className="w-56">
-                  <SingleSelect
-                    onChange={handleCurrencyInputChange}
-                    options={currencies}
-                    currentlySelectedOption={formik.values.currency}
-                  />
-                </div>
-              </div>
-              <div>
-                <p className="mb-4">What's your budget?</p>
-                <div className="relative">
-                  <input
-                    id="budget"
-                    onChange={formik.handleChange}
-                    placeholder={formik.values.currency?.otherInfo?.symbol}
-                    type="number"
-                    className=" border border-secondary rounded-xl px-2 py-1 w-30"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="space-x-4 mt-14">
-              <Button.Secondary
-                className={twMerge("normal-case not-italic", settings?.font)}
-                type="submit"
-              >
-                Confirm
-              </Button.Secondary>
-              <Button.Primary
-                className={twMerge(
-                  "normal-case not-italic border border-secondary",
-                  settings?.font
-                )}
-                onClick={handleCloseModal}
-              >
-                Cancel
-              </Button.Primary>
-            </div>
-          </div>
-        </form>
-      </PopupModal>
     </div>
   );
 };
