@@ -9,13 +9,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../firebase-config";
 import PopoverMenu from "./PopoverMenu";
-import { updateUserSettings } from "../helpers";
 import { useAuth } from "../../../hooks/useAuth";
+import { useUpdateUserSettings } from "../hooks/setters/useUpdateUserSettings";
 
 const Header = () => {
   const { notify } = useHotToast();
   const navigate = useNavigate();
   const { settings, setSettings } = useAuth();
+  const { updateSettings } = useUpdateUserSettings();
 
   const handleLogout = async () => {
     try {
@@ -29,7 +30,7 @@ const Header = () => {
   const updateFont = async (newFont: FontFamily) => {
     if (auth.currentUser) {
       try {
-        await updateUserSettings(auth.currentUser.uid, {
+        await updateSettings({
           font: newFont,
         });
         setSettings({ font: newFont });
@@ -46,9 +47,9 @@ const Header = () => {
       </Link>
       <PopoverMenu
         popoverTrigger={
-          <button className="cursor-pointer hover:opacity-80 transition ease-in-out">
+          <div className="cursor-pointer hover:opacity-80 transition ease-in-out">
             <HiOutlineCog6Tooth stroke="#3b4043" size={25} />
-          </button>
+          </div>
         }
       >
         <p className={twMerge("lowercase text-3xl pb-3", settings?.font)}>

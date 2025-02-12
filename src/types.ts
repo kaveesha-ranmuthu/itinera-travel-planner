@@ -8,3 +8,10 @@ export enum FontFamily {
 export type UserSettings = {
   font: FontFamily;
 };
+
+export type UserType = {
+  userId: string;
+  email: string;
+  createdAt: Date;
+  settings: UserSettings;
+};

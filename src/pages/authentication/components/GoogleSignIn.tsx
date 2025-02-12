@@ -1,33 +1,39 @@
 import { signInWithPopup } from "firebase/auth";
-import { auth, db, googleProvider } from "../../../firebase-config";
-import { getFirebaseErrorMessage, setUserSettings } from "../helpers";
+import { auth, googleProvider } from "../../../firebase-config";
+import { getFirebaseErrorMessage } from "../helpers";
 import { useHotToast } from "../../../hooks/useHotToast";
 import { FirebaseError } from "firebase/app";
 import { useNavigate } from "react-router-dom";
-import { doc, getDoc } from "firebase/firestore";
-import { FontFamily } from "../../../types";
+import { useCreateNewUser } from "../hooks/setters/useCreateNewUser";
 
 export const ContinueWithGoogle = () => {
   const { notify } = useHotToast();
   const navigate = useNavigate();
+  const { createUser } = useCreateNewUser();
 
-  const handleGoogleSignup = async () => {
+  const handleSignup = async () => {
     try {
       const userCredential = await signInWithPopup(auth, googleProvider);
       const user = userCredential.user;
 
       if (!user) throw new Error("No user found after Google Sign-In");
 
-      const userSettingsRef = doc(db, "user-settings", user.uid);
-      const userSettingsSnapshot = await getDoc(userSettingsRef);
+      await createUser(userCredential.user);
 
-      if (!userSettingsSnapshot.exists()) {
-        setUserSettings(user, {
-          font: FontFamily.HANDWRITTEN,
-        });
-      }
-      navigate("/");
+      return null;
     } catch (error) {
+      if (auth.currentUser) {
+        await auth.currentUser.delete();
+      }
+      return error;
+    }
+  };
+
+  const handleGoogleSignup = async () => {
+    const error = await handleSignup();
+    if (!error) {
+      navigate("/");
+    } else {
       if (error instanceof FirebaseError) {
         const errorMessage = getFirebaseErrorMessage(error);
         notify(errorMessage, "error");

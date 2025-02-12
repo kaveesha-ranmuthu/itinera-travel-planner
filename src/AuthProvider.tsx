@@ -11,27 +11,45 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let unsubscribeUser: (() => void) | null = null;
+    let unsubscribeSettings: (() => void) | null = null;
+
     const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      if (currentUser) {
-        const userSettingsRef = doc(db, "user-settings", currentUser.uid);
 
-        const unsubscribeSettings = onSnapshot(userSettingsRef, (document) => {
-          if (document.exists()) {
-            setSettings(document.data() as UserSettings);
+      if (currentUser) {
+        const userRef = doc(db, `users/${currentUser.uid}`);
+
+        unsubscribeUser = onSnapshot(userRef, (docSnap) => {
+          if (!docSnap.exists()) {
+            console.warn("User document missing in Firestore");
+          }
+        });
+
+        const settingsRef = doc(
+          db,
+          `users/${currentUser.uid}/settings/default`
+        );
+
+        unsubscribeSettings = onSnapshot(settingsRef, (docSnap) => {
+          if (docSnap.exists()) {
+            setSettings(docSnap.data() as UserSettings);
           } else {
             setSettings({ font: FontFamily.HANDWRITTEN });
           }
+          setLoading(false);
         });
-        setLoading(false);
-        return () => unsubscribeSettings();
       } else {
         setSettings(null);
+        setLoading(false);
       }
-      setLoading(false);
     });
 
-    return () => unsubscribeAuth();
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeUser) unsubscribeUser();
+      if (unsubscribeSettings) unsubscribeSettings();
+    };
   }, []);
 
   return (

@@ -1,6 +1,7 @@
+import { useCallback } from "react";
 import toast, { ToastOptions } from "react-hot-toast";
 
-type ToastVariant = "success" | "error" | "info";
+export type ToastVariant = "success" | "error" | "info";
 
 export const useHotToast = () => {
   const primaryColor = "#f4f1e8";
@@ -9,19 +10,19 @@ export const useHotToast = () => {
   const green = "#609553";
   const font = '"ZT Bros Oskon 90s", sans-serif';
 
-  const defaultStyles: ToastOptions = {
-    position: "top-center",
-    duration: 5000,
-    style: {
-      padding: "15px 30px",
-      maxWidth: "700px",
-      fontFamily: font,
-      fontStyle: "italic",
-      letterSpacing: "1px",
-    },
-  };
+  const notify = useCallback((message: string, variant: ToastVariant) => {
+    const defaultStyles: ToastOptions = {
+      position: "top-center",
+      duration: 5000,
+      style: {
+        padding: "15px 30px",
+        maxWidth: "700px",
+        fontFamily: font,
+        fontStyle: "italic",
+        letterSpacing: "1px",
+      },
+    };
 
-  const notify = (message: string, variant: ToastVariant) => {
     switch (variant) {
       case "success":
         return toast(message, {
@@ -51,7 +52,7 @@ export const useHotToast = () => {
           },
         });
     }
-  };
+  }, []);
 
   return { notify };
 };

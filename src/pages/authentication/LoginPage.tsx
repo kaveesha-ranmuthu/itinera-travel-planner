@@ -1,7 +1,7 @@
 import BackgroundWrapper from "../../components/BackgroundWrapper";
 import Logo from "../../components/Logo";
 import FormWrapper from "./components/FormWrapper";
-import { Input } from "./components/Input";
+import { AuthenticationInput } from "./components/AuthenticationInput";
 import Button from "../../components/Button";
 import { ContinueWithGoogle } from "./components/GoogleSignIn";
 import { useFormik } from "formik";
@@ -65,7 +65,7 @@ const LoginPage = () => {
             <h1 className="font-brand uppercase italic text-3xl font-light text-center">
               Log in
             </h1>
-            <Input
+            <AuthenticationInput
               label="email"
               inputId="email"
               onChange={formik.handleChange}
@@ -75,7 +75,7 @@ const LoginPage = () => {
               }
             />
             <div className="mt-6">
-              <Input
+              <AuthenticationInput
                 label="password"
                 inputId="password"
                 isPassword
