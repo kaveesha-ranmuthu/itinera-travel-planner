@@ -47,8 +47,33 @@ const TripsLandingPage = () => {
       budget: 0,
       image: art1,
     },
-    validate: (values) => {},
     onSubmit: async (values) => {
+      if (
+        !values.tripName.trim() ||
+        values.budget == undefined ||
+        !values.startDate ||
+        !values.endDate ||
+        !values.countries.length ||
+        values.numberOfPeople == undefined ||
+        !values.currency
+      ) {
+        notify("Please fill in all the fields.", "error");
+        return;
+      }
+
+      if (values.budget <= 0 || values.numberOfPeople <= 0) {
+        notify("Please enter a valid number.", "error");
+        return;
+      }
+
+      if (new Date(values.startDate) > new Date(values.endDate)) {
+        notify("End date must be after start date.", "error");
+        return;
+      } else if (new Date(values.startDate) < new Date()) {
+        notify("Start date must be in the future.", "error");
+        return;
+      }
+
       const error = await saveTrip({
         tripName: values.tripName,
         startDate: values.startDate,
@@ -64,6 +89,7 @@ const TripsLandingPage = () => {
         notify("Something went wrong. Please try again.", "error");
       } else {
         setIsModalOpen(false);
+        formik.resetForm();
       }
     },
   });
@@ -84,6 +110,7 @@ const TripsLandingPage = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    formik.resetForm();
   };
 
   const handleImageSelect = (imageSrc: string) => {
