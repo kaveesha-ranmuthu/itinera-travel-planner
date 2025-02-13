@@ -20,6 +20,9 @@ import { sortBy } from "lodash";
 import moment from "moment";
 import Grid from "@mui/material/Grid2";
 import { LoadingState } from "../landing-page/LandingPage";
+import { IoTrashBinOutline } from "react-icons/io5";
+import { GoCopy } from "react-icons/go";
+import { CiWarning } from "react-icons/ci";
 
 export interface Trip {
   tripName: string;
@@ -315,20 +318,77 @@ const TripCard: React.FC<TripCardProps> = ({
       ? startDateFormat
       : `${startDateFormat} - ${endDateFormat}`;
 
+  const [showDeleteWarning, setShowDeleteWarning] = useState(false);
+  const { settings } = useAuth();
+
   return (
-    <div
-      onClick={onClick}
-      className="bg-black rounded-2xl w-72 relative group cursor-pointer hover:scale-98 transition ease-in-out duration-400"
-    >
-      <img
-        src={backgroundImage}
-        className="object-cover group-hover:opacity-60 transition ease-in-out duration-400 cursor-pointer w-full rounded-2xl h-48  flex items-center justify-center drop-shadow-(--drop-shadow-default)"
-      />
-      <div className="absolute space-y-1 opacity-0 flex flex-col group-hover:opacity-100 top-0 transition ease-in-out duration-400 text-primary text-2xl items-center w-full justify-center h-full">
-        <span className="w-[70%] text-center truncate">{tripName}</span>
-        <span className="text-center text-sm">{dateFormatted}</span>
+    <>
+      <div
+        onClick={onClick}
+        className="bg-black rounded-2xl w-72 relative group cursor-pointer hover:scale-98 transition ease-in-out duration-400"
+      >
+        <img
+          src={backgroundImage}
+          className="object-cover group-hover:opacity-60 transition ease-in-out duration-400 cursor-pointer w-full rounded-2xl h-48  flex items-center justify-center drop-shadow-(--drop-shadow-default)"
+        />
+        <div className="absolute space-y-1 opacity-0 flex flex-col group-hover:opacity-100 top-0 transition ease-in-out duration-400 text-primary text-2xl items-center w-full justify-center h-full">
+          <span className="w-[70%] text-center truncate">{tripName}</span>
+          <span className="text-center text-sm">{dateFormatted}</span>
+        </div>
+        <div className="space-x-2 absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition ease-in-out duration-400">
+          <button className="cursor-pointer bg-primary rounded-full p-1.5 hover:opacity-85 transition ease-in-out duration-400">
+            <GoCopy stroke="var(--color-secondary)" size={17} />
+          </button>
+          <button
+            onClick={() => setShowDeleteWarning(true)}
+            className="cursor-pointer bg-primary rounded-full p-1.5 hover:opacity-85 transition ease-in-out duration-400"
+          >
+            <IoTrashBinOutline stroke="var(--color-secondary)" size={17} />
+          </button>
+        </div>
       </div>
-    </div>
+      <PopupModal
+        isOpen={showDeleteWarning}
+        onClose={() => setShowDeleteWarning(false)}
+      >
+        <div className="flex items-start space-x-4">
+          <span
+            className={settings?.font === FontFamily.HANDWRITTEN ? "mt-1" : ""}
+          >
+            <CiWarning size={35} />
+          </span>
+          <div>
+            <div className="space-y-2">
+              <p className="text-2xl text-secondary">
+                Are you sure you want to delete this trip?
+              </p>
+
+              <p className="text-secondary/70">
+                Once deleted, this trip is gone forever. Are you sure you want
+                to continue?
+              </p>
+            </div>
+            <div className="space-x-4 mt-7">
+              <Button.Secondary
+                className={twMerge("normal-case not-italic", settings?.font)}
+                type="button"
+              >
+                Delete
+              </Button.Secondary>
+              <Button.Primary
+                className={twMerge(
+                  "normal-case not-italic border border-secondary",
+                  settings?.font
+                )}
+                onClick={() => setShowDeleteWarning(false)}
+              >
+                Cancel
+              </Button.Primary>
+            </div>
+          </div>
+        </div>
+      </PopupModal>
+    </>
   );
 };
 
