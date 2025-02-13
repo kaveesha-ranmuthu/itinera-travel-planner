@@ -15,7 +15,7 @@ import { useFormik } from "formik";
 import { compressAndConvertToBase64 } from "./helpers";
 import { useSaveTrip } from "./hooks/setters/useSaveTrip";
 import { useHotToast } from "../../hooks/useHotToast";
-import { TripData, useFetchTrips } from "./hooks/getters/useFetchTrips";
+import { TripData, useGetTrips } from "./hooks/getters/useGetTrips";
 import { sortBy } from "lodash";
 import moment from "moment";
 import Grid from "@mui/material/Grid2";
@@ -26,6 +26,7 @@ import { CiWarning } from "react-icons/ci";
 import { auth, db } from "../../firebase-config";
 import { deleteDoc, doc } from "firebase/firestore";
 import useDuplicateTrip from "./hooks/setters/useDuplicateTrip";
+import { Link } from "react-router-dom";
 
 export interface Trip {
   tripName: string;
@@ -41,7 +42,7 @@ export interface Trip {
 
 const TripsLandingPage = () => {
   const { settings } = useAuth();
-  const { trips, error: tripsFetchError, loading } = useFetchTrips();
+  const { trips, error: tripsFetchError, loading } = useGetTrips();
   const { countries, error: countryFetchError } = useGetCountries();
   const { currencies, error: currencyFetchError } = useGetCurrencies();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -178,7 +179,7 @@ const TripsLandingPage = () => {
             {sortedTrips.map((trip) => {
               return (
                 <Grid key={trip.id}>
-                  <TripCard trip={trip} onClick={() => null} />
+                  <TripCard trip={trip} />
                 </Grid>
               );
             })}
@@ -296,11 +297,10 @@ const TripsLandingPage = () => {
 };
 
 interface TripCardProps {
-  onClick: () => void;
   trip: TripData;
 }
 
-const TripCard: React.FC<TripCardProps> = ({ onClick, trip }) => {
+const TripCard: React.FC<TripCardProps> = ({ trip }) => {
   const {
     tripName,
     startDate,
@@ -347,8 +347,8 @@ const TripCard: React.FC<TripCardProps> = ({ onClick, trip }) => {
 
   return (
     <>
-      <div
-        onClick={onClick}
+      <Link
+        to={`/trip/${tripId}`}
         className="bg-black rounded-2xl w-72 relative group cursor-pointer hover:scale-98 transition ease-in-out duration-400"
       >
         <img
@@ -373,7 +373,7 @@ const TripCard: React.FC<TripCardProps> = ({ onClick, trip }) => {
             <IoTrashBinOutline stroke="var(--color-secondary)" size={17} />
           </button>
         </div>
-      </div>
+      </Link>
       <PopupModal
         isOpen={showDeleteWarning}
         onClose={() => setShowDeleteWarning(false)}

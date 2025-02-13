@@ -8,7 +8,7 @@ export interface TripData extends Trip {
   createdAt: Date;
 }
 
-export function useFetchTrips() {
+export function useGetTrips() {
   const [trips, setTrips] = useState<TripData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
