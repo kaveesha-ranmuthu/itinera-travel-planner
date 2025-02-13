@@ -3,7 +3,7 @@ import { Trip } from "../../TripsLandingPage";
 import { collection, query, onSnapshot, orderBy } from "firebase/firestore";
 import { auth, db } from "../../../../firebase-config";
 
-interface TripData extends Trip {
+export interface TripData extends Trip {
   id: string;
   createdAt: Date;
 }

@@ -13,9 +13,9 @@ import art1 from "./images/jan-brueghel-the-younger/art-1.jpg";
 import EditImagePopup from "./components/EditImagePopup";
 import { useFormik } from "formik";
 import { compressAndConvertToBase64 } from "./helpers";
-import { useSaveTrip } from "./hooks/setters/useSaveTrips";
+import { useSaveTrip } from "./hooks/setters/useSaveTrip";
 import { useHotToast } from "../../hooks/useHotToast";
-import { useFetchTrips } from "./hooks/getters/useFetchTrips";
+import { TripData, useFetchTrips } from "./hooks/getters/useFetchTrips";
 import { sortBy } from "lodash";
 import moment from "moment";
 import Grid from "@mui/material/Grid2";
@@ -25,6 +25,7 @@ import { GoCopy } from "react-icons/go";
 import { CiWarning } from "react-icons/ci";
 import { auth, db } from "../../firebase-config";
 import { deleteDoc, doc } from "firebase/firestore";
+import useDuplicateTrip from "./hooks/setters/useDuplicateTrip";
 
 export interface Trip {
   tripName: string;
@@ -35,6 +36,7 @@ export interface Trip {
   currency: SelectOption | null;
   budget: number;
   imageData: string;
+  subCollections: string[];
 }
 
 const TripsLandingPage = () => {
@@ -57,6 +59,7 @@ const TripsLandingPage = () => {
       currency: null,
       budget: 0,
       imageData: art1,
+      subCollections: [],
     },
     onSubmit: async (values) => {
       if (
@@ -94,6 +97,7 @@ const TripsLandingPage = () => {
         currency: values.currency,
         budget: values.budget,
         imageData: values.imageData,
+        subCollections: values.subCollections,
       });
 
       if (error) {
@@ -170,22 +174,13 @@ const TripsLandingPage = () => {
             display={"flex"}
             justifyContent={"center"}
           >
-            {sortedTrips.map(
-              ({ imageData, tripName, endDate, startDate, id }) => {
-                return (
-                  <Grid key={id}>
-                    <TripCard
-                      tripId={id}
-                      backgroundImage={imageData}
-                      tripName={tripName}
-                      startDate={startDate}
-                      endDate={endDate}
-                      onClick={() => null}
-                    />
-                  </Grid>
-                );
-              }
-            )}
+            {sortedTrips.map((trip) => {
+              return (
+                <Grid key={trip.id}>
+                  <TripCard trip={trip} onClick={() => null} />
+                </Grid>
+              );
+            })}
           </Grid>
           <PopupModal isOpen={isModalOpen} onClose={handleCloseModal}>
             <form onSubmit={formik.handleSubmit}>
@@ -301,21 +296,17 @@ const TripsLandingPage = () => {
 
 interface TripCardProps {
   onClick: () => void;
-  tripName: string;
-  backgroundImage: string;
-  startDate: string;
-  endDate: string;
-  tripId: string;
+  trip: TripData;
 }
 
-const TripCard: React.FC<TripCardProps> = ({
-  tripName,
-  backgroundImage,
-  onClick,
-  endDate,
-  startDate,
-  tripId,
-}) => {
+const TripCard: React.FC<TripCardProps> = ({ onClick, trip }) => {
+  const {
+    tripName,
+    startDate,
+    endDate,
+    imageData: backgroundImage,
+    id: tripId,
+  } = trip;
   const startDateFormat = moment(startDate).format("MMM Do YYYY");
   const endDateFormat = moment(endDate).format("MMM Do YYYY");
   const dateFormatted =
@@ -326,6 +317,7 @@ const TripCard: React.FC<TripCardProps> = ({
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
   const { settings } = useAuth();
   const { notify } = useHotToast();
+  const { duplicateTrip } = useDuplicateTrip();
 
   const deleteTrip = async (tripId: string) => {
     try {
@@ -337,9 +329,18 @@ const TripCard: React.FC<TripCardProps> = ({
 
       const tripRef = doc(db, `users/${user.uid}/trips/${tripId}`);
       await deleteDoc(tripRef);
-      notify(`Trip deleted successfully!`, "info");
+      notify(`Trip deleted successfully!`, "success");
     } catch {
       notify("Something went wrong. Please try again.", "error");
+    }
+  };
+
+  const duplicate = async () => {
+    const error = await duplicateTrip(tripId);
+    if (error) {
+      notify("Something went wrong. Please try again.", "error");
+    } else {
+      notify("Trip duplicated successfully!", "success");
     }
   };
 
@@ -358,7 +359,10 @@ const TripCard: React.FC<TripCardProps> = ({
           <span className="text-center text-sm">{dateFormatted}</span>
         </div>
         <div className="space-x-2 absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition ease-in-out duration-400">
-          <button className="cursor-pointer bg-primary rounded-full p-1.5 hover:opacity-85 transition ease-in-out duration-400">
+          <button
+            onClick={duplicate}
+            className="cursor-pointer bg-primary rounded-full p-1.5 hover:opacity-85 transition ease-in-out duration-400"
+          >
             <GoCopy stroke="var(--color-secondary)" size={17} />
           </button>
           <button

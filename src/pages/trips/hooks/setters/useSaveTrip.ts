@@ -12,6 +12,7 @@ export function useSaveTrip() {
     currency,
     numberOfPeople,
     imageData,
+    subCollections,
   }: Trip) => {
     const user = auth.currentUser;
     if (!user) {
@@ -28,6 +29,7 @@ export function useSaveTrip() {
         currency,
         numberOfPeople,
         imageData: imageData || null,
+        subCollections,
         createdAt: new Date(),
       });
     } catch {
