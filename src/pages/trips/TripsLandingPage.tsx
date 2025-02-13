@@ -23,6 +23,8 @@ import { LoadingState } from "../landing-page/LandingPage";
 import { IoTrashBinOutline } from "react-icons/io5";
 import { GoCopy } from "react-icons/go";
 import { CiWarning } from "react-icons/ci";
+import { auth, db } from "../../firebase-config";
+import { deleteDoc, doc } from "firebase/firestore";
 
 export interface Trip {
   tripName: string;
@@ -173,6 +175,7 @@ const TripsLandingPage = () => {
                 return (
                   <Grid key={id}>
                     <TripCard
+                      tripId={id}
                       backgroundImage={imageData}
                       tripName={tripName}
                       startDate={startDate}
@@ -302,6 +305,7 @@ interface TripCardProps {
   backgroundImage: string;
   startDate: string;
   endDate: string;
+  tripId: string;
 }
 
 const TripCard: React.FC<TripCardProps> = ({
@@ -310,6 +314,7 @@ const TripCard: React.FC<TripCardProps> = ({
   onClick,
   endDate,
   startDate,
+  tripId,
 }) => {
   const startDateFormat = moment(startDate).format("MMM Do YYYY");
   const endDateFormat = moment(endDate).format("MMM Do YYYY");
@@ -320,6 +325,23 @@ const TripCard: React.FC<TripCardProps> = ({
 
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
   const { settings } = useAuth();
+  const { notify } = useHotToast();
+
+  const deleteTrip = async (tripId: string) => {
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        notify("Something went wrong. Please try again.", "error");
+        return;
+      }
+
+      const tripRef = doc(db, `users/${user.uid}/trips/${tripId}`);
+      await deleteDoc(tripRef);
+      notify(`Trip deleted successfully!`, "info");
+    } catch {
+      notify("Something went wrong. Please try again.", "error");
+    }
+  };
 
   return (
     <>
@@ -360,7 +382,7 @@ const TripCard: React.FC<TripCardProps> = ({
           <div>
             <div className="space-y-2">
               <p className="text-2xl text-secondary">
-                Are you sure you want to delete this trip?
+                Are you sure you want to delete "{tripName}"?
               </p>
 
               <p className="text-secondary/70">
@@ -372,6 +394,7 @@ const TripCard: React.FC<TripCardProps> = ({
               <Button.Secondary
                 className={twMerge("normal-case not-italic", settings?.font)}
                 type="button"
+                onClick={() => deleteTrip(tripId)}
               >
                 Delete
               </Button.Secondary>
