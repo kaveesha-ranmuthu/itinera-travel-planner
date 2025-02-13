@@ -12,11 +12,13 @@ import { useGetCurrencies } from "./hooks/getters/useGetCurrencies";
 import art1 from "./images/jan-brueghel-the-younger/art-1.jpg";
 import EditImagePopup from "./components/EditImagePopup";
 import { useFormik } from "formik";
-import { convertToBase64 } from "./helpers";
+import { compressAndConvertToBase64 } from "./helpers";
 import { useSaveTrip } from "./hooks/setters/useSaveTrips";
 import { useHotToast } from "../../hooks/useHotToast";
+import { useFetchTrips } from "./hooks/getters/useFetchTrips";
+import { sortBy } from "lodash";
 
-export interface TripFormInput {
+export interface Trip {
   tripName: string;
   startDate: string;
   endDate: string;
@@ -24,11 +26,12 @@ export interface TripFormInput {
   numberOfPeople: number;
   currency: SelectOption | null;
   budget: number;
-  image: string;
+  imageData: string;
 }
 
 const TripsLandingPage = () => {
   const { settings } = useAuth();
+  const { trips, error: tripsFetchError } = useFetchTrips();
   const { countries, error: countryFetchError } = useGetCountries();
   const { currencies, error: currencyFetchError } = useGetCurrencies();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,7 +39,7 @@ const TripsLandingPage = () => {
   const { saveTrip } = useSaveTrip();
   const { notify } = useHotToast();
 
-  const formik = useFormik<TripFormInput>({
+  const formik = useFormik<Trip>({
     initialValues: {
       tripName: "my trip",
       startDate: "",
@@ -45,7 +48,7 @@ const TripsLandingPage = () => {
       numberOfPeople: 0,
       currency: null,
       budget: 0,
-      image: art1,
+      imageData: art1,
     },
     onSubmit: async (values) => {
       if (
@@ -82,7 +85,7 @@ const TripsLandingPage = () => {
         numberOfPeople: values.numberOfPeople,
         currency: values.currency,
         budget: values.budget,
-        image: values.image,
+        imageData: values.imageData,
       });
 
       if (error) {
@@ -94,7 +97,7 @@ const TripsLandingPage = () => {
     },
   });
 
-  if (countryFetchError || currencyFetchError) {
+  if (countryFetchError || currencyFetchError || tripsFetchError) {
     return <ErrorPage />;
   }
 
@@ -111,6 +114,7 @@ const TripsLandingPage = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     formik.resetForm();
+    setDisplayImage(art1);
   };
 
   const handleImageSelect = (imageSrc: string) => {
@@ -119,10 +123,18 @@ const TripsLandingPage = () => {
   };
 
   const handleImageUpload = async (file: File) => {
-    const imageData = await convertToBase64(file);
-    formik.setFieldValue("image", imageData);
-    setDisplayImage(URL.createObjectURL(file));
+    try {
+      const imageData = await compressAndConvertToBase64(file);
+      formik.setFieldValue("image", imageData);
+      setDisplayImage(URL.createObjectURL(file));
+    } catch {
+      notify("Something went wrong. Please try again.", "error");
+    }
   };
+
+  const sortedTrips = sortBy(trips, "createdAt").reverse();
+
+  console.log(sortedTrips);
 
   return (
     <div className={settings?.font ?? FontFamily.HANDWRITTEN}>
@@ -132,7 +144,19 @@ const TripsLandingPage = () => {
           <h1>my trips</h1>
         </div>
         <div className="py-14">
-          <CreateNewTripButton onClick={() => setIsModalOpen(true)} />
+          <div className="grid grid-cols-3 gap-10">
+            {sortedTrips.map(({ imageData, tripName }) => {
+              return (
+                <TripCard
+                  backgroundImage={imageData}
+                  tripName={tripName}
+                  onClick={() => null}
+                />
+              );
+            })}
+            <CreateNewTripButton onClick={() => setIsModalOpen(true)} />
+          </div>
+
           <PopupModal isOpen={isModalOpen} onClose={handleCloseModal}>
             <form onSubmit={formik.handleSubmit}>
               <div className="relative">
@@ -252,12 +276,39 @@ const CreateNewTripButton: React.FC<CreateNewTripButtonProps> = ({
   onClick,
 }) => {
   return (
-    <button
+    <div
       onClick={onClick}
       className="hover:opacity-60 transition ease-in-out duration-400 cursor-pointer border border-secondary w-80 rounded-2xl h-48  flex items-center justify-center drop-shadow-(--drop-shadow-default)"
     >
       <p className="text-2xl text-secondary">Create new trip</p>
-    </button>
+    </div>
+  );
+};
+
+interface TripCardProps {
+  onClick: () => void;
+  tripName: string;
+  backgroundImage: string;
+}
+
+const TripCard: React.FC<TripCardProps> = ({
+  tripName,
+  backgroundImage,
+  onClick,
+}) => {
+  return (
+    <div
+      onClick={onClick}
+      className="bg-black rounded-2xl w-80 relative group cursor-pointer"
+    >
+      <img
+        src={backgroundImage}
+        className="object-cover group-hover:opacity-60 transition ease-in-out duration-400 cursor-pointer w-full rounded-2xl h-48  flex items-center justify-center drop-shadow-(--drop-shadow-default)"
+      />
+      <div className="absolute opacity-0 flex group-hover:opacity-100 top-0 transition ease-in-out duration-400 text-primary text-2xl items-center w-full justify-center h-full">
+        <span className="w-[70%] text-center truncate">{tripName}</span>
+      </div>
+    </div>
   );
 };
 

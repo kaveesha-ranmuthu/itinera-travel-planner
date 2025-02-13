@@ -1,6 +1,6 @@
 import { addDoc, collection } from "firebase/firestore";
 import { auth, db } from "../../../../firebase-config";
-import { TripFormInput } from "../../TripsLandingPage";
+import { Trip } from "../../TripsLandingPage";
 
 export function useSaveTrip() {
   const saveTrip = async ({
@@ -11,8 +11,8 @@ export function useSaveTrip() {
     countries,
     currency,
     numberOfPeople,
-    image,
-  }: TripFormInput) => {
+    imageData,
+  }: Trip) => {
     const user = auth.currentUser;
     if (!user) {
       return new Error("User not authenticated.");
@@ -27,7 +27,7 @@ export function useSaveTrip() {
         countries,
         currency,
         numberOfPeople,
-        imageData: image || null,
+        imageData: imageData || null,
         createdAt: new Date(),
       });
     } catch {
