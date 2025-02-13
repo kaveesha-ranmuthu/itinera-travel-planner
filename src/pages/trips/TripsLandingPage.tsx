@@ -18,6 +18,8 @@ import { useHotToast } from "../../hooks/useHotToast";
 import { useFetchTrips } from "./hooks/getters/useFetchTrips";
 import { sortBy } from "lodash";
 import moment from "moment";
+import Grid from "@mui/material/Grid2";
+import { LoadingState } from "../landing-page/LandingPage";
 
 export interface Trip {
   tripName: string;
@@ -32,7 +34,7 @@ export interface Trip {
 
 const TripsLandingPage = () => {
   const { settings } = useAuth();
-  const { trips, error: tripsFetchError } = useFetchTrips();
+  const { trips, error: tripsFetchError, loading } = useFetchTrips();
   const { countries, error: countryFetchError } = useGetCountries();
   const { currencies, error: currencyFetchError } = useGetCurrencies();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -98,6 +100,10 @@ const TripsLandingPage = () => {
     },
   });
 
+  if (loading) {
+    return <LoadingState />;
+  }
+
   if (countryFetchError || currencyFetchError || tripsFetchError) {
     return <ErrorPage />;
   }
@@ -135,31 +141,46 @@ const TripsLandingPage = () => {
 
   const sortedTrips = sortBy(trips, "createdAt").reverse();
 
-  console.log(sortedTrips);
-
   return (
     <div className={settings?.font ?? FontFamily.HANDWRITTEN}>
       <Header />
       <div className="px-20">
-        <div className="flex justify-center text-5xl tracking-widest">
-          <h1>my trips</h1>
+        <div className="flex justify-center flex-col items-center space-y-8">
+          <h1 className="text-5xl tracking-widest">my trips</h1>
+          <Button.Primary
+            className={twMerge(
+              "border border-secondary normal-case text-lg hover:bg-secondary hover:text-primary hover:opacity-100 transition ease-in-out duration-500",
+              settings?.font
+            )}
+            onClick={() => setIsModalOpen(true)}
+            type="button"
+          >
+            Create new trip
+          </Button.Primary>
         </div>
         <div className="py-14">
-          <div className="grid grid-cols-3 gap-10">
-            {sortedTrips.map(({ imageData, tripName, endDate, startDate }) => {
-              return (
-                <TripCard
-                  backgroundImage={imageData}
-                  tripName={tripName}
-                  startDate={startDate}
-                  endDate={endDate}
-                  onClick={() => null}
-                />
-              );
-            })}
-            <CreateNewTripButton onClick={() => setIsModalOpen(true)} />
-          </div>
-
+          <Grid
+            container
+            spacing={5}
+            display={"flex"}
+            justifyContent={"center"}
+          >
+            {sortedTrips.map(
+              ({ imageData, tripName, endDate, startDate, id }) => {
+                return (
+                  <Grid key={id}>
+                    <TripCard
+                      backgroundImage={imageData}
+                      tripName={tripName}
+                      startDate={startDate}
+                      endDate={endDate}
+                      onClick={() => null}
+                    />
+                  </Grid>
+                );
+              }
+            )}
+          </Grid>
           <PopupModal isOpen={isModalOpen} onClose={handleCloseModal}>
             <form onSubmit={formik.handleSubmit}>
               <div className="relative">
@@ -272,22 +293,6 @@ const TripsLandingPage = () => {
   );
 };
 
-type CreateNewTripButtonProps = {
-  onClick: () => void;
-};
-const CreateNewTripButton: React.FC<CreateNewTripButtonProps> = ({
-  onClick,
-}) => {
-  return (
-    <div
-      onClick={onClick}
-      className="hover:opacity-60 transition ease-in-out duration-400 cursor-pointer border border-secondary w-80 rounded-2xl h-48  flex items-center justify-center drop-shadow-(--drop-shadow-default)"
-    >
-      <p className="text-2xl text-secondary">Create new trip</p>
-    </div>
-  );
-};
-
 interface TripCardProps {
   onClick: () => void;
   tripName: string;
@@ -313,7 +318,7 @@ const TripCard: React.FC<TripCardProps> = ({
   return (
     <div
       onClick={onClick}
-      className="bg-black rounded-2xl w-80 relative group cursor-pointer"
+      className="bg-black rounded-2xl w-72 relative group cursor-pointer hover:scale-98 transition ease-in-out duration-400"
     >
       <img
         src={backgroundImage}
