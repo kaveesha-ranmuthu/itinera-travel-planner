@@ -17,6 +17,7 @@ import { useSaveTrip } from "./hooks/setters/useSaveTrips";
 import { useHotToast } from "../../hooks/useHotToast";
 import { useFetchTrips } from "./hooks/getters/useFetchTrips";
 import { sortBy } from "lodash";
+import moment from "moment";
 
 export interface Trip {
   tripName: string;
@@ -145,11 +146,13 @@ const TripsLandingPage = () => {
         </div>
         <div className="py-14">
           <div className="grid grid-cols-3 gap-10">
-            {sortedTrips.map(({ imageData, tripName }) => {
+            {sortedTrips.map(({ imageData, tripName, endDate, startDate }) => {
               return (
                 <TripCard
                   backgroundImage={imageData}
                   tripName={tripName}
+                  startDate={startDate}
+                  endDate={endDate}
                   onClick={() => null}
                 />
               );
@@ -289,13 +292,24 @@ interface TripCardProps {
   onClick: () => void;
   tripName: string;
   backgroundImage: string;
+  startDate: string;
+  endDate: string;
 }
 
 const TripCard: React.FC<TripCardProps> = ({
   tripName,
   backgroundImage,
   onClick,
+  endDate,
+  startDate,
 }) => {
+  const startDateFormat = moment(startDate).format("MMM Do YYYY");
+  const endDateFormat = moment(endDate).format("MMM Do YYYY");
+  const dateFormatted =
+    startDate === endDate
+      ? startDateFormat
+      : `${startDateFormat} - ${endDateFormat}`;
+
   return (
     <div
       onClick={onClick}
@@ -305,8 +319,9 @@ const TripCard: React.FC<TripCardProps> = ({
         src={backgroundImage}
         className="object-cover group-hover:opacity-60 transition ease-in-out duration-400 cursor-pointer w-full rounded-2xl h-48  flex items-center justify-center drop-shadow-(--drop-shadow-default)"
       />
-      <div className="absolute opacity-0 flex group-hover:opacity-100 top-0 transition ease-in-out duration-400 text-primary text-2xl items-center w-full justify-center h-full">
+      <div className="absolute space-y-1 opacity-0 flex flex-col group-hover:opacity-100 top-0 transition ease-in-out duration-400 text-primary text-2xl items-center w-full justify-center h-full">
         <span className="w-[70%] text-center truncate">{tripName}</span>
+        <span className="text-center text-sm">{dateFormatted}</span>
       </div>
     </div>
   );
