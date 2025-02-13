@@ -53,7 +53,7 @@ function App() {
             }
           />
           <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/trip/:tripid" element={<TripPage />} />
+          <Route path="/trip/:tripId" element={<TripPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
