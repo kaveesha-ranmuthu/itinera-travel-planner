@@ -46,7 +46,6 @@ const useDuplicateTrip = () => {
         }
       }
     } catch (error) {
-      console.log(error);
       return (error as Error).message;
     }
   };

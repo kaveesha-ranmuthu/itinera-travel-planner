@@ -105,6 +105,7 @@ const TripsLandingPage = () => {
       } else {
         setIsModalOpen(false);
         formik.resetForm();
+        setDisplayImage(art1);
       }
     },
   });
@@ -134,14 +135,14 @@ const TripsLandingPage = () => {
   };
 
   const handleImageSelect = (imageSrc: string) => {
-    formik.setFieldValue("image", imageSrc);
+    formik.setFieldValue("imageData", imageSrc);
     setDisplayImage(imageSrc);
   };
 
   const handleImageUpload = async (file: File) => {
     try {
       const imageData = await compressAndConvertToBase64(file);
-      formik.setFieldValue("image", imageData);
+      formik.setFieldValue("imageData", imageData);
       setDisplayImage(URL.createObjectURL(file));
     } catch {
       notify("Something went wrong. Please try again.", "error");
