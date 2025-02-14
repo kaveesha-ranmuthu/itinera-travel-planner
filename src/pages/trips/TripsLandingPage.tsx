@@ -15,7 +15,7 @@ import { useFormik } from "formik";
 import { compressAndConvertToBase64 } from "./helpers";
 import { useSaveTrip } from "./hooks/setters/useSaveTrip";
 import { useHotToast } from "../../hooks/useHotToast";
-import { TripData, useFetchTrips } from "./hooks/getters/useFetchTrips";
+import { TripData, useGetTrips } from "./hooks/getters/useGetTrips";
 import { sortBy } from "lodash";
 import moment from "moment";
 import Grid from "@mui/material/Grid2";
@@ -26,6 +26,8 @@ import { CiWarning } from "react-icons/ci";
 import { auth, db } from "../../firebase-config";
 import { deleteDoc, doc } from "firebase/firestore";
 import useDuplicateTrip from "./hooks/setters/useDuplicateTrip";
+import { Link } from "react-router-dom";
+import TripsInput from "./components/TripsInput";
 
 export interface Trip {
   tripName: string;
@@ -36,12 +38,11 @@ export interface Trip {
   currency: SelectOption | null;
   budget: number;
   imageData: string;
-  subCollections: string[];
 }
 
 const TripsLandingPage = () => {
   const { settings } = useAuth();
-  const { trips, error: tripsFetchError, loading } = useFetchTrips();
+  const { trips, error: tripsFetchError, loading } = useGetTrips();
   const { countries, error: countryFetchError } = useGetCountries();
   const { currencies, error: currencyFetchError } = useGetCurrencies();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -59,7 +60,6 @@ const TripsLandingPage = () => {
       currency: null,
       budget: 0,
       imageData: art1,
-      subCollections: [],
     },
     onSubmit: async (values) => {
       if (
@@ -97,7 +97,6 @@ const TripsLandingPage = () => {
         currency: values.currency,
         budget: values.budget,
         imageData: values.imageData,
-        subCollections: values.subCollections,
       });
 
       if (error) {
@@ -178,7 +177,7 @@ const TripsLandingPage = () => {
             {sortedTrips.map((trip) => {
               return (
                 <Grid key={trip.id}>
-                  <TripCard trip={trip} onClick={() => null} />
+                  <TripCard trip={trip} />
                 </Grid>
               );
             })}
@@ -234,11 +233,10 @@ const TripsLandingPage = () => {
                   </div>
                   <div>
                     <p className="mb-4">How many people are going?</p>
-                    <input
+                    <TripsInput
                       type="number"
                       id="numberOfPeople"
                       onChange={formik.handleChange}
-                      className="border border-secondary rounded-xl px-2 py-1 w-20"
                     />
                   </div>
                 </div>
@@ -256,12 +254,12 @@ const TripsLandingPage = () => {
                   <div>
                     <p className="mb-4">What's your budget?</p>
                     <div className="relative">
-                      <input
+                      <TripsInput
                         id="budget"
                         onChange={formik.handleChange}
                         placeholder={formik.values.currency?.otherInfo?.symbol}
                         type="number"
-                        className=" border border-secondary rounded-xl px-2 py-1 w-30"
+                        inputWidth="w-30"
                       />
                     </div>
                   </div>
@@ -296,11 +294,10 @@ const TripsLandingPage = () => {
 };
 
 interface TripCardProps {
-  onClick: () => void;
   trip: TripData;
 }
 
-const TripCard: React.FC<TripCardProps> = ({ onClick, trip }) => {
+const TripCard: React.FC<TripCardProps> = ({ trip }) => {
   const {
     tripName,
     startDate,
@@ -347,18 +344,17 @@ const TripCard: React.FC<TripCardProps> = ({ onClick, trip }) => {
 
   return (
     <>
-      <div
-        onClick={onClick}
-        className="bg-black rounded-2xl w-72 relative group cursor-pointer hover:scale-98 transition ease-in-out duration-400"
-      >
-        <img
-          src={backgroundImage}
-          className="object-cover group-hover:opacity-60 transition ease-in-out duration-400 cursor-pointer w-full rounded-2xl h-48  flex items-center justify-center drop-shadow-(--drop-shadow-default)"
-        />
-        <div className="absolute space-y-1 opacity-0 flex flex-col group-hover:opacity-100 top-0 transition ease-in-out duration-400 text-primary text-2xl items-center w-full justify-center h-full">
-          <span className="w-[70%] text-center truncate">{tripName}</span>
-          <span className="text-center text-sm">{dateFormatted}</span>
-        </div>
+      <div className="bg-black rounded-2xl w-72 relative group cursor-pointer hover:scale-98 transition ease-in-out duration-400">
+        <Link to={`/trip/${tripId}`}>
+          <img
+            src={backgroundImage}
+            className="object-cover group-hover:opacity-60 transition ease-in-out duration-400 cursor-pointer w-full rounded-2xl h-48  flex items-center justify-center drop-shadow-(--drop-shadow-default)"
+          />
+          <div className="absolute space-y-1 opacity-0 flex flex-col group-hover:opacity-100 top-0 transition ease-in-out duration-400 text-primary text-2xl items-center w-full justify-center h-full">
+            <span className="w-[70%] text-center truncate">{tripName}</span>
+            <span className="text-center text-sm">{dateFormatted}</span>
+          </div>
+        </Link>
         <div className="space-x-2 absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition ease-in-out duration-400">
           <button
             onClick={duplicate}

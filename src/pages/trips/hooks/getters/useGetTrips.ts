@@ -6,9 +6,11 @@ import { auth, db } from "../../../../firebase-config";
 export interface TripData extends Trip {
   id: string;
   createdAt: Date;
+  subCollections: string[];
+  currentSavings: number;
 }
 
-export function useFetchTrips() {
+export function useGetTrips() {
   const [trips, setTrips] = useState<TripData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

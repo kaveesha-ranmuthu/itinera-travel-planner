@@ -7,6 +7,7 @@ import SignupPage from "./pages/authentication/SignupPage";
 import LandingPage, { LoadingState } from "./pages/landing-page/LandingPage";
 import TripsLandingPage from "./pages/trips/TripsLandingPage";
 import { useAuth } from "./hooks/useAuth";
+import TripPage from "./pages/trips/TripPage";
 
 function App() {
   const { user, loading } = useAuth();
@@ -52,6 +53,7 @@ function App() {
             }
           />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/trip/:tripId" element={<TripPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
