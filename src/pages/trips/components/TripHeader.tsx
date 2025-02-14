@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { IoCalendarClearOutline } from "react-icons/io5";
 import { TripData } from "../hooks/getters/useGetTrips";
 import moment from "moment";
@@ -9,6 +9,11 @@ import { FontFamily } from "../../../types";
 import { useAuth } from "../../../hooks/useAuth";
 import { twMerge } from "tailwind-merge";
 import SimpleTooltip from "./SimpleTooltip";
+import TripsInput from "./TripsInput";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../../../firebase-config";
+import { useHotToast } from "../../../hooks/useHotToast";
+import { debounce, round } from "lodash";
 
 interface TripHeaderProps {
   trip: TripData;
@@ -24,6 +29,8 @@ const TripHeader: React.FC<TripHeaderProps> = ({ trip }) => {
     numberOfPeople,
     startDate,
     endDate,
+    currentSavings,
+    id,
   } = trip;
 
   const startDateFormat = moment(startDate).format("MMM Do YYYY");
@@ -65,25 +72,100 @@ const TripHeader: React.FC<TripHeaderProps> = ({ trip }) => {
             <p>{endDateFormat}</p>
           </span>
         </span>
-        <SimpleTooltip content="Update your savings progress">
-          <button
-            type="button"
-            className="flex items-center space-x-3 mt-3 cursor-pointer"
-          >
-            <div className="w-60 bg-primary h-1.5 rounded-full">
-              <div className="w-20 bg-green h-1.5 rounded-full" />
-            </div>
-            <p
-              className={twMerge(
-                "text-xs",
-                settings?.font === FontFamily.HANDWRITTEN && "mb-1"
-              )}
-            >
-              0%
-            </p>
-          </button>
-        </SimpleTooltip>
+        <SavingsProgressBar
+          currencySymbol={currency?.otherInfo?.symbol}
+          currentSavings={currentSavings}
+          tripId={id}
+          budget={budget}
+        />
       </div>
+    </div>
+  );
+};
+
+interface SavingsProgressBarProps {
+  currentSavings: number;
+  currencySymbol?: string;
+  tripId: string;
+  budget: number;
+}
+
+const SavingsProgressBar: React.FC<SavingsProgressBarProps> = ({
+  currencySymbol,
+  currentSavings,
+  tripId,
+  budget,
+}) => {
+  const { settings, user } = useAuth();
+  const { notify } = useHotToast();
+  const [savings, setSavings] = useState(currentSavings);
+
+  const savingsProgress =
+    (savings / budget) * 100 > 100 ? 100 : (savings / budget) * 100;
+
+  if (!user) {
+    notify("Something went wrong. Please try again.", "error");
+    return;
+  }
+
+  const updateSavingsInFirestore = debounce(async (newSavings) => {
+    try {
+      const tripRef = doc(db, `users/${user.uid}/trips/${tripId}`);
+      await updateDoc(tripRef, { currentSavings: newSavings });
+    } catch {
+      setSavings(currentSavings);
+      notify("Something went wrong. Please try again.", "error");
+    }
+  }, 500);
+
+  const handleSavingsChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    let newSavings = parseFloat(e.target.value);
+    if (newSavings < 0 || isNaN(newSavings)) {
+      newSavings = 0;
+    }
+    setSavings(newSavings);
+    updateSavingsInFirestore(newSavings);
+  };
+
+  const content = (
+    <div>
+      <p className="mb-2">Update your savings progress</p>
+      <TripsInput
+        type="number"
+        placeholder={currencySymbol + round(savings, 2).toString()}
+        id="savings"
+        inputWidth="w-20"
+        onChange={handleSavingsChange}
+      />
+    </div>
+  );
+  return (
+    <div>
+      <SimpleTooltip content={content}>
+        <button
+          type="button"
+          className="flex items-center space-x-3 mt-3 cursor-pointer"
+        >
+          <div className="w-60">
+            <div className="w-full bg-primary h-1.5 rounded-full">
+              <div
+                className="bg-green h-1.5 rounded-full"
+                style={{ width: `${savingsProgress}%` }}
+              />
+            </div>
+          </div>
+          <p
+            className={twMerge(
+              "text-xs",
+              settings?.font === FontFamily.HANDWRITTEN && "mb-1"
+            )}
+          >
+            {round(savingsProgress)}%
+          </p>
+        </button>
+      </SimpleTooltip>
     </div>
   );
 };

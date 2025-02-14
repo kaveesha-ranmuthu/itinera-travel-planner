@@ -27,7 +27,7 @@ const useGetTrip = (tripId: string) => {
           return;
         }
 
-        setTrip(tripSnap.data() as TripData);
+        setTrip({ ...tripSnap.data(), id: tripSnap.id } as TripData);
       } catch (err) {
         setError((err as Error).message);
       } finally {

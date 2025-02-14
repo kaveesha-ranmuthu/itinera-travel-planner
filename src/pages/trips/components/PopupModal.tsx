@@ -6,12 +6,14 @@ import { twMerge } from "tailwind-merge";
 interface PopupModalProps {
   isOpen: boolean;
   onClose: () => void;
+  modalWidth?: string;
 }
 
 const PopupModal: React.FC<PropsWithChildren<PopupModalProps>> = ({
   isOpen,
   onClose,
   children,
+  modalWidth,
 }) => {
   const { settings } = useAuth();
 
@@ -23,7 +25,12 @@ const PopupModal: React.FC<PropsWithChildren<PopupModalProps>> = ({
     >
       <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
         <DialogBackdrop className="fixed inset-0 bg-secondary/80" />
-        <DialogPanel className="absolute border border-secondary bg-primary w-xl rounded-2xl p-5">
+        <DialogPanel
+          className={twMerge(
+            "absolute border border-secondary bg-primary w-xl rounded-2xl p-5",
+            modalWidth
+          )}
+        >
           {children}
         </DialogPanel>
       </div>

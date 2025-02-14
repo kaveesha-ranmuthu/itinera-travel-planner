@@ -4,7 +4,7 @@ import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../hooks/useAuth";
 
 interface TooltipProps {
-  content: string;
+  content: string | React.ReactNode;
   iconStyles?: string;
 }
 

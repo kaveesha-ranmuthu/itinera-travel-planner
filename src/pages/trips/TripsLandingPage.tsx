@@ -27,6 +27,7 @@ import { auth, db } from "../../firebase-config";
 import { deleteDoc, doc } from "firebase/firestore";
 import useDuplicateTrip from "./hooks/setters/useDuplicateTrip";
 import { Link } from "react-router-dom";
+import TripsInput from "./components/TripsInput";
 
 export interface Trip {
   tripName: string;
@@ -232,11 +233,10 @@ const TripsLandingPage = () => {
                   </div>
                   <div>
                     <p className="mb-4">How many people are going?</p>
-                    <input
+                    <TripsInput
                       type="number"
                       id="numberOfPeople"
                       onChange={formik.handleChange}
-                      className="border border-secondary rounded-xl px-2 py-1 w-20"
                     />
                   </div>
                 </div>
@@ -254,12 +254,12 @@ const TripsLandingPage = () => {
                   <div>
                     <p className="mb-4">What's your budget?</p>
                     <div className="relative">
-                      <input
+                      <TripsInput
                         id="budget"
                         onChange={formik.handleChange}
                         placeholder={formik.values.currency?.otherInfo?.symbol}
                         type="number"
-                        className=" border border-secondary rounded-xl px-2 py-1 w-30"
+                        inputWidth="w-30"
                       />
                     </div>
                   </div>

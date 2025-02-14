@@ -31,7 +31,6 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
   if (error || !trip) {
     return <ErrorPage />;
   }
-  console.log(trip);
 
   return (
     <div className={settings?.font}>
