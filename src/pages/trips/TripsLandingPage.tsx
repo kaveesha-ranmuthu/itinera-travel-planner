@@ -37,7 +37,6 @@ export interface Trip {
   currency: SelectOption | null;
   budget: number;
   imageData: string;
-  subCollections: string[];
 }
 
 const TripsLandingPage = () => {
@@ -60,7 +59,6 @@ const TripsLandingPage = () => {
       currency: null,
       budget: 0,
       imageData: art1,
-      subCollections: [],
     },
     onSubmit: async (values) => {
       if (
@@ -98,7 +96,6 @@ const TripsLandingPage = () => {
         currency: values.currency,
         budget: values.budget,
         imageData: values.imageData,
-        subCollections: values.subCollections,
       });
 
       if (error) {
@@ -347,18 +344,17 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
 
   return (
     <>
-      <Link
-        to={`/trip/${tripId}`}
-        className="bg-black rounded-2xl w-72 relative group cursor-pointer hover:scale-98 transition ease-in-out duration-400"
-      >
-        <img
-          src={backgroundImage}
-          className="object-cover group-hover:opacity-60 transition ease-in-out duration-400 cursor-pointer w-full rounded-2xl h-48  flex items-center justify-center drop-shadow-(--drop-shadow-default)"
-        />
-        <div className="absolute space-y-1 opacity-0 flex flex-col group-hover:opacity-100 top-0 transition ease-in-out duration-400 text-primary text-2xl items-center w-full justify-center h-full">
-          <span className="w-[70%] text-center truncate">{tripName}</span>
-          <span className="text-center text-sm">{dateFormatted}</span>
-        </div>
+      <div className="bg-black rounded-2xl w-72 relative group cursor-pointer hover:scale-98 transition ease-in-out duration-400">
+        <Link to={`/trip/${tripId}`}>
+          <img
+            src={backgroundImage}
+            className="object-cover group-hover:opacity-60 transition ease-in-out duration-400 cursor-pointer w-full rounded-2xl h-48  flex items-center justify-center drop-shadow-(--drop-shadow-default)"
+          />
+          <div className="absolute space-y-1 opacity-0 flex flex-col group-hover:opacity-100 top-0 transition ease-in-out duration-400 text-primary text-2xl items-center w-full justify-center h-full">
+            <span className="w-[70%] text-center truncate">{tripName}</span>
+            <span className="text-center text-sm">{dateFormatted}</span>
+          </div>
+        </Link>
         <div className="space-x-2 absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition ease-in-out duration-400">
           <button
             onClick={duplicate}
@@ -373,7 +369,7 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
             <IoTrashBinOutline stroke="var(--color-secondary)" size={17} />
           </button>
         </div>
-      </Link>
+      </div>
       <PopupModal
         isOpen={showDeleteWarning}
         onClose={() => setShowDeleteWarning(false)}
