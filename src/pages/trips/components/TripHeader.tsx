@@ -44,7 +44,9 @@ const TripHeader: React.FC<TripHeaderProps> = ({ trip }) => {
         className="object-cover w-full h-[311px] rounded-3xl opacity-40"
       />
       <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
-        <p className="text-primary text-5xl">{tripName}</p>
+        <span className="text-primary text-5xl w-[60%] text-center truncate py-5">
+          {tripName}
+        </span>
       </div>
       <div className="absolute bottom-3 left-5 text-primary space-y-1.5">
         <span className="flex space-x-3 items-center">
