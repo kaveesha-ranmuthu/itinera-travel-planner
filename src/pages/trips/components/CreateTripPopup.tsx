@@ -5,7 +5,7 @@ import { Trip } from "../TripsLandingPage";
 import MultiSelect, { SelectOption, SingleSelect } from "./Select";
 import { useHotToast } from "../../../hooks/useHotToast";
 import art1 from "../images/jan-brueghel-the-younger/art-1.jpg";
-import { useSaveTrip } from "../hooks/setters/useSaveTrip";
+import { useCreateNewTrip } from "../hooks/setters/useCreateNewTrip";
 import { compressAndConvertToBase64 } from "../helpers";
 import EditImagePopup from "./EditImagePopup";
 import TripsInput from "./TripsInput";
@@ -28,7 +28,7 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
   initialValues,
 }) => {
   const { notify } = useHotToast();
-  const { saveTrip } = useSaveTrip();
+  const { createNewTrip: saveTrip } = useCreateNewTrip();
   const [displayImage, setDisplayImage] = useState(
     initialValues?.imageData || art1
   );

@@ -2,8 +2,8 @@ import { addDoc, collection } from "firebase/firestore";
 import { auth, db } from "../../../../firebase-config";
 import { Trip } from "../../TripsLandingPage";
 
-export function useSaveTrip() {
-  const saveTrip = async ({
+export function useCreateNewTrip() {
+  const createNewTrip = async ({
     tripName,
     startDate,
     endDate,
@@ -37,5 +37,5 @@ export function useSaveTrip() {
     }
   };
 
-  return { saveTrip };
+  return { createNewTrip };
 }
