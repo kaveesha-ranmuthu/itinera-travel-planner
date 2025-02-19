@@ -6,14 +6,21 @@ import { useAuth } from "../../../hooks/useAuth";
 interface TooltipProps {
   content: string | React.ReactNode;
   iconStyles?: string;
+  marginTop?: string;
+  theme?: "light" | "dark";
 }
 
 const SimpleTooltip: React.FC<PropsWithChildren<TooltipProps>> = ({
   content,
   children,
   iconStyles,
+  marginTop,
+  theme = "light",
 }) => {
   const { settings } = useAuth();
+
+  const lightStyles = "bg-primary text-secondary border border-secondary";
+  const darkStyles = "bg-secondary text-primary";
 
   return (
     <Tooltip.Provider delayDuration={100}>
@@ -27,8 +34,10 @@ const SimpleTooltip: React.FC<PropsWithChildren<TooltipProps>> = ({
           <Tooltip.Content
             side="bottom"
             className={twMerge(
-              "bg-primary rounded-md text-xs px-3 py-2 text-secondary border border-secondary mt-1 tracking-wide",
-              settings?.font
+              "rounded-md text-xs px-3 py-2 mt-1 tracking-wide",
+              theme === "light" ? lightStyles : darkStyles,
+              settings?.font,
+              marginTop
             )}
           >
             {content}
