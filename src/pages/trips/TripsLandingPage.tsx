@@ -18,8 +18,6 @@ import { LoadingState } from "../landing-page/LandingPage";
 import Header from "./components/Header";
 import PopupModal from "./components/PopupModal";
 import { SelectOption } from "./components/Select";
-import { useGetCountries } from "./hooks/getters/useGetCountries";
-import { useGetCurrencies } from "./hooks/getters/useGetCurrencies";
 import { TripData, useGetTrips } from "./hooks/getters/useGetTrips";
 import useDuplicateTrip from "./hooks/setters/useDuplicateTrip";
 import CreateTripPopup from "./components/CreateTripPopup";
@@ -38,15 +36,14 @@ export interface Trip {
 const TripsLandingPage = () => {
   const { settings } = useAuth();
   const { trips, error: tripsFetchError, loading } = useGetTrips();
-  const { countries, error: countryFetchError } = useGetCountries();
-  const { currencies, error: currencyFetchError } = useGetCurrencies();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (loading) {
     return <LoadingState />;
   }
 
-  if (countryFetchError || currencyFetchError || tripsFetchError) {
+  if (tripsFetchError) {
     return <ErrorPage />;
   }
 
@@ -85,8 +82,6 @@ const TripsLandingPage = () => {
             })}
           </Grid>
           <CreateTripPopup
-            countries={countries}
-            currencies={currencies}
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
           />

@@ -12,36 +12,47 @@ import TripsInput from "./TripsInput";
 import Button from "../../../components/Button";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../hooks/useAuth";
+import { useGetCountries } from "../hooks/getters/useGetCountries";
+import { useGetCurrencies } from "../hooks/getters/useGetCurrencies";
+import moment from "moment";
 
 interface CreateTripPopupProps {
   isOpen: boolean;
   onClose: () => void;
-  countries: SelectOption[];
-  currencies: SelectOption[];
+  initialValues?: Trip;
 }
 
 const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
-  countries,
-  currencies,
   isOpen,
   onClose,
+  initialValues,
 }) => {
   const { notify } = useHotToast();
   const { saveTrip } = useSaveTrip();
-  const [displayImage, setDisplayImage] = useState(art1);
+  const [displayImage, setDisplayImage] = useState(
+    initialValues?.imageData || art1
+  );
   const { settings } = useAuth();
+  const { countries, error: countryFetchError } = useGetCountries();
+  const { currencies, error: currencyFetchError } = useGetCurrencies();
+
+  const defaultValues = {
+    tripName: "my trip",
+    startDate: moment(new Date()).add(1, "days").format("YYYY-MM-DD"),
+    endDate: moment(new Date()).add(7, "days").format("YYYY-MM-DD"),
+    countries: [],
+    numberOfPeople: 0,
+    currency: null,
+    budget: 0,
+    imageData: art1,
+  };
+
+  const resetDisplayImage = () => {
+    setDisplayImage(initialValues?.imageData || art1);
+  };
 
   const formik = useFormik<Trip>({
-    initialValues: {
-      tripName: "my trip",
-      startDate: "",
-      endDate: "",
-      countries: [],
-      numberOfPeople: 0,
-      currency: null,
-      budget: 0,
-      imageData: art1,
-    },
+    initialValues: initialValues ?? defaultValues,
     onSubmit: async (values) => {
       if (
         !values.tripName.trim() ||
@@ -85,10 +96,16 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
       } else {
         onClose();
         formik.resetForm();
-        setDisplayImage(art1);
+        resetDisplayImage();
       }
     },
   });
+
+  if (isOpen && (countryFetchError || currencyFetchError)) {
+    notify("Something went wrong. Please try again.", "error");
+    onClose();
+    return;
+  }
 
   const handleCountryInputChange = (countries: SelectOption[]) => {
     if (!countries) return;
@@ -103,7 +120,7 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
   const handleCloseModal = () => {
     onClose();
     formik.resetForm();
-    setDisplayImage(art1);
+    resetDisplayImage();
   };
 
   const handleImageSelect = (imageSrc: string) => {
@@ -148,6 +165,7 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
               <input
                 type="date"
                 id="startDate"
+                defaultValue={formik.values.startDate}
                 onChange={formik.handleChange}
                 className="border border-secondary rounded-xl px-2 py-1 w-1/2"
               />
@@ -155,6 +173,7 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
               <input
                 type="date"
                 id="endDate"
+                defaultValue={formik.values.endDate}
                 onChange={formik.handleChange}
                 className="border border-secondary rounded-xl px-2 py-1 w-1/2"
               />
@@ -176,6 +195,7 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
               <TripsInput
                 type="number"
                 id="numberOfPeople"
+                defaultValue={formik.values.numberOfPeople}
                 onChange={formik.handleChange}
               />
             </div>
@@ -200,6 +220,7 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
                   placeholder={formik.values.currency?.otherInfo?.symbol}
                   type="number"
                   inputWidth="w-30"
+                  defaultValue={formik.values.budget}
                 />
               </div>
             </div>
@@ -208,6 +229,7 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
             <Button.Secondary
               className={twMerge("normal-case not-italic", settings?.font)}
               type="submit"
+              disabled={formik.isSubmitting || !formik.dirty}
             >
               Confirm
             </Button.Secondary>

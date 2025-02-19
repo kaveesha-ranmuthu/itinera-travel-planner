@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import ErrorPage from "../error/ErrorPage";
@@ -11,6 +11,7 @@ import { GoTasklist } from "react-icons/go";
 import SimpleTooltip from "./components/SimpleTooltip";
 import { FiEdit } from "react-icons/fi";
 import { PiMoneyWavy } from "react-icons/pi";
+import CreateTripPopup from "./components/CreateTripPopup";
 
 const TripPage = () => {
   const { tripId } = useParams();
@@ -28,6 +29,7 @@ interface TripInfoProps {
 const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
   const { error, loading, trip } = useGetTrip(tripId);
   const { settings } = useAuth();
+  const [isEditTripModalOpen, setIsEditTripModalOpen] = useState(false);
 
   if (loading) {
     return <LoadingState />;
@@ -43,7 +45,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
         <FiEdit stroke="var(--color-primary)" size={20} strokeWidth={1.5} />
       ),
       tooltipText: "Edit trip details",
-      onClick: () => null,
+      onClick: () => setIsEditTripModalOpen(true),
     },
     {
       icon: <GoTasklist fill="var(--color-primary)" size={20} />,
@@ -81,6 +83,11 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
           ))}
         </div>
       </div>
+      <CreateTripPopup
+        isOpen={isEditTripModalOpen}
+        onClose={() => setIsEditTripModalOpen(false)}
+        initialValues={trip}
+      />
     </div>
   );
 };
