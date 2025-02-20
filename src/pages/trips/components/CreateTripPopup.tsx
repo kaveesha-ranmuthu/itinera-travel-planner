@@ -5,7 +5,6 @@ import { Trip } from "../TripsLandingPage";
 import MultiSelect, { SelectOption, SingleSelect } from "./Select";
 import { useHotToast } from "../../../hooks/useHotToast";
 import art1 from "../images/jan-brueghel-the-younger/art-1.jpg";
-import { useCreateNewTrip } from "../hooks/setters/useCreateNewTrip";
 import { compressAndConvertToBase64 } from "../helpers";
 import EditImagePopup from "./EditImagePopup";
 import TripsInput from "./TripsInput";
@@ -20,15 +19,16 @@ interface CreateTripPopupProps {
   isOpen: boolean;
   onClose: () => void;
   initialValues?: Trip;
+  onSubmit: (trip: Trip) => Promise<Error | undefined>;
 }
 
 const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
   isOpen,
   onClose,
   initialValues,
+  onSubmit,
 }) => {
   const { notify } = useHotToast();
-  const { createNewTrip: saveTrip } = useCreateNewTrip();
   const [displayImage, setDisplayImage] = useState(
     initialValues?.imageData || art1
   );
@@ -53,6 +53,7 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
 
   const formik = useFormik<Trip>({
     initialValues: initialValues ?? defaultValues,
+    enableReinitialize: true,
     onSubmit: async (values) => {
       if (
         !values.tripName.trim() ||
@@ -80,16 +81,7 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
         return;
       }
 
-      const error = await saveTrip({
-        tripName: values.tripName,
-        startDate: values.startDate,
-        endDate: values.endDate,
-        countries: values.countries,
-        numberOfPeople: values.numberOfPeople,
-        currency: values.currency,
-        budget: values.budget,
-        imageData: values.imageData,
-      });
+      const error = await onSubmit(values);
 
       if (error) {
         notify("Something went wrong. Please try again.", "error");
@@ -195,7 +187,7 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
               <TripsInput
                 type="number"
                 id="numberOfPeople"
-                defaultValue={formik.values.numberOfPeople}
+                defaultValue={formik.values.numberOfPeople || undefined}
                 onChange={formik.handleChange}
               />
             </div>
@@ -220,7 +212,7 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
                   placeholder={formik.values.currency?.otherInfo?.symbol}
                   type="number"
                   inputWidth="w-30"
-                  defaultValue={formik.values.budget}
+                  defaultValue={formik.values.budget || undefined}
                 />
               </div>
             </div>
@@ -231,7 +223,7 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
               type="submit"
               disabled={formik.isSubmitting || !formik.dirty}
             >
-              Confirm
+              Save
             </Button.Secondary>
             <Button.Primary
               className={twMerge(

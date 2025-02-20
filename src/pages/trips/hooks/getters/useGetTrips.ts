@@ -5,7 +5,7 @@ import { auth, db } from "../../../../firebase-config";
 
 export interface TripData extends Trip {
   id: string;
-  createdAt: Date;
+  updatedAt: Date;
   subCollections: string[];
   currentSavings: number;
 }
@@ -24,18 +24,18 @@ export function useGetTrips() {
     }
 
     const tripsRef = collection(db, `users/${user.uid}/trips`);
-    const tripsQuery = query(tripsRef, orderBy("createdAt", "desc"));
+    const tripsQuery = query(tripsRef, orderBy("updatedAt", "desc"));
 
     const unsubscribe = onSnapshot(
       tripsQuery,
       (snapshot) => {
         const tripData = snapshot.docs.map((doc) => {
-          const createdAt = new Date(doc.data().createdAt.seconds * 1000);
+          const updatedAt = new Date(doc.data().updatedAt.seconds * 1000);
 
           return {
             ...doc.data(),
             id: doc.id,
-            createdAt,
+            updatedAt: updatedAt,
           };
         }) as TripData[];
 

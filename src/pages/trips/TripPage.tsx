@@ -27,7 +27,7 @@ interface TripInfoProps {
   tripId: string;
 }
 const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
-  const { error, loading, trip } = useGetTrip(tripId);
+  const { error, loading, trip, updateTripDetails } = useGetTrip(tripId);
   const { settings } = useAuth();
   const [isEditTripModalOpen, setIsEditTripModalOpen] = useState(false);
 
@@ -87,6 +87,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
         isOpen={isEditTripModalOpen}
         onClose={() => setIsEditTripModalOpen(false)}
         initialValues={trip}
+        onSubmit={updateTripDetails}
       />
     </div>
   );

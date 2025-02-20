@@ -21,6 +21,7 @@ import { SelectOption } from "./components/Select";
 import { TripData, useGetTrips } from "./hooks/getters/useGetTrips";
 import useDuplicateTrip from "./hooks/setters/useDuplicateTrip";
 import CreateTripPopup from "./components/CreateTripPopup";
+import { useCreateNewTrip } from "./hooks/setters/useCreateNewTrip";
 
 export interface Trip {
   tripName: string;
@@ -36,6 +37,7 @@ export interface Trip {
 const TripsLandingPage = () => {
   const { settings } = useAuth();
   const { trips, error: tripsFetchError, loading } = useGetTrips();
+  const { createNewTrip } = useCreateNewTrip();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -48,6 +50,11 @@ const TripsLandingPage = () => {
   }
 
   const sortedTrips = sortBy(trips, "createdAt").reverse();
+
+  const handleCreateNewTrip = async (trip: Trip) => {
+    const error = await createNewTrip(trip);
+    return error;
+  };
 
   return (
     <div className={settings?.font ?? FontFamily.HANDWRITTEN}>
@@ -84,6 +91,7 @@ const TripsLandingPage = () => {
           <CreateTripPopup
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
+            onSubmit={handleCreateNewTrip}
           />
         </div>
       </div>

@@ -3,16 +3,17 @@ import { auth, db } from "../../../../firebase-config";
 import { Trip } from "../../TripsLandingPage";
 
 export function useCreateNewTrip() {
-  const createNewTrip = async ({
-    tripName,
-    startDate,
-    endDate,
-    budget,
-    countries,
-    currency,
-    numberOfPeople,
-    imageData,
-  }: Trip) => {
+  const createNewTrip = async (trip: Trip) => {
+    const {
+      tripName,
+      startDate,
+      endDate,
+      budget,
+      countries,
+      currency,
+      numberOfPeople,
+      imageData,
+    } = trip;
     const user = auth.currentUser;
     if (!user) {
       return new Error("User not authenticated.");
@@ -30,7 +31,7 @@ export function useCreateNewTrip() {
         imageData: imageData || null,
         subCollections: [],
         currentSavings: 0,
-        createdAt: new Date(),
+        updatedAt: new Date(),
       });
     } catch {
       return new Error("Failed to save trip.");
