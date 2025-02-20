@@ -12,6 +12,7 @@ import SimpleTooltip from "./components/SimpleTooltip";
 import { FiEdit } from "react-icons/fi";
 import { PiMoneyWavy } from "react-icons/pi";
 import CreateTripPopup from "./components/CreateTripPopup";
+import PopoverMenu from "./components/PopoverMenu";
 
 const TripPage = () => {
   const { tripId } = useParams();
@@ -26,6 +27,14 @@ const TripPage = () => {
 interface TripInfoProps {
   tripId: string;
 }
+
+type HeaderIcon = {
+  icon: React.ReactNode;
+  tooltipText: string;
+  onClick: () => void;
+  isPopover?: boolean;
+};
+
 const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
   const { error, loading, trip, updateTripDetails } = useGetTrip(tripId);
   const { settings } = useAuth();
@@ -39,13 +48,14 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
     return <ErrorPage />;
   }
 
-  const headerIcons = [
+  const headerIcons: HeaderIcon[] = [
     {
       icon: (
         <FiEdit stroke="var(--color-primary)" size={20} strokeWidth={1.5} />
       ),
       tooltipText: "Edit trip details",
       onClick: () => setIsEditTripModalOpen(true),
+      isPopover: false,
     },
     {
       icon: <GoTasklist fill="var(--color-primary)" size={20} />,
@@ -61,6 +71,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
       icon: <IoMapOutline stroke="var(--color-primary)" size={20} />,
       tooltipText: "View map",
       onClick: () => null,
+      isPopover: false,
     },
   ];
 
@@ -71,12 +82,13 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
         <TripHeader trip={trip} />
       </div>
       <div className="px-16">
-        <div className="space-x-2 mt-4 w-full text-right">
+        <div className="space-x-2 mt-4 w-full flex items-center justify-end">
           {headerIcons.map((icon, index) => (
             <HeaderIconButton
               key={index}
               onClick={icon.onClick}
               tooltipText={icon.tooltipText}
+              isPopover={icon.isPopover}
             >
               {icon.icon}
             </HeaderIconButton>
@@ -96,23 +108,45 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
 interface HeaderIconButtonProps {
   tooltipText: string;
   onClick: () => void;
+  isPopover?: boolean;
 }
 
 const HeaderIconButton: React.FC<PropsWithChildren<HeaderIconButtonProps>> = ({
   children,
   tooltipText,
   onClick,
+  isPopover = true,
 }) => {
+  if (!isPopover) {
+    return (
+      <SimpleTooltip content={tooltipText} marginTop="mt-2" theme="dark">
+        <button
+          onClick={onClick}
+          type="button"
+          className="bg-secondary rounded-full p-2 hover:scale-105 cursor-pointer hover:opacity-95"
+        >
+          {children}
+        </button>
+      </SimpleTooltip>
+    );
+  }
+
   return (
-    <SimpleTooltip content={tooltipText} marginTop="mt-2" theme="dark">
-      <button
-        onClick={onClick}
-        type="button"
-        className="bg-secondary rounded-full p-2 hover:scale-105 cursor-pointer hover:opacity-95"
-      >
-        {children}
-      </button>
-    </SimpleTooltip>
+    <PopoverMenu
+      className="w-fit mt-1.5"
+      popoverTrigger={
+        <SimpleTooltip content={tooltipText} marginTop="mt-2" theme="dark">
+          <div
+            onClick={onClick}
+            className="bg-secondary rounded-full p-2 hover:scale-105 cursor-pointer hover:opacity-95"
+          >
+            {children}
+          </div>
+        </SimpleTooltip>
+      }
+    >
+      aaaa
+    </PopoverMenu>
   );
 };
 
