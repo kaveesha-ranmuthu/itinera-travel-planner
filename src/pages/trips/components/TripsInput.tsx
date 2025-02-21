@@ -7,6 +7,7 @@ interface TripsInputProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   inputWidth?: string;
+  defaultValue?: string | number;
 }
 
 const TripsInput: React.FC<TripsInputProps> = ({
@@ -15,11 +16,13 @@ const TripsInput: React.FC<TripsInputProps> = ({
   type,
   placeholder,
   inputWidth,
+  defaultValue,
 }) => {
   return (
     <input
       type={type}
       id={id}
+      defaultValue={defaultValue}
       onChange={onChange}
       placeholder={placeholder}
       className={twMerge(

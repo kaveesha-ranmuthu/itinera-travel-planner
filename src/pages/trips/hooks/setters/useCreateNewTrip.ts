@@ -2,17 +2,18 @@ import { addDoc, collection } from "firebase/firestore";
 import { auth, db } from "../../../../firebase-config";
 import { Trip } from "../../TripsLandingPage";
 
-export function useSaveTrip() {
-  const saveTrip = async ({
-    tripName,
-    startDate,
-    endDate,
-    budget,
-    countries,
-    currency,
-    numberOfPeople,
-    imageData,
-  }: Trip) => {
+export function useCreateNewTrip() {
+  const createNewTrip = async (trip: Trip) => {
+    const {
+      tripName,
+      startDate,
+      endDate,
+      budget,
+      countries,
+      currency,
+      numberOfPeople,
+      imageData,
+    } = trip;
     const user = auth.currentUser;
     if (!user) {
       return new Error("User not authenticated.");
@@ -30,12 +31,12 @@ export function useSaveTrip() {
         imageData: imageData || null,
         subCollections: [],
         currentSavings: 0,
-        createdAt: new Date(),
+        updatedAt: new Date(),
       });
     } catch {
       return new Error("Failed to save trip.");
     }
   };
 
-  return { saveTrip };
+  return { createNewTrip };
 }

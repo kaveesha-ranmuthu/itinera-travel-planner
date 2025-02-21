@@ -50,8 +50,9 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 
   return (
     <Combobox
-      onChange={(item: SelectOption[]) => onChange(item)}
+      onChange={(items: SelectOption[]) => onChange(items)}
       onClose={() => setQuery("")}
+      defaultValue={currentlySelectedOptions}
       immediate
       multiple
     >
