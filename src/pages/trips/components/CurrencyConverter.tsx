@@ -128,6 +128,9 @@ const CurrencyConverter: React.FC<CurrencyConverterProps> = ({
           }}
         />
       </div>
+      <p className="text-xs">
+        * currency has been rounded to two decimal places
+      </p>
     </div>
   );
 };

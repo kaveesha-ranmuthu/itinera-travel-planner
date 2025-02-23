@@ -155,7 +155,7 @@ const HeaderIconButton: React.FC<PropsWithChildren<HeaderIconButtonProps>> = ({
   return (
     <PopoverMenu
       className="w-fit mt-1.5"
-      panelClassName="mt-1.5 h-26"
+      panelClassName="mt-1.5 h-30"
       popoverTrigger={
         <SimpleTooltip content={tooltipText} marginTop="mt-2" theme="dark">
           <div
