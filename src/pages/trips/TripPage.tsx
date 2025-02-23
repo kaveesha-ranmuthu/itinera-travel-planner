@@ -32,7 +32,7 @@ type HeaderIcon = {
   icon: React.ReactNode;
   tooltipText: string;
   onClick: () => void;
-  isPopover?: boolean;
+  popoverComponent?: React.ReactNode;
 };
 
 const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
@@ -55,7 +55,6 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
       ),
       tooltipText: "Edit trip details",
       onClick: () => setIsEditTripModalOpen(true),
-      isPopover: false,
     },
     {
       icon: <GoTasklist fill="var(--color-primary)" size={20} />,
@@ -71,7 +70,6 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
       icon: <IoMapOutline stroke="var(--color-primary)" size={20} />,
       tooltipText: "View map",
       onClick: () => null,
-      isPopover: false,
     },
   ];
 
@@ -88,7 +86,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
               key={index}
               onClick={icon.onClick}
               tooltipText={icon.tooltipText}
-              isPopover={icon.isPopover}
+              popoverComponent={icon.popoverComponent}
             >
               {icon.icon}
             </HeaderIconButton>
@@ -108,16 +106,16 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
 interface HeaderIconButtonProps {
   tooltipText: string;
   onClick: () => void;
-  isPopover?: boolean;
+  popoverComponent?: React.ReactNode;
 }
 
 const HeaderIconButton: React.FC<PropsWithChildren<HeaderIconButtonProps>> = ({
   children,
   tooltipText,
   onClick,
-  isPopover = true,
+  popoverComponent,
 }) => {
-  if (!isPopover) {
+  if (!popoverComponent) {
     return (
       <SimpleTooltip content={tooltipText} marginTop="mt-2" theme="dark">
         <button
@@ -145,7 +143,7 @@ const HeaderIconButton: React.FC<PropsWithChildren<HeaderIconButtonProps>> = ({
         </SimpleTooltip>
       }
     >
-      aaaa
+      {popoverComponent}
     </PopoverMenu>
   );
 };
