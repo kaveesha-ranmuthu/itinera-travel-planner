@@ -15,13 +15,13 @@ import { useHotToast } from "../../hooks/useHotToast";
 import { FontFamily } from "../../types";
 import ErrorPage from "../error/ErrorPage";
 import { LoadingState } from "../landing-page/LandingPage";
-import Header from "./components/Header";
 import PopupModal from "./components/PopupModal";
 import { SelectOption } from "./components/Select";
 import { TripData, useGetTrips } from "./hooks/getters/useGetTrips";
 import useDuplicateTrip from "./hooks/setters/useDuplicateTrip";
 import CreateTripPopup from "./components/CreateTripPopup";
 import { useCreateNewTrip } from "./hooks/setters/useCreateNewTrip";
+import Header from "./components/sections/Header";
 
 export interface Trip {
   tripName: string;

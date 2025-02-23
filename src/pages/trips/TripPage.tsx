@@ -4,10 +4,10 @@ import { useAuth } from "../../hooks/useAuth";
 import ErrorPage from "../error/ErrorPage";
 import { LoadingState } from "../landing-page/LandingPage";
 import CreateTripPopup from "./components/CreateTripPopup";
-import Header from "./components/Header";
-import HeaderIcons from "./components/HeaderIcons";
-import TripHeader from "./components/TripHeader";
 import useGetTrip from "./hooks/getters/useGetTrip";
+import Header from "./components/sections/Header";
+import TripHeader from "./components/sections/TripHeader";
+import HeaderIcons from "./components/sections/HeaderIcons";
 
 const TripPage = () => {
   const { tripId } = useParams();

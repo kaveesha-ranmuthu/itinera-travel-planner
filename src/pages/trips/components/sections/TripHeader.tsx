@@ -1,19 +1,19 @@
-import React, { useState } from "react";
-import { IoCalendarClearOutline } from "react-icons/io5";
-import { TripData } from "../hooks/getters/useGetTrips";
+import { doc, updateDoc } from "firebase/firestore";
+import { debounce, round } from "lodash";
 import moment from "moment";
+import React, { useState } from "react";
 import { FiDollarSign } from "react-icons/fi";
 import { GoPerson } from "react-icons/go";
 import { HiArrowLongRight } from "react-icons/hi2";
-import { FontFamily } from "../../../types";
-import { useAuth } from "../../../hooks/useAuth";
+import { IoCalendarClearOutline } from "react-icons/io5";
 import { twMerge } from "tailwind-merge";
-import SimpleTooltip from "./SimpleTooltip";
-import TripsInput from "./TripsInput";
-import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../../../firebase-config";
-import { useHotToast } from "../../../hooks/useHotToast";
-import { debounce, round } from "lodash";
+import { db } from "../../../../firebase-config";
+import { useAuth } from "../../../../hooks/useAuth";
+import { useHotToast } from "../../../../hooks/useHotToast";
+import { FontFamily } from "../../../../types";
+import { TripData } from "../../hooks/getters/useGetTrips";
+import SimpleTooltip from "../SimpleTooltip";
+import TripsInput from "../TripsInput";
 
 interface TripHeaderProps {
   trip: TripData;

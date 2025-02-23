@@ -4,12 +4,12 @@ import { FiEdit } from "react-icons/fi";
 import { GoTasklist } from "react-icons/go";
 import { IoMapOutline } from "react-icons/io5";
 import { PiMoneyWavy } from "react-icons/pi";
-import { useGetCurrencies } from "../hooks/getters/useGetCurrencies";
-import { TripData } from "../hooks/getters/useGetTrips";
-import CurrencyConverter from "./CurrencyConverter";
-import PopoverMenu from "./PopoverMenu";
-import { SelectOption } from "./Select";
-import SimpleTooltip from "./SimpleTooltip";
+import { useGetCurrencies } from "../../hooks/getters/useGetCurrencies";
+import { TripData } from "../../hooks/getters/useGetTrips";
+import CurrencyConverter from "../CurrencyConverter";
+import PopoverMenu from "../PopoverMenu";
+import { SelectOption } from "../Select";
+import SimpleTooltip from "../SimpleTooltip";
 
 type HeaderIcon = {
   icon: React.ReactNode;
