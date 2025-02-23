@@ -35,6 +35,13 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
   const { settings } = useAuth();
   const { countries, error: countryFetchError } = useGetCountries();
   const { currencies, error: currencyFetchError } = useGetCurrencies();
+  const formattedCurrencies = currencies.map((currency) => ({
+    id: currency.currencyCode,
+    name: currency.currencyCode,
+    otherInfo: {
+      symbol: currency.symbol,
+    },
+  }));
 
   const defaultValues = {
     tripName: "my trip",
@@ -159,7 +166,7 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
                 id="startDate"
                 defaultValue={formik.values.startDate}
                 onChange={formik.handleChange}
-                className="border border-secondary rounded-xl px-2 py-1 w-1/2"
+                className="focus:outline-secondary border border-secondary rounded-xl px-2 py-1 w-1/2"
               />
               <p>to</p>
               <input
@@ -167,7 +174,7 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
                 id="endDate"
                 defaultValue={formik.values.endDate}
                 onChange={formik.handleChange}
-                className="border border-secondary rounded-xl px-2 py-1 w-1/2"
+                className="focus:outline-secondary border border-secondary rounded-xl px-2 py-1 w-1/2"
               />
             </div>
           </div>
@@ -198,7 +205,7 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
               <div className="w-56">
                 <SingleSelect
                   onChange={handleCurrencyInputChange}
-                  options={currencies}
+                  options={formattedCurrencies}
                   currentlySelectedOption={formik.values.currency}
                 />
               </div>

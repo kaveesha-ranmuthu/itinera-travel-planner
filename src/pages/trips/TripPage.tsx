@@ -13,6 +13,8 @@ import { FiEdit } from "react-icons/fi";
 import { PiMoneyWavy } from "react-icons/pi";
 import CreateTripPopup from "./components/CreateTripPopup";
 import PopoverMenu from "./components/PopoverMenu";
+import CurrencyConverter from "./components/CurrencyConverter";
+import { useGetCurrencies } from "./hooks/getters/useGetCurrencies";
 
 const TripPage = () => {
   const { tripId } = useParams();
@@ -39,6 +41,11 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
   const { error, loading, trip, updateTripDetails } = useGetTrip(tripId);
   const { settings } = useAuth();
   const [isEditTripModalOpen, setIsEditTripModalOpen] = useState(false);
+  const {
+    currencies,
+    error: currencyFetchError,
+    loading: currencyFetchLoading,
+  } = useGetCurrencies();
 
   if (loading) {
     return <LoadingState />;
@@ -65,6 +72,15 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
       icon: <PiMoneyWavy fill="var(--color-primary)" size={20} />,
       tooltipText: "Currency converter",
       onClick: () => null,
+      popoverComponent: (
+        <CurrencyConverter
+          userCurrency={trip.currency?.name}
+          countriesVisiting={trip.countries.map((country) => country.name)}
+          currencies={currencies}
+          error={currencyFetchError}
+          loading={currencyFetchLoading}
+        />
+      ),
     },
     {
       icon: <IoMapOutline stroke="var(--color-primary)" size={20} />,
@@ -132,6 +148,7 @@ const HeaderIconButton: React.FC<PropsWithChildren<HeaderIconButtonProps>> = ({
   return (
     <PopoverMenu
       className="w-fit mt-1.5"
+      panelClassName="mt-1.5 h-26"
       popoverTrigger={
         <SimpleTooltip content={tooltipText} marginTop="mt-2" theme="dark">
           <div

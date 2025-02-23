@@ -1,13 +1,19 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import sortBy from "lodash/sortBy";
 import uniqBy from "lodash/uniqBy";
-import { SelectOption } from "../../components/Select";
+import { sortBy } from "lodash";
+
+export type Currency = {
+  id: string;
+  currencyCode: string;
+  symbol: string;
+  country: string;
+};
 
 export const useGetCurrencies = () => {
-  const [currencies, setCurrencies] = useState<SelectOption[]>([]);
+  const [currencies, setCurrencies] = useState<Currency[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     axios
@@ -17,7 +23,10 @@ export const useGetCurrencies = () => {
           response.data
             .map(
               (country: {
-                currencies: { [key: string]: { symbol: string } };
+                currencies: {
+                  [key: string]: { symbol: string };
+                };
+                name: { common: string };
               }) => {
                 if (
                   !country.currencies ||
@@ -30,19 +39,21 @@ export const useGetCurrencies = () => {
 
                 return {
                   id: currencyCode,
-                  name: currencyCode,
-                  otherInfo: { symbol },
+                  currencyCode,
+                  symbol,
+                  country: country.name.common,
                 };
               }
             )
-            .filter(Boolean), // Remove null values
-          "name"
-        );
+            .filter(Boolean),
+          "currencyCode"
+        ) as Currency[];
 
-        setCurrencies(uniqBy(currencyData, "id"));
+        const uniqueCurrencies = uniqBy(currencyData, "id");
+        setCurrencies(uniqueCurrencies);
       })
       .catch(() => {
-        setError("Failed to fetch currencies.");
+        setError(new Error("Failed to fetch currencies."));
       })
       .finally(() => setLoading(false));
   }, []);
