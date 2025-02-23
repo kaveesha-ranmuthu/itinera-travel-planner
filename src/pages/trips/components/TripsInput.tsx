@@ -8,6 +8,8 @@ interface TripsInputProps {
   placeholder?: string;
   inputWidth?: string;
   defaultValue?: string | number;
+  className?: string;
+  value?: string | number;
 }
 
 const TripsInput: React.FC<TripsInputProps> = ({
@@ -17,6 +19,8 @@ const TripsInput: React.FC<TripsInputProps> = ({
   placeholder,
   inputWidth,
   defaultValue,
+  className,
+  value,
 }) => {
   return (
     <input
@@ -25,9 +29,11 @@ const TripsInput: React.FC<TripsInputProps> = ({
       defaultValue={defaultValue}
       onChange={onChange}
       placeholder={placeholder}
+      value={value}
       className={twMerge(
         "border border-secondary rounded-xl px-2 py-1 w-20 focus:outline-secondary",
-        inputWidth
+        inputWidth,
+        className
       )}
     />
   );

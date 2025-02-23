@@ -13,10 +13,12 @@ export const useGetCountries = () => {
       .get("https://restcountries.com/v3.1/all")
       .then((response) => {
         const sortedCountries = sortBy(
-          response.data.map((country: { name: { common: string } }) => ({
-            id: country.name.common,
-            name: country.name.common,
-          })),
+          response.data.map(
+            (country: { cca2: string; name: { common: string } }) => ({
+              id: country.cca2,
+              name: country.name.common,
+            })
+          ),
           "name"
         );
         setCountries(sortedCountries);

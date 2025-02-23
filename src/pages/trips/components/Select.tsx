@@ -11,9 +11,10 @@ import {
 } from "react-icons/io";
 import { useAuth } from "../../../hooks/useAuth";
 import { FontFamily } from "../../../types";
+import { twMerge } from "tailwind-merge";
 
 export type SelectOption = {
-  id: string | number;
+  id: string;
   name: string;
   otherInfo?: { [x in string]: string };
 };
@@ -59,7 +60,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
       <ComboboxInput
         placeholder={currentlySelectedOptions.map((opt) => opt.name).join(", ")}
         onChange={(event) => setQuery(event.target.value)}
-        className="border border-secondary rounded-xl px-2 py-1 w-full placeholder:text-secondary focus:placeholder:text-secondary/50"
+        className="focus:outline-secondary border border-secondary rounded-xl px-2 py-1 w-full placeholder:text-secondary focus:placeholder:text-secondary/50"
       />
       {(!!filteredOptions.length || !!currentlySelectedOptions.length) && (
         <ComboboxOptions
@@ -108,13 +109,19 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 
 interface SingleSelectProps extends SelectProps {
   currentlySelectedOption: SelectOption | null;
-  onChange: (item: SelectOption) => void;
+  onChange?: (item: SelectOption) => void;
+  inputBoxClassname?: string;
+  optionsBoxClassname?: string;
+  disabled?: boolean;
 }
 
 export const SingleSelect: React.FC<SingleSelectProps> = ({
   options,
   onChange,
   currentlySelectedOption,
+  inputBoxClassname,
+  optionsBoxClassname,
+  disabled,
 }) => {
   const [query, setQuery] = useState("");
   const { settings } = useAuth();
@@ -131,19 +138,27 @@ export const SingleSelect: React.FC<SingleSelectProps> = ({
 
   return (
     <Combobox
-      onChange={(item: SelectOption) => onChange(item)}
+      onChange={(item: SelectOption) => onChange?.(item)}
       onClose={() => setQuery("")}
       immediate
+      disabled={disabled}
     >
       <ComboboxInput
         placeholder={currentlySelectedOption?.name}
         onChange={(event) => setQuery(event.target.value)}
-        className="border border-secondary rounded-xl px-2 py-1 w-full placeholder:text-secondary focus:placeholder:text-secondary/50"
+        className={twMerge(
+          "focus:outline-secondary border border-secondary rounded-xl px-2 py-1 w-full placeholder:text-secondary focus:placeholder:text-secondary/50",
+          inputBoxClassname
+        )}
       />
       {(!!filteredOptions.length || !!currentlySelectedOption) && (
         <ComboboxOptions
           anchor="bottom start"
-          className="bg-primary border border-secondary w-3xs rounded-lg mt-1"
+          className={twMerge(
+            "bg-primary border border-secondary w-3xs rounded-lg mt-1",
+            settings?.font,
+            optionsBoxClassname
+          )}
         >
           {!!currentlySelectedOption && (
             <ComboboxOption
