@@ -3,6 +3,10 @@ import { useHotToast } from "../../../hooks/useHotToast";
 import { Currency } from "../hooks/getters/useGetCurrencies";
 import { SelectOption, SingleSelect } from "./Select";
 import TripsInput from "./TripsInput";
+import axios from "axios";
+import { useAuth } from "../../../hooks/useAuth";
+import { twMerge } from "tailwind-merge";
+import { round } from "lodash";
 
 interface CurrencyConverterProps {
   countriesVisiting: string[];
@@ -12,6 +16,34 @@ interface CurrencyConverterProps {
   loading: boolean;
 }
 
+const convertCurrency = async (
+  base: string,
+  target: string,
+  amount: number
+): Promise<number> => {
+  const sessionStorageKey = `${base}-${target}`;
+  const cachedRate = sessionStorage.getItem(sessionStorageKey);
+  if (cachedRate) {
+    return parseFloat(cachedRate) * amount;
+  }
+  try {
+    const response = await axios.get(
+      `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${base.toLowerCase()}.json`
+    );
+
+    console.log(response);
+
+    const rate = response.data[base.toLowerCase()][target.toLowerCase()];
+    if (!rate) {
+      throw new Error("Failed to fetch currency conversion rate.");
+    }
+    sessionStorage.setItem(sessionStorageKey, rate);
+    return rate * amount;
+  } catch {
+    throw new Error("Failed to fetch currency conversion rate.");
+  }
+};
+
 const CurrencyConverter: React.FC<CurrencyConverterProps> = ({
   countriesVisiting,
   userCurrency,
@@ -20,6 +52,22 @@ const CurrencyConverter: React.FC<CurrencyConverterProps> = ({
   loading,
 }) => {
   const { notify } = useHotToast();
+  const { settings } = useAuth();
+
+  const currencyOptions: SelectOption[] = countriesVisiting
+    .map((country) => currencies.find((curr) => curr.country === country))
+    .filter(Boolean)
+    .map((currency) => ({
+      id: currency!.currencyCode,
+      name: currency!.currencyCode,
+    }))
+    .filter((curr) => curr.name !== userCurrency);
+
+  const [selectedCurrencyCode, setSelectedCurrencyCode] =
+    useState<SelectOption>(currencyOptions[1]);
+
+  const [baseAmount, setBaseAmount] = useState(1);
+  const [otherAmount, setOtherAmount] = useState(1);
 
   // FIXME: Handle loading state
   if (loading) {
@@ -31,56 +79,107 @@ const CurrencyConverter: React.FC<CurrencyConverterProps> = ({
     return;
   }
 
-  const currencyOptions: SelectOption[] = countriesVisiting
-    .map((country) => currencies.find((curr) => curr.country === country))
-    .filter(Boolean)
-    .map((currency) => ({
-      id: currency!.currencyCode,
-      name: currency!.currencyCode,
-    }))
-    .filter((curr) => curr.name !== userCurrency);
+  const handleCurrencyCodeChange = (currency: SelectOption) => {
+    setSelectedCurrencyCode(currency);
+    handleBaseAmountChange(baseAmount, currency.name);
+  };
 
-  currencyOptions.unshift({ id: userCurrency, name: userCurrency });
+  const handleBaseAmountChange = async (
+    amount: number,
+    currencyCode?: string
+  ) => {
+    try {
+      const convertedAmount = await convertCurrency(
+        userCurrency,
+        currencyCode ?? selectedCurrencyCode.name,
+        amount
+      );
+
+      setOtherAmount(round(convertedAmount, 2));
+    } catch {
+      notify("Something went wrong. Please try again.", "error");
+    }
+  };
+
+  const handleOtherAmountChange = async (amount: number) => {
+    try {
+      const convertedAmount = await convertCurrency(
+        selectedCurrencyCode.name,
+        userCurrency,
+        amount
+      );
+
+      setBaseAmount(round(convertedAmount, 2));
+    } catch {
+      notify("Something went wrong. Please try again.", "error");
+    }
+  };
 
   return (
-    <div className="space-y-2">
+    <div className={twMerge("space-y-2", settings?.font)}>
       <h1 className="text-md">Currency converter</h1>
       <div className="text-sm flex space-x-2">
-        <CurrencyInput currencyOptions={currencyOptions} />
+        <CurrencyInput
+          selectedCurrency={{
+            id: userCurrency,
+            name: userCurrency,
+          }}
+          disabled={true}
+          defaultValue={baseAmount}
+          onInputChange={(amount) => {
+            handleBaseAmountChange(amount);
+            setBaseAmount(amount);
+          }}
+        />
         <span>=</span>
-        <CurrencyInput currencyOptions={currencyOptions} />
+        <CurrencyInput
+          currencyOptions={currencyOptions}
+          selectedCurrency={selectedCurrencyCode}
+          onSelectChange={handleCurrencyCodeChange}
+          defaultValue={otherAmount}
+          onInputChange={(amount) => {
+            handleOtherAmountChange(amount);
+            setOtherAmount(amount);
+          }}
+        />
       </div>
     </div>
   );
 };
 
 interface CurrencyInputProps {
-  currencyOptions: SelectOption[];
+  selectedCurrency: SelectOption;
+  onSelectChange?: (currency: SelectOption) => void;
+  onInputChange: (amount: number) => void;
+  disabled?: boolean;
+  currencyOptions?: SelectOption[];
+  defaultValue?: number;
 }
 
-const CurrencyInput: React.FC<CurrencyInputProps> = ({ currencyOptions }) => {
-  const [selectedCurrency, setSelectedCurrency] = useState<SelectOption>(
-    currencyOptions[0]
-  );
-
-  const handleCurrencyChange = (option: SelectOption) => {
-    setSelectedCurrency(option);
-  };
-
+const CurrencyInput: React.FC<CurrencyInputProps> = ({
+  currencyOptions = [],
+  selectedCurrency,
+  onSelectChange,
+  onInputChange,
+  disabled,
+  defaultValue,
+}) => {
   return (
     <div>
       <TripsInput
         type="number"
         id="currency"
         className="rounded-r-none"
-        onChange={() => null}
+        onChange={(e) => onInputChange(parseFloat(e.target.value))}
+        value={defaultValue}
       />
       <SingleSelect
         currentlySelectedOption={selectedCurrency}
-        onChange={handleCurrencyChange}
+        onChange={onSelectChange}
         options={currencyOptions}
-        inputBoxClassname="border-l-0 rounded-l-none w-12"
+        inputBoxClassname="border-l-0 rounded-l-none w-12 cursor-pointer disabled:cursor-default"
         optionsBoxClassname="text-xs w-20"
+        disabled={disabled}
       />
     </div>
   );

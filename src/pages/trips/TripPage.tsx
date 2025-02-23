@@ -137,7 +137,7 @@ const HeaderIconButton: React.FC<PropsWithChildren<HeaderIconButtonProps>> = ({
         <button
           onClick={onClick}
           type="button"
-          className="bg-secondary rounded-full p-2 hover:scale-105 cursor-pointer hover:opacity-95"
+          className="focus:outline-0 bg-secondary rounded-full p-2 hover:scale-105 cursor-pointer hover:opacity-95"
         >
           {children}
         </button>

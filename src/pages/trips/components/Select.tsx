@@ -109,9 +109,10 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 
 interface SingleSelectProps extends SelectProps {
   currentlySelectedOption: SelectOption | null;
-  onChange: (item: SelectOption) => void;
+  onChange?: (item: SelectOption) => void;
   inputBoxClassname?: string;
   optionsBoxClassname?: string;
+  disabled?: boolean;
 }
 
 export const SingleSelect: React.FC<SingleSelectProps> = ({
@@ -120,6 +121,7 @@ export const SingleSelect: React.FC<SingleSelectProps> = ({
   currentlySelectedOption,
   inputBoxClassname,
   optionsBoxClassname,
+  disabled,
 }) => {
   const [query, setQuery] = useState("");
   const { settings } = useAuth();
@@ -136,9 +138,10 @@ export const SingleSelect: React.FC<SingleSelectProps> = ({
 
   return (
     <Combobox
-      onChange={(item: SelectOption) => onChange(item)}
+      onChange={(item: SelectOption) => onChange?.(item)}
       onClose={() => setQuery("")}
       immediate
+      disabled={disabled}
     >
       <ComboboxInput
         placeholder={currentlySelectedOption?.name}
