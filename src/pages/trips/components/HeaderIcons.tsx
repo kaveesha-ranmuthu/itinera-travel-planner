@@ -53,8 +53,8 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
 
   const formik = useFormik<CurrencyForm>({
     initialValues: {
-      baseAmount: 1,
-      otherAmount: 1,
+      baseAmount: 0,
+      otherAmount: 0,
       selectedCurrency: currencyOptions[0],
     },
     enableReinitialize: true,
