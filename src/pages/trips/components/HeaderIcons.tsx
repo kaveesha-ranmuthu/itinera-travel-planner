@@ -1,19 +1,27 @@
+import { useFormik } from "formik";
 import React, { PropsWithChildren } from "react";
-import PopoverMenu from "./PopoverMenu";
-import SimpleTooltip from "./SimpleTooltip";
 import { FiEdit } from "react-icons/fi";
 import { GoTasklist } from "react-icons/go";
 import { IoMapOutline } from "react-icons/io5";
 import { PiMoneyWavy } from "react-icons/pi";
-import CurrencyConverter from "./CurrencyConverter";
-import { TripData } from "../hooks/getters/useGetTrips";
 import { useGetCurrencies } from "../hooks/getters/useGetCurrencies";
+import { TripData } from "../hooks/getters/useGetTrips";
+import CurrencyConverter from "./CurrencyConverter";
+import PopoverMenu from "./PopoverMenu";
+import { SelectOption } from "./Select";
+import SimpleTooltip from "./SimpleTooltip";
 
 type HeaderIcon = {
   icon: React.ReactNode;
   tooltipText: string;
   onClick: () => void;
   popoverComponent?: React.ReactNode;
+};
+
+type CurrencyForm = {
+  baseAmount: number;
+  otherAmount: number;
+  selectedCurrency: SelectOption;
 };
 
 interface HeaderIconsProps {
@@ -30,6 +38,32 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
     error: currencyFetchError,
     loading: currencyFetchLoading,
   } = useGetCurrencies();
+
+  const userCurrency = trip.currency?.name;
+  const countriesVisiting = trip.countries.map((country) => country.id);
+
+  const currencyOptions: SelectOption[] = countriesVisiting
+    .map((country) => currencies.find((curr) => curr.id === country))
+    .filter(Boolean)
+    .map((currency) => ({
+      id: currency!.currencyCode,
+      name: currency!.currencyCode,
+    }))
+    .filter((curr) => curr.name !== userCurrency);
+
+  const formik = useFormik<CurrencyForm>({
+    initialValues: {
+      baseAmount: 1,
+      otherAmount: 1,
+      selectedCurrency: currencyOptions[0],
+    },
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      console.log(values);
+    },
+  });
+
+  const { baseAmount, otherAmount, selectedCurrency } = formik.values;
 
   const headerIcons: HeaderIcon[] = [
     {
@@ -48,13 +82,25 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
       icon: <PiMoneyWavy fill="var(--color-primary)" size={20} />,
       tooltipText: "Currency converter",
       onClick: () => null,
-      popoverComponent: (
+      popoverComponent: currencyFetchLoading ? (
+        <>Loading...</>
+      ) : (
         <CurrencyConverter
           userCurrency={trip.currency?.name}
-          countriesVisiting={trip.countries.map((country) => country.id)}
-          currencies={currencies}
           error={currencyFetchError}
-          loading={currencyFetchLoading}
+          baseAmount={baseAmount}
+          currencyOptions={currencyOptions}
+          selectedCurrencyCode={selectedCurrency}
+          otherAmount={otherAmount}
+          onBaseAmountChange={(amount) =>
+            formik.setFieldValue("baseAmount", amount)
+          }
+          onOtherAmountChange={(amount) =>
+            formik.setFieldValue("otherAmount", amount)
+          }
+          onCurrencyCodeChange={(currency) =>
+            formik.setFieldValue("selectedCurrency", currency)
+          }
         />
       ),
     },

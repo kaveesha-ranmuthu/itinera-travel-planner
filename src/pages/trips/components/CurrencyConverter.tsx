@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { useHotToast } from "../../../hooks/useHotToast";
-import { Currency } from "../hooks/getters/useGetCurrencies";
 import { SelectOption, SingleSelect } from "./Select";
 import TripsInput from "./TripsInput";
 import axios from "axios";
@@ -9,11 +8,15 @@ import { twMerge } from "tailwind-merge";
 import { round } from "lodash";
 
 interface CurrencyConverterProps {
-  countriesVisiting: string[];
   userCurrency?: string;
-  currencies: Currency[];
   error: Error | null;
-  loading: boolean;
+  baseAmount: number;
+  otherAmount: number;
+  selectedCurrencyCode: SelectOption;
+  onBaseAmountChange: (amount: number) => void;
+  onOtherAmountChange: (amount: number) => void;
+  onCurrencyCodeChange: (currency: SelectOption) => void;
+  currencyOptions: SelectOption[];
 }
 
 const convertCurrency = async (
@@ -43,34 +46,18 @@ const convertCurrency = async (
 };
 
 const CurrencyConverter: React.FC<CurrencyConverterProps> = ({
-  countriesVisiting,
   userCurrency,
-  currencies,
   error,
-  loading,
+  baseAmount,
+  onBaseAmountChange,
+  otherAmount,
+  onOtherAmountChange,
+  selectedCurrencyCode,
+  onCurrencyCodeChange,
+  currencyOptions,
 }) => {
   const { notify } = useHotToast();
   const { settings } = useAuth();
-
-  const currencyOptions: SelectOption[] = countriesVisiting
-    .map((country) => currencies.find((curr) => curr.id === country))
-    .filter(Boolean)
-    .map((currency) => ({
-      id: currency!.currencyCode,
-      name: currency!.currencyCode,
-    }))
-    .filter((curr) => curr.name !== userCurrency);
-
-  const [selectedCurrencyCode, setSelectedCurrencyCode] =
-    useState<SelectOption>(currencyOptions[1]);
-
-  const [baseAmount, setBaseAmount] = useState(1);
-  const [otherAmount, setOtherAmount] = useState(1);
-
-  // FIXME: Handle loading state
-  if (loading) {
-    return <>Loading...</>;
-  }
 
   if (!userCurrency || error) {
     notify("Something went wrong. Please try again later.", "error");
@@ -78,7 +65,7 @@ const CurrencyConverter: React.FC<CurrencyConverterProps> = ({
   }
 
   const handleCurrencyCodeChange = (currency: SelectOption) => {
-    setSelectedCurrencyCode(currency);
+    onCurrencyCodeChange(currency);
     handleBaseAmountChange(baseAmount, currency.name);
   };
 
@@ -93,7 +80,7 @@ const CurrencyConverter: React.FC<CurrencyConverterProps> = ({
         amount
       );
 
-      setOtherAmount(round(convertedAmount, 2));
+      onOtherAmountChange(round(convertedAmount, 2));
     } catch {
       notify("Something went wrong. Please try again.", "error");
     }
@@ -107,7 +94,7 @@ const CurrencyConverter: React.FC<CurrencyConverterProps> = ({
         amount
       );
 
-      setBaseAmount(round(convertedAmount, 2));
+      onBaseAmountChange(round(convertedAmount, 2));
     } catch {
       notify("Something went wrong. Please try again.", "error");
     }
@@ -126,7 +113,7 @@ const CurrencyConverter: React.FC<CurrencyConverterProps> = ({
           defaultValue={baseAmount}
           onInputChange={(amount) => {
             handleBaseAmountChange(amount);
-            setBaseAmount(amount);
+            onBaseAmountChange(amount);
           }}
         />
         <span>=</span>
@@ -137,7 +124,7 @@ const CurrencyConverter: React.FC<CurrencyConverterProps> = ({
           defaultValue={otherAmount}
           onInputChange={(amount) => {
             handleOtherAmountChange(amount);
-            setOtherAmount(amount);
+            onOtherAmountChange(amount);
           }}
         />
       </div>
