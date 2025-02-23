@@ -75,7 +75,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
       popoverComponent: (
         <CurrencyConverter
           userCurrency={trip.currency?.name}
-          countriesVisiting={trip.countries.map((country) => country.name)}
+          countriesVisiting={trip.countries.map((country) => country.id)}
           currencies={currencies}
           error={currencyFetchError}
           loading={currencyFetchLoading}

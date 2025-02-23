@@ -31,8 +31,6 @@ const convertCurrency = async (
       `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${base.toLowerCase()}.json`
     );
 
-    console.log(response);
-
     const rate = response.data[base.toLowerCase()][target.toLowerCase()];
     if (!rate) {
       throw new Error("Failed to fetch currency conversion rate.");
@@ -55,7 +53,7 @@ const CurrencyConverter: React.FC<CurrencyConverterProps> = ({
   const { settings } = useAuth();
 
   const currencyOptions: SelectOption[] = countriesVisiting
-    .map((country) => currencies.find((curr) => curr.country === country))
+    .map((country) => currencies.find((curr) => curr.id === country))
     .filter(Boolean)
     .map((currency) => ({
       id: currency!.currencyCode,

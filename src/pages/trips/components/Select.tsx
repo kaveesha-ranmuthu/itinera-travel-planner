@@ -14,7 +14,7 @@ import { FontFamily } from "../../../types";
 import { twMerge } from "tailwind-merge";
 
 export type SelectOption = {
-  id: string | number;
+  id: string;
   name: string;
   otherInfo?: { [x in string]: string };
 };

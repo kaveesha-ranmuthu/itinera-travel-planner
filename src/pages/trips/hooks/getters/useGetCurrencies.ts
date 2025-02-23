@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import uniqBy from "lodash/uniqBy";
 import { sortBy } from "lodash";
 
 export type Currency = {
@@ -26,6 +25,7 @@ export const useGetCurrencies = () => {
                 currencies: {
                   [key: string]: { symbol: string };
                 };
+                cca2: string;
                 name: { common: string };
               }) => {
                 if (
@@ -38,7 +38,7 @@ export const useGetCurrencies = () => {
                 const symbol = country.currencies[currencyCode]?.symbol || "";
 
                 return {
-                  id: currencyCode,
+                  id: country.cca2,
                   currencyCode,
                   symbol,
                   country: country.name.common,
@@ -49,8 +49,7 @@ export const useGetCurrencies = () => {
           "currencyCode"
         ) as Currency[];
 
-        const uniqueCurrencies = uniqBy(currencyData, "id");
-        setCurrencies(uniqueCurrencies);
+        setCurrencies(currencyData);
       })
       .catch(() => {
         setError(new Error("Failed to fetch currencies."));

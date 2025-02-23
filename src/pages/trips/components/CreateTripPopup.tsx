@@ -14,6 +14,7 @@ import { useAuth } from "../../../hooks/useAuth";
 import { useGetCountries } from "../hooks/getters/useGetCountries";
 import { useGetCurrencies } from "../hooks/getters/useGetCurrencies";
 import moment from "moment";
+import { uniqBy } from "lodash";
 
 interface CreateTripPopupProps {
   isOpen: boolean;
@@ -35,7 +36,8 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
   const { settings } = useAuth();
   const { countries, error: countryFetchError } = useGetCountries();
   const { currencies, error: currencyFetchError } = useGetCurrencies();
-  const formattedCurrencies = currencies.map((currency) => ({
+  const uniqueCurrencies = uniqBy(currencies, "currencyCode");
+  const formattedCurrencies = uniqueCurrencies.map((currency) => ({
     id: currency.currencyCode,
     name: currency.currencyCode,
     otherInfo: {

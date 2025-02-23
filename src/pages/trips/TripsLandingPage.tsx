@@ -49,7 +49,7 @@ const TripsLandingPage = () => {
     return <ErrorPage />;
   }
 
-  const sortedTrips = sortBy(trips, "createdAt").reverse();
+  const sortedTrips = sortBy(trips, "createdAt");
 
   const handleCreateNewTrip = async (trip: Trip) => {
     const error = await createNewTrip(trip);
