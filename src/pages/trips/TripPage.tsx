@@ -8,6 +8,7 @@ import useGetTrip from "./hooks/getters/useGetTrip";
 import Header from "./components/sections/Header";
 import TripHeader from "./components/sections/TripHeader";
 import HeaderIcons from "./components/sections/HeaderIcons";
+import Transport from "./components/sections/Transport";
 
 const TripPage = () => {
   const { tripId } = useParams();
@@ -47,6 +48,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
           trip={trip}
           onEditButtonClick={() => setIsEditTripModalOpen(true)}
         />
+        <Transport />
       </div>
       <CreateTripPopup
         isOpen={isEditTripModalOpen}
