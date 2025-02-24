@@ -1,4 +1,4 @@
-import { Field, FieldArray, Form, Formik, useFormik } from "formik";
+import { Field, FieldArray, Form, Formik } from "formik";
 import { GoCopy } from "react-icons/go";
 import { IoTrashBinOutline } from "react-icons/io5";
 import Checkbox from "../Checkbox";
@@ -54,7 +54,7 @@ const Transport: React.FC<TransportProps> = ({
           ],
         }}
         onSubmit={async (values) => {}}
-        component={({ values }) => {
+        component={({ values, setFieldValue }) => {
           return (
             <Form className="mt-2">
               <FieldArray
@@ -73,7 +73,22 @@ const Transport: React.FC<TransportProps> = ({
                         <Table.Row>
                           <Table.Cell>
                             <div className="flex items-center space-x-4 w-72">
-                              <Checkbox checked={true} />
+                              <Checkbox
+                                checked={values.data.every(
+                                  (row) => row.checked
+                                )}
+                                onClick={() => {
+                                  const allChecked = values.data.every(
+                                    (row) => row.checked
+                                  );
+                                  values.data.forEach((row, index) => {
+                                    setFieldValue(
+                                      `data.${index}.checked`,
+                                      !allChecked
+                                    );
+                                  });
+                                }}
+                              />
                               <span>name</span>
                             </div>
                           </Table.Cell>
@@ -94,7 +109,15 @@ const Transport: React.FC<TransportProps> = ({
                               <Table.Cell className="group-last:border-b-0">
                                 <div className="flex items-center space-x-4">
                                   <span>
-                                    <Checkbox checked={row.checked} />
+                                    <Checkbox
+                                      checked={row.checked}
+                                      onClick={() =>
+                                        setFieldValue(
+                                          `data.${index}.checked`,
+                                          !row.checked
+                                        )
+                                      }
+                                    />
                                   </span>
                                   <span className="w-full">
                                     <Field
