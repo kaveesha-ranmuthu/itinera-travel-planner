@@ -152,14 +152,23 @@ const Transport: React.FC<TransportProps> = ({
                                 />
                               </Table.Cell>
                               <Table.Cell className="group-last:border-b-0">
-                                <div className="text-center space-x-3">
-                                  <button className="cursor-pointer hover:opacity-60 transition ease-in-out duration-300">
+                                <div className="space-x-3 flex items-center justify-center">
+                                  <button
+                                    type="button"
+                                    onClick={() => arrayHelpers.push(row)}
+                                    className="cursor-pointer hover:opacity-60 transition ease-in-out duration-300"
+                                  >
                                     <GoCopy
                                       stroke="var(--color-secondary)"
                                       size={20}
                                     />
                                   </button>
-                                  <button className="cursor-pointer hover:opacity-60 transition ease-in-out duration-300">
+                                  <button
+                                    type="button"
+                                    onClick={() => arrayHelpers.remove(index)}
+                                    disabled={values.data.length === 1}
+                                    className="cursor-pointer hover:opacity-60 transition ease-in-out duration-300 disabled:cursor-default disabled:opacity-50"
+                                  >
                                     <IoTrashBinOutline
                                       stroke="var(--color-secondary)"
                                       size={20}
