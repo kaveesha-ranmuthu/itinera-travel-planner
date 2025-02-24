@@ -1,8 +1,6 @@
 import { PropsWithChildren } from "react";
 import { twMerge } from "tailwind-merge";
 
-interface Props extends React.HTMLAttributes<HTMLTableElement> {}
-
 const TableWrapper: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <table className="text-secondary w-full border border-secondary rounded-2xl border-separate border-spacing-0 ">
@@ -19,11 +17,15 @@ const Body: React.FC<PropsWithChildren> = ({ children }) => {
   return <tbody>{children}</tbody>;
 };
 
-const Row: React.FC<PropsWithChildren<Props>> = ({ children, className }) => {
+const Row: React.FC<
+  PropsWithChildren<React.HTMLAttributes<HTMLTableElement>>
+> = ({ children, className }) => {
   return <tr className={className}>{children}</tr>;
 };
 
-const Cell: React.FC<PropsWithChildren<Props>> = ({ children, className }) => {
+const Cell: React.FC<
+  PropsWithChildren<React.HTMLAttributes<HTMLTableElement>>
+> = ({ children, className }) => {
   return (
     <td
       className={twMerge(
@@ -38,8 +40,8 @@ const Cell: React.FC<PropsWithChildren<Props>> = ({ children, className }) => {
 interface TableComponent extends React.FC<PropsWithChildren> {
   Header: React.FC<PropsWithChildren>;
   Body: React.FC<PropsWithChildren>;
-  Row: React.FC<PropsWithChildren<Props>>;
-  Cell: React.FC<PropsWithChildren<Props>>;
+  Row: React.FC<PropsWithChildren<React.HTMLAttributes<HTMLTableElement>>>;
+  Cell: React.FC<PropsWithChildren<React.HTMLAttributes<HTMLTableElement>>>;
 }
 
 const Table = TableWrapper as TableComponent;
