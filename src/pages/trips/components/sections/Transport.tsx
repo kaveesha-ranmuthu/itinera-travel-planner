@@ -4,6 +4,11 @@ import { IoTrashBinOutline } from "react-icons/io5";
 import Checkbox from "../Checkbox";
 import SmallButton from "../SmallButton";
 import Table from "../Table";
+import { PiSealQuestionFill } from "react-icons/pi";
+import { twMerge } from "tailwind-merge";
+import { useAuth } from "../../../../hooks/useAuth";
+import { FontFamily } from "../../../../types";
+import SimpleTooltip from "../SimpleTooltip";
 
 type Data = {
   name: string;
@@ -26,6 +31,7 @@ const Transport: React.FC<TransportProps> = ({
   startDate,
   endDate,
 }) => {
+  const { settings } = useAuth();
   const defaultRow: Data = {
     name: "",
     totalPrice: 0,
@@ -38,7 +44,23 @@ const Transport: React.FC<TransportProps> = ({
 
   return (
     <div className="text-secondary">
-      <h1 className="text-3xl">transport</h1>
+      <div className="flex items-center space-x-3">
+        <h1 className="text-3xl">transport</h1>
+        <SimpleTooltip
+          content="Add your transport options and tick the checkboxes to see your estimated total cost."
+          theme="dark"
+          side="top"
+          width="w-50"
+        >
+          <PiSealQuestionFill
+            size={20}
+            className={twMerge(
+              "opacity-50 cursor-pointer",
+              settings?.font === FontFamily.HANDWRITTEN ? "mt-2.5" : ""
+            )}
+          />
+        </SimpleTooltip>
+      </div>
       <Formik
         initialValues={{
           data: [
