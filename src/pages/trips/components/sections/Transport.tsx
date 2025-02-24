@@ -1,4 +1,4 @@
-import { Field, FieldArray, Form, Formik } from "formik";
+import { Field, FieldArray, Form, Formik, FormikHelpers } from "formik";
 import { GoCopy } from "react-icons/go";
 import { IoTrashBinOutline } from "react-icons/io5";
 import Checkbox from "../Checkbox";
@@ -9,6 +9,7 @@ import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { FontFamily } from "../../../../types";
 import SimpleTooltip from "../SimpleTooltip";
+import { debounce } from "lodash";
 
 type Data = {
   name: string;
@@ -26,6 +27,8 @@ interface TransportProps {
   endDate: string;
 }
 
+const LOCAL_STORAGE_KEY = "transportData";
+
 const Transport: React.FC<TransportProps> = ({
   userCurrency,
   startDate,
@@ -41,6 +44,10 @@ const Transport: React.FC<TransportProps> = ({
     to: "",
     checked: false,
   };
+
+  const handleFormSubmit = debounce((values: { data: Data[] }) => {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(values));
+  }, 500);
 
   return (
     <div className="text-secondary">
@@ -63,22 +70,14 @@ const Transport: React.FC<TransportProps> = ({
       </div>
       <Formik
         initialValues={{
-          data: [
-            {
-              name: "",
-              totalPrice: 0,
-              departureTime: `${startDate}T00:00`,
-              arrivalTime: `${endDate}T00:00`,
-              from: "",
-              to: "",
-              checked: false,
-            },
-          ],
+          data: [defaultRow],
         }}
-        onSubmit={async (values) => {}}
-        component={({ values, setFieldValue }) => {
+        onSubmit={async (values) => {
+          handleFormSubmit(values);
+        }}
+        component={({ values, setFieldValue, submitForm }) => {
           return (
-            <Form className="mt-2">
+            <Form className="mt-2" onChange={submitForm}>
               <FieldArray
                 name="data"
                 render={(arrayHelpers) => (
@@ -103,7 +102,7 @@ const Transport: React.FC<TransportProps> = ({
                                   const allChecked = values.data.every(
                                     (row) => row.checked
                                   );
-                                  values.data.forEach((row, index) => {
+                                  values.data.forEach((index) => {
                                     setFieldValue(
                                       `data.${index}.checked`,
                                       !allChecked

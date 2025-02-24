@@ -1,9 +1,7 @@
 import { PropsWithChildren } from "react";
 import { twMerge } from "tailwind-merge";
 
-interface Props {
-  className?: string;
-}
+interface Props extends React.HTMLAttributes<HTMLTableElement> {}
 
 const TableWrapper: React.FC<PropsWithChildren> = ({ children }) => {
   return (
