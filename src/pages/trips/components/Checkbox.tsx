@@ -1,5 +1,4 @@
 import React from "react";
-import { Checkbox as HeadlessCheckbox } from "@headlessui/react";
 import { twMerge } from "tailwind-merge";
 
 interface CheckboxProps {

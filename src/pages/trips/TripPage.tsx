@@ -48,7 +48,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
           trip={trip}
           onEditButtonClick={() => setIsEditTripModalOpen(true)}
         />
-        <Transport />
+        <Transport userCurrency={trip.currency?.otherInfo?.symbol} />
       </div>
       <CreateTripPopup
         isOpen={isEditTripModalOpen}
