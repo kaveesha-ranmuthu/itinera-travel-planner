@@ -1,11 +1,6 @@
 import { PropsWithChildren } from "react";
 import { twMerge } from "tailwind-merge";
 
-export type Data = {
-  components: React.ReactNode[];
-  checked: boolean;
-};
-
 interface Props {
   className?: string;
 }
