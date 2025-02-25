@@ -10,8 +10,12 @@ import { useAuth } from "../../../../hooks/useAuth";
 import { FontFamily } from "../../../../types";
 import SimpleTooltip from "../SimpleTooltip";
 import { debounce } from "lodash";
+import { useEffect } from "react";
+import { useSaveTransport } from "../../hooks/setters/useSaveTransport";
+import { useHotToast } from "../../../../hooks/useHotToast";
 
 export interface TransportRow {
+  id?: string;
   name: string;
   totalPrice: number;
   departureTime: string;
@@ -25,16 +29,21 @@ interface TransportProps {
   userCurrency?: string;
   startDate: string;
   endDate: string;
+  tripId: string;
 }
 
-const LOCAL_STORAGE_KEY = "transportData";
+const LOCAL_STORAGE_KEY = (tripId: string) => `unsaved-transport-${tripId}`;
+const FINAL_SAVE_KEY = (tripId: string) => `final-save-${tripId}`;
 
 const Transport: React.FC<TransportProps> = ({
   userCurrency,
   startDate,
   endDate,
+  tripId,
 }) => {
   const { settings } = useAuth();
+  const { saveTransport } = useSaveTransport();
+  const { notify } = useHotToast();
   const defaultRow: TransportRow = {
     name: "",
     totalPrice: 0,
@@ -46,8 +55,40 @@ const Transport: React.FC<TransportProps> = ({
   };
 
   const handleFormSubmit = debounce((values: { data: TransportRow[] }) => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(values));
+    localStorage.setItem(LOCAL_STORAGE_KEY(tripId), JSON.stringify(values));
   }, 500);
+
+  useEffect(() => {
+    const finalSaveData = localStorage.getItem(FINAL_SAVE_KEY(tripId));
+    if (finalSaveData) {
+      saveTransport(tripId, JSON.parse(finalSaveData).data).then(() => {
+        localStorage.removeItem(FINAL_SAVE_KEY(tripId)); // ✅ Clean after sync
+      });
+    }
+
+    const interval = setInterval(async () => {
+      const unsavedData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+      if (unsavedData) {
+        await saveTransport(tripId, JSON.parse(unsavedData).data);
+      }
+    }, 10 * 60 * 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [saveTransport, tripId]);
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      const unsavedData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+      if (unsavedData) {
+        localStorage.setItem(FINAL_SAVE_KEY(tripId), unsavedData);
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [tripId]);
 
   return (
     <div className="text-secondary">

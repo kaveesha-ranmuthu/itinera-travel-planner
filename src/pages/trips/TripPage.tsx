@@ -52,6 +52,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
           userCurrency={trip.currency?.otherInfo?.symbol}
           startDate={trip.startDate}
           endDate={trip.endDate}
+          tripId={trip.id}
         />
       </div>
       <CreateTripPopup

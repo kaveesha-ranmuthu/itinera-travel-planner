@@ -29,7 +29,7 @@ export function useCreateNewTrip() {
         currency,
         numberOfPeople,
         imageData: imageData || null,
-        subCollections: [],
+        subCollections: ["transport"],
         currentSavings: 0,
         updatedAt: new Date(),
       });
