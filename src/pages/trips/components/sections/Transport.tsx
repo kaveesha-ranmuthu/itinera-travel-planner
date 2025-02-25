@@ -11,7 +11,7 @@ import { FontFamily } from "../../../../types";
 import SimpleTooltip from "../SimpleTooltip";
 import { debounce } from "lodash";
 
-type Data = {
+export interface TransportRow {
   name: string;
   totalPrice: number;
   departureTime: string;
@@ -19,7 +19,7 @@ type Data = {
   from: string;
   to: string;
   checked: boolean;
-};
+}
 
 interface TransportProps {
   userCurrency?: string;
@@ -35,7 +35,7 @@ const Transport: React.FC<TransportProps> = ({
   endDate,
 }) => {
   const { settings } = useAuth();
-  const defaultRow: Data = {
+  const defaultRow: TransportRow = {
     name: "",
     totalPrice: 0,
     departureTime: `${startDate}T00:00`,
@@ -45,7 +45,7 @@ const Transport: React.FC<TransportProps> = ({
     checked: false,
   };
 
-  const handleFormSubmit = debounce((values: { data: Data[] }) => {
+  const handleFormSubmit = debounce((values: { data: TransportRow[] }) => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(values));
   }, 500);
 
@@ -145,7 +145,6 @@ const Transport: React.FC<TransportProps> = ({
                                       type="text"
                                       className="focus:outline-0 w-full "
                                       name={`data.${index}.name`}
-                                      defaultValue={row.name}
                                     />
                                   </span>
                                 </div>
@@ -159,7 +158,6 @@ const Transport: React.FC<TransportProps> = ({
                                     type="number"
                                     className="focus:outline-0 ml-2 w-full"
                                     name={`data.${index}.totalPrice`}
-                                    defaultValue={row.totalPrice}
                                   />
                                 </div>
                               </Table.Cell>
@@ -168,7 +166,6 @@ const Transport: React.FC<TransportProps> = ({
                                   type="datetime-local"
                                   className="focus:outline-0 w-full"
                                   name={`data.${index}.departureTime`}
-                                  defaultValue={row.departureTime}
                                 />
                               </Table.Cell>
                               <Table.Cell className="group-last:border-b-0">
@@ -176,7 +173,6 @@ const Transport: React.FC<TransportProps> = ({
                                   type="datetime-local"
                                   className="focus:outline-0 w-full"
                                   name={`data.${index}.arrivalTime`}
-                                  defaultValue={row.arrivalTime}
                                 />
                               </Table.Cell>
                               <Table.Cell className="group-last:border-b-0">
@@ -184,7 +180,6 @@ const Transport: React.FC<TransportProps> = ({
                                   type="text"
                                   className="focus:outline-0 w-full"
                                   name={`data.${index}.from`}
-                                  defaultValue={row.from}
                                 />
                               </Table.Cell>
                               <Table.Cell className="group-last:border-b-0">
@@ -192,7 +187,6 @@ const Transport: React.FC<TransportProps> = ({
                                   type="text"
                                   className="focus:outline-0 w-full"
                                   name={`data.${index}.to`}
-                                  defaultValue={row.to}
                                 />
                               </Table.Cell>
                               <Table.Cell className="group-last:border-b-0">
