@@ -10,9 +10,9 @@ import { useAuth } from "../../../../hooks/useAuth";
 import { FontFamily } from "../../../../types";
 import SimpleTooltip from "../SimpleTooltip";
 import { debounce } from "lodash";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSaveTransport } from "../../hooks/setters/useSaveTransport";
-import { useHotToast } from "../../../../hooks/useHotToast";
+import { useGetTransport } from "../../hooks/getters/useGetTransport";
 
 export interface TransportRow {
   id?: string;
@@ -33,7 +33,6 @@ interface TransportProps {
 }
 
 const LOCAL_STORAGE_KEY = (tripId: string) => `unsaved-transport-${tripId}`;
-const FINAL_SAVE_KEY = (tripId: string) => `final-save-${tripId}`;
 
 const Transport: React.FC<TransportProps> = ({
   userCurrency,
@@ -43,7 +42,9 @@ const Transport: React.FC<TransportProps> = ({
 }) => {
   const { settings } = useAuth();
   const { saveTransport } = useSaveTransport();
-  const { notify } = useHotToast();
+  const { error, loading, transportRows } = useGetTransport(tripId);
+  const hasSaved = useRef(false);
+
   const defaultRow: TransportRow = {
     name: "",
     totalPrice: 0,
@@ -59,13 +60,6 @@ const Transport: React.FC<TransportProps> = ({
   }, 500);
 
   useEffect(() => {
-    const finalSaveData = localStorage.getItem(FINAL_SAVE_KEY(tripId));
-    if (finalSaveData) {
-      saveTransport(tripId, JSON.parse(finalSaveData).data).then(() => {
-        localStorage.removeItem(FINAL_SAVE_KEY(tripId)); // ✅ Clean after sync
-      });
-    }
-
     const interval = setInterval(async () => {
       const unsavedData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
       if (unsavedData) {
@@ -79,16 +73,25 @@ const Transport: React.FC<TransportProps> = ({
   }, [saveTransport, tripId]);
 
   useEffect(() => {
-    const handleBeforeUnload = () => {
-      const unsavedData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
-      if (unsavedData) {
-        localStorage.setItem(FINAL_SAVE_KEY(tripId), unsavedData);
-      }
-    };
+    const finalSaveData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [tripId]);
+    if (finalSaveData && !hasSaved.current) {
+      hasSaved.current = true; // ✅ Mark as saved
+      saveTransport(tripId, JSON.parse(finalSaveData).data).then(() => {
+        localStorage.removeItem(LOCAL_STORAGE_KEY(tripId));
+        hasSaved.current = false; // Reset after successful save
+      });
+    }
+  }, [saveTransport, tripId]);
+
+  // TODO: Make these look better
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error...</div>;
+  }
 
   return (
     <div className="text-secondary">
@@ -111,7 +114,7 @@ const Transport: React.FC<TransportProps> = ({
       </div>
       <Formik
         initialValues={{
-          data: [defaultRow],
+          data: transportRows.length ? transportRows : [defaultRow],
         }}
         onSubmit={async (values) => {
           handleFormSubmit(values);
@@ -234,7 +237,10 @@ const Transport: React.FC<TransportProps> = ({
                                 <div className="space-x-3 flex items-center justify-center">
                                   <button
                                     type="button"
-                                    onClick={() => arrayHelpers.push(row)}
+                                    onClick={() => {
+                                      arrayHelpers.push(row);
+                                      submitForm();
+                                    }}
                                     className="cursor-pointer hover:opacity-60 transition ease-in-out duration-300"
                                   >
                                     <GoCopy
@@ -244,7 +250,10 @@ const Transport: React.FC<TransportProps> = ({
                                   </button>
                                   <button
                                     type="button"
-                                    onClick={() => arrayHelpers.remove(index)}
+                                    onClick={() => {
+                                      arrayHelpers.remove(index);
+                                      submitForm();
+                                    }}
                                     disabled={values.data.length === 1}
                                     className="cursor-pointer hover:opacity-60 transition ease-in-out duration-300 disabled:cursor-default disabled:opacity-50"
                                   >

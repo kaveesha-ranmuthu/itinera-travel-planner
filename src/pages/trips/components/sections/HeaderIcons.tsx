@@ -58,9 +58,7 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
       selectedCurrency: currencyOptions[0],
     },
     enableReinitialize: true,
-    onSubmit: async (values) => {
-      console.log(values);
-    },
+    onSubmit: async () => {},
   });
 
   const { baseAmount, otherAmount, selectedCurrency } = formik.values;
