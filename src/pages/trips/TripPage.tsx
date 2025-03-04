@@ -9,6 +9,7 @@ import Header from "./components/sections/Header";
 import TripHeader from "./components/sections/TripHeader";
 import HeaderIcons from "./components/sections/HeaderIcons";
 import Transport from "./components/sections/Transport";
+import { twMerge } from "tailwind-merge";
 
 const TripPage = () => {
   const { tripId } = useParams();
@@ -38,7 +39,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
   }
 
   return (
-    <div className={settings?.font}>
+    <div className={twMerge(settings?.font, "pb-10")}>
       <Header />
       <div className="px-10">
         <TripHeader trip={trip} />

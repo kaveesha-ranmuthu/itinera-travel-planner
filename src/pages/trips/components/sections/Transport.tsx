@@ -9,7 +9,7 @@ import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { FontFamily } from "../../../../types";
 import SimpleTooltip from "../SimpleTooltip";
-import { debounce } from "lodash";
+import { debounce, sortBy } from "lodash";
 import { useEffect, useRef } from "react";
 import { useSaveTransport } from "../../hooks/setters/useSaveTransport";
 import { useGetTransport } from "../../hooks/getters/useGetTransport";
@@ -23,6 +23,7 @@ export interface TransportRow {
   from: string;
   to: string;
   checked: boolean;
+  createdAt: string;
 }
 
 interface TransportProps {
@@ -41,7 +42,7 @@ const Transport: React.FC<TransportProps> = ({
   tripId,
 }) => {
   const { settings } = useAuth();
-  const { saveTransport } = useSaveTransport();
+  const { saveTransport, duplicateTransportRow } = useSaveTransport();
   const { error, loading, transportRows } = useGetTransport(tripId);
   const hasSaved = useRef(false);
 
@@ -53,6 +54,7 @@ const Transport: React.FC<TransportProps> = ({
     from: "",
     to: "",
     checked: false,
+    createdAt: new Date().toISOString(),
   };
 
   const handleFormSubmit = debounce((values: { data: TransportRow[] }) => {
@@ -65,7 +67,7 @@ const Transport: React.FC<TransportProps> = ({
       if (unsavedData) {
         await saveTransport(tripId, JSON.parse(unsavedData).data);
       }
-    }, 10 * 60 * 1000);
+    }, 10 * 60 * 1000); // 10 * 60 * 1000
 
     return () => {
       clearInterval(interval);
@@ -93,6 +95,9 @@ const Transport: React.FC<TransportProps> = ({
     return <div>Error...</div>;
   }
 
+  const sortedTransportRows = sortBy(transportRows, (row) => row.createdAt);
+  console.log(sortedTransportRows);
+
   return (
     <div className="text-secondary">
       <div className="flex items-center space-x-3">
@@ -114,7 +119,9 @@ const Transport: React.FC<TransportProps> = ({
       </div>
       <Formik
         initialValues={{
-          data: transportRows.length ? transportRows : [defaultRow],
+          data: sortedTransportRows.length
+            ? sortedTransportRows
+            : [{ ...defaultRow, createdAt: new Date().toISOString() }],
         }}
         onSubmit={async (values) => {
           handleFormSubmit(values);
@@ -128,7 +135,12 @@ const Transport: React.FC<TransportProps> = ({
                   <div>
                     <div className="mb-4">
                       <SmallButton
-                        onClick={() => arrayHelpers.push(defaultRow)}
+                        onClick={() =>
+                          arrayHelpers.push({
+                            ...defaultRow,
+                            createdAt: new Date().toISOString(),
+                          })
+                        }
                       >
                         + Add item
                       </SmallButton>
@@ -238,8 +250,12 @@ const Transport: React.FC<TransportProps> = ({
                                   <button
                                     type="button"
                                     onClick={() => {
-                                      arrayHelpers.push(row);
-                                      submitForm();
+                                      const newRow = {
+                                        ...row,
+                                        createdAt: new Date().toISOString(),
+                                      };
+                                      arrayHelpers.push(newRow);
+                                      duplicateTransportRow(tripId, newRow);
                                     }}
                                     className="cursor-pointer hover:opacity-60 transition ease-in-out duration-300"
                                   >
@@ -252,7 +268,6 @@ const Transport: React.FC<TransportProps> = ({
                                     type="button"
                                     onClick={() => {
                                       arrayHelpers.remove(index);
-                                      submitForm();
                                     }}
                                     disabled={values.data.length === 1}
                                     className="cursor-pointer hover:opacity-60 transition ease-in-out duration-300 disabled:cursor-default disabled:opacity-50"

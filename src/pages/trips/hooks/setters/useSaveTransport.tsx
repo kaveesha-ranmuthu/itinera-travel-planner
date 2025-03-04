@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { doc, writeBatch, collection } from "firebase/firestore";
+import { doc, writeBatch, collection, setDoc } from "firebase/firestore";
 import { db, auth } from "../../../../firebase-config";
 import { TransportRow } from "../../components/sections/Transport";
 
@@ -17,8 +17,12 @@ export const useSaveTransport = () => {
         );
 
         transportRows.forEach((row) => {
-          const rowRef = doc(transportRef, row.id || crypto.randomUUID());
-          batch.set(rowRef, { ...row, updatedAt: new Date() }, { merge: true });
+          const rowRef = doc(transportRef, row.id ?? crypto.randomUUID());
+          batch.set(
+            rowRef,
+            { ...row, createdAt: row.createdAt },
+            { merge: true }
+          );
         });
 
         await batch.commit();
@@ -31,5 +35,30 @@ export const useSaveTransport = () => {
     []
   );
 
-  return { saveTransport };
+  const duplicateTransportRow = useCallback(
+    async (tripId: string, row: TransportRow) => {
+      const user = auth.currentUser;
+      if (!user) throw new Error("User not authenticated.");
+
+      try {
+        const transportRef = collection(
+          db,
+          `users/${user.uid}/trips/${tripId}/transport`
+        );
+        const newRowRef = doc(transportRef, crypto.randomUUID());
+
+        const duplicatedRow = {
+          ...row,
+          id: newRowRef.id,
+        };
+
+        await setDoc(newRowRef, duplicatedRow);
+      } catch (error) {
+        throw new Error(`Error duplicating transport row: ${error}`);
+      }
+    },
+    []
+  );
+
+  return { saveTransport, duplicateTransportRow };
 };
