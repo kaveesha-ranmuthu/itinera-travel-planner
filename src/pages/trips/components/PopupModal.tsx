@@ -3,7 +3,7 @@ import React, { PropsWithChildren } from "react";
 import { useAuth } from "../../../hooks/useAuth";
 import { twMerge } from "tailwind-merge";
 
-interface PopupModalProps {
+export interface PopupModalProps {
   isOpen: boolean;
   onClose: () => void;
   modalWidth?: string;

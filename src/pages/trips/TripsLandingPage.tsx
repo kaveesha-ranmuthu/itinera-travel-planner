@@ -3,7 +3,6 @@ import { deleteDoc, doc } from "firebase/firestore";
 import { sortBy } from "lodash";
 import moment from "moment";
 import React, { useState } from "react";
-import { CiWarning } from "react-icons/ci";
 import { GoCopy } from "react-icons/go";
 import { IoTrashBinOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
@@ -15,13 +14,13 @@ import { useHotToast } from "../../hooks/useHotToast";
 import { FontFamily } from "../../types";
 import ErrorPage from "../error/ErrorPage";
 import { LoadingState } from "../landing-page/LandingPage";
-import PopupModal from "./components/PopupModal";
+import CreateTripPopup from "./components/CreateTripPopup";
+import DeleteConfirmationModal from "./components/DeleteConfirmationModal";
+import Header from "./components/sections/Header";
 import { SelectOption } from "./components/Select";
 import { TripData, useGetTrips } from "./hooks/getters/useGetTrips";
-import useDuplicateTrip from "./hooks/setters/useDuplicateTrip";
-import CreateTripPopup from "./components/CreateTripPopup";
 import { useCreateNewTrip } from "./hooks/setters/useCreateNewTrip";
-import Header from "./components/sections/Header";
+import useDuplicateTrip from "./hooks/setters/useDuplicateTrip";
 
 export interface Trip {
   tripName: string;
@@ -119,7 +118,7 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
       : `${startDateFormat} - ${endDateFormat}`;
 
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
-  const { settings } = useAuth();
+
   const { notify } = useHotToast();
   const { duplicateTrip } = useDuplicateTrip();
 
@@ -176,48 +175,13 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
           </button>
         </div>
       </div>
-      <PopupModal
+      <DeleteConfirmationModal
         isOpen={showDeleteWarning}
         onClose={() => setShowDeleteWarning(false)}
-      >
-        <div className="flex items-start space-x-4">
-          <span
-            className={settings?.font === FontFamily.HANDWRITTEN ? "mt-1" : ""}
-          >
-            <CiWarning size={35} />
-          </span>
-          <div>
-            <div className="space-y-2">
-              <p className="text-2xl text-secondary">
-                Are you sure you want to delete "{tripName}"?
-              </p>
-
-              <p className="text-secondary/70">
-                Once deleted, this trip is gone forever. Are you sure you want
-                to continue?
-              </p>
-            </div>
-            <div className="space-x-4 mt-7">
-              <Button.Secondary
-                className={twMerge("normal-case not-italic", settings?.font)}
-                type="button"
-                onClick={() => deleteTrip(tripId)}
-              >
-                Delete
-              </Button.Secondary>
-              <Button.Primary
-                className={twMerge(
-                  "normal-case not-italic border border-secondary",
-                  settings?.font
-                )}
-                onClick={() => setShowDeleteWarning(false)}
-              >
-                Cancel
-              </Button.Primary>
-            </div>
-          </div>
-        </div>
-      </PopupModal>
+        title={`Are you sure you want to delete "${tripName}"?`}
+        description="Once deleted, this trip is gone forever. Are you sure you want to continue?"
+        onDelete={() => deleteTrip(tripId)}
+      />
     </>
   );
 };

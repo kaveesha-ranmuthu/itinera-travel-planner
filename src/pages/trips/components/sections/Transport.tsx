@@ -42,7 +42,8 @@ const Transport: React.FC<TransportProps> = ({
   tripId,
 }) => {
   const { settings } = useAuth();
-  const { saveTransport, duplicateTransportRow } = useSaveTransport();
+  const { saveTransport, duplicateTransportRow, deleteTransportRow } =
+    useSaveTransport();
   const { error, loading, transportRows } = useGetTransport(tripId);
   const hasSaved = useRef(false);
 
@@ -97,7 +98,6 @@ const Transport: React.FC<TransportProps> = ({
   }
 
   const sortedTransportRows = sortBy(transportRows, (row) => row.createdAt);
-  console.log(sortedTransportRows);
 
   return (
     <div className="text-secondary">
@@ -196,12 +196,13 @@ const Transport: React.FC<TransportProps> = ({
                                   <span>
                                     <Checkbox
                                       checked={row.checked}
-                                      onClick={() =>
+                                      onClick={() => {
                                         setFieldValue(
                                           `data.${index}.checked`,
                                           !row.checked
-                                        )
-                                      }
+                                        );
+                                        submitForm();
+                                      }}
                                     />
                                   </span>
                                   <span className="w-full">
@@ -277,6 +278,8 @@ const Transport: React.FC<TransportProps> = ({
                                     type="button"
                                     onClick={() => {
                                       arrayHelpers.remove(index);
+                                      submitForm();
+                                      deleteTransportRow(tripId, row.id);
                                     }}
                                     disabled={values.data.length === 1}
                                     className="cursor-pointer hover:opacity-60 transition ease-in-out duration-300 disabled:cursor-default disabled:opacity-50"

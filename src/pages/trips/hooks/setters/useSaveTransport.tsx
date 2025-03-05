@@ -1,5 +1,11 @@
 import { useCallback } from "react";
-import { doc, writeBatch, collection, setDoc } from "firebase/firestore";
+import {
+  doc,
+  writeBatch,
+  collection,
+  setDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import { db, auth } from "../../../../firebase-config";
 import { TransportRow } from "../../components/sections/Transport";
 
@@ -55,5 +61,23 @@ export const useSaveTransport = () => {
     []
   );
 
-  return { saveTransport, duplicateTransportRow };
+  const deleteTransportRow = useCallback(
+    async (tripId: string, rowId: string) => {
+      const user = auth.currentUser;
+      if (!user) throw new Error("User not authenticated.");
+
+      try {
+        const rowRef = doc(
+          db,
+          `users/${user.uid}/trips/${tripId}/transport/${rowId}`
+        );
+        await deleteDoc(rowRef);
+      } catch (error) {
+        throw new Error(`Error deleting transport row: ${error}`);
+      }
+    },
+    []
+  );
+
+  return { saveTransport, duplicateTransportRow, deleteTransportRow };
 };
