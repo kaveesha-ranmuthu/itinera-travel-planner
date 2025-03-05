@@ -17,7 +17,7 @@ export const useSaveTransport = () => {
         );
 
         transportRows.forEach((row) => {
-          const rowRef = doc(transportRef, row.id ?? crypto.randomUUID());
+          const rowRef = doc(transportRef, row.id);
           batch.set(
             rowRef,
             { ...row, createdAt: row.createdAt },
@@ -45,14 +45,9 @@ export const useSaveTransport = () => {
           db,
           `users/${user.uid}/trips/${tripId}/transport`
         );
-        const newRowRef = doc(transportRef, crypto.randomUUID());
+        const newRowRef = doc(transportRef, row.id);
 
-        const duplicatedRow = {
-          ...row,
-          id: newRowRef.id,
-        };
-
-        await setDoc(newRowRef, duplicatedRow);
+        await setDoc(newRowRef, row);
       } catch (error) {
         throw new Error(`Error duplicating transport row: ${error}`);
       }

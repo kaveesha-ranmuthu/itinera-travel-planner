@@ -15,7 +15,7 @@ import { useSaveTransport } from "../../hooks/setters/useSaveTransport";
 import { useGetTransport } from "../../hooks/getters/useGetTransport";
 
 export interface TransportRow {
-  id?: string;
+  id: string;
   name: string;
   totalPrice: number;
   departureTime: string;
@@ -47,6 +47,7 @@ const Transport: React.FC<TransportProps> = ({
   const hasSaved = useRef(false);
 
   const defaultRow: TransportRow = {
+    id: crypto.randomUUID(),
     name: "",
     totalPrice: 0,
     departureTime: `${startDate}T00:00`,
@@ -121,7 +122,13 @@ const Transport: React.FC<TransportProps> = ({
         initialValues={{
           data: sortedTransportRows.length
             ? sortedTransportRows
-            : [{ ...defaultRow, createdAt: new Date().toISOString() }],
+            : [
+                {
+                  ...defaultRow,
+                  id: crypto.randomUUID(),
+                  createdAt: new Date().toISOString(),
+                },
+              ],
         }}
         onSubmit={async (values) => {
           handleFormSubmit(values);
@@ -138,6 +145,7 @@ const Transport: React.FC<TransportProps> = ({
                         onClick={() =>
                           arrayHelpers.push({
                             ...defaultRow,
+                            id: crypto.randomUUID(),
                             createdAt: new Date().toISOString(),
                           })
                         }
@@ -252,6 +260,7 @@ const Transport: React.FC<TransportProps> = ({
                                     onClick={() => {
                                       const newRow = {
                                         ...row,
+                                        id: crypto.randomUUID(),
                                         createdAt: new Date().toISOString(),
                                       };
                                       arrayHelpers.push(newRow);

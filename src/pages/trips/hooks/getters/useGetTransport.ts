@@ -26,7 +26,6 @@ export const useGetTransport = (tripId: string) => {
       q,
       (snapshot) => {
         const rows: TransportRow[] = snapshot.docs.map((doc) => ({
-          id: doc.id,
           ...(doc.data() as TransportRow),
         }));
         setTransportRows(rows);
