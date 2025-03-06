@@ -194,7 +194,14 @@ const Transport: React.FC<TransportProps> = ({
                         {values.data.map((row, index) => {
                           return (
                             <Table.Row key={index} className="group">
-                              <Table.Cell className="group-last:border-b-0">
+                              <Table.Cell
+                                className={twMerge(
+                                  "group-last:border-b-0 group-last:rounded-bl-xl",
+                                  row.checked
+                                    ? "bg-green/20 transition ease-in-out duration-200"
+                                    : "bg-transparent transition ease-in-out duration-200"
+                                )}
+                              >
                                 <div className="flex items-center space-x-4">
                                   <span>
                                     <Checkbox
@@ -217,7 +224,14 @@ const Transport: React.FC<TransportProps> = ({
                                   </span>
                                 </div>
                               </Table.Cell>
-                              <Table.Cell className="group-last:border-b-0">
+                              <Table.Cell
+                                className={twMerge(
+                                  "group-last:border-b-0",
+                                  row.checked
+                                    ? "bg-green/20 transition ease-in-out duration-200"
+                                    : "bg-transparent transition ease-in-out duration-200"
+                                )}
+                              >
                                 <div className="flex w-full">
                                   {userCurrency && (
                                     <p className="w-fit">{userCurrency}</p>
@@ -229,35 +243,70 @@ const Transport: React.FC<TransportProps> = ({
                                   />
                                 </div>
                               </Table.Cell>
-                              <Table.Cell className="group-last:border-b-0">
+                              <Table.Cell
+                                className={twMerge(
+                                  "group-last:border-b-0",
+                                  row.checked
+                                    ? "bg-green/20 transition ease-in-out duration-200"
+                                    : "bg-transparent transition ease-in-out duration-200"
+                                )}
+                              >
                                 <Field
                                   type="datetime-local"
                                   className="focus:outline-0 w-full"
                                   name={`data.${index}.departureTime`}
                                 />
                               </Table.Cell>
-                              <Table.Cell className="group-last:border-b-0">
+                              <Table.Cell
+                                className={twMerge(
+                                  "group-last:border-b-0",
+                                  row.checked
+                                    ? "bg-green/20 transition ease-in-out duration-200"
+                                    : "bg-transparent transition ease-in-out duration-200"
+                                )}
+                              >
                                 <Field
                                   type="datetime-local"
                                   className="focus:outline-0 w-full"
                                   name={`data.${index}.arrivalTime`}
                                 />
                               </Table.Cell>
-                              <Table.Cell className="group-last:border-b-0">
+                              <Table.Cell
+                                className={twMerge(
+                                  "group-last:border-b-0",
+                                  row.checked
+                                    ? "bg-green/20 transition ease-in-out duration-200"
+                                    : "bg-transparent transition ease-in-out duration-200"
+                                )}
+                              >
                                 <Field
                                   type="text"
                                   className="focus:outline-0 w-full"
                                   name={`data.${index}.from`}
                                 />
                               </Table.Cell>
-                              <Table.Cell className="group-last:border-b-0">
+                              <Table.Cell
+                                className={twMerge(
+                                  "group-last:border-b-0",
+                                  row.checked
+                                    ? "bg-green/20 transition ease-in-out duration-200"
+                                    : "bg-transparent transition ease-in-out duration-200"
+                                )}
+                              >
                                 <Field
                                   type="text"
                                   className="focus:outline-0 w-full"
                                   name={`data.${index}.to`}
                                 />
                               </Table.Cell>
-                              <Table.Cell className="group-last:border-b-0">
+                              <Table.Cell
+                                className={twMerge(
+                                  "group-last:border-b-0",
+                                  row.checked
+                                    ? "bg-green/20 transition ease-in-out duration-200"
+                                    : "bg-transparent transition ease-in-out duration-200"
+                                )}
+                              >
                                 <div className="space-x-3 flex items-center justify-center">
                                   <button
                                     type="button"
