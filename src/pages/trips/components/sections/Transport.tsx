@@ -1,18 +1,19 @@
 import { Field, FieldArray, Form, Formik } from "formik";
+import { isEqual, orderBy } from "lodash";
+import { useEffect, useMemo, useState } from "react";
 import { GoCopy } from "react-icons/go";
+import { IoIosArrowRoundDown, IoIosArrowRoundUp } from "react-icons/io";
 import { IoTrashBinOutline } from "react-icons/io5";
-import Checkbox from "../Checkbox";
-import SmallButton from "../SmallButton";
-import Table from "../Table";
 import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { FontFamily } from "../../../../types";
-import SimpleTooltip from "../SimpleTooltip";
-import { debounce, isEqual, sortBy } from "lodash";
-import { useEffect, useRef, useState } from "react";
-import { useSaveTransport } from "../../hooks/setters/useSaveTransport";
 import { useGetTransport } from "../../hooks/getters/useGetTransport";
+import { useSaveTransport } from "../../hooks/setters/useSaveTransport";
+import Checkbox from "../Checkbox";
+import SimpleTooltip from "../SimpleTooltip";
+import SmallButton from "../SmallButton";
+import Table from "../Table";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 
 export interface TransportRow {
@@ -25,6 +26,17 @@ export interface TransportRow {
   to: string;
   checked: boolean;
   createdAt: string;
+}
+
+enum SortOptions {
+  ID = "id",
+  NAME = "name",
+  TOTAL_PRICE = "totalPrice",
+  DEPARTURE_TIME = "departureTime",
+  ARRIVAL_TIME = "arrivalTime",
+  FROM = "from",
+  TO = "to",
+  CREATED_AT = "createdAt",
 }
 
 interface TransportProps {
@@ -43,11 +55,23 @@ const Transport: React.FC<TransportProps> = ({
   tripId,
 }) => {
   const { settings } = useAuth();
-  const { saveTransport, duplicateTransportRow, deleteTransportRow } =
-    useSaveTransport();
+  const { saveTransport, deleteTransportRow } = useSaveTransport();
   const { error, loading, transportRows } = useGetTransport(tripId);
   const [deleteRow, setDeleteRow] = useState<TransportRow | null>(null);
-  const hasSaved = useRef(false);
+  const finalSaveData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+
+  const allRows: TransportRow[] = useMemo(
+    () => (finalSaveData ? JSON.parse(finalSaveData).data : transportRows),
+    [finalSaveData, transportRows]
+  );
+
+  const [sortOption, setSortOption] = useState<SortOptions>(
+    SortOptions.CREATED_AT
+  );
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [sortedTransportRows, setSortedTransportRows] = useState(
+    orderBy(allRows, sortOption, sortDirection)
+  );
 
   const defaultRow: TransportRow = {
     id: crypto.randomUUID(),
@@ -61,9 +85,13 @@ const Transport: React.FC<TransportProps> = ({
     createdAt: new Date().toISOString(),
   };
 
-  const handleFormSubmit = debounce((values: { data: TransportRow[] }) => {
+  const handleFormSubmit = (values: { data: TransportRow[] }) => {
     localStorage.setItem(LOCAL_STORAGE_KEY(tripId), JSON.stringify(values));
-  }, 500);
+  };
+
+  useEffect(() => {
+    setSortedTransportRows(() => orderBy(allRows, sortOption, sortDirection));
+  }, [allRows, sortOption, sortDirection]);
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -78,18 +106,6 @@ const Transport: React.FC<TransportProps> = ({
     };
   }, [saveTransport, tripId]);
 
-  useEffect(() => {
-    const finalSaveData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
-
-    if (finalSaveData && !hasSaved.current) {
-      hasSaved.current = true; // ✅ Mark as saved
-      saveTransport(tripId, JSON.parse(finalSaveData).data).then(() => {
-        localStorage.removeItem(LOCAL_STORAGE_KEY(tripId));
-        hasSaved.current = false; // Reset after successful save
-      });
-    }
-  }, [saveTransport, tripId]);
-
   // TODO: Make these look better
   if (loading) {
     return <div>Loading...</div>;
@@ -99,7 +115,19 @@ const Transport: React.FC<TransportProps> = ({
     return <div>Error...</div>;
   }
 
-  const sortedTransportRows = sortBy(transportRows, (row) => row.createdAt);
+  const setSorting = (clickedOption: SortOptions) => {
+    if (sortOption === clickedOption) {
+      if (sortDirection === "asc") {
+        setSortDirection("desc");
+      } else if (sortDirection === "desc") {
+        setSortDirection("asc");
+        setSortOption(SortOptions.CREATED_AT);
+      }
+    } else {
+      setSortDirection("asc");
+      setSortOption(clickedOption);
+    }
+  };
 
   return (
     <div className="text-secondary">
@@ -132,6 +160,7 @@ const Transport: React.FC<TransportProps> = ({
                 },
               ],
         }}
+        enableReinitialize={true}
         onSubmit={async (values) => {
           handleFormSubmit(values);
         }}
@@ -177,7 +206,27 @@ const Transport: React.FC<TransportProps> = ({
                                   submitForm();
                                 }}
                               />
-                              <span>name</span>
+                              <button
+                                type="button"
+                                className="cursor-pointer w-full items-center flex justify-between"
+                                onClick={() => setSorting(SortOptions.NAME)}
+                              >
+                                <span>name</span>
+                                <div
+                                  className={
+                                    settings?.font === FontFamily.HANDWRITTEN
+                                      ? "mt-1.5"
+                                      : ""
+                                  }
+                                >
+                                  {sortOption === SortOptions.NAME &&
+                                    (sortDirection === "asc" ? (
+                                      <IoIosArrowRoundUp size={20} />
+                                    ) : (
+                                      <IoIosArrowRoundDown size={20} />
+                                    ))}
+                                </div>
+                              </button>
                             </div>
                           </Table.Cell>
                           <Table.Cell className="w-50">total price</Table.Cell>
@@ -317,7 +366,7 @@ const Transport: React.FC<TransportProps> = ({
                                         createdAt: new Date().toISOString(),
                                       };
                                       arrayHelpers.push(newRow);
-                                      duplicateTransportRow(tripId, newRow);
+                                      submitForm();
                                     }}
                                     className="cursor-pointer hover:opacity-60 transition ease-in-out duration-300"
                                   >
@@ -337,8 +386,8 @@ const Transport: React.FC<TransportProps> = ({
                                         setDeleteRow(row);
                                       } else {
                                         arrayHelpers.remove(index);
-                                        submitForm();
                                         deleteTransportRow(tripId, row.id);
+                                        submitForm();
                                       }
                                     }}
                                     disabled={values.data.length === 1}

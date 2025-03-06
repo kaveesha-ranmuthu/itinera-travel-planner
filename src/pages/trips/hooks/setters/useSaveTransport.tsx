@@ -1,12 +1,6 @@
+import { collection, deleteDoc, doc, writeBatch } from "firebase/firestore";
 import { useCallback } from "react";
-import {
-  doc,
-  writeBatch,
-  collection,
-  setDoc,
-  deleteDoc,
-} from "firebase/firestore";
-import { db, auth } from "../../../../firebase-config";
+import { auth, db } from "../../../../firebase-config";
 import { TransportRow } from "../../components/sections/Transport";
 
 export const useSaveTransport = () => {
@@ -41,26 +35,6 @@ export const useSaveTransport = () => {
     []
   );
 
-  const duplicateTransportRow = useCallback(
-    async (tripId: string, row: TransportRow) => {
-      const user = auth.currentUser;
-      if (!user) throw new Error("User not authenticated.");
-
-      try {
-        const transportRef = collection(
-          db,
-          `users/${user.uid}/trips/${tripId}/transport`
-        );
-        const newRowRef = doc(transportRef, row.id);
-
-        await setDoc(newRowRef, row);
-      } catch (error) {
-        throw new Error(`Error duplicating transport row: ${error}`);
-      }
-    },
-    []
-  );
-
   const deleteTransportRow = useCallback(
     async (tripId: string, rowId: string) => {
       const user = auth.currentUser;
@@ -79,5 +53,5 @@ export const useSaveTransport = () => {
     []
   );
 
-  return { saveTransport, duplicateTransportRow, deleteTransportRow };
+  return { saveTransport, deleteTransportRow };
 };
