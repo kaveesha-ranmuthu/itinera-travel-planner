@@ -7,6 +7,7 @@ export interface PopupModalProps {
   isOpen: boolean;
   onClose: () => void;
   modalWidth?: string;
+  lightOpacity?: boolean;
 }
 
 const PopupModal: React.FC<PropsWithChildren<PopupModalProps>> = ({
@@ -14,6 +15,7 @@ const PopupModal: React.FC<PropsWithChildren<PopupModalProps>> = ({
   onClose,
   children,
   modalWidth,
+  lightOpacity = false,
 }) => {
   const { settings } = useAuth();
 
@@ -24,7 +26,12 @@ const PopupModal: React.FC<PropsWithChildren<PopupModalProps>> = ({
       className={twMerge("relative z-10", settings?.font)}
     >
       <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
-        <DialogBackdrop className="fixed inset-0 bg-secondary/80" />
+        <DialogBackdrop
+          className={twMerge(
+            "fixed inset-0",
+            lightOpacity ? `bg-secondary/20` : "bg-secondary/80"
+          )}
+        />
         <DialogPanel
           className={twMerge(
             "absolute border border-secondary bg-primary w-xl rounded-2xl p-5",

@@ -9,10 +9,11 @@ import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { FontFamily } from "../../../../types";
 import SimpleTooltip from "../SimpleTooltip";
-import { debounce, sortBy } from "lodash";
-import { useEffect, useRef } from "react";
+import { debounce, isEqual, sortBy } from "lodash";
+import { useEffect, useRef, useState } from "react";
 import { useSaveTransport } from "../../hooks/setters/useSaveTransport";
 import { useGetTransport } from "../../hooks/getters/useGetTransport";
+import WarningConfirmationModal from "../WarningConfirmationModal";
 
 export interface TransportRow {
   id: string;
@@ -45,6 +46,7 @@ const Transport: React.FC<TransportProps> = ({
   const { saveTransport, duplicateTransportRow, deleteTransportRow } =
     useSaveTransport();
   const { error, loading, transportRows } = useGetTransport(tripId);
+  const [deleteRow, setDeleteRow] = useState<TransportRow | null>(null);
   const hasSaved = useRef(false);
 
   const defaultRow: TransportRow = {
@@ -277,9 +279,17 @@ const Transport: React.FC<TransportProps> = ({
                                   <button
                                     type="button"
                                     onClick={() => {
-                                      arrayHelpers.remove(index);
-                                      submitForm();
-                                      deleteTransportRow(tripId, row.id);
+                                      const isRowChanged = !isEqual(
+                                        { ...row, id: "", createdAt: "" },
+                                        { ...defaultRow, id: "", createdAt: "" }
+                                      );
+                                      if (isRowChanged) {
+                                        setDeleteRow(row);
+                                      } else {
+                                        arrayHelpers.remove(index);
+                                        submitForm();
+                                        deleteTransportRow(tripId, row.id);
+                                      }
                                     }}
                                     disabled={values.data.length === 1}
                                     className="cursor-pointer hover:opacity-60 transition ease-in-out duration-300 disabled:cursor-default disabled:opacity-50"
@@ -289,6 +299,24 @@ const Transport: React.FC<TransportProps> = ({
                                       size={20}
                                     />
                                   </button>
+                                  <WarningConfirmationModal
+                                    description="Once deleted, this row is gone forever. Are you sure you want to continue?"
+                                    title={
+                                      deleteRow?.name
+                                        ? `Are you sure you want to delete "${deleteRow.name}"?`
+                                        : `Are you sure you want to delete this row?`
+                                    }
+                                    isOpen={deleteRow?.id === row.id}
+                                    onClose={() => setDeleteRow(null)}
+                                    onConfirm={() => {
+                                      if (!deleteRow) return;
+                                      arrayHelpers.remove(index);
+                                      submitForm();
+                                      deleteTransportRow(tripId, deleteRow.id);
+                                      setDeleteRow(null);
+                                    }}
+                                    lightOpacity={true}
+                                  />
                                 </div>
                               </Table.Cell>
                             </Table.Row>
