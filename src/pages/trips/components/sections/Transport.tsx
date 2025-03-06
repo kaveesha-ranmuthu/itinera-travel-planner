@@ -168,12 +168,13 @@ const Transport: React.FC<TransportProps> = ({
                                   const allChecked = values.data.every(
                                     (row) => row.checked
                                   );
-                                  values.data.forEach((index) => {
+                                  values.data.forEach((_, index) => {
                                     setFieldValue(
                                       `data.${index}.checked`,
                                       !allChecked
                                     );
                                   });
+                                  submitForm();
                                 }}
                               />
                               <span>name</span>
