@@ -90,7 +90,8 @@ const Transport: React.FC<TransportProps> = ({
   };
 
   useEffect(() => {
-    setSortedTransportRows(() => orderBy(allRows, sortOption, sortDirection));
+    const newSortedRows = orderBy(allRows, sortOption, sortDirection);
+    setSortedTransportRows([...newSortedRows]);
   }, [allRows, sortOption, sortDirection]);
 
   useEffect(() => {
@@ -283,7 +284,9 @@ const Transport: React.FC<TransportProps> = ({
                               >
                                 <div className="flex w-full">
                                   {userCurrency && (
-                                    <p className="w-fit">{userCurrency}</p>
+                                    <p className="text-nowrap w-fit">
+                                      {userCurrency}
+                                    </p>
                                   )}
                                   <Field
                                     type="number"
