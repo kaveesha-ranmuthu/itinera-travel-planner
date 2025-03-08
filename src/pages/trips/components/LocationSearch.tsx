@@ -15,9 +15,10 @@ interface LocationSearchProps {
   inputBoxClassname?: string;
   optionsBoxClassname?: string;
   placeholder?: string;
+  onSelectLocation: (location: LocationSearchResult) => void;
 }
 
-interface LocationSearchResult {
+export interface LocationSearchResult {
   id: string;
   formattedAddress: string;
   location: {
@@ -35,6 +36,12 @@ interface LocationSearchResult {
     reviewsUri: string;
     photosUri: string;
   };
+  addressComponents: {
+    languageCode: string;
+    longText: string;
+    shortText: string;
+    types: string[];
+  }[];
 }
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
@@ -44,6 +51,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
   inputBoxClassname,
   optionsBoxClassname,
   placeholder,
+  onSelectLocation,
 }) => {
   const [options, setOptions] = useState<LocationSearchResult[]>([]);
   const [query, setQuery] = useState("");
@@ -61,7 +69,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
             "Content-Type": "application/json",
             "X-Goog-Api-Key": API_KEY,
             "X-Goog-FieldMask":
-              "places.displayName,places.formattedAddress,places.googleMapsLinks,places.id,places.location",
+              "places.displayName,places.formattedAddress,places.googleMapsLinks,places.id,places.location,places.addressComponents",
           },
         }
       );
@@ -80,7 +88,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
 
   return (
     <Combobox
-      onChange={(item: LocationSearchResult) => null}
+      onChange={(item: LocationSearchResult) => onSelectLocation(item)}
       onClose={() => setQuery("")}
       immediate
       disabled={disabled}
@@ -95,7 +103,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
           inputBoxClassname
         )}
       />
-      {!!options.length && (
+      {options && !!options.length && (
         <ComboboxOptions
           anchor="bottom start"
           className={twMerge(

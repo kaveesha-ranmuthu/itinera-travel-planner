@@ -11,19 +11,19 @@ import { FontFamily } from "../../../../types";
 import { useGetTransport } from "../../hooks/getters/useGetTransport";
 import { useSaveTransport } from "../../hooks/setters/useSaveTransport";
 import Checkbox from "../Checkbox";
-import LocationSearch from "../LocationSearch";
+import LocationSearch, { LocationSearchResult } from "../LocationSearch";
 import SimpleTooltip from "../SimpleTooltip";
 import Table from "../Table";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 
-export interface TransportRow {
+export interface AccommodationRow {
   id: string;
   name: string;
   totalPrice: number;
-  departureTime: string;
-  arrivalTime: string;
-  from: string;
-  to: string;
+  checkIn: string;
+  checkOut: string;
+  pricePerNightPerPerson: number;
+  location: string;
   checked: boolean;
   createdAt: string;
 }
@@ -32,10 +32,10 @@ enum SortOptions {
   ID = "id",
   NAME = "name",
   TOTAL_PRICE = "totalPrice",
-  DEPARTURE_TIME = "departureTime",
-  ARRIVAL_TIME = "arrivalTime",
-  FROM = "from",
-  TO = "to",
+  CHECK_IN = "checkIn",
+  CHECK_OUT = "checkOut",
+  PRICE_PER_NIGHT_PER_PERSON = "pricePerNightPerPerson",
+  LOCATION = "location",
   CREATED_AT = "createdAt",
 }
 
@@ -55,66 +55,64 @@ const Accommodation: React.FC<AccommodationProps> = ({
   tripId,
 }) => {
   const { settings } = useAuth();
-  const { saveTransport, deleteTransportRow } = useSaveTransport();
-  const { error, loading, transportRows } = useGetTransport(tripId);
-  const [deleteRow, setDeleteRow] = useState<TransportRow | null>(null);
+  // const { saveTransport, deleteTransportRow } = useSaveTransport();
+  // const { error, loading, transportRows } = useGetTransport(tripId);
+  const [deleteRow, setDeleteRow] = useState<AccommodationRow | null>(null);
   const finalSaveData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
 
-  const allRows: TransportRow[] = useMemo(
-    () => (finalSaveData ? JSON.parse(finalSaveData).data : transportRows),
-    [finalSaveData, transportRows]
-  );
+  // const allRows: TransportRow[] = useMemo(
+  //   () => (finalSaveData ? JSON.parse(finalSaveData).data : transportRows),
+  //   [finalSaveData, transportRows]
+  // );
 
   const [sortOption, setSortOption] = useState<SortOptions>(
     SortOptions.CREATED_AT
   );
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-  const [sortedTransportRows, setSortedTransportRows] = useState(
-    orderBy(allRows, sortOption, sortDirection)
-  );
+  const [sortedTransportRows, setSortedTransportRows] = useState([]);
 
-  const defaultRow: TransportRow = {
+  const defaultRow: AccommodationRow = {
     id: crypto.randomUUID(),
     name: "",
     totalPrice: 0,
-    departureTime: `${startDate}T00:00`,
-    arrivalTime: `${endDate}T00:00`,
-    from: "",
-    to: "",
+    checkIn: `${startDate}T00:00`,
+    checkOut: `${endDate}T00:00`,
+    pricePerNightPerPerson: 0,
+    location: "",
     checked: false,
     createdAt: new Date().toISOString(),
   };
 
-  const handleFormSubmit = (values: { data: TransportRow[] }) => {
+  const handleFormSubmit = (values: { data: AccommodationRow[] }) => {
     localStorage.setItem(LOCAL_STORAGE_KEY(tripId), JSON.stringify(values));
   };
 
-  useEffect(() => {
-    const newSortedRows = orderBy(allRows, sortOption, sortDirection);
-    setSortedTransportRows([...newSortedRows]);
-  }, [allRows, sortOption, sortDirection]);
+  // useEffect(() => {
+  //   const newSortedRows = orderBy(allRows, sortOption, sortDirection);
+  //   setSortedTransportRows([...newSortedRows]);
+  // }, [allRows, sortOption, sortDirection]);
 
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      const unsavedData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
-      if (unsavedData) {
-        await saveTransport(tripId, JSON.parse(unsavedData).data);
-      }
-    }, 10 * 60 * 1000); // 10 * 60 * 1000
+  // useEffect(() => {
+  //   const interval = setInterval(async () => {
+  //     const unsavedData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+  //     if (unsavedData) {
+  //       await saveTransport(tripId, JSON.parse(unsavedData).data);
+  //     }
+  //   }, 10 * 60 * 1000); // 10 * 60 * 1000
 
-    return () => {
-      clearInterval(interval);
-    };
-  }, [saveTransport, tripId]);
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, [saveTransport, tripId]);
 
   // TODO: Make these look better
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
-  if (error) {
-    return <div>Error...</div>;
-  }
+  // if (error) {
+  //   return <div>Error...</div>;
+  // }
 
   const setSorting = (clickedOption: SortOptions) => {
     if (sortOption === clickedOption) {
@@ -166,7 +164,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
       <div className="flex items-center space-x-3">
         <h1 className="text-3xl">accommodation</h1>
         <SimpleTooltip
-          content="Add your accommodation options and tick the checkboxes to see your estimated total cost."
+          content="Find your accommodation by searching for a specific place or a general term like 'hotel in Tokyo'. Tick the checkboxes to include them in your estimated total cost."
           theme="dark"
           side="top"
           width="w-50"
@@ -184,13 +182,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
         initialValues={{
           data: sortedTransportRows.length
             ? sortedTransportRows
-            : [
-                {
-                  ...defaultRow,
-                  id: crypto.randomUUID(),
-                  createdAt: new Date().toISOString(),
-                },
-              ],
+            : ([] as AccommodationRow[]),
         }}
         enableReinitialize={true}
         onSubmit={async (values) => {
@@ -204,12 +196,27 @@ const Accommodation: React.FC<AccommodationProps> = ({
                 render={(arrayHelpers) => (
                   <div>
                     <div className="mb-4">
-                      <LocationSearch />
+                      <LocationSearch
+                        onSelectLocation={(location: LocationSearchResult) => {
+                          arrayHelpers.push({
+                            ...defaultRow,
+                            id: crypto.randomUUID(),
+                            name: location.displayName.text,
+                            location:
+                              location.addressComponents.find((address) =>
+                                address.types.includes("locality")
+                              )?.longText || "",
+                            createdAt: new Date().toISOString(),
+                          });
+                        }}
+                      />
                     </div>
                     <Table>
                       <Table.Header>
                         <Table.Row>
-                          <Table.HeaderCell>
+                          <Table.HeaderCell
+                            className={values.data.length ? "" : "border-b-0"}
+                          >
                             <div className="flex items-center space-x-4 w-72">
                               <Checkbox
                                 checked={values.data.every(
@@ -231,31 +238,58 @@ const Accommodation: React.FC<AccommodationProps> = ({
                               {getTableHeader(SortOptions.NAME, "name")}
                             </div>
                           </Table.HeaderCell>
-                          <Table.HeaderCell className="w-50">
+                          <Table.HeaderCell
+                            className={twMerge(
+                              "w-40",
+                              values.data.length ? "" : "border-b-0"
+                            )}
+                          >
                             {getTableHeader(
                               SortOptions.TOTAL_PRICE,
                               "total price"
                             )}
                           </Table.HeaderCell>
-                          <Table.HeaderCell className="w-60">
+                          <Table.HeaderCell
+                            className={twMerge(
+                              "w-60",
+                              values.data.length ? "" : "border-b-0"
+                            )}
+                          >
+                            {getTableHeader(SortOptions.CHECK_IN, "check-in")}
+                          </Table.HeaderCell>
+                          <Table.HeaderCell
+                            className={twMerge(
+                              "w-60",
+                              values.data.length ? "" : "border-b-0"
+                            )}
+                          >
+                            {getTableHeader(SortOptions.CHECK_OUT, "check-out")}
+                          </Table.HeaderCell>
+                          <Table.HeaderCell
+                            className={twMerge(
+                              "w-50",
+                              values.data.length ? "" : "border-b-0"
+                            )}
+                          >
                             {getTableHeader(
-                              SortOptions.DEPARTURE_TIME,
-                              "departure time"
+                              SortOptions.PRICE_PER_NIGHT_PER_PERSON,
+                              "price / night / person"
                             )}
                           </Table.HeaderCell>
-                          <Table.HeaderCell className="w-60">
-                            {getTableHeader(
-                              SortOptions.ARRIVAL_TIME,
-                              "arrival time"
+                          <Table.HeaderCell
+                            className={twMerge(
+                              "w-40",
+                              values.data.length ? "" : "border-b-0"
                             )}
+                          >
+                            {getTableHeader(SortOptions.LOCATION, "location")}
                           </Table.HeaderCell>
-                          <Table.HeaderCell className="w-50">
-                            {getTableHeader(SortOptions.FROM, "from")}
-                          </Table.HeaderCell>
-                          <Table.HeaderCell className="w-50">
-                            {getTableHeader(SortOptions.TO, "to")}
-                          </Table.HeaderCell>
-                          <Table.HeaderCell className="w-30" />
+                          <Table.HeaderCell
+                            className={twMerge(
+                              "w-30",
+                              values.data.length ? "" : "border-b-0"
+                            )}
+                          />
                         </Table.Row>
                       </Table.Header>
                       <Table.Body>
@@ -324,7 +358,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                 <Field
                                   type="datetime-local"
                                   className="focus:outline-0 w-full"
-                                  name={`data.${index}.departureTime`}
+                                  name={`data.${index}.checkIn`}
                                 />
                               </Table.Cell>
                               <Table.Cell
@@ -338,8 +372,29 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                 <Field
                                   type="datetime-local"
                                   className="focus:outline-0 w-full"
-                                  name={`data.${index}.arrivalTime`}
+                                  name={`data.${index}.checkOut`}
                                 />
+                              </Table.Cell>
+                              <Table.Cell
+                                className={twMerge(
+                                  "group-last:border-b-0",
+                                  row.checked
+                                    ? "bg-blue-munsell/20 transition ease-in-out duration-200"
+                                    : "bg-transparent transition ease-in-out duration-200"
+                                )}
+                              >
+                                <div className="flex w-full">
+                                  {userCurrency && (
+                                    <p className="text-nowrap w-fit">
+                                      {userCurrency}
+                                    </p>
+                                  )}
+                                  <Field
+                                    type="number"
+                                    className="focus:outline-0 ml-2 w-full"
+                                    name={`data.${index}.pricePerNightPerPerson`}
+                                  />
+                                </div>
                               </Table.Cell>
                               <Table.Cell
                                 className={twMerge(
@@ -352,21 +407,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                 <Field
                                   type="text"
                                   className="focus:outline-0 w-full"
-                                  name={`data.${index}.from`}
-                                />
-                              </Table.Cell>
-                              <Table.Cell
-                                className={twMerge(
-                                  "group-last:border-b-0",
-                                  row.checked
-                                    ? "bg-blue-munsell/20 transition ease-in-out duration-200"
-                                    : "bg-transparent transition ease-in-out duration-200"
-                                )}
-                              >
-                                <Field
-                                  type="text"
-                                  className="focus:outline-0 w-full"
-                                  name={`data.${index}.to`}
+                                  name={`data.${index}.location`}
                                 />
                               </Table.Cell>
                               <Table.Cell
@@ -407,11 +448,10 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                         setDeleteRow(row);
                                       } else {
                                         arrayHelpers.remove(index);
-                                        deleteTransportRow(tripId, row.id);
+                                        // deleteTransportRow(tripId, row.id);
                                         submitForm();
                                       }
                                     }}
-                                    disabled={values.data.length === 1}
                                     className="cursor-pointer hover:opacity-60 transition ease-in-out duration-300 disabled:cursor-default disabled:opacity-50"
                                   >
                                     <IoTrashBinOutline
@@ -432,7 +472,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                       if (!deleteRow) return;
                                       arrayHelpers.remove(index);
                                       submitForm();
-                                      deleteTransportRow(tripId, deleteRow.id);
+                                      // deleteTransportRow(tripId, deleteRow.id);
                                       setDeleteRow(null);
                                     }}
                                     lightOpacity={true}

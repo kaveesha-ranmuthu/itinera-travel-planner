@@ -29,7 +29,7 @@ const HeaderCell: React.FC<
   return (
     <td
       className={twMerge(
-        "border-b px-4 border-r last:border-r-0 border-secondary py-2",
+        "text-nowrap border-b px-4 border-r last:border-r-0 border-secondary py-2",
         className
       )}
     >
