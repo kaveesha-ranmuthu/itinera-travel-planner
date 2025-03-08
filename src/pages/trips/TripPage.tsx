@@ -10,6 +10,7 @@ import TripHeader from "./components/sections/TripHeader";
 import HeaderIcons from "./components/sections/HeaderIcons";
 import Transport from "./components/sections/Transport";
 import { twMerge } from "tailwind-merge";
+import Accommodation from "./components/sections/Accommodation";
 
 const TripPage = () => {
   const { tripId } = useParams();
@@ -49,12 +50,20 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
           trip={trip}
           onEditButtonClick={() => setIsEditTripModalOpen(true)}
         />
-        <Transport
-          userCurrency={trip.currency?.otherInfo?.symbol}
-          startDate={trip.startDate}
-          endDate={trip.endDate}
-          tripId={trip.id}
-        />
+        <div className="space-y-10">
+          <Transport
+            userCurrency={trip.currency?.otherInfo?.symbol}
+            startDate={trip.startDate}
+            endDate={trip.endDate}
+            tripId={trip.id}
+          />
+          <Accommodation
+            userCurrency={trip.currency?.otherInfo?.symbol}
+            startDate={trip.startDate}
+            endDate={trip.endDate}
+            tripId={trip.id}
+          />
+        </div>
       </div>
       <CreateTripPopup
         isOpen={isEditTripModalOpen}
