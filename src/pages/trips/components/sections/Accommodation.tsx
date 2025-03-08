@@ -11,8 +11,8 @@ import { FontFamily } from "../../../../types";
 import { useGetTransport } from "../../hooks/getters/useGetTransport";
 import { useSaveTransport } from "../../hooks/setters/useSaveTransport";
 import Checkbox from "../Checkbox";
+import LocationSearch from "../LocationSearch";
 import SimpleTooltip from "../SimpleTooltip";
-import SmallButton from "../SmallButton";
 import Table from "../Table";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 
@@ -204,17 +204,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
                 render={(arrayHelpers) => (
                   <div>
                     <div className="mb-4">
-                      <SmallButton
-                        onClick={() =>
-                          arrayHelpers.push({
-                            ...defaultRow,
-                            id: crypto.randomUUID(),
-                            createdAt: new Date().toISOString(),
-                          })
-                        }
-                      >
-                        + Add item
-                      </SmallButton>
+                      <LocationSearch />
                     </div>
                     <Table>
                       <Table.Header>
