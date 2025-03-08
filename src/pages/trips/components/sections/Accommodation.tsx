@@ -219,7 +219,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
                     <Table>
                       <Table.Header>
                         <Table.Row>
-                          <Table.Cell>
+                          <Table.HeaderCell>
                             <div className="flex items-center space-x-4 w-72">
                               <Checkbox
                                 checked={values.data.every(
@@ -240,32 +240,32 @@ const Accommodation: React.FC<AccommodationProps> = ({
                               />
                               {getTableHeader(SortOptions.NAME, "name")}
                             </div>
-                          </Table.Cell>
-                          <Table.Cell className="w-50">
+                          </Table.HeaderCell>
+                          <Table.HeaderCell className="w-50">
                             {getTableHeader(
                               SortOptions.TOTAL_PRICE,
                               "total price"
                             )}
-                          </Table.Cell>
-                          <Table.Cell className="w-60">
+                          </Table.HeaderCell>
+                          <Table.HeaderCell className="w-60">
                             {getTableHeader(
                               SortOptions.DEPARTURE_TIME,
                               "departure time"
                             )}
-                          </Table.Cell>
-                          <Table.Cell className="w-60">
+                          </Table.HeaderCell>
+                          <Table.HeaderCell className="w-60">
                             {getTableHeader(
                               SortOptions.ARRIVAL_TIME,
                               "arrival time"
                             )}
-                          </Table.Cell>
-                          <Table.Cell className="w-50">
+                          </Table.HeaderCell>
+                          <Table.HeaderCell className="w-50">
                             {getTableHeader(SortOptions.FROM, "from")}
-                          </Table.Cell>
-                          <Table.Cell className="w-50">
+                          </Table.HeaderCell>
+                          <Table.HeaderCell className="w-50">
                             {getTableHeader(SortOptions.TO, "to")}
-                          </Table.Cell>
-                          <Table.Cell className="w-30" />
+                          </Table.HeaderCell>
+                          <Table.HeaderCell className="w-30" />
                         </Table.Row>
                       </Table.Header>
                       <Table.Body>
