@@ -4,10 +4,12 @@ import { useAuth } from "../../hooks/useAuth";
 import ErrorPage from "../error/ErrorPage";
 import { LoadingState } from "../landing-page/LandingPage";
 import CreateTripPopup from "./components/CreateTripPopup";
-import Header from "./components/Header";
-import HeaderIcons from "./components/HeaderIcons";
-import TripHeader from "./components/TripHeader";
 import useGetTrip from "./hooks/getters/useGetTrip";
+import Header from "./components/sections/Header";
+import TripHeader from "./components/sections/TripHeader";
+import HeaderIcons from "./components/sections/HeaderIcons";
+import Transport from "./components/sections/Transport";
+import { twMerge } from "tailwind-merge";
 
 const TripPage = () => {
   const { tripId } = useParams();
@@ -37,7 +39,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
   }
 
   return (
-    <div className={settings?.font}>
+    <div className={twMerge(settings?.font, "pb-10")}>
       <Header />
       <div className="px-10">
         <TripHeader trip={trip} />
@@ -46,6 +48,12 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
         <HeaderIcons
           trip={trip}
           onEditButtonClick={() => setIsEditTripModalOpen(true)}
+        />
+        <Transport
+          userCurrency={trip.currency?.otherInfo?.symbol}
+          startDate={trip.startDate}
+          endDate={trip.endDate}
+          tripId={trip.id}
         />
       </div>
       <CreateTripPopup

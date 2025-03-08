@@ -1,16 +1,16 @@
-import React from "react";
-import { FontFamily } from "../../../types";
-import { PaperPlane } from "../assets/PaperPlane";
-import { HiOutlineCog6Tooth } from "react-icons/hi2";
-import { twMerge } from "tailwind-merge";
-import Button from "../../../components/Button";
-import { useHotToast } from "../../../hooks/useHotToast";
-import { Link, useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
-import { auth } from "../../../firebase-config";
-import PopoverMenu from "./PopoverMenu";
-import { useAuth } from "../../../hooks/useAuth";
-import { useUpdateUserSettings } from "../hooks/setters/useUpdateUserSettings";
+import React from "react";
+import { HiOutlineCog6Tooth } from "react-icons/hi2";
+import { Link, useNavigate } from "react-router-dom";
+import { twMerge } from "tailwind-merge";
+import { auth } from "../../../../firebase-config";
+import { useAuth } from "../../../../hooks/useAuth";
+import { useHotToast } from "../../../../hooks/useHotToast";
+import { FontFamily } from "../../../../types";
+import { PaperPlane } from "../../assets/PaperPlane";
+import { useUpdateUserSettings } from "../../hooks/setters/useUpdateUserSettings";
+import PopoverMenu from "../PopoverMenu";
+import Button from "../../../../components/Button";
 
 const Header = () => {
   const { notify } = useHotToast();

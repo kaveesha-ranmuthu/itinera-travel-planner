@@ -8,6 +8,8 @@ interface TooltipProps {
   iconStyles?: string;
   marginTop?: string;
   theme?: "light" | "dark";
+  side?: "bottom" | "top" | "right" | "left";
+  width?: string;
 }
 
 const SimpleTooltip: React.FC<PropsWithChildren<TooltipProps>> = ({
@@ -16,6 +18,8 @@ const SimpleTooltip: React.FC<PropsWithChildren<TooltipProps>> = ({
   iconStyles,
   marginTop,
   theme = "light",
+  side = "bottom",
+  width,
 }) => {
   const { settings } = useAuth();
 
@@ -32,12 +36,13 @@ const SimpleTooltip: React.FC<PropsWithChildren<TooltipProps>> = ({
         </Tooltip.Trigger>
         <Tooltip.Portal>
           <Tooltip.Content
-            side="bottom"
+            side={side}
             className={twMerge(
               "rounded-md text-xs px-3 py-2 mt-1 tracking-wide",
               theme === "light" ? lightStyles : darkStyles,
               settings?.font,
-              marginTop
+              marginTop,
+              width
             )}
           >
             {content}

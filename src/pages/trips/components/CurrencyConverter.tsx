@@ -101,7 +101,7 @@ const CurrencyConverter: React.FC<CurrencyConverterProps> = ({
   };
 
   return (
-    <div className={twMerge("space-y-2", settings?.font)}>
+    <div className={twMerge("space-y-2 text-secondary", settings?.font)}>
       <h1 className="text-md">Currency converter</h1>
       <div className="text-sm flex space-x-2">
         <CurrencyInput
