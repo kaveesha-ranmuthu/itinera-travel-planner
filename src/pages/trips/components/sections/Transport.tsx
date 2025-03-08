@@ -130,6 +130,37 @@ const Transport: React.FC<TransportProps> = ({
     }
   };
 
+  const getSortArrowComponent = (currentSortDirection: "asc" | "desc") => {
+    return currentSortDirection === "asc" ? (
+      <IoIosArrowRoundUp size={20} />
+    ) : (
+      <IoIosArrowRoundDown size={20} />
+    );
+  };
+
+  const getTableHeader = (
+    selectedSortOption: SortOptions,
+    headerTitle: string
+  ) => {
+    return (
+      <button
+        type="button"
+        className="cursor-pointer w-full items-center flex justify-between"
+        onClick={() => setSorting(selectedSortOption)}
+      >
+        <span>{headerTitle}</span>
+        <div
+          className={twMerge(
+            sortOption === selectedSortOption ? "visible" : "invisible",
+            settings?.font === FontFamily.HANDWRITTEN ? "mt-1.5 " : ""
+          )}
+        >
+          {getSortArrowComponent(sortDirection)}
+        </div>
+      </button>
+    );
+  };
+
   return (
     <div className="text-secondary">
       <div className="flex items-center space-x-3">
@@ -207,36 +238,33 @@ const Transport: React.FC<TransportProps> = ({
                                   submitForm();
                                 }}
                               />
-                              <button
-                                type="button"
-                                className="cursor-pointer w-full items-center flex justify-between"
-                                onClick={() => setSorting(SortOptions.NAME)}
-                              >
-                                <span>name</span>
-                                <div
-                                  className={
-                                    settings?.font === FontFamily.HANDWRITTEN
-                                      ? "mt-1.5"
-                                      : ""
-                                  }
-                                >
-                                  {sortOption === SortOptions.NAME &&
-                                    (sortDirection === "asc" ? (
-                                      <IoIosArrowRoundUp size={20} />
-                                    ) : (
-                                      <IoIosArrowRoundDown size={20} />
-                                    ))}
-                                </div>
-                              </button>
+                              {getTableHeader(SortOptions.NAME, "name")}
                             </div>
                           </Table.Cell>
-                          <Table.Cell className="w-50">total price</Table.Cell>
-                          <Table.Cell className="w-60">
-                            departure time
+                          <Table.Cell className="w-50">
+                            {getTableHeader(
+                              SortOptions.TOTAL_PRICE,
+                              "total price"
+                            )}
                           </Table.Cell>
-                          <Table.Cell className="w-60">arrival time</Table.Cell>
-                          <Table.Cell className="w-50">from</Table.Cell>
-                          <Table.Cell className="w-50">to</Table.Cell>
+                          <Table.Cell className="w-60">
+                            {getTableHeader(
+                              SortOptions.DEPARTURE_TIME,
+                              "departure time"
+                            )}
+                          </Table.Cell>
+                          <Table.Cell className="w-60">
+                            {getTableHeader(
+                              SortOptions.ARRIVAL_TIME,
+                              "arrival time"
+                            )}
+                          </Table.Cell>
+                          <Table.Cell className="w-50">
+                            {getTableHeader(SortOptions.FROM, "from")}
+                          </Table.Cell>
+                          <Table.Cell className="w-50">
+                            {getTableHeader(SortOptions.TO, "to")}
+                          </Table.Cell>
                           <Table.Cell className="w-30" />
                         </Table.Row>
                       </Table.Header>
