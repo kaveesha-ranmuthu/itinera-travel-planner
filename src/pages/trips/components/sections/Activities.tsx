@@ -71,7 +71,7 @@ const Activities: React.FC<ActivitiesProps> = ({
       <div className="flex items-center space-x-3">
         <h1 className="text-3xl">activities</h1>
         <SimpleTooltip
-          content="Find places to eat by searching for a specific place or a general term like 'breakfast in Paris'."
+          content="Find things to do by searching for a specific place or a general term like 'Sydney activities'."
           theme="dark"
           side="top"
           width="w-50"
