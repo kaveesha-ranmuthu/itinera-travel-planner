@@ -2,6 +2,7 @@ import { round } from "lodash";
 import React, { useState } from "react";
 import { MdPhoto } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
+import { IoTrashBinOutline } from "react-icons/io5";
 
 export interface LocationCardDetails {
   id: string;
@@ -48,19 +49,31 @@ const LocationWithPhotoCard: React.FC<LocationWithPhotoCardProps> = ({
   console.log(location);
 
   return (
-    <div className="border border-secondary w-50 rounded-2xl p-3">
-      {mainPhotoName && !hasError ? (
-        <img
-          className="rounded-2xl w-full h-32 object-cover"
-          src={mainPhotoUrl}
-          alt={name}
-          onError={() => setHasError(true)}
-        />
-      ) : (
-        <div className="w-full h-32 rounded-2xl flex items-center justify-center">
-          <MdPhoto size={80} className="text-secondary" />
-        </div>
-      )}
+    <div className="border border-secondary w-50 rounded-2xl p-3 group">
+      <div className="relative">
+        {mainPhotoName && !hasError ? (
+          <img
+            className="rounded-2xl w-full h-32 object-cover"
+            src={mainPhotoUrl}
+            alt={name}
+            onError={() => setHasError(true)}
+          />
+        ) : (
+          <div className="w-full h-32 bg-secondary rounded-2xl flex items-center justify-center">
+            <MdPhoto size={80} className="text-primary" />
+          </div>
+        )}
+        <button
+          type="button"
+          className="bg-primary absolute top-0 left-0 p-1 rounded-br cursor-pointer opacity-0 group-hover:opacity-100 transition ease-in-out duration-300"
+        >
+          <IoTrashBinOutline
+            className=" hover:opacity-70 transition ease-in-out duration-300"
+            stroke="var(--color-secondary)"
+            size={17}
+          />
+        </button>
+      </div>
       <a
         target="_blank"
         href={websiteUri}
