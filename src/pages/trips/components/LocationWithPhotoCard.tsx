@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { IoTrashBinOutline } from "react-icons/io5";
 import { MdPhoto } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
-import useGooglePhoto from "../hooks/getters/useGooglePhoto";
 
 export interface LocationCardDetails {
   id: string;
@@ -23,6 +22,8 @@ interface LocationWithPhotoCardProps {
   onDelete?: () => void;
   locationFieldName: string;
 }
+
+const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 const getFormattedPrice = (
   startPrice?: number,
@@ -45,20 +46,17 @@ const LocationWithPhotoCard: React.FC<LocationWithPhotoCardProps> = ({
   onDelete,
   locationFieldName,
 }) => {
-  const { mainPhotoName, name, startPrice, endPrice, websiteUri, id } =
-    location;
-  const { error, photoUrl } = useGooglePhoto(mainPhotoName);
+  const { mainPhotoName, name, startPrice, endPrice, websiteUri } = location;
+  const mainPhotoUrl = `https://places.googleapis.com/v1/${mainPhotoName}/media?maxWidthPx=400&key=${API_KEY}`;
   const [hasError, setHasError] = useState(false);
-  console.log(photoUrl, error);
 
   return (
     <div className="border border-secondary w-50 rounded-2xl p-3 group">
       <div className="relative">
-        {photoUrl && !hasError ? (
+        {mainPhotoUrl && !hasError ? (
           <img
-            key={id}
             className="rounded-2xl w-full h-32 object-cover"
-            src={photoUrl}
+            src={mainPhotoUrl}
             alt={name}
             onError={() => {
               setHasError(true);
