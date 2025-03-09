@@ -12,6 +12,7 @@ import Transport from "./components/sections/Transport";
 import { twMerge } from "tailwind-merge";
 import Accommodation from "./components/sections/Accommodation";
 import Food from "./components/sections/Food";
+import Activities from "./components/sections/Activities";
 
 const TripPage = () => {
   const { tripId } = useParams();
@@ -67,6 +68,11 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
             tripId={trip.id}
           />
           <Food
+            userCurrencySymbol={trip.currency?.otherInfo?.symbol}
+            userCurrencyCode={trip.currency?.name}
+            tripId={trip.id}
+          />
+          <Activities
             userCurrencySymbol={trip.currency?.otherInfo?.symbol}
             userCurrencyCode={trip.currency?.name}
             tripId={trip.id}
