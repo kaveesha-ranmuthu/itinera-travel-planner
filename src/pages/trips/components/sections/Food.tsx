@@ -12,6 +12,7 @@ import LocationWithPhotoCard, {
 import SimpleTooltip from "../SimpleTooltip";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 import { useGetFood } from "../../hooks/getters/useGetFood";
+import { Grid2 } from "@mui/material";
 
 interface FoodProps {
   userCurrencySymbol?: string;
@@ -123,35 +124,38 @@ const Food: React.FC<FoodProps> = ({
                             submitForm();
                           }}
                         />
-                        <div className="grid grid-cols-6 gap-4 mt-4">
-                          {values.data.map((foodPlace, index) => {
-                            return (
-                              <>
-                                <LocationWithPhotoCard
-                                  key={`${foodPlace.id}-${index}`}
-                                  location={foodPlace}
-                                  currencySymbol={userCurrencySymbol}
-                                  onDelete={() => {
-                                    setItemToDelete(foodPlace);
-                                  }}
-                                />
-                                <WarningConfirmationModal
-                                  description="Once deleted, this is gone forever. Are you sure you want to continue?"
-                                  title={`Are you sure you want to delete "${foodPlace.name}"?`}
-                                  isOpen={itemToDelete?.id === foodPlace.id}
-                                  onClose={() => setItemToDelete(null)}
-                                  onConfirm={() => {
-                                    if (!itemToDelete) return;
-                                    arrayHelpers.remove(index);
-                                    submitForm();
-                                    deleteFoodItem(tripId, itemToDelete.id);
-                                    setItemToDelete(null);
-                                  }}
-                                  lightOpacity={true}
-                                />
-                              </>
-                            );
-                          })}
+                        <div className="mt-4">
+                          <Grid2 container spacing={2.8}>
+                            {values.data.map((foodPlace, index) => {
+                              return (
+                                <>
+                                  <Grid2 key={`${foodPlace.id}-${index}`}>
+                                    <LocationWithPhotoCard
+                                      location={foodPlace}
+                                      currencySymbol={userCurrencySymbol}
+                                      onDelete={() => {
+                                        setItemToDelete(foodPlace);
+                                      }}
+                                    />
+                                  </Grid2>
+                                  <WarningConfirmationModal
+                                    description="Once deleted, this is gone forever. Are you sure you want to continue?"
+                                    title={`Are you sure you want to delete "${foodPlace.name}"?`}
+                                    isOpen={itemToDelete?.id === foodPlace.id}
+                                    onClose={() => setItemToDelete(null)}
+                                    onConfirm={() => {
+                                      if (!itemToDelete) return;
+                                      arrayHelpers.remove(index);
+                                      submitForm();
+                                      deleteFoodItem(tripId, itemToDelete.id);
+                                      setItemToDelete(null);
+                                    }}
+                                    lightOpacity={true}
+                                  />
+                                </>
+                              );
+                            })}
+                          </Grid2>
                         </div>
                       </div>
                     </div>

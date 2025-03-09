@@ -149,7 +149,10 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
   return (
     <Combobox
       onChange={(item: LocationSearchResult) => onSelectLocation(item)}
-      onClose={() => setQuery("")}
+      onClose={() => {
+        setQuery("");
+        setOptions([]);
+      }}
       immediate
       disabled={disabled}
     >
