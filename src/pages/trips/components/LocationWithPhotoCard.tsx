@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { MdPhoto } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
 import { IoTrashBinOutline } from "react-icons/io5";
+import { Field } from "formik";
 
 export interface LocationCardDetails {
   id: string;
@@ -19,6 +20,7 @@ interface LocationWithPhotoCardProps {
   location: LocationCardDetails;
   currencySymbol?: string;
   onDelete?: () => void;
+  locationFieldName: string;
 }
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
@@ -42,9 +44,9 @@ const LocationWithPhotoCard: React.FC<LocationWithPhotoCardProps> = ({
   location,
   currencySymbol,
   onDelete,
+  locationFieldName,
 }) => {
-  const { city, mainPhotoName, name, startPrice, endPrice, websiteUri } =
-    location;
+  const { mainPhotoName, name, startPrice, endPrice, websiteUri } = location;
   const mainPhotoUrl = `https://places.googleapis.com/v1/${mainPhotoName}/media?maxWidthPx=400&key=${API_KEY}
 `;
   const [hasError, setHasError] = useState(false);
@@ -88,7 +90,11 @@ const LocationWithPhotoCard: React.FC<LocationWithPhotoCardProps> = ({
         {name}
       </a>
       <div className="text-sm mt-5 text-secondary/70 flex items-center justify-between">
-        <span>{city}</span>
+        <Field
+          type="text"
+          className="focus:outline-0 w-1/2"
+          name={locationFieldName}
+        />
         <div>
           <span>{getFormattedPrice(startPrice, endPrice, currencySymbol)}</span>
         </div>

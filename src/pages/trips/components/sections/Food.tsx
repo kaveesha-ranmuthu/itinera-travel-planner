@@ -136,6 +136,7 @@ const Food: React.FC<FoodProps> = ({
                                       onDelete={() => {
                                         setItemToDelete(foodPlace);
                                       }}
+                                      locationFieldName={`data.${index}.city`}
                                     />
                                   </Grid2>
                                   <WarningConfirmationModal
