@@ -1,0 +1,154 @@
+import { FieldArray, Form, Formik } from "formik";
+import moment from "moment";
+import { useEffect, useMemo, useState } from "react";
+import { PiSealQuestionFill } from "react-icons/pi";
+import { twMerge } from "tailwind-merge";
+import { useAuth } from "../../../../hooks/useAuth";
+import { FontFamily } from "../../../../types";
+import { useGetAccommodation } from "../../hooks/getters/useGetAccommodation";
+import { useSaveAccommodation } from "../../hooks/setters/useSaveAccommodation";
+import LocationSearch, { LocationSearchResult } from "../LocationSearch";
+import SimpleTooltip from "../SimpleTooltip";
+import LocationWithPhotoCard, {
+  LocationCardDetails,
+} from "../LocationWithPhotoCard";
+
+interface FoodProps {
+  userCurrencySymbol?: string;
+  userCurrencyCode?: string;
+  numberOfPeople: number;
+  startDate: string;
+  endDate: string;
+  tripId: string;
+}
+
+const LOCAL_STORAGE_KEY = (tripId: string) => `unsaved-accommodation-${tripId}`;
+
+const Food: React.FC<FoodProps> = ({
+  userCurrencySymbol,
+  userCurrencyCode,
+  numberOfPeople,
+  startDate,
+  endDate,
+  tripId,
+}) => {
+  const { settings } = useAuth();
+  const { deleteAccommodationRow, saveAccommodation } = useSaveAccommodation();
+  const { error, loading, accommodationRows } = useGetAccommodation(tripId);
+  const [deleteRow, setDeleteRow] = useState<LocationCardDetails | null>(null);
+  const finalSaveData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+
+  const allRows: LocationCardDetails[] = useMemo(
+    () => (finalSaveData ? JSON.parse(finalSaveData).data : accommodationRows),
+    [finalSaveData, accommodationRows]
+  );
+
+  const handleFormSubmit = (values: { data: LocationCardDetails[] }) => {
+    localStorage.setItem(LOCAL_STORAGE_KEY(tripId), JSON.stringify(values));
+  };
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const unsavedData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+      if (unsavedData) {
+        await saveAccommodation(tripId, JSON.parse(unsavedData).data);
+      }
+    }, 10000); // 10 * 60 * 1000
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [saveAccommodation, tripId]);
+
+  // TODO: Make these look better
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error...</div>;
+  }
+
+  return (
+    <div className="text-secondary">
+      <div className="flex items-center space-x-3">
+        <h1 className="text-3xl">food</h1>
+        <SimpleTooltip
+          content="Find places to eat by searching for a specific place or a general term like 'breakfast in Paris'."
+          theme="dark"
+          side="top"
+          width="w-50"
+        >
+          <PiSealQuestionFill
+            size={20}
+            className={twMerge(
+              "opacity-50 cursor-pointer",
+              settings?.font === FontFamily.HANDWRITTEN ? "mt-2.5" : ""
+            )}
+          />
+        </SimpleTooltip>
+      </div>
+      <Formik
+        initialValues={{
+          data: allRows.length ? allRows : ([] as LocationCardDetails[]),
+        }}
+        enableReinitialize={true}
+        onSubmit={async (values) => {
+          handleFormSubmit(values);
+        }}
+        component={({ values, setFieldValue, submitForm }) => {
+          return (
+            <Form className="mt-2" onChange={submitForm}>
+              <FieldArray
+                name="data"
+                render={(arrayHelpers) => {
+                  return (
+                    <div>
+                      <div className="mb-4">
+                        <LocationSearch
+                          userCurrency={userCurrencyCode}
+                          onSelectLocation={(
+                            location: LocationSearchResult
+                          ) => {
+                            arrayHelpers.push({
+                              id: crypto.randomUUID(),
+                              name: location.displayName?.text || "",
+                              city:
+                                location.addressComponents?.find((address) =>
+                                  address.types?.includes("locality")
+                                )?.shortText || "",
+                              startPrice:
+                                location.priceRange?.startPrice?.units,
+                              endPrice: location.priceRange?.endPrice?.units,
+                              mainPhotoName: location.photos?.[0]?.name || "",
+                              websiteUri: location.websiteUri,
+                              createdAt: new Date().toISOString(),
+                            });
+                            submitForm();
+                          }}
+                        />
+                        <div className="grid grid-cols-6 gap-4 mt-4">
+                          {values.data.map((foodPlace, index) => {
+                            return (
+                              <LocationWithPhotoCard
+                                key={`${foodPlace.id}-${index}`}
+                                location={foodPlace}
+                                currencySymbol={userCurrencySymbol}
+                              />
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }}
+              />
+            </Form>
+          );
+        }}
+      />
+    </div>
+  );
+};
+
+export default Food;

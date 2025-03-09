@@ -54,6 +54,10 @@ export interface LocationSearchResult {
       units?: string;
     };
   };
+  photos?: {
+    name?: string;
+  }[];
+  websiteUri?: string;
 }
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
@@ -122,16 +126,13 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
               "Content-Type": "application/json",
               "X-Goog-Api-Key": API_KEY,
               "X-Goog-FieldMask":
-                "places.displayName,places.formattedAddress,places.googleMapsLinks,places.id,places.location,places.addressComponents,places.priceRange",
+                "places.displayName,places.formattedAddress,places.googleMapsLinks,places.id,places.location,places.addressComponents,places.priceRange,places.photos.name,places.websiteUri",
             },
           }
         );
 
         const responseData = [...response.data.places];
         convertPrices(responseData, userCurrency);
-
-        console.log(responseData);
-        // console.log(response.data);
         setOptions(responseData);
       } catch (error) {
         console.error("Error fetching places:", error);
