@@ -209,10 +209,10 @@ const Accommodation: React.FC<AccommodationProps> = ({
                             arrayHelpers.push({
                               ...defaultRow,
                               id: crypto.randomUUID(),
-                              name: location.displayName.text,
+                              name: location.displayName?.text || "",
                               location:
-                                location.addressComponents.find((address) =>
-                                  address.types.includes("locality")
+                                location.addressComponents?.find((address) =>
+                                  address.types?.includes("locality")
                                 )?.shortText || "",
                               createdAt: new Date().toISOString(),
                             });

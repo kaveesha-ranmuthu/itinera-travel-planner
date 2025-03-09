@@ -20,27 +20,27 @@ interface LocationSearchProps {
 
 export interface LocationSearchResult {
   id: string;
-  formattedAddress: string;
-  location: {
-    latitude: number;
-    longitude: number;
+  formattedAddress?: string;
+  location?: {
+    latitude?: number;
+    longitude?: number;
   };
-  displayName: {
-    text: string;
-    languageCode: string;
+  displayName?: {
+    text?: string;
+    languageCode?: string;
   };
-  googleMapsLinks: {
-    directionsUri: string;
-    placeUri: string;
-    writeAReviewUri: string;
-    reviewsUri: string;
-    photosUri: string;
+  googleMapsLinks?: {
+    directionsUri?: string;
+    placeUri?: string;
+    writeAReviewUri?: string;
+    reviewsUri?: string;
+    photosUri?: string;
   };
-  addressComponents: {
-    languageCode: string;
-    longText: string;
-    shortText: string;
-    types: string[];
+  addressComponents?: {
+    languageCode?: string;
+    longText?: string;
+    shortText?: string;
+    types?: string[];
   }[];
 }
 
@@ -68,8 +68,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
           headers: {
             "Content-Type": "application/json",
             "X-Goog-Api-Key": API_KEY,
-            "X-Goog-FieldMask":
-              "places.displayName,places.formattedAddress,places.googleMapsLinks,places.id,places.location,places.addressComponents",
+            "X-Goog-FieldMask": "*",
           },
         }
       );
@@ -119,7 +118,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
                 value={opt}
                 className="space-x-2 cursor-pointer px-3 py-3 hover:bg-secondary/5 hover:transition hover:ease-in-out hover:duration-400"
               >
-                <p>{opt.displayName.text || ""}</p>
+                <p>{opt.displayName?.text || ""}</p>
                 <p className="text-sm text-secondary/50">
                   {opt.formattedAddress || ""}
                 </p>
