@@ -1,22 +1,21 @@
 import { Field, FieldArray, Form, Formik } from "formik";
-import { isEqual, orderBy } from "lodash";
+import { orderBy } from "lodash";
+import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { GoCopy } from "react-icons/go";
-import { IoIosArrowRoundDown, IoIosArrowRoundUp } from "react-icons/io";
 import { IoTrashBinOutline } from "react-icons/io5";
 import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { FontFamily } from "../../../../types";
-import { useGetTransport } from "../../hooks/getters/useGetTransport";
-import { useSaveTransport } from "../../hooks/setters/useSaveTransport";
+import { useGetAccommodation } from "../../hooks/getters/useGetAccommodation";
+import { useSaveAccommodation } from "../../hooks/setters/useSaveAccommodation";
 import Checkbox from "../Checkbox";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
 import SimpleTooltip from "../SimpleTooltip";
 import Table from "../Table";
 import WarningConfirmationModal from "../WarningConfirmationModal";
-import moment from "moment";
-import { data } from "react-router-dom";
+import { getSortArrowComponent } from "./helpers";
 
 export interface AccommodationRow {
   id: string;
@@ -59,21 +58,23 @@ const Accommodation: React.FC<AccommodationProps> = ({
   tripId,
 }) => {
   const { settings } = useAuth();
-  // const { saveTransport, deleteTransportRow } = useSaveTransport();
-  // const { error, loading, transportRows } = useGetTransport(tripId);
+  const { deleteAccommodationRow, saveAccommodation } = useSaveAccommodation();
+  const { error, loading, accommodationRows } = useGetAccommodation(tripId);
   const [deleteRow, setDeleteRow] = useState<AccommodationRow | null>(null);
   const finalSaveData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
 
-  // const allRows: TransportRow[] = useMemo(
-  //   () => (finalSaveData ? JSON.parse(finalSaveData).data : transportRows),
-  //   [finalSaveData, transportRows]
-  // );
+  const allRows: AccommodationRow[] = useMemo(
+    () => (finalSaveData ? JSON.parse(finalSaveData).data : accommodationRows),
+    [finalSaveData, accommodationRows]
+  );
 
   const [sortOption, setSortOption] = useState<SortOptions>(
     SortOptions.CREATED_AT
   );
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-  const [sortedTransportRows, setSortedTransportRows] = useState([]);
+  const [sortedAccommodationRows, setSortedAccommodationRows] = useState(
+    orderBy(allRows, sortOption, sortDirection)
+  );
 
   const defaultRow: AccommodationRow = {
     id: crypto.randomUUID(),
@@ -99,32 +100,32 @@ const Accommodation: React.FC<AccommodationProps> = ({
     localStorage.setItem(LOCAL_STORAGE_KEY(tripId), JSON.stringify(values));
   };
 
-  // useEffect(() => {
-  //   const newSortedRows = orderBy(allRows, sortOption, sortDirection);
-  //   setSortedTransportRows([...newSortedRows]);
-  // }, [allRows, sortOption, sortDirection]);
+  useEffect(() => {
+    const newSortedRows = orderBy(allRows, sortOption, sortDirection);
+    setSortedAccommodationRows([...newSortedRows]);
+  }, [allRows, sortOption, sortDirection]);
 
-  // useEffect(() => {
-  //   const interval = setInterval(async () => {
-  //     const unsavedData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
-  //     if (unsavedData) {
-  //       await saveTransport(tripId, JSON.parse(unsavedData).data);
-  //     }
-  //   }, 10 * 60 * 1000); // 10 * 60 * 1000
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const unsavedData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+      if (unsavedData) {
+        await saveAccommodation(tripId, JSON.parse(unsavedData).data);
+      }
+    }, 10000); // 10 * 60 * 1000
 
-  //   return () => {
-  //     clearInterval(interval);
-  //   };
-  // }, [saveTransport, tripId]);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [saveAccommodation, tripId]);
 
   // TODO: Make these look better
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-  // if (error) {
-  //   return <div>Error...</div>;
-  // }
+  if (error) {
+    return <div>Error...</div>;
+  }
 
   const setSorting = (clickedOption: SortOptions) => {
     if (sortOption === clickedOption) {
@@ -138,14 +139,6 @@ const Accommodation: React.FC<AccommodationProps> = ({
       setSortDirection("asc");
       setSortOption(clickedOption);
     }
-  };
-
-  const getSortArrowComponent = (currentSortDirection: "asc" | "desc") => {
-    return currentSortDirection === "asc" ? (
-      <IoIosArrowRoundUp size={20} />
-    ) : (
-      <IoIosArrowRoundDown size={20} />
-    );
   };
 
   const getTableHeader = (
@@ -192,8 +185,8 @@ const Accommodation: React.FC<AccommodationProps> = ({
       </div>
       <Formik
         initialValues={{
-          data: sortedTransportRows.length
-            ? sortedTransportRows
+          data: sortedAccommodationRows.length
+            ? sortedAccommodationRows
             : ([] as AccommodationRow[]),
         }}
         enableReinitialize={true}
@@ -223,6 +216,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                 )?.shortText || "",
                               createdAt: new Date().toISOString(),
                             });
+                            submitForm();
                           }}
                         />
                       </div>
@@ -458,21 +452,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                     <button
                                       type="button"
                                       onClick={() => {
-                                        const isRowChanged = !isEqual(
-                                          { ...row, id: "", createdAt: "" },
-                                          {
-                                            ...defaultRow,
-                                            id: "",
-                                            createdAt: "",
-                                          }
-                                        );
-                                        if (isRowChanged) {
-                                          setDeleteRow(row);
-                                        } else {
-                                          arrayHelpers.remove(index);
-                                          // deleteTransportRow(tripId, row.id);
-                                          submitForm();
-                                        }
+                                        setDeleteRow(row);
                                       }}
                                       className="cursor-pointer hover:opacity-60 transition ease-in-out duration-300 disabled:cursor-default disabled:opacity-50"
                                     >
@@ -494,7 +474,10 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                         if (!deleteRow) return;
                                         arrayHelpers.remove(index);
                                         submitForm();
-                                        // deleteTransportRow(tripId, deleteRow.id);
+                                        deleteAccommodationRow(
+                                          tripId,
+                                          deleteRow.id
+                                        );
                                         setDeleteRow(null);
                                       }}
                                       lightOpacity={true}
