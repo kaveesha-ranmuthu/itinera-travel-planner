@@ -42,6 +42,16 @@ export interface LocationSearchResult {
     shortText?: string;
     types?: string[];
   }[];
+  priceRange?: {
+    startPrice?: {
+      currencyCode?: string;
+      units?: string;
+    };
+    endPrice?: {
+      currencyCode?: string;
+      units?: string;
+    };
+  };
 }
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
