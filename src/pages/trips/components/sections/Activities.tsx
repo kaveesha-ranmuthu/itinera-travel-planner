@@ -1,18 +1,18 @@
+import { Grid2 } from "@mui/material";
 import { FieldArray, Form, Formik } from "formik";
 import { useEffect, useMemo, useState } from "react";
 import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { FontFamily } from "../../../../types";
-import { useSaveFood } from "../../hooks/setters/useSaveFood";
+import { useGetActivities } from "../../hooks/getters/useGetActivities";
+import { useSaveActivities } from "../../hooks/setters/useSaveActivities";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
 import LocationWithPhotoCard, {
   LocationCardDetails,
 } from "../LocationWithPhotoCard";
 import SimpleTooltip from "../SimpleTooltip";
 import WarningConfirmationModal from "../WarningConfirmationModal";
-import { useGetFood } from "../../hooks/getters/useGetFood";
-import { Grid2 } from "@mui/material";
 
 interface ActivitiesProps {
   userCurrencySymbol?: string;
@@ -20,7 +20,7 @@ interface ActivitiesProps {
   tripId: string;
 }
 
-const LOCAL_STORAGE_KEY = (tripId: string) => `unsaved-food-${tripId}`;
+const LOCAL_STORAGE_KEY = (tripId: string) => `unsaved-activities-${tripId}`;
 
 const Activities: React.FC<ActivitiesProps> = ({
   userCurrencySymbol,
@@ -28,16 +28,16 @@ const Activities: React.FC<ActivitiesProps> = ({
   tripId,
 }) => {
   const { settings } = useAuth();
-  const { deleteFoodItem, saveFood } = useSaveFood();
-  const { error, loading, foodItems } = useGetFood(tripId);
+  const { deleteActivity, saveActivities } = useSaveActivities();
+  const { error, loading, activities } = useGetActivities(tripId);
   const [itemToDelete, setItemToDelete] = useState<LocationCardDetails | null>(
     null
   );
   const finalSaveData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
 
   const allRows: LocationCardDetails[] = useMemo(
-    () => (finalSaveData ? JSON.parse(finalSaveData).data : foodItems),
-    [finalSaveData, foodItems]
+    () => (finalSaveData ? JSON.parse(finalSaveData).data : activities),
+    [finalSaveData, activities]
   );
 
   const handleFormSubmit = (values: { data: LocationCardDetails[] }) => {
@@ -48,14 +48,14 @@ const Activities: React.FC<ActivitiesProps> = ({
     const interval = setInterval(async () => {
       const unsavedData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
       if (unsavedData) {
-        await saveFood(tripId, JSON.parse(unsavedData).data);
+        await saveActivities(tripId, JSON.parse(unsavedData).data);
       }
     }, 5 * 60 * 1000); // 10 * 60 * 1000
 
     return () => {
       clearInterval(interval);
     };
-  }, [saveFood, tripId]);
+  }, [saveActivities, tripId]);
 
   // TODO: Make these look better
   if (loading) {
@@ -126,34 +126,34 @@ const Activities: React.FC<ActivitiesProps> = ({
                         />
                         <div className="mt-4">
                           <Grid2 container spacing={2.8}>
-                            {values.data.map((foodPlace, index) => {
+                            {values.data.map((activity, index) => {
                               return (
-                                <>
-                                  <Grid2 key={`${foodPlace.id}-${index}`}>
+                                <div key={`${activity.id}-${index}`}>
+                                  <Grid2>
                                     <LocationWithPhotoCard
-                                      location={foodPlace}
+                                      location={activity}
                                       currencySymbol={userCurrencySymbol}
                                       onDelete={() => {
-                                        setItemToDelete(foodPlace);
+                                        setItemToDelete(activity);
                                       }}
                                       locationFieldName={`data.${index}.city`}
                                     />
                                   </Grid2>
                                   <WarningConfirmationModal
                                     description="Once deleted, this is gone forever. Are you sure you want to continue?"
-                                    title={`Are you sure you want to delete "${foodPlace.name}"?`}
-                                    isOpen={itemToDelete?.id === foodPlace.id}
+                                    title={`Are you sure you want to delete "${activity.name}"?`}
+                                    isOpen={itemToDelete?.id === activity.id}
                                     onClose={() => setItemToDelete(null)}
                                     onConfirm={() => {
                                       if (!itemToDelete) return;
                                       arrayHelpers.remove(index);
                                       submitForm();
-                                      deleteFoodItem(tripId, itemToDelete.id);
+                                      deleteActivity(tripId, itemToDelete.id);
                                       setItemToDelete(null);
                                     }}
                                     lightOpacity={true}
                                   />
-                                </>
+                                </div>
                               );
                             })}
                           </Grid2>

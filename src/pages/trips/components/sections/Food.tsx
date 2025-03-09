@@ -128,8 +128,8 @@ const Food: React.FC<FoodProps> = ({
                           <Grid2 container spacing={2.8}>
                             {values.data.map((foodPlace, index) => {
                               return (
-                                <>
-                                  <Grid2 key={`${foodPlace.id}-${index}`}>
+                                <div key={`${foodPlace.id}-${index}`}>
+                                  <Grid2>
                                     <LocationWithPhotoCard
                                       location={foodPlace}
                                       currencySymbol={userCurrencySymbol}
@@ -153,7 +153,7 @@ const Food: React.FC<FoodProps> = ({
                                     }}
                                     lightOpacity={true}
                                   />
-                                </>
+                                </div>
                               );
                             })}
                           </Grid2>
