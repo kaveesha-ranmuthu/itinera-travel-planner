@@ -50,7 +50,7 @@ const Food: React.FC<FoodProps> = ({
       if (unsavedData) {
         await saveFood(tripId, JSON.parse(unsavedData).data);
       }
-    }, 10 * 60 * 1000); // 10 * 60 * 1000
+    }, 5 * 60 * 1000); // 10 * 60 * 1000
 
     return () => {
       clearInterval(interval);

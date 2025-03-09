@@ -113,7 +113,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
       if (unsavedData) {
         await saveAccommodation(tripId, JSON.parse(unsavedData).data);
       }
-    }, 10 * 60 * 1000); // 10 * 60 * 1000
+    }, 5 * 60 * 1000); // 10 * 60 * 1000
 
     return () => {
       clearInterval(interval);
