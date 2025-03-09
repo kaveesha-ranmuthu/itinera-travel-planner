@@ -59,6 +59,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
           />
           <Accommodation
             userCurrency={trip.currency?.otherInfo?.symbol}
+            numberOfPeople={trip.numberOfPeople}
             startDate={trip.startDate}
             endDate={trip.endDate}
             tripId={trip.id}
