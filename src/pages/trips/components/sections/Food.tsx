@@ -1,46 +1,42 @@
 import { FieldArray, Form, Formik } from "formik";
-import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { FontFamily } from "../../../../types";
-import { useGetAccommodation } from "../../hooks/getters/useGetAccommodation";
-import { useSaveAccommodation } from "../../hooks/setters/useSaveAccommodation";
+import { useSaveFood } from "../../hooks/setters/useSaveFood";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
-import SimpleTooltip from "../SimpleTooltip";
 import LocationWithPhotoCard, {
   LocationCardDetails,
 } from "../LocationWithPhotoCard";
+import SimpleTooltip from "../SimpleTooltip";
+import WarningConfirmationModal from "../WarningConfirmationModal";
+import { useGetFood } from "../../hooks/getters/useGetFood";
 
 interface FoodProps {
   userCurrencySymbol?: string;
   userCurrencyCode?: string;
-  numberOfPeople: number;
-  startDate: string;
-  endDate: string;
   tripId: string;
 }
 
-const LOCAL_STORAGE_KEY = (tripId: string) => `unsaved-accommodation-${tripId}`;
+const LOCAL_STORAGE_KEY = (tripId: string) => `unsaved-food-${tripId}`;
 
 const Food: React.FC<FoodProps> = ({
   userCurrencySymbol,
   userCurrencyCode,
-  numberOfPeople,
-  startDate,
-  endDate,
   tripId,
 }) => {
   const { settings } = useAuth();
-  const { deleteAccommodationRow, saveAccommodation } = useSaveAccommodation();
-  const { error, loading, accommodationRows } = useGetAccommodation(tripId);
-  const [deleteRow, setDeleteRow] = useState<LocationCardDetails | null>(null);
+  const { deleteFoodItem, saveFood } = useSaveFood();
+  const { error, loading, foodItems } = useGetFood(tripId);
+  const [itemToDelete, setItemToDelete] = useState<LocationCardDetails | null>(
+    null
+  );
   const finalSaveData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
 
   const allRows: LocationCardDetails[] = useMemo(
-    () => (finalSaveData ? JSON.parse(finalSaveData).data : accommodationRows),
-    [finalSaveData, accommodationRows]
+    () => (finalSaveData ? JSON.parse(finalSaveData).data : foodItems),
+    [finalSaveData, foodItems]
   );
 
   const handleFormSubmit = (values: { data: LocationCardDetails[] }) => {
@@ -51,14 +47,14 @@ const Food: React.FC<FoodProps> = ({
     const interval = setInterval(async () => {
       const unsavedData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
       if (unsavedData) {
-        await saveAccommodation(tripId, JSON.parse(unsavedData).data);
+        await saveFood(tripId, JSON.parse(unsavedData).data);
       }
-    }, 10000); // 10 * 60 * 1000
+    }, 10 * 60 * 1000); // 10 * 60 * 1000
 
     return () => {
       clearInterval(interval);
     };
-  }, [saveAccommodation, tripId]);
+  }, [saveFood, tripId]);
 
   // TODO: Make these look better
   if (loading) {
@@ -96,7 +92,7 @@ const Food: React.FC<FoodProps> = ({
         onSubmit={async (values) => {
           handleFormSubmit(values);
         }}
-        component={({ values, setFieldValue, submitForm }) => {
+        component={({ values, submitForm }) => {
           return (
             <Form className="mt-2" onChange={submitForm}>
               <FieldArray
@@ -130,11 +126,30 @@ const Food: React.FC<FoodProps> = ({
                         <div className="grid grid-cols-6 gap-4 mt-4">
                           {values.data.map((foodPlace, index) => {
                             return (
-                              <LocationWithPhotoCard
-                                key={`${foodPlace.id}-${index}`}
-                                location={foodPlace}
-                                currencySymbol={userCurrencySymbol}
-                              />
+                              <>
+                                <LocationWithPhotoCard
+                                  key={`${foodPlace.id}-${index}`}
+                                  location={foodPlace}
+                                  currencySymbol={userCurrencySymbol}
+                                  onDelete={() => {
+                                    setItemToDelete(foodPlace);
+                                  }}
+                                />
+                                <WarningConfirmationModal
+                                  description="Once deleted, this is gone forever. Are you sure you want to continue?"
+                                  title={`Are you sure you want to delete "${foodPlace.name}"?`}
+                                  isOpen={itemToDelete?.id === foodPlace.id}
+                                  onClose={() => setItemToDelete(null)}
+                                  onConfirm={() => {
+                                    if (!itemToDelete) return;
+                                    arrayHelpers.remove(index);
+                                    submitForm();
+                                    deleteFoodItem(tripId, itemToDelete.id);
+                                    setItemToDelete(null);
+                                  }}
+                                  lightOpacity={true}
+                                />
+                              </>
                             );
                           })}
                         </div>

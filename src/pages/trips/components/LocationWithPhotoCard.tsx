@@ -18,6 +18,7 @@ export interface LocationCardDetails {
 interface LocationWithPhotoCardProps {
   location: LocationCardDetails;
   currencySymbol?: string;
+  onDelete?: () => void;
 }
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
@@ -40,6 +41,7 @@ const getFormattedPrice = (
 const LocationWithPhotoCard: React.FC<LocationWithPhotoCardProps> = ({
   location,
   currencySymbol,
+  onDelete,
 }) => {
   const { city, mainPhotoName, name, startPrice, endPrice, websiteUri } =
     location;
@@ -65,6 +67,7 @@ const LocationWithPhotoCard: React.FC<LocationWithPhotoCardProps> = ({
         )}
         <button
           type="button"
+          onClick={onDelete}
           className="bg-primary absolute top-0 left-0 p-1 rounded-br cursor-pointer opacity-0 group-hover:opacity-100 transition ease-in-out duration-300"
         >
           <IoTrashBinOutline
