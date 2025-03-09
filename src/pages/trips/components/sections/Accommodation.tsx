@@ -41,7 +41,8 @@ enum SortOptions {
 }
 
 interface AccommodationProps {
-  userCurrency?: string;
+  userCurrencySymbol?: string;
+  userCurrencyCode?: string;
   numberOfPeople: number;
   startDate: string;
   endDate: string;
@@ -51,7 +52,8 @@ interface AccommodationProps {
 const LOCAL_STORAGE_KEY = (tripId: string) => `unsaved-accommodation-${tripId}`;
 
 const Accommodation: React.FC<AccommodationProps> = ({
-  userCurrency,
+  userCurrencySymbol,
+  userCurrencyCode,
   numberOfPeople,
   startDate,
   endDate,
@@ -203,6 +205,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
                     <div>
                       <div className="mb-4">
                         <LocationSearch
+                          userCurrency={userCurrencyCode}
                           onSelectLocation={(
                             location: LocationSearchResult
                           ) => {
@@ -347,9 +350,9 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                   )}
                                 >
                                   <div className="flex w-full">
-                                    {userCurrency && (
+                                    {userCurrencySymbol && (
                                       <p className="text-nowrap w-fit">
-                                        {userCurrency}
+                                        {userCurrencySymbol}
                                       </p>
                                     )}
                                     <Field
@@ -396,9 +399,9 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                   )}
                                 >
                                   <div className="flex w-full">
-                                    {userCurrency && (
+                                    {userCurrencySymbol && (
                                       <p className="text-nowrap w-fit">
-                                        {userCurrency}
+                                        {userCurrencySymbol}
                                       </p>
                                     )}
                                     <Field

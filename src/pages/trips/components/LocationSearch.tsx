@@ -9,6 +9,7 @@ import { debounce } from "lodash";
 import React, { useCallback, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../hooks/useAuth";
+import { convertCurrency } from "./sections/helpers";
 
 interface LocationSearchProps {
   disabled?: boolean;
@@ -16,6 +17,7 @@ interface LocationSearchProps {
   optionsBoxClassname?: string;
   placeholder?: string;
   onSelectLocation: (location: LocationSearchResult) => void;
+  userCurrency?: string;
 }
 
 export interface LocationSearchResult {
@@ -56,39 +58,87 @@ export interface LocationSearchResult {
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
+const convertPrice = async (
+  price: { currencyCode?: string; units?: string },
+  userCurrency: string
+) => {
+  if (
+    !price ||
+    !price.units ||
+    !price.currencyCode ||
+    price.currencyCode === userCurrency
+  )
+    return;
+
+  const convertedPrice = await convertCurrency(
+    price.currencyCode,
+    userCurrency,
+    parseFloat(price.units)
+  );
+  price.currencyCode = userCurrency;
+  price.units = convertedPrice.toString();
+};
+
+const convertPrices = async (
+  places: LocationSearchResult[],
+  userCurrency?: string
+) => {
+  if (!userCurrency) return;
+
+  await Promise.all(
+    places.map(async (place) => {
+      if (place.priceRange) {
+        if (place.priceRange.startPrice)
+          await convertPrice(place.priceRange.startPrice, userCurrency);
+        if (place.priceRange.endPrice)
+          await convertPrice(place.priceRange.endPrice, userCurrency);
+      }
+    })
+  );
+};
+
 const LocationSearch: React.FC<LocationSearchProps> = ({
   disabled,
   inputBoxClassname,
   optionsBoxClassname,
   placeholder,
   onSelectLocation,
+  userCurrency,
 }) => {
   const [options, setOptions] = useState<LocationSearchResult[]>([]);
   const [query, setQuery] = useState("");
   const { settings } = useAuth();
 
-  const searchPlaces = useCallback(async (query: string) => {
-    try {
-      const response = await axios.post(
-        "https://places.googleapis.com/v1/places:searchText",
-        {
-          textQuery: query,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "X-Goog-Api-Key": API_KEY,
-            "X-Goog-FieldMask": "*",
+  const searchPlaces = useCallback(
+    async (query: string) => {
+      try {
+        const response = await axios.post(
+          "https://places.googleapis.com/v1/places:searchText",
+          {
+            textQuery: query,
           },
-        }
-      );
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "X-Goog-Api-Key": API_KEY,
+              "X-Goog-FieldMask":
+                "places.displayName,places.formattedAddress,places.googleMapsLinks,places.id,places.location,places.addressComponents,places.priceRange",
+            },
+          }
+        );
 
-      console.log(response.data);
-      setOptions(response.data.places);
-    } catch (error) {
-      console.error("Error fetching places:", error);
-    }
-  }, []);
+        const responseData = [...response.data.places];
+        convertPrices(responseData, userCurrency);
+
+        console.log(responseData);
+        // console.log(response.data);
+        setOptions(responseData);
+      } catch (error) {
+        console.error("Error fetching places:", error);
+      }
+    },
+    [userCurrency]
+  );
 
   useEffect(() => {
     if (!query) return;

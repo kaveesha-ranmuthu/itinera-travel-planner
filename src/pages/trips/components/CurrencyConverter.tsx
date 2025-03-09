@@ -2,10 +2,10 @@ import React from "react";
 import { useHotToast } from "../../../hooks/useHotToast";
 import { SelectOption, SingleSelect } from "./Select";
 import TripsInput from "./TripsInput";
-import axios from "axios";
 import { useAuth } from "../../../hooks/useAuth";
 import { twMerge } from "tailwind-merge";
 import { round } from "lodash";
+import { convertCurrency } from "./sections/helpers";
 
 interface CurrencyConverterProps {
   userCurrency?: string;
@@ -18,32 +18,6 @@ interface CurrencyConverterProps {
   onCurrencyCodeChange: (currency: SelectOption) => void;
   currencyOptions: SelectOption[];
 }
-
-const convertCurrency = async (
-  base: string,
-  target: string,
-  amount: number
-): Promise<number> => {
-  const sessionStorageKey = `${base}-${target}`;
-  const cachedRate = sessionStorage.getItem(sessionStorageKey);
-  if (cachedRate) {
-    return parseFloat(cachedRate) * amount;
-  }
-  try {
-    const response = await axios.get(
-      `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${base.toLowerCase()}.json`
-    );
-
-    const rate = response.data[base.toLowerCase()][target.toLowerCase()];
-    if (!rate) {
-      throw new Error("Failed to fetch currency conversion rate.");
-    }
-    sessionStorage.setItem(sessionStorageKey, rate);
-    return rate * amount;
-  } catch {
-    throw new Error("Failed to fetch currency conversion rate.");
-  }
-};
 
 const CurrencyConverter: React.FC<CurrencyConverterProps> = ({
   userCurrency,
