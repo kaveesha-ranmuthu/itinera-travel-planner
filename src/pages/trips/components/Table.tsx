@@ -23,13 +23,28 @@ const Row: React.FC<
   return <tr className={className}>{children}</tr>;
 };
 
+const HeaderCell: React.FC<
+  PropsWithChildren<React.HTMLAttributes<HTMLTableElement>>
+> = ({ children, className }) => {
+  return (
+    <td
+      className={twMerge(
+        "text-nowrap border-b px-4 border-r last:border-r-0 border-secondary py-2",
+        className
+      )}
+    >
+      {children}
+    </td>
+  );
+};
+
 const Cell: React.FC<
   PropsWithChildren<React.HTMLAttributes<HTMLTableElement>>
 > = ({ children, className }) => {
   return (
     <td
       className={twMerge(
-        "border-b px-4 border-r last:border-r-0 border-secondary py-2",
+        "px-4 border-r last:border-r-0 border-secondary py-2",
         className
       )}
     >
@@ -42,6 +57,9 @@ interface TableComponent extends React.FC<PropsWithChildren> {
   Body: React.FC<PropsWithChildren>;
   Row: React.FC<PropsWithChildren<React.HTMLAttributes<HTMLTableElement>>>;
   Cell: React.FC<PropsWithChildren<React.HTMLAttributes<HTMLTableElement>>>;
+  HeaderCell: React.FC<
+    PropsWithChildren<React.HTMLAttributes<HTMLTableElement>>
+  >;
 }
 
 const Table = TableWrapper as TableComponent;
@@ -49,5 +67,6 @@ Table.Header = Header;
 Table.Body = Body;
 Table.Row = Row;
 Table.Cell = Cell;
+Table.HeaderCell = HeaderCell;
 
 export default Table;
