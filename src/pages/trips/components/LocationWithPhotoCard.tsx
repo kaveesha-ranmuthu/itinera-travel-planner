@@ -1,9 +1,9 @@
+import { Field } from "formik";
 import { round } from "lodash";
 import React, { useState } from "react";
+import { IoTrashBinOutline } from "react-icons/io5";
 import { MdPhoto } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
-import { IoTrashBinOutline } from "react-icons/io5";
-import { Field } from "formik";
 
 export interface LocationCardDetails {
   id: string;
@@ -47,20 +47,20 @@ const LocationWithPhotoCard: React.FC<LocationWithPhotoCardProps> = ({
   locationFieldName,
 }) => {
   const { mainPhotoName, name, startPrice, endPrice, websiteUri } = location;
-  const mainPhotoUrl = `https://places.googleapis.com/v1/${mainPhotoName}/media?maxWidthPx=400&key=${API_KEY}
-`;
+  const mainPhotoUrl = `https://places.googleapis.com/v1/${mainPhotoName}/media?maxWidthPx=400&key=${API_KEY}`;
   const [hasError, setHasError] = useState(false);
-  console.log(location);
 
   return (
     <div className="border border-secondary w-50 rounded-2xl p-3 group">
       <div className="relative">
-        {mainPhotoName && !hasError ? (
+        {mainPhotoUrl && !hasError ? (
           <img
             className="rounded-2xl w-full h-32 object-cover"
             src={mainPhotoUrl}
             alt={name}
-            onError={() => setHasError(true)}
+            onError={() => {
+              setHasError(true);
+            }}
           />
         ) : (
           <div className="w-full h-32 bg-secondary rounded-2xl flex items-center justify-center">
@@ -83,7 +83,7 @@ const LocationWithPhotoCard: React.FC<LocationWithPhotoCardProps> = ({
         target="_blank"
         href={websiteUri}
         className={twMerge(
-          "mt-3 text-base text-secondary leading-5 h-10 line-clamp-2 transition ease-in-out duration-300",
+          "mt-3 text-base text-secondary leading-5 h-11 line-clamp-2 transition ease-in-out duration-300",
           websiteUri && "hover:opacity-70"
         )}
       >
