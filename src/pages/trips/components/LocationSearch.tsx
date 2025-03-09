@@ -9,6 +9,7 @@ import { debounce } from "lodash";
 import React, { useCallback, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../hooks/useAuth";
+import { convertCurrency } from "./sections/helpers";
 
 interface LocationSearchProps {
   disabled?: boolean;
@@ -16,35 +17,89 @@ interface LocationSearchProps {
   optionsBoxClassname?: string;
   placeholder?: string;
   onSelectLocation: (location: LocationSearchResult) => void;
+  userCurrency?: string;
 }
 
 export interface LocationSearchResult {
   id: string;
-  formattedAddress: string;
-  location: {
-    latitude: number;
-    longitude: number;
+  formattedAddress?: string;
+  location?: {
+    latitude?: number;
+    longitude?: number;
   };
-  displayName: {
-    text: string;
-    languageCode: string;
+  displayName?: {
+    text?: string;
+    languageCode?: string;
   };
-  googleMapsLinks: {
-    directionsUri: string;
-    placeUri: string;
-    writeAReviewUri: string;
-    reviewsUri: string;
-    photosUri: string;
+  googleMapsLinks?: {
+    directionsUri?: string;
+    placeUri?: string;
+    writeAReviewUri?: string;
+    reviewsUri?: string;
+    photosUri?: string;
   };
-  addressComponents: {
-    languageCode: string;
-    longText: string;
-    shortText: string;
-    types: string[];
+  addressComponents?: {
+    languageCode?: string;
+    longText?: string;
+    shortText?: string;
+    types?: string[];
   }[];
+  priceRange?: {
+    startPrice?: {
+      currencyCode?: string;
+      units?: string;
+    };
+    endPrice?: {
+      currencyCode?: string;
+      units?: string;
+    };
+  };
+  photos?: {
+    name?: string;
+  }[];
+  websiteUri?: string;
 }
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+
+const convertPrice = async (
+  price: { currencyCode?: string; units?: string },
+  userCurrency: string
+) => {
+  if (
+    !price ||
+    !price.units ||
+    !price.currencyCode ||
+    price.currencyCode === userCurrency
+  )
+    return;
+
+  const convertedPrice = await convertCurrency(
+    price.currencyCode,
+    userCurrency,
+    parseFloat(price.units)
+  );
+  price.currencyCode = userCurrency;
+  price.units = convertedPrice.toString();
+};
+
+const convertPrices = async (
+  places: LocationSearchResult[],
+  userCurrency?: string
+) => {
+  if (!userCurrency) return;
+
+  await Promise.all(
+    places.map(async (place) => {
+      if (place.priceRange) {
+        if (place.priceRange.startPrice)
+          await convertPrice(place.priceRange.startPrice, userCurrency);
+        if (place.priceRange.endPrice)
+          await convertPrice(place.priceRange.endPrice, userCurrency);
+      }
+    })
+  );
+};
 
 const LocationSearch: React.FC<LocationSearchProps> = ({
   disabled,
@@ -52,34 +107,39 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
   optionsBoxClassname,
   placeholder,
   onSelectLocation,
+  userCurrency,
 }) => {
   const [options, setOptions] = useState<LocationSearchResult[]>([]);
   const [query, setQuery] = useState("");
   const { settings } = useAuth();
 
-  const searchPlaces = useCallback(async (query: string) => {
-    try {
-      const response = await axios.post(
-        "https://places.googleapis.com/v1/places:searchText",
-        {
-          textQuery: query,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "X-Goog-Api-Key": API_KEY,
-            "X-Goog-FieldMask":
-              "places.displayName,places.formattedAddress,places.googleMapsLinks,places.id,places.location,places.addressComponents",
+  const searchPlaces = useCallback(
+    async (query: string) => {
+      try {
+        const response = await axios.post(
+          "https://places.googleapis.com/v1/places:searchText",
+          {
+            textQuery: query,
           },
-        }
-      );
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "X-Goog-Api-Key": API_KEY,
+              "X-Goog-FieldMask":
+                "places.displayName,places.formattedAddress,places.googleMapsLinks,places.id,places.location,places.addressComponents,places.priceRange,places.photos.name,places.websiteUri",
+            },
+          }
+        );
 
-      console.log(response.data);
-      setOptions(response.data.places);
-    } catch (error) {
-      console.error("Error fetching places:", error);
-    }
-  }, []);
+        const responseData = [...response.data.places];
+        convertPrices(responseData, userCurrency);
+        setOptions(responseData);
+      } catch (error) {
+        console.error("Error fetching places:", error);
+      }
+    },
+    [userCurrency]
+  );
 
   useEffect(() => {
     if (!query) return;
@@ -89,7 +149,10 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
   return (
     <Combobox
       onChange={(item: LocationSearchResult) => onSelectLocation(item)}
-      onClose={() => setQuery("")}
+      onClose={() => {
+        setQuery("");
+        setOptions([]);
+      }}
       immediate
       disabled={disabled}
     >
@@ -119,7 +182,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
                 value={opt}
                 className="space-x-2 cursor-pointer px-3 py-3 hover:bg-secondary/5 hover:transition hover:ease-in-out hover:duration-400"
               >
-                <p>{opt.displayName.text || ""}</p>
+                <p>{opt.displayName?.text || ""}</p>
                 <p className="text-sm text-secondary/50">
                   {opt.formattedAddress || ""}
                 </p>

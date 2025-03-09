@@ -41,7 +41,8 @@ enum SortOptions {
 }
 
 interface AccommodationProps {
-  userCurrency?: string;
+  userCurrencySymbol?: string;
+  userCurrencyCode?: string;
   numberOfPeople: number;
   startDate: string;
   endDate: string;
@@ -51,7 +52,8 @@ interface AccommodationProps {
 const LOCAL_STORAGE_KEY = (tripId: string) => `unsaved-accommodation-${tripId}`;
 
 const Accommodation: React.FC<AccommodationProps> = ({
-  userCurrency,
+  userCurrencySymbol,
+  userCurrencyCode,
   numberOfPeople,
   startDate,
   endDate,
@@ -111,7 +113,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
       if (unsavedData) {
         await saveAccommodation(tripId, JSON.parse(unsavedData).data);
       }
-    }, 10000); // 10 * 60 * 1000
+    }, 10 * 60 * 1000); // 10 * 60 * 1000
 
     return () => {
       clearInterval(interval);
@@ -203,16 +205,17 @@ const Accommodation: React.FC<AccommodationProps> = ({
                     <div>
                       <div className="mb-4">
                         <LocationSearch
+                          userCurrency={userCurrencyCode}
                           onSelectLocation={(
                             location: LocationSearchResult
                           ) => {
                             arrayHelpers.push({
                               ...defaultRow,
                               id: crypto.randomUUID(),
-                              name: location.displayName.text,
+                              name: location.displayName?.text || "",
                               location:
-                                location.addressComponents.find((address) =>
-                                  address.types.includes("locality")
+                                location.addressComponents?.find((address) =>
+                                  address.types?.includes("locality")
                                 )?.shortText || "",
                               createdAt: new Date().toISOString(),
                             });
@@ -347,9 +350,9 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                   )}
                                 >
                                   <div className="flex w-full">
-                                    {userCurrency && (
+                                    {userCurrencySymbol && (
                                       <p className="text-nowrap w-fit">
-                                        {userCurrency}
+                                        {userCurrencySymbol}
                                       </p>
                                     )}
                                     <Field
@@ -396,9 +399,9 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                   )}
                                 >
                                   <div className="flex w-full">
-                                    {userCurrency && (
+                                    {userCurrencySymbol && (
                                       <p className="text-nowrap w-fit">
-                                        {userCurrency}
+                                        {userCurrencySymbol}
                                       </p>
                                     )}
                                     <Field
