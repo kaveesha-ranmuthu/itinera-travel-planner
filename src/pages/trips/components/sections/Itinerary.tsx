@@ -141,6 +141,7 @@ const Itinerary: React.FC<ItineraryProps> = ({
                               setFieldValue(`itinerary[${index}].plans`, plans);
                               submitForm();
                             }}
+                            defaultOpen={index === 0}
                           />
                         );
                       })}
@@ -158,12 +159,14 @@ const Itinerary: React.FC<ItineraryProps> = ({
 
 interface ItineraryBoxProps extends ItineraryDetails {
   onPlansChange: (plans: string) => void;
+  defaultOpen?: boolean;
 }
 const ItineraryBox: React.FC<ItineraryBoxProps> = ({
   date,
   dayNumber,
   plans,
   onPlansChange,
+  defaultOpen = false,
 }) => {
   const { settings } = useAuth();
   const editor = useEditor({
@@ -181,7 +184,7 @@ const ItineraryBox: React.FC<ItineraryBoxProps> = ({
 
   return (
     <div className="border border-secondary w-full rounded-2xl py-3 pl-4 pr-7 space-x-4 drop-shadow-(--drop-shadow-default)">
-      <Disclosure>
+      <Disclosure defaultOpen={defaultOpen}>
         <DisclosureButton className="flex items-center space-x-4 cursor-pointer hover:opacity-70 transition ease-in-out duration-200">
           <div
             className={twMerge(
