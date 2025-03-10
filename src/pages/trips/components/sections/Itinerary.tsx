@@ -3,23 +3,28 @@ import {
   DisclosureButton,
   DisclosurePanel,
 } from "@headlessui/react";
+import BulletList from "@tiptap/extension-bullet-list";
+import Highlight from "@tiptap/extension-highlight";
+import ListItem from "@tiptap/extension-list-item";
+import OrderedList from "@tiptap/extension-ordered-list";
+import { BubbleMenu, EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 import { FieldArray, Form, Formik } from "formik";
 import moment from "moment";
 import React from "react";
-import { BsPlusLg } from "react-icons/bs";
+import {
+  BsListOl,
+  BsListUl,
+  BsPlusLg,
+  BsTypeBold,
+  BsTypeItalic,
+  BsTypeStrikethrough,
+} from "react-icons/bs";
 import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { FontFamily } from "../../../../types";
 import SimpleTooltip from "../SimpleTooltip";
-import { EditorContent, useEditor, BubbleMenu } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Paragraph from "@tiptap/extension-paragraph";
-import Document from "@tiptap/extension-document";
-import Text from "@tiptap/extension-text";
-import BulletList from "@tiptap/extension-bullet-list";
-import OrderedList from "@tiptap/extension-ordered-list";
-import ListItem from "@tiptap/extension-list-item";
 
 interface ItineraryDetails {
   dayNumber: number;
@@ -113,7 +118,13 @@ const ItineraryBox: React.FC<ItineraryBoxProps> = ({
 }) => {
   const { settings } = useAuth();
   const editor = useEditor({
-    extensions: [StarterKit, BulletList, ListItem],
+    extensions: [
+      StarterKit,
+      BulletList,
+      ListItem,
+      OrderedList,
+      Highlight.configure({ multicolor: true }),
+    ],
     content: `
       <ul>
           <li>Start typing...</li>
@@ -145,32 +156,56 @@ const ItineraryBox: React.FC<ItineraryBoxProps> = ({
               tippyOptions={{ duration: 100 }}
               className="bg-primary"
             >
-              <div className="bubble-menu">
+              <div className="bubble-menu flex items-center">
                 <button
                   onClick={() => editor.chain().focus().toggleBold().run()}
-                  className={editor.isActive("bold") ? "is-active" : ""}
+                  disabled={settings?.font === FontFamily.HANDWRITTEN}
+                  className={twMerge(
+                    "p-2 cursor-pointer hover:bg-primary-hover transition ease-in-out duration-200 disabled:cursor-default disabled:opacity-50 disabled:hover:bg-primary",
+                    editor.isActive("bold") ? "is-active" : ""
+                  )}
                 >
-                  Bold
+                  <BsTypeBold size={20} />
                 </button>
                 <button
                   onClick={() => editor.chain().focus().toggleItalic().run()}
-                  className={editor.isActive("italic") ? "is-active" : ""}
+                  className={twMerge(
+                    "p-2 cursor-pointer hover:bg-primary-hover transition ease-in-out duration-200",
+                    editor.isActive("italic") ? "is-active" : ""
+                  )}
                 >
-                  Italic
+                  <BsTypeItalic size={20} />
                 </button>
                 <button
                   onClick={() => editor.chain().focus().toggleStrike().run()}
-                  className={editor.isActive("strike") ? "is-active" : ""}
+                  className={twMerge(
+                    "p-2 cursor-pointer hover:bg-primary-hover transition ease-in-out duration-200",
+                    editor.isActive("strike") ? "is-active" : ""
+                  )}
                 >
-                  Strike
+                  <BsTypeStrikethrough size={20} />
                 </button>
                 <button
                   onClick={() =>
                     editor.chain().focus().toggleBulletList().run()
                   }
-                  className={editor.isActive("bulletList") ? "is-active" : ""}
+                  className={twMerge(
+                    "p-2 cursor-pointer hover:bg-primary-hover transition ease-in-out duration-200",
+                    editor.isActive("bulletList") ? "is-active" : ""
+                  )}
                 >
-                  Toggle bullet list
+                  <BsListUl size={20} />
+                </button>
+                <button
+                  onClick={() =>
+                    editor.chain().focus().toggleOrderedList().run()
+                  }
+                  className={twMerge(
+                    "p-2 cursor-pointer hover:bg-primary-hover transition ease-in-out duration-200",
+                    editor.isActive("orderedList") ? "is-active" : ""
+                  )}
+                >
+                  <BsListOl size={20} />
                 </button>
               </div>
             </BubbleMenu>
