@@ -43,7 +43,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
   }
 
   return (
-    <div className={twMerge(settings?.font, "pb-30")}>
+    <div className={twMerge(settings?.font, "pb-16")}>
       <Header />
       <div className="px-10">
         <TripHeader trip={trip} />

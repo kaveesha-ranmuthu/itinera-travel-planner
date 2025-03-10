@@ -101,7 +101,12 @@ const Itinerary: React.FC<ItineraryProps> = ({
     <div className="text-secondary">
       <div className="flex items-center space-x-3 mb-5">
         <h1 className="text-3xl">itinerary</h1>
-        <SimpleTooltip content="" theme="dark" side="top" width="w-50">
+        <SimpleTooltip
+          content="Select any day of your trip to customise your plan."
+          theme="dark"
+          side="top"
+          width="w-50"
+        >
           <PiSealQuestionFill
             size={20}
             className={twMerge(
