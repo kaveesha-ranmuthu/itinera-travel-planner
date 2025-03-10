@@ -13,6 +13,7 @@ import { twMerge } from "tailwind-merge";
 import Accommodation from "./components/sections/Accommodation";
 import Food from "./components/sections/Food";
 import Activities from "./components/sections/Activities";
+import Itinerary from "./components/sections/Itinerary";
 
 const TripPage = () => {
   const { tripId } = useParams();
@@ -42,7 +43,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
   }
 
   return (
-    <div className={twMerge(settings?.font, "pb-10")}>
+    <div className={twMerge(settings?.font, "pb-16")}>
       <Header />
       <div className="px-10">
         <TripHeader trip={trip} />
@@ -75,6 +76,11 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
           <Activities
             userCurrencySymbol={trip.currency?.otherInfo?.symbol}
             userCurrencyCode={trip.currency?.name}
+            tripId={trip.id}
+          />
+          <Itinerary
+            startDate={trip.startDate}
+            endDate={trip.endDate}
             tripId={trip.id}
           />
         </div>
