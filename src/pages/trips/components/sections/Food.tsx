@@ -13,6 +13,7 @@ import SimpleTooltip from "../SimpleTooltip";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 import { useGetFood } from "../../hooks/getters/useGetFood";
 import { Grid2 } from "@mui/material";
+import { sortBy } from "lodash";
 
 interface FoodProps {
   userCurrencySymbol?: string;
@@ -39,6 +40,8 @@ const Food: React.FC<FoodProps> = ({
     () => (finalSaveData ? JSON.parse(finalSaveData).data : foodItems),
     [finalSaveData, foodItems]
   );
+
+  const sortedRows = sortBy(allRows, "createdAt");
 
   const handleFormSubmit = (values: { data: LocationCardDetails[] }) => {
     localStorage.setItem(LOCAL_STORAGE_KEY(tripId), JSON.stringify(values));
@@ -87,7 +90,7 @@ const Food: React.FC<FoodProps> = ({
       </div>
       <Formik
         initialValues={{
-          data: allRows.length ? allRows : ([] as LocationCardDetails[]),
+          data: sortedRows.length ? sortedRows : ([] as LocationCardDetails[]),
         }}
         enableReinitialize={true}
         onSubmit={async (values) => {

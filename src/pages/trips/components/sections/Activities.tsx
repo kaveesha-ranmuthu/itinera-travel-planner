@@ -13,6 +13,7 @@ import LocationWithPhotoCard, {
 } from "../LocationWithPhotoCard";
 import SimpleTooltip from "../SimpleTooltip";
 import WarningConfirmationModal from "../WarningConfirmationModal";
+import { sortBy } from "lodash";
 
 interface ActivitiesProps {
   userCurrencySymbol?: string;
@@ -39,6 +40,8 @@ const Activities: React.FC<ActivitiesProps> = ({
     () => (finalSaveData ? JSON.parse(finalSaveData).data : activities),
     [finalSaveData, activities]
   );
+
+  const sortedRows = sortBy(allRows, "createdAt");
 
   const handleFormSubmit = (values: { data: LocationCardDetails[] }) => {
     localStorage.setItem(LOCAL_STORAGE_KEY(tripId), JSON.stringify(values));
@@ -87,7 +90,7 @@ const Activities: React.FC<ActivitiesProps> = ({
       </div>
       <Formik
         initialValues={{
-          data: allRows.length ? allRows : ([] as LocationCardDetails[]),
+          data: sortedRows.length ? sortedRows : ([] as LocationCardDetails[]),
         }}
         enableReinitialize={true}
         onSubmit={async (values) => {
