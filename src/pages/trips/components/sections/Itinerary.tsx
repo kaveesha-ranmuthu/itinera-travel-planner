@@ -23,6 +23,7 @@ import { FontFamily } from "../../../../types";
 import SimpleTooltip from "../SimpleTooltip";
 import { useGetItinerary } from "../../hooks/getters/useGetItinerary";
 import { useSaveItinerary } from "../../hooks/setters/useSaveItinerary";
+import { sortBy } from "lodash";
 
 export interface ItineraryDetails {
   id: string;
@@ -53,6 +54,7 @@ const Itinerary: React.FC<ItineraryProps> = ({
     () => (finalSaveData ? JSON.parse(finalSaveData).itinerary : itinerary),
     [finalSaveData, itinerary]
   );
+  const sortedItinerary = sortBy(savedItinerary, "dayNumber");
 
   const getDefaultItinerary = () => {
     const startDateMoment = moment(startDate);
@@ -119,8 +121,8 @@ const Itinerary: React.FC<ItineraryProps> = ({
       <Formik
         initialValues={{
           itinerary:
-            savedItinerary && savedItinerary.length
-              ? savedItinerary
+            sortedItinerary && sortedItinerary.length
+              ? sortedItinerary
               : getDefaultItinerary(),
         }}
         onSubmit={async (values) => {
