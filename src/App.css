@@ -48,6 +48,20 @@ body {
   }
 }
 
+ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+}
+
+.tiptap:focus {
+  outline: none;
+}
+
 .zen-kurenaido-regular {
   font-family: "Zen Kurenaido", serif;
   font-weight: 400;

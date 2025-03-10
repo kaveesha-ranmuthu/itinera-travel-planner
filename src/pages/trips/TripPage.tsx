@@ -78,7 +78,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
             userCurrencyCode={trip.currency?.name}
             tripId={trip.id}
           />
-          <Itinerary />
+          <Itinerary startDate={trip.startDate} endDate={trip.endDate} />
         </div>
       </div>
       <CreateTripPopup
