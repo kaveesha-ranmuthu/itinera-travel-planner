@@ -10,12 +10,17 @@ import CurrencyConverter from "../CurrencyConverter";
 import PopoverMenu from "../PopoverMenu";
 import { SelectOption } from "../Select";
 import SimpleTooltip from "../SimpleTooltip";
+import Tasklist from "../Tasklist";
+import { twMerge } from "tailwind-merge";
+import useGetTrip from "../../hooks/getters/useGetTrip";
 
 type HeaderIcon = {
   icon: React.ReactNode;
   tooltipText: string;
   onClick: () => void;
   popoverComponent?: React.ReactNode;
+  popoverHeight?: string;
+  popoverWidth?: string;
 };
 
 type CurrencyForm = {
@@ -38,6 +43,8 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
     error: currencyFetchError,
     loading: currencyFetchLoading,
   } = useGetCurrencies();
+
+  const { updateTripDetails } = useGetTrip(trip.id);
 
   const userCurrency = trip.currency?.name;
   const countriesVisiting = trip.countries.map((country) => country.id);
@@ -75,11 +82,23 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
       icon: <GoTasklist fill="var(--color-primary)" size={20} />,
       tooltipText: "Tasklist",
       onClick: () => null,
+      popoverComponent: (
+        <Tasklist
+          savedTaskList={trip.taskList}
+          onSubmit={async (tasklist: string) =>
+            await updateTripDetails({ ...trip, taskList: tasklist })
+          }
+          tripId={trip.id}
+        />
+      ),
+      popoverHeight: "h-60",
+      popoverWidth: "w-60",
     },
     {
       icon: <PiMoneyWavy fill="var(--color-primary)" size={20} />,
       tooltipText: "Currency converter",
       onClick: () => null,
+      popoverHeight: "h-32",
       popoverComponent: currencyFetchLoading ? (
         <>Loading...</>
       ) : (
@@ -116,6 +135,8 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
           onClick={icon.onClick}
           tooltipText={icon.tooltipText}
           popoverComponent={icon.popoverComponent}
+          popoverHeight={icon.popoverHeight}
+          popoverWidth={icon.popoverWidth}
         >
           {icon.icon}
         </HeaderIconButton>
@@ -128,6 +149,8 @@ interface HeaderIconButtonProps {
   tooltipText: string;
   onClick: () => void;
   popoverComponent?: React.ReactNode;
+  popoverHeight?: string;
+  popoverWidth?: string;
 }
 
 const HeaderIconButton: React.FC<PropsWithChildren<HeaderIconButtonProps>> = ({
@@ -135,6 +158,8 @@ const HeaderIconButton: React.FC<PropsWithChildren<HeaderIconButtonProps>> = ({
   tooltipText,
   onClick,
   popoverComponent,
+  popoverHeight,
+  popoverWidth,
 }) => {
   if (!popoverComponent) {
     return (
@@ -153,7 +178,11 @@ const HeaderIconButton: React.FC<PropsWithChildren<HeaderIconButtonProps>> = ({
   return (
     <PopoverMenu
       className="w-fit mt-1.5"
-      panelClassName="mt-1.5 h-30"
+      panelClassName={twMerge(
+        "mt-1.5",
+        popoverHeight ? popoverHeight : "h-30",
+        popoverWidth ? popoverWidth : ""
+      )}
       popoverTrigger={
         <SimpleTooltip content={tooltipText} marginTop="mt-2" theme="dark">
           <div

@@ -3,10 +3,19 @@ import {
   DisclosureButton,
   DisclosurePanel,
 } from "@headlessui/react";
+import Bold from "@tiptap/extension-bold";
+import BulletList from "@tiptap/extension-bullet-list";
+import Document from "@tiptap/extension-document";
 import Highlight from "@tiptap/extension-highlight";
+import Italic from "@tiptap/extension-italic";
+import ListItem from "@tiptap/extension-list-item";
+import OrderedList from "@tiptap/extension-ordered-list";
+import Paragraph from "@tiptap/extension-paragraph";
+import Strike from "@tiptap/extension-strike";
+import Text from "@tiptap/extension-text";
 import { BubbleMenu, EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
 import { FieldArray, Form, Formik } from "formik";
+import { sortBy } from "lodash";
 import moment from "moment";
 import React, { useEffect, useMemo } from "react";
 import {
@@ -20,11 +29,9 @@ import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { FontFamily } from "../../../../types";
-import SimpleTooltip from "../SimpleTooltip";
 import { useGetItinerary } from "../../hooks/getters/useGetItinerary";
 import { useSaveItinerary } from "../../hooks/setters/useSaveItinerary";
-import { sortBy } from "lodash";
-
+import SimpleTooltip from "../SimpleTooltip";
 export interface ItineraryDetails {
   id: string;
   dayNumber: number;
@@ -177,7 +184,26 @@ const ItineraryBox: React.FC<ItineraryBoxProps> = ({
 }) => {
   const { settings } = useAuth();
   const editor = useEditor({
-    extensions: [StarterKit, Highlight.configure({ multicolor: true })],
+    extensions: [
+      Document,
+      Text,
+      Paragraph,
+      Bold,
+      Italic,
+      Strike,
+      ListItem,
+      BulletList.configure({
+        HTMLAttributes: {
+          class: "list-disc",
+        },
+      }),
+      OrderedList.configure({
+        HTMLAttributes: {
+          class: "list-decimal",
+        },
+      }),
+      Highlight.configure({ multicolor: true }),
+    ],
     content: plans,
   });
 
@@ -268,7 +294,7 @@ const ItineraryBox: React.FC<ItineraryBoxProps> = ({
               </BubbleMenu>
               <EditorContent
                 editor={editor}
-                className="mt-2 mb-3"
+                className="ml-5 mt-2 mb-3"
                 onBlur={() => onPlansChange(editor.getHTML())}
               />
             </>

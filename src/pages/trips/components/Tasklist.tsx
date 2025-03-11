@@ -1,14 +1,73 @@
-import React from "react";
-import PopoverMenu from "./PopoverMenu";
-import { GoTasklist } from "react-icons/go";
+import TaskItem from "@tiptap/extension-task-item";
+import TaskList from "@tiptap/extension-task-list";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import { useAuth } from "../../../hooks/useAuth";
+import { twMerge } from "tailwind-merge";
+import { useEffect } from "react";
+import { MdOutlineAddTask } from "react-icons/md";
 
-const Tasklist = () => {
+interface TasklistProps {
+  onSubmit: (tasklist: string) => Promise<undefined | Error>;
+  savedTaskList: string;
+  tripId: string;
+}
+
+const LOCAL_STORAGE_KEY = (tripId: string) => `unsaved-tasklist-${tripId}`;
+
+const Tasklist: React.FC<TasklistProps> = ({
+  onSubmit,
+  savedTaskList,
+  tripId,
+}) => {
+  const { settings } = useAuth();
+  const lastChanges = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+  const editor = useEditor({
+    extensions: [StarterKit, TaskList, TaskItem],
+    content: lastChanges ?? savedTaskList,
+    onUpdate: ({ editor }) => {
+      localStorage.setItem(LOCAL_STORAGE_KEY(tripId), editor.getHTML());
+    },
+  });
+
+  useEffect(() => {
+    return () => {
+      (async () => {
+        const unsavedData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+
+        if (unsavedData) {
+          try {
+            const error = await onSubmit(unsavedData);
+            if (!error) {
+              localStorage.removeItem(LOCAL_STORAGE_KEY(tripId));
+            } else {
+              console.error("Failed to save tasklist:", error);
+            }
+          } catch (err) {
+            console.error("Error during unmount save:", err);
+          }
+        }
+      })();
+    };
+  }, [tripId, onSubmit]);
+
   return (
-    <PopoverMenu
-      popoverTrigger={<GoTasklist fill="var(--color-primary)" size={20} />}
-    >
-      aaa
-    </PopoverMenu>
+    <div className="space-y-3 text-secondary">
+      <div className="flex justify-between items-center">
+        <h1 className="text-lg">Tasklist</h1>
+        <button
+          type="button"
+          className="hover:opacity-70 transition ease-in-out duration-300 cursor-pointer"
+          onClick={() => editor?.chain().focus().toggleTaskList().run()}
+        >
+          <MdOutlineAddTask size={20} className="text-secondary" />
+        </button>
+      </div>
+      <EditorContent
+        editor={editor}
+        className={(twMerge("mt-2 mb-3"), settings?.font)}
+      />
+    </div>
   );
 };
 
