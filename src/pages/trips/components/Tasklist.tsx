@@ -5,6 +5,7 @@ import StarterKit from "@tiptap/starter-kit";
 import { useAuth } from "../../../hooks/useAuth";
 import { twMerge } from "tailwind-merge";
 import { useEffect } from "react";
+import { MdOutlineAddTask } from "react-icons/md";
 
 interface TasklistProps {
   onSubmit: (tasklist: string) => Promise<undefined | Error>;
@@ -52,7 +53,16 @@ const Tasklist: React.FC<TasklistProps> = ({
 
   return (
     <div className="space-y-3 text-secondary">
-      <h1 className="text-lg">Tasklist</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-lg">Tasklist</h1>
+        <button
+          type="button"
+          className="hover:opacity-70 transition ease-in-out duration-300 cursor-pointer"
+          onClick={() => editor?.chain().focus().toggleTaskList().run()}
+        >
+          <MdOutlineAddTask size={20} className="text-secondary" />
+        </button>
+      </div>
       <EditorContent
         editor={editor}
         className={(twMerge("mt-2 mb-3"), settings?.font)}
