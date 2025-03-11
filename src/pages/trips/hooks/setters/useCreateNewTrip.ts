@@ -29,7 +29,18 @@ export function useCreateNewTrip() {
         currency,
         numberOfPeople,
         imageData: imageData || null,
-        subCollections: ["transport"],
+        subCollections: [
+          "transport",
+          "food",
+          "accommodation",
+          "activities",
+          "itinerary",
+        ],
+        taskList: `
+          <ul data-type="taskList">
+            <li data-type="taskItem" data-checked="false">Start typing...</li>
+          </ul>
+        `,
         currentSavings: 0,
         updatedAt: new Date(),
       });

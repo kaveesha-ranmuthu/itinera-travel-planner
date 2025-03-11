@@ -12,6 +12,7 @@ import { SelectOption } from "../Select";
 import SimpleTooltip from "../SimpleTooltip";
 import Tasklist from "../Tasklist";
 import { twMerge } from "tailwind-merge";
+import useGetTrip from "../../hooks/getters/useGetTrip";
 
 type HeaderIcon = {
   icon: React.ReactNode;
@@ -42,6 +43,8 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
     error: currencyFetchError,
     loading: currencyFetchLoading,
   } = useGetCurrencies();
+
+  const { updateTripDetails } = useGetTrip(trip.id);
 
   const userCurrency = trip.currency?.name;
   const countriesVisiting = trip.countries.map((country) => country.id);
@@ -79,7 +82,15 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
       icon: <GoTasklist fill="var(--color-primary)" size={20} />,
       tooltipText: "Tasklist",
       onClick: () => null,
-      popoverComponent: <Tasklist />,
+      popoverComponent: (
+        <Tasklist
+          savedTaskList={trip.taskList}
+          onSubmit={async (tasklist: string) =>
+            await updateTripDetails({ ...trip, taskList: tasklist })
+          }
+          tripId={trip.id}
+        />
+      ),
       popoverHeight: "h-60",
       popoverWidth: "w-60",
     },
