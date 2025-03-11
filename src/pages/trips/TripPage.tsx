@@ -14,6 +14,7 @@ import Accommodation from "./components/sections/Accommodation";
 import Food from "./components/sections/Food";
 import Activities from "./components/sections/Activities";
 import Itinerary from "./components/sections/Itinerary";
+import { Element } from "react-scroll";
 
 const TripPage = () => {
   const { tripId } = useParams();
@@ -54,35 +55,45 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
           onEditButtonClick={() => setIsEditTripModalOpen(true)}
         />
         <div className="space-y-10">
-          <Transport
-            userCurrency={trip.currency?.otherInfo?.symbol}
-            startDate={trip.startDate}
-            endDate={trip.endDate}
-            tripId={trip.id}
-          />
-          <Accommodation
-            userCurrencySymbol={trip.currency?.otherInfo?.symbol}
-            userCurrencyCode={trip.currency?.name}
-            numberOfPeople={trip.numberOfPeople}
-            startDate={trip.startDate}
-            endDate={trip.endDate}
-            tripId={trip.id}
-          />
-          <Food
-            userCurrencySymbol={trip.currency?.otherInfo?.symbol}
-            userCurrencyCode={trip.currency?.name}
-            tripId={trip.id}
-          />
-          <Activities
-            userCurrencySymbol={trip.currency?.otherInfo?.symbol}
-            userCurrencyCode={trip.currency?.name}
-            tripId={trip.id}
-          />
-          <Itinerary
-            startDate={trip.startDate}
-            endDate={trip.endDate}
-            tripId={trip.id}
-          />
+          <Element name="transport">
+            <Transport
+              userCurrency={trip.currency?.otherInfo?.symbol}
+              startDate={trip.startDate}
+              endDate={trip.endDate}
+              tripId={trip.id}
+            />
+          </Element>
+          <Element name="accommodation">
+            <Accommodation
+              userCurrencySymbol={trip.currency?.otherInfo?.symbol}
+              userCurrencyCode={trip.currency?.name}
+              numberOfPeople={trip.numberOfPeople}
+              startDate={trip.startDate}
+              endDate={trip.endDate}
+              tripId={trip.id}
+            />
+          </Element>
+          <Element name="food">
+            <Food
+              userCurrencySymbol={trip.currency?.otherInfo?.symbol}
+              userCurrencyCode={trip.currency?.name}
+              tripId={trip.id}
+            />
+          </Element>
+          <Element name="activities">
+            <Activities
+              userCurrencySymbol={trip.currency?.otherInfo?.symbol}
+              userCurrencyCode={trip.currency?.name}
+              tripId={trip.id}
+            />
+          </Element>
+          <Element name="itinerary">
+            <Itinerary
+              startDate={trip.startDate}
+              endDate={trip.endDate}
+              tripId={trip.id}
+            />
+          </Element>
         </div>
       </div>
       <CreateTripPopup

@@ -13,6 +13,8 @@ import SimpleTooltip from "../SimpleTooltip";
 import Tasklist from "../Tasklist";
 import { twMerge } from "tailwind-merge";
 import useGetTrip from "../../hooks/getters/useGetTrip";
+import { MdOutlineMenuBook } from "react-icons/md";
+import PageNavigation from "../PageNavigation";
 
 type HeaderIcon = {
   icon: React.ReactNode;
@@ -71,6 +73,14 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
   const { baseAmount, otherAmount, selectedCurrency } = formik.values;
 
   const headerIcons: HeaderIcon[] = [
+    {
+      icon: <MdOutlineMenuBook fill="var(--color-primary)" size={20} />,
+      tooltipText: "Page navigation",
+      onClick: () => null,
+      popoverComponent: <PageNavigation subCollections={trip.subCollections} />,
+      popoverHeight: "h-fit",
+      popoverWidth: "w-fit",
+    },
     {
       icon: (
         <FiEdit stroke="var(--color-primary)" size={20} strokeWidth={1.5} />
