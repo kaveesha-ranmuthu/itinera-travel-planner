@@ -375,7 +375,7 @@ const Transport: React.FC<TransportProps> = ({
                               </Table.Cell>
                               <Table.Cell
                                 className={twMerge(
-                                  "group-last:border-b-0",
+                                  "group-last:border-b-0 group-last:rounded-br-xl",
                                   row.checked
                                     ? "bg-green/20 transition ease-in-out duration-200"
                                     : "bg-transparent transition ease-in-out duration-200"

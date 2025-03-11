@@ -46,6 +46,7 @@ const Header = () => {
         <PaperPlane fill="#3b4043" width={30} />
       </Link>
       <PopoverMenu
+        popoverWidth="w-80"
         popoverTrigger={
           <div className="cursor-pointer hover:opacity-80 transition ease-in-out">
             <HiOutlineCog6Tooth stroke="#3b4043" size={25} />

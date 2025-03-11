@@ -1,7 +1,7 @@
 export enum FontFamily {
   HANDWRITTEN = "font-family-handwritten",
-  SANS_SERIF = "font-family-sans italic font-extralight",
-  SERIF_BRAND = "font-brand italic tracking-wider",
+  SANS_SERIF = "font-family-sans",
+  MONOSPACE = "font-family-monospace",
   SERIF = "font-family-serif",
 }
 

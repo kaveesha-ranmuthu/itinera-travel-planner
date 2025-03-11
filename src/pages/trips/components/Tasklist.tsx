@@ -52,7 +52,7 @@ const Tasklist: React.FC<TasklistProps> = ({
   }, [tripId, onSubmit]);
 
   return (
-    <div className="space-y-3 text-secondary">
+    <div className={twMerge("space-y-3 text-secondary", settings?.font)}>
       <div className="flex justify-between items-center">
         <h1 className="text-lg">Tasklist</h1>
         <button
