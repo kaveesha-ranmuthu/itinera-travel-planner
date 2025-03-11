@@ -38,7 +38,7 @@ const SimpleTooltip: React.FC<PropsWithChildren<TooltipProps>> = ({
           <Tooltip.Content
             side={side}
             className={twMerge(
-              "rounded-md text-xs px-3 py-2 mt-1 tracking-wide",
+              "rounded-md text-xs px-3 py-2 mt-1 tracking-wide z-20",
               theme === "light" ? lightStyles : darkStyles,
               settings?.font,
               marginTop,

@@ -23,7 +23,7 @@ const PopoverMenu: React.FC<PropsWithChildren<PopoverProps>> = ({
       <PopoverPanel
         anchor="bottom end"
         className={twMerge(
-          "h-60 mr-7 rounded-xl px-4 py-4 bg-primary border border-secondary drop-shadow-(--drop-shadow-default)",
+          "h-60 mr-7 z-20 rounded-xl px-4 py-4 bg-primary border border-secondary drop-shadow-(--drop-shadow-default)",
           FontFamily.HANDWRITTEN,
           popoverWidth || "w-xs",
           panelClassName

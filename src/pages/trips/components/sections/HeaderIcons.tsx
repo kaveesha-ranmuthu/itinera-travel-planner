@@ -128,7 +128,7 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
     },
   ];
   return (
-    <div className="space-x-2 mt-4 w-full flex items-center justify-end">
+    <div className="space-x-2 mt-4 w-full flex items-center justify-end sticky top-2 z-10 bg-primary">
       {headerIcons.map((icon, index) => (
         <HeaderIconButton
           key={index}

@@ -41,14 +41,14 @@ const Header = () => {
   };
 
   return (
-    <nav className="px-6 py-2 flex items-center justify-between">
+    <nav className="px-6 py-2 flex items-center justify-between sticky top-0 z-10 h-16 bg-primary ">
       <Link to="/">
         <PaperPlane fill="#3b4043" width={30} />
       </Link>
       <PopoverMenu
         popoverWidth="w-80"
         popoverTrigger={
-          <div className="cursor-pointer hover:opacity-80 transition ease-in-out">
+          <div className="cursor-pointer hover:opacity-80 transition mt-1 ease-in-out">
             <HiOutlineCog6Tooth stroke="#3b4043" size={25} />
           </div>
         }
