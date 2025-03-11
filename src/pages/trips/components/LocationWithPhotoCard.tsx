@@ -32,7 +32,7 @@ const getFormattedPrice = (
 ) => {
   const symbol = currencySymbol || "";
   if (startPrice && endPrice) {
-    return `${symbol}${round(startPrice)} - ${symbol}${round(endPrice)}`;
+    return `${symbol}${round(startPrice)}-${round(endPrice)}`;
   } else if (startPrice) {
     return `${symbol}${round(startPrice)}`;
   } else if (endPrice) {
@@ -96,7 +96,9 @@ const LocationWithPhotoCard: React.FC<LocationWithPhotoCardProps> = ({
           name={locationFieldName}
         />
         <div>
-          <span>{getFormattedPrice(startPrice, endPrice, currencySymbol)}</span>
+          <span className="truncate">
+            {getFormattedPrice(startPrice, endPrice, currencySymbol)}
+          </span>
         </div>
       </div>
     </div>
