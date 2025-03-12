@@ -8,7 +8,11 @@ import { twMerge } from "tailwind-merge";
 export interface LocationCardDetails {
   id: string;
   name: string;
-  city: string;
+  location: {
+    name: string;
+    latitude?: number;
+    longitude?: number;
+  };
   startPrice?: number;
   endPrice?: number;
   mainPhotoName: string;

@@ -110,20 +110,35 @@ const Activities: React.FC<ActivitiesProps> = ({
                           onSelectLocation={(
                             location: LocationSearchResult
                           ) => {
-                            arrayHelpers.push({
+                            if (!location) return;
+
+                            const newItem: LocationCardDetails = {
                               id: crypto.randomUUID(),
-                              name: location.displayName?.text || "",
-                              city:
-                                location.addressComponents?.find((address) =>
-                                  address.types?.includes("locality")
-                                )?.shortText || "",
-                              startPrice:
-                                location.priceRange?.startPrice?.units,
-                              endPrice: location.priceRange?.endPrice?.units,
-                              mainPhotoName: location.photos?.[0]?.name || "",
-                              websiteUri: location.websiteUri,
+                              name: location?.displayName?.text || "",
+                              location: {
+                                name:
+                                  location?.addressComponents?.find((address) =>
+                                    address.types?.includes("locality")
+                                  )?.shortText || "",
+                                latitude: location?.location?.latitude,
+                                longitude: location?.location?.longitude,
+                              },
+                              startPrice: location?.priceRange?.startPrice
+                                ?.units
+                                ? parseFloat(
+                                    location?.priceRange?.startPrice?.units
+                                  )
+                                : undefined,
+                              endPrice: location?.priceRange?.endPrice?.units
+                                ? parseFloat(
+                                    location?.priceRange?.endPrice?.units
+                                  )
+                                : undefined,
+                              mainPhotoName: location?.photos?.[0]?.name || "",
+                              websiteUri: location?.websiteUri,
                               createdAt: new Date().toISOString(),
-                            });
+                            };
+                            arrayHelpers.push(newItem);
                             submitForm();
                           }}
                         />
@@ -139,7 +154,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                                       onDelete={() => {
                                         setItemToDelete(activity);
                                       }}
-                                      locationFieldName={`data.${index}.city`}
+                                      locationFieldName={`data.${index}.location.name`}
                                     />
                                   </Grid2>
                                   <WarningConfirmationModal

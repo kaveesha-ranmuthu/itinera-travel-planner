@@ -2,6 +2,7 @@ import { collection, deleteDoc, doc, writeBatch } from "firebase/firestore";
 import { useCallback } from "react";
 import { auth, db } from "../../../../firebase-config";
 import { AccommodationRow } from "../../components/sections/Accommodation";
+import { getAccommodationLocalStorageKey } from "../../components/sections/helpers";
 
 export const useSaveAccommodation = () => {
   const saveAccommodation = useCallback(
@@ -27,7 +28,7 @@ export const useSaveAccommodation = () => {
 
         await batch.commit();
 
-        localStorage.removeItem(`unsaved-accommodation-${tripId}`);
+        localStorage.removeItem(getAccommodationLocalStorageKey(tripId));
       } catch (error) {
         throw new Error(`Error saving accommodation data: ${error}`);
       }
