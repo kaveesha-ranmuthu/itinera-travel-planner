@@ -15,12 +15,12 @@ import { FontFamily } from "../../types";
 import ErrorPage from "../error/ErrorPage";
 import { LoadingState } from "../landing-page/LandingPage";
 import CreateTripPopup from "./components/CreateTripPopup";
-import DeleteConfirmationModal from "./components/DeleteConfirmationModal";
 import Header from "./components/sections/Header";
 import { SelectOption } from "./components/Select";
 import { TripData, useGetTrips } from "./hooks/getters/useGetTrips";
 import { useCreateNewTrip } from "./hooks/setters/useCreateNewTrip";
 import useDuplicateTrip from "./hooks/setters/useDuplicateTrip";
+import WarningConfirmationModal from "./components/WarningConfirmationModal";
 
 export interface Trip {
   tripName: string;
@@ -176,12 +176,12 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
           </button>
         </div>
       </div>
-      <DeleteConfirmationModal
+      <WarningConfirmationModal
         isOpen={showDeleteWarning}
         onClose={() => setShowDeleteWarning(false)}
         title={`Are you sure you want to delete "${tripName}"?`}
         description="Once deleted, this trip is gone forever. Are you sure you want to continue?"
-        onDelete={() => deleteTrip(tripId)}
+        onConfirm={() => deleteTrip(tripId)}
       />
     </>
   );
