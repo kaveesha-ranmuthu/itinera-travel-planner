@@ -15,6 +15,7 @@ import { twMerge } from "tailwind-merge";
 import useGetTrip from "../../hooks/getters/useGetTrip";
 import { MdOutlineMenuBook } from "react-icons/md";
 import PageNavigation from "../PageNavigation";
+import { Link } from "react-router-dom";
 
 type HeaderIcon = {
   icon: React.ReactNode;
@@ -132,7 +133,11 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
       ),
     },
     {
-      icon: <IoMapOutline stroke="var(--color-primary)" size={20} />,
+      icon: (
+        <Link to={`/trip/${trip.id}/map`}>
+          <IoMapOutline stroke="var(--color-primary)" size={20} />
+        </Link>
+      ),
       tooltipText: "View map",
       onClick: () => null,
     },

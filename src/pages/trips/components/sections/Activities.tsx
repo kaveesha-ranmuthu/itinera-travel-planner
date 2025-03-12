@@ -14,14 +14,13 @@ import LocationWithPhotoCard, {
 import SimpleTooltip from "../SimpleTooltip";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 import { sortBy } from "lodash";
+import { getActivitiesLocalStorageKey } from "./helpers";
 
 interface ActivitiesProps {
   userCurrencySymbol?: string;
   userCurrencyCode?: string;
   tripId: string;
 }
-
-const LOCAL_STORAGE_KEY = (tripId: string) => `unsaved-activities-${tripId}`;
 
 const Activities: React.FC<ActivitiesProps> = ({
   userCurrencySymbol,
@@ -34,7 +33,9 @@ const Activities: React.FC<ActivitiesProps> = ({
   const [itemToDelete, setItemToDelete] = useState<LocationCardDetails | null>(
     null
   );
-  const finalSaveData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+  const finalSaveData = localStorage.getItem(
+    getActivitiesLocalStorageKey(tripId)
+  );
 
   const allRows: LocationCardDetails[] = useMemo(
     () => (finalSaveData ? JSON.parse(finalSaveData).data : activities),
@@ -44,12 +45,17 @@ const Activities: React.FC<ActivitiesProps> = ({
   const sortedRows = sortBy(allRows, "createdAt");
 
   const handleFormSubmit = (values: { data: LocationCardDetails[] }) => {
-    localStorage.setItem(LOCAL_STORAGE_KEY(tripId), JSON.stringify(values));
+    localStorage.setItem(
+      getActivitiesLocalStorageKey(tripId),
+      JSON.stringify(values)
+    );
   };
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      const unsavedData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+      const unsavedData = localStorage.getItem(
+        getActivitiesLocalStorageKey(tripId)
+      );
       if (unsavedData) {
         await saveActivities(tripId, JSON.parse(unsavedData).data);
       }

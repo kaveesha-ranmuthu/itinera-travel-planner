@@ -4,6 +4,12 @@ import { IoIosArrowRoundDown, IoIosArrowRoundUp } from "react-icons/io";
 export const getAccommodationLocalStorageKey = (tripId: string) =>
   `unsaved-accommodation-${tripId}`;
 
+export const getFoodLocalStorageKey = (tripId: string) =>
+  `unsaved-food-${tripId}`;
+
+export const getActivitiesLocalStorageKey = (tripId: string) =>
+  `unsaved-activities-${tripId}`;
+
 export const getSortArrowComponent = (currentSortDirection: "asc" | "desc") => {
   return currentSortDirection === "desc" ? (
     <IoIosArrowRoundUp size={20} />

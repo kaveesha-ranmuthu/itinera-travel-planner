@@ -2,6 +2,7 @@ import { collection, deleteDoc, doc, writeBatch } from "firebase/firestore";
 import { useCallback } from "react";
 import { auth, db } from "../../../../firebase-config";
 import { LocationCardDetails } from "../../components/LocationWithPhotoCard";
+import { getActivitiesLocalStorageKey } from "../../components/sections/helpers";
 
 export const useSaveActivities = () => {
   const saveActivities = useCallback(
@@ -27,7 +28,7 @@ export const useSaveActivities = () => {
 
         await batch.commit();
 
-        localStorage.removeItem(`unsaved-activities-${tripId}`);
+        localStorage.removeItem(getActivitiesLocalStorageKey(tripId));
       } catch (error) {
         throw new Error(`Error saving activities data: ${error}`);
       }

@@ -14,14 +14,13 @@ import WarningConfirmationModal from "../WarningConfirmationModal";
 import { useGetFood } from "../../hooks/getters/useGetFood";
 import { Grid2 } from "@mui/material";
 import { sortBy } from "lodash";
+import { getFoodLocalStorageKey } from "./helpers";
 
 interface FoodProps {
   userCurrencySymbol?: string;
   userCurrencyCode?: string;
   tripId: string;
 }
-
-const LOCAL_STORAGE_KEY = (tripId: string) => `unsaved-food-${tripId}`;
 
 const Food: React.FC<FoodProps> = ({
   userCurrencySymbol,
@@ -34,7 +33,7 @@ const Food: React.FC<FoodProps> = ({
   const [itemToDelete, setItemToDelete] = useState<LocationCardDetails | null>(
     null
   );
-  const finalSaveData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+  const finalSaveData = localStorage.getItem(getFoodLocalStorageKey(tripId));
 
   const allRows: LocationCardDetails[] = useMemo(
     () => (finalSaveData ? JSON.parse(finalSaveData).data : foodItems),
@@ -44,12 +43,15 @@ const Food: React.FC<FoodProps> = ({
   const sortedRows = sortBy(allRows, "createdAt");
 
   const handleFormSubmit = (values: { data: LocationCardDetails[] }) => {
-    localStorage.setItem(LOCAL_STORAGE_KEY(tripId), JSON.stringify(values));
+    localStorage.setItem(
+      getFoodLocalStorageKey(tripId),
+      JSON.stringify(values)
+    );
   };
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      const unsavedData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+      const unsavedData = localStorage.getItem(getFoodLocalStorageKey(tripId));
       if (unsavedData) {
         await saveFood(tripId, JSON.parse(unsavedData).data);
       }

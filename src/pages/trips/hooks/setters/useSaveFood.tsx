@@ -2,6 +2,7 @@ import { collection, deleteDoc, doc, writeBatch } from "firebase/firestore";
 import { useCallback } from "react";
 import { auth, db } from "../../../../firebase-config";
 import { LocationCardDetails } from "../../components/LocationWithPhotoCard";
+import { getFoodLocalStorageKey } from "../../components/sections/helpers";
 
 export const useSaveFood = () => {
   const saveFood = useCallback(
@@ -24,7 +25,7 @@ export const useSaveFood = () => {
 
         await batch.commit();
 
-        localStorage.removeItem(`unsaved-food-${tripId}`);
+        localStorage.removeItem(getFoodLocalStorageKey(tripId));
       } catch (error) {
         throw new Error(`Error saving food data: ${error}`);
       }
