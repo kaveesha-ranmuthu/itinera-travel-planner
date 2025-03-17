@@ -22,6 +22,13 @@ import { LocationCardDetails } from "./components/LocationWithPhotoCard";
 import { IoRestaurantSharp } from "react-icons/io5";
 import { useGetActivities } from "./hooks/getters/useGetActivities";
 import { FaMasksTheater } from "react-icons/fa6";
+import Itinerary from "./components/sections/Itinerary";
+import useGetTrip from "./hooks/getters/useGetTrip";
+import { useAuth } from "../../hooks/useAuth";
+import { twMerge } from "tailwind-merge";
+import Header from "./components/sections/Header";
+import TripHeader from "./components/sections/TripHeader";
+import CondensedTripHeader from "./components/sections/CondensedTripHeader";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -39,6 +46,9 @@ interface MapViewProps {
 }
 
 const MapView: React.FC<MapViewProps> = ({ tripId }) => {
+  const { error, loading, trip } = useGetTrip(tripId);
+  const { settings } = useAuth();
+
   const {
     error: accomodationError,
     loading: accommodationLoading,
@@ -56,6 +66,8 @@ const MapView: React.FC<MapViewProps> = ({ tripId }) => {
     loading: activitiesLoading,
     activities: activitiesData,
   } = useGetActivities(tripId);
+
+  if (!trip) return;
 
   const accommodationLocalStorage = localStorage.getItem(
     getAccommodationLocalStorageKey(tripId)
@@ -81,11 +93,22 @@ const MapView: React.FC<MapViewProps> = ({ tripId }) => {
 
   return (
     <APIProvider apiKey={API_KEY}>
-      <div className="flex">
-        <div className="w-3xl"></div>
+      <div className={twMerge("flex", settings?.font)}>
+        <div className="w-1/3">
+          <Header />
+          <div className="px-6 space-y-7">
+            <CondensedTripHeader trip={trip} />
+            <Itinerary
+              tripId={tripId}
+              endDate={trip.endDate}
+              startDate={trip.startDate}
+              showHeader={false}
+            />
+          </div>
+        </div>
         <Map
           mapId="itinera-map-view"
-          style={{ width: "100vw", height: "100vh" }}
+          style={{ width: "66.6%", height: "100vh" }}
           defaultCenter={{ lat: 22.54992, lng: 0 }}
           defaultZoom={3}
           gestureHandling="greedy"

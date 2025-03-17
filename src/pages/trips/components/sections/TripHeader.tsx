@@ -15,7 +15,7 @@ import { TripData } from "../../hooks/getters/useGetTrips";
 import SimpleTooltip from "../SimpleTooltip";
 import TripsInput from "../TripsInput";
 
-interface TripHeaderProps {
+export interface TripHeaderProps {
   trip: TripData;
 }
 

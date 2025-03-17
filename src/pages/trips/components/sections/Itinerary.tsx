@@ -43,6 +43,7 @@ interface ItineraryProps {
   startDate: string;
   endDate: string;
   tripId: string;
+  showHeader?: boolean;
 }
 
 const LOCAL_STORAGE_KEY = (tripId: string) => `unsaved-itinerary-${tripId}`;
@@ -51,6 +52,7 @@ const Itinerary: React.FC<ItineraryProps> = ({
   endDate,
   startDate,
   tripId,
+  showHeader = true,
 }) => {
   const { settings } = useAuth();
   const { error, itinerary, loading } = useGetItinerary(tripId);
@@ -108,23 +110,25 @@ const Itinerary: React.FC<ItineraryProps> = ({
 
   return (
     <div className="text-secondary">
-      <div className="flex items-center space-x-3 mb-5">
-        <h1 className="text-3xl">itinerary</h1>
-        <SimpleTooltip
-          content="Select any day of your trip to customise your plan."
-          theme="dark"
-          side="top"
-          width="w-50"
-        >
-          <PiSealQuestionFill
-            size={20}
-            className={twMerge(
-              "opacity-50 cursor-pointer",
-              settings?.font === FontFamily.HANDWRITTEN ? "mt-2.5" : ""
-            )}
-          />
-        </SimpleTooltip>
-      </div>
+      {showHeader && (
+        <div className="flex items-center space-x-3 mb-5">
+          <h1 className="text-3xl">itinerary</h1>
+          <SimpleTooltip
+            content="Select any day of your trip to customise your plan."
+            theme="dark"
+            side="top"
+            width="w-50"
+          >
+            <PiSealQuestionFill
+              size={20}
+              className={twMerge(
+                "opacity-50 cursor-pointer",
+                settings?.font === FontFamily.HANDWRITTEN ? "mt-2.5" : ""
+              )}
+            />
+          </SimpleTooltip>
+        </div>
+      )}
       <Formik
         initialValues={{
           itinerary:
