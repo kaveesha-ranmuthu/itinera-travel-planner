@@ -8,12 +8,17 @@ import { twMerge } from "tailwind-merge";
 export interface LocationCardDetails {
   id: string;
   name: string;
-  city: string;
+  location: {
+    name: string;
+    latitude?: number;
+    longitude?: number;
+  };
   startPrice?: number;
   endPrice?: number;
   mainPhotoName: string;
   createdAt: string;
   websiteUri?: string;
+  formattedAddress: string;
 }
 
 interface LocationWithPhotoCardProps {
@@ -47,26 +52,11 @@ const LocationWithPhotoCard: React.FC<LocationWithPhotoCardProps> = ({
   locationFieldName,
 }) => {
   const { mainPhotoName, name, startPrice, endPrice, websiteUri } = location;
-  const mainPhotoUrl = `https://places.googleapis.com/v1/${mainPhotoName}/media?maxWidthPx=400&key=${API_KEY}`;
-  const [hasError, setHasError] = useState(false);
 
   return (
     <div className="border border-secondary w-50 rounded-2xl p-3 group">
       <div className="relative">
-        {mainPhotoUrl && !hasError ? (
-          <img
-            className="rounded-2xl w-full h-32 object-cover"
-            src={mainPhotoUrl}
-            alt={name}
-            onError={() => {
-              setHasError(true);
-            }}
-          />
-        ) : (
-          <div className="w-full h-32 bg-secondary rounded-2xl flex items-center justify-center">
-            <MdPhoto size={80} className="text-primary" />
-          </div>
-        )}
+        <PhotoCard photoName={mainPhotoName} altText={name} />
         <button
           type="button"
           onClick={onDelete}
@@ -102,6 +92,42 @@ const LocationWithPhotoCard: React.FC<LocationWithPhotoCardProps> = ({
         </div>
       </div>
     </div>
+  );
+};
+
+interface PhotoCardProps {
+  photoName: string;
+  altText: string;
+  className?: string;
+  showPlaceholder?: boolean;
+}
+
+export const PhotoCard: React.FC<PhotoCardProps> = ({
+  photoName,
+  altText,
+  className,
+  showPlaceholder = true,
+}) => {
+  const mainPhotoUrl = `https://places.googleapis.com/v1/${photoName}/media?maxWidthPx=400&key=${API_KEY}`;
+  const [hasError, setHasError] = useState(false);
+
+  return (
+    <>
+      {mainPhotoUrl && !hasError ? (
+        <img
+          className={twMerge("rounded-2xl w-full h-32 object-cover", className)}
+          src={mainPhotoUrl}
+          alt={altText}
+          onError={() => {
+            setHasError(true);
+          }}
+        />
+      ) : showPlaceholder ? (
+        <div className="w-full h-32 bg-secondary rounded-2xl flex items-center justify-center">
+          <MdPhoto size={80} className="text-primary" />
+        </div>
+      ) : null}
+    </>
   );
 };
 

@@ -14,14 +14,13 @@ import LocationWithPhotoCard, {
 import SimpleTooltip from "../SimpleTooltip";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 import { sortBy } from "lodash";
+import { getActivitiesLocalStorageKey } from "./helpers";
 
 interface ActivitiesProps {
   userCurrencySymbol?: string;
   userCurrencyCode?: string;
   tripId: string;
 }
-
-const LOCAL_STORAGE_KEY = (tripId: string) => `unsaved-activities-${tripId}`;
 
 const Activities: React.FC<ActivitiesProps> = ({
   userCurrencySymbol,
@@ -34,7 +33,9 @@ const Activities: React.FC<ActivitiesProps> = ({
   const [itemToDelete, setItemToDelete] = useState<LocationCardDetails | null>(
     null
   );
-  const finalSaveData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+  const finalSaveData = localStorage.getItem(
+    getActivitiesLocalStorageKey(tripId)
+  );
 
   const allRows: LocationCardDetails[] = useMemo(
     () => (finalSaveData ? JSON.parse(finalSaveData).data : activities),
@@ -44,12 +45,17 @@ const Activities: React.FC<ActivitiesProps> = ({
   const sortedRows = sortBy(allRows, "createdAt");
 
   const handleFormSubmit = (values: { data: LocationCardDetails[] }) => {
-    localStorage.setItem(LOCAL_STORAGE_KEY(tripId), JSON.stringify(values));
+    localStorage.setItem(
+      getActivitiesLocalStorageKey(tripId),
+      JSON.stringify(values)
+    );
   };
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      const unsavedData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+      const unsavedData = localStorage.getItem(
+        getActivitiesLocalStorageKey(tripId)
+      );
       if (unsavedData) {
         await saveActivities(tripId, JSON.parse(unsavedData).data);
       }
@@ -110,20 +116,37 @@ const Activities: React.FC<ActivitiesProps> = ({
                           onSelectLocation={(
                             location: LocationSearchResult
                           ) => {
-                            arrayHelpers.push({
+                            if (!location) return;
+
+                            const newItem: LocationCardDetails = {
                               id: crypto.randomUUID(),
-                              name: location.displayName?.text || "",
-                              city:
-                                location.addressComponents?.find((address) =>
-                                  address.types?.includes("locality")
-                                )?.shortText || "",
-                              startPrice:
-                                location.priceRange?.startPrice?.units,
-                              endPrice: location.priceRange?.endPrice?.units,
-                              mainPhotoName: location.photos?.[0]?.name || "",
-                              websiteUri: location.websiteUri,
+                              name: location?.displayName?.text || "",
+                              formattedAddress:
+                                location?.formattedAddress || "",
+                              location: {
+                                name:
+                                  location?.addressComponents?.find((address) =>
+                                    address.types?.includes("locality")
+                                  )?.shortText || "",
+                                latitude: location?.location?.latitude,
+                                longitude: location?.location?.longitude,
+                              },
+                              startPrice: location?.priceRange?.startPrice
+                                ?.units
+                                ? parseFloat(
+                                    location?.priceRange?.startPrice?.units
+                                  )
+                                : undefined,
+                              endPrice: location?.priceRange?.endPrice?.units
+                                ? parseFloat(
+                                    location?.priceRange?.endPrice?.units
+                                  )
+                                : undefined,
+                              mainPhotoName: location?.photos?.[0]?.name || "",
+                              websiteUri: location?.websiteUri,
                               createdAt: new Date().toISOString(),
-                            });
+                            };
+                            arrayHelpers.push(newItem);
                             submitForm();
                           }}
                         />
@@ -139,7 +162,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                                       onDelete={() => {
                                         setItemToDelete(activity);
                                       }}
-                                      locationFieldName={`data.${index}.city`}
+                                      locationFieldName={`data.${index}.location.name`}
                                     />
                                   </Grid2>
                                   <WarningConfirmationModal

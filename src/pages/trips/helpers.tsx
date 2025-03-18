@@ -1,0 +1,97 @@
+import { Marker } from "react-map-gl/mapbox";
+import {
+  LocationCardDetails,
+  PhotoCard,
+} from "./components/LocationWithPhotoCard";
+import { AccommodationRow } from "./components/sections/Accommodation";
+import SimpleTooltip from "./components/SimpleTooltip";
+import { HiLocationMarker } from "react-icons/hi";
+import { twMerge } from "tailwind-merge";
+
+export const compressAndConvertToBase64 = (
+  file: File,
+  maxWidth = 800,
+  maxHeight = 800,
+  quality = 0.7
+): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      if (!event.target?.result) return reject("Failed to load image");
+      img.src = event.target.result as string;
+    };
+
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      let { width, height } = img;
+
+      // ✅ Resize while maintaining aspect ratio
+      if (width > maxWidth || height > maxHeight) {
+        const aspectRatio = width / height;
+        if (width > height) {
+          width = maxWidth;
+          height = maxWidth / aspectRatio;
+        } else {
+          height = maxHeight;
+          width = maxHeight * aspectRatio;
+        }
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return reject("Canvas context failed");
+
+      ctx.drawImage(img, 0, 0, width, height);
+
+      // ✅ Convert to Base64 (JPEG with 70% quality)
+      resolve(canvas.toDataURL("image/jpeg", quality));
+    };
+
+    img.onerror = (error) => reject(error);
+  });
+};
+
+export const getMapMarker = (
+  location: AccommodationRow | LocationCardDetails,
+  markerColour: string,
+  icon: React.ReactNode
+) => {
+  if (!location.location.latitude || !location.location.longitude) return;
+
+  const popupContent = (
+    <div className="max-w-50 rounded-3xl py-1">
+      <PhotoCard
+        className="rounded-lg mb-3"
+        photoName={location.mainPhotoName}
+        altText={location.name}
+        showPlaceholder={false}
+      />
+      <div className="px-1">
+        <p className="text-sm leading-4 mb-0.5">{location.name}</p>
+        <p className="opacity-70">{location.formattedAddress}</p>
+      </div>
+    </div>
+  );
+
+  return (
+    <Marker
+      longitude={location.location.longitude}
+      latitude={location.location.latitude}
+    >
+      <SimpleTooltip content={popupContent}>
+        <div
+          className={twMerge(
+            markerColour,
+            "p-2 rounded-full border border-primary"
+          )}
+        >
+          {icon}
+        </div>
+      </SimpleTooltip>
+    </Marker>
+  );
+};

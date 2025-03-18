@@ -15,7 +15,10 @@ import LocationSearch, { LocationSearchResult } from "../LocationSearch";
 import SimpleTooltip from "../SimpleTooltip";
 import Table from "../Table";
 import WarningConfirmationModal from "../WarningConfirmationModal";
-import { getSortArrowComponent } from "./helpers";
+import {
+  getAccommodationLocalStorageKey,
+  getSortArrowComponent,
+} from "./helpers";
 
 export interface AccommodationRow {
   id: string;
@@ -24,7 +27,13 @@ export interface AccommodationRow {
   checkIn: string;
   checkOut: string;
   pricePerNightPerPerson: number;
-  location: string;
+  mainPhotoName: string;
+  formattedAddress: string;
+  location: {
+    name: string;
+    latitude?: number;
+    longitude?: number;
+  };
   checked: boolean;
   createdAt: string;
 }
@@ -49,8 +58,6 @@ interface AccommodationProps {
   tripId: string;
 }
 
-const LOCAL_STORAGE_KEY = (tripId: string) => `unsaved-accommodation-${tripId}`;
-
 const Accommodation: React.FC<AccommodationProps> = ({
   userCurrencySymbol,
   userCurrencyCode,
@@ -63,7 +70,9 @@ const Accommodation: React.FC<AccommodationProps> = ({
   const { deleteAccommodationRow, saveAccommodation } = useSaveAccommodation();
   const { error, loading, accommodationRows } = useGetAccommodation(tripId);
   const [deleteRow, setDeleteRow] = useState<AccommodationRow | null>(null);
-  const finalSaveData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+  const finalSaveData = localStorage.getItem(
+    getAccommodationLocalStorageKey(tripId)
+  );
 
   const allRows: AccommodationRow[] = useMemo(
     () => (finalSaveData ? JSON.parse(finalSaveData).data : accommodationRows),
@@ -85,7 +94,11 @@ const Accommodation: React.FC<AccommodationProps> = ({
     checkIn: `${startDate}T00:00`,
     checkOut: `${endDate}T00:00`,
     pricePerNightPerPerson: 0,
-    location: "",
+    mainPhotoName: "",
+    formattedAddress: "",
+    location: {
+      name: "",
+    },
     checked: false,
     createdAt: new Date().toISOString(),
   };
@@ -99,7 +112,10 @@ const Accommodation: React.FC<AccommodationProps> = ({
       const pricePerNightPerPerson = row.totalPrice / nights / numberOfPeople;
       row.pricePerNightPerPerson = pricePerNightPerPerson;
     });
-    localStorage.setItem(LOCAL_STORAGE_KEY(tripId), JSON.stringify(values));
+    localStorage.setItem(
+      getAccommodationLocalStorageKey(tripId),
+      JSON.stringify(values)
+    );
   };
 
   useEffect(() => {
@@ -109,7 +125,9 @@ const Accommodation: React.FC<AccommodationProps> = ({
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      const unsavedData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+      const unsavedData = localStorage.getItem(
+        getAccommodationLocalStorageKey(tripId)
+      );
       if (unsavedData) {
         await saveAccommodation(tripId, JSON.parse(unsavedData).data);
       }
@@ -209,16 +227,27 @@ const Accommodation: React.FC<AccommodationProps> = ({
                           onSelectLocation={(
                             location: LocationSearchResult
                           ) => {
-                            arrayHelpers.push({
+                            if (!location) return;
+                            console.log(location);
+
+                            const newRow: AccommodationRow = {
                               ...defaultRow,
                               id: crypto.randomUUID(),
-                              name: location.displayName?.text || "",
-                              location:
-                                location.addressComponents?.find((address) =>
-                                  address.types?.includes("locality")
-                                )?.shortText || "",
+                              name: location?.displayName?.text || "",
+                              formattedAddress:
+                                location?.formattedAddress || "",
+                              location: {
+                                name:
+                                  location?.addressComponents?.find((address) =>
+                                    address.types?.includes("locality")
+                                  )?.shortText || "",
+                                latitude: location?.location?.latitude,
+                                longitude: location?.location?.longitude,
+                              },
+                              mainPhotoName: location?.photos?.[0]?.name || "",
                               createdAt: new Date().toISOString(),
-                            });
+                            };
+                            arrayHelpers.push(newRow);
                             submitForm();
                           }}
                         />
@@ -422,7 +451,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                   <Field
                                     type="text"
                                     className="focus:outline-0 w-full"
-                                    name={`data.${index}.location`}
+                                    name={`data.${index}.location.name`}
                                   />
                                 </Table.Cell>
                                 <Table.Cell

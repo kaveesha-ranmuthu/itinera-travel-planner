@@ -14,14 +14,13 @@ import WarningConfirmationModal from "../WarningConfirmationModal";
 import { useGetFood } from "../../hooks/getters/useGetFood";
 import { Grid2 } from "@mui/material";
 import { sortBy } from "lodash";
+import { getFoodLocalStorageKey } from "./helpers";
 
 interface FoodProps {
   userCurrencySymbol?: string;
   userCurrencyCode?: string;
   tripId: string;
 }
-
-const LOCAL_STORAGE_KEY = (tripId: string) => `unsaved-food-${tripId}`;
 
 const Food: React.FC<FoodProps> = ({
   userCurrencySymbol,
@@ -34,7 +33,7 @@ const Food: React.FC<FoodProps> = ({
   const [itemToDelete, setItemToDelete] = useState<LocationCardDetails | null>(
     null
   );
-  const finalSaveData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+  const finalSaveData = localStorage.getItem(getFoodLocalStorageKey(tripId));
 
   const allRows: LocationCardDetails[] = useMemo(
     () => (finalSaveData ? JSON.parse(finalSaveData).data : foodItems),
@@ -44,12 +43,15 @@ const Food: React.FC<FoodProps> = ({
   const sortedRows = sortBy(allRows, "createdAt");
 
   const handleFormSubmit = (values: { data: LocationCardDetails[] }) => {
-    localStorage.setItem(LOCAL_STORAGE_KEY(tripId), JSON.stringify(values));
+    localStorage.setItem(
+      getFoodLocalStorageKey(tripId),
+      JSON.stringify(values)
+    );
   };
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      const unsavedData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+      const unsavedData = localStorage.getItem(getFoodLocalStorageKey(tripId));
       if (unsavedData) {
         await saveFood(tripId, JSON.parse(unsavedData).data);
       }
@@ -110,20 +112,36 @@ const Food: React.FC<FoodProps> = ({
                           onSelectLocation={(
                             location: LocationSearchResult
                           ) => {
-                            arrayHelpers.push({
+                            if (!location) return;
+                            const newItem: LocationCardDetails = {
                               id: crypto.randomUUID(),
-                              name: location.displayName?.text || "",
-                              city:
-                                location.addressComponents?.find((address) =>
-                                  address.types?.includes("locality")
-                                )?.shortText || "",
-                              startPrice:
-                                location.priceRange?.startPrice?.units,
-                              endPrice: location.priceRange?.endPrice?.units,
-                              mainPhotoName: location.photos?.[0]?.name || "",
-                              websiteUri: location.websiteUri,
+                              name: location?.displayName?.text || "",
+                              formattedAddress:
+                                location?.formattedAddress || "",
+                              location: {
+                                latitude: location?.location?.latitude,
+                                longitude: location?.location?.longitude,
+                                name:
+                                  location?.addressComponents?.find((address) =>
+                                    address.types?.includes("locality")
+                                  )?.shortText || "",
+                              },
+                              startPrice: location?.priceRange?.startPrice
+                                ?.units
+                                ? parseFloat(
+                                    location?.priceRange?.startPrice?.units
+                                  )
+                                : undefined,
+                              endPrice: location?.priceRange?.endPrice?.units
+                                ? parseFloat(
+                                    location?.priceRange?.endPrice?.units
+                                  )
+                                : undefined,
+                              mainPhotoName: location?.photos?.[0]?.name || "",
+                              websiteUri: location?.websiteUri,
                               createdAt: new Date().toISOString(),
-                            });
+                            };
+                            arrayHelpers.push(newItem);
                             submitForm();
                           }}
                         />
@@ -139,7 +157,7 @@ const Food: React.FC<FoodProps> = ({
                                       onDelete={() => {
                                         setItemToDelete(foodPlace);
                                       }}
-                                      locationFieldName={`data.${index}.city`}
+                                      locationFieldName={`data.${index}.location.name`}
                                     />
                                   </Grid2>
                                   <WarningConfirmationModal
