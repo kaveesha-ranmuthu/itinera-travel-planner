@@ -226,6 +226,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
                             location: LocationSearchResult
                           ) => {
                             if (!location) return;
+                            console.log(location);
 
                             const newRow: AccommodationRow = {
                               ...defaultRow,

@@ -130,7 +130,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
             },
           }
         );
-
+        if (!response.data.places) return;
         const responseData = [...response.data.places];
         convertPrices(responseData, userCurrency);
         setOptions(responseData);

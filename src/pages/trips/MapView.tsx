@@ -1,27 +1,31 @@
-import React from "react";
+import "mapbox-gl/dist/mapbox-gl.css";
+import React, { useMemo } from "react";
+import { HiLocationMarker } from "react-icons/hi";
+import Map, { Marker, Popup } from "react-map-gl/mapbox";
 import { useParams } from "react-router-dom";
+import { twMerge } from "tailwind-merge";
+import { useAuth } from "../../hooks/useAuth";
 import ErrorPage from "../error/ErrorPage";
+import {
+  LocationCardDetails,
+  PhotoCard,
+} from "./components/LocationWithPhotoCard";
 import { AccommodationRow } from "./components/sections/Accommodation";
+import CondensedTripHeader from "./components/sections/CondensedTripHeader";
+import Header from "./components/sections/Header";
 import {
   getAccommodationLocalStorageKey,
   getActivitiesLocalStorageKey,
   getFoodLocalStorageKey,
 } from "./components/sections/helpers";
-import { useGetAccommodation } from "./hooks/getters/useGetAccommodation";
-import { BiSolidHotel } from "react-icons/bi";
-import { useGetFood } from "./hooks/getters/useGetFood";
-import { LocationCardDetails } from "./components/LocationWithPhotoCard";
-import { IoRestaurantSharp } from "react-icons/io5";
-import { useGetActivities } from "./hooks/getters/useGetActivities";
-import { FaMasksTheater } from "react-icons/fa6";
 import Itinerary from "./components/sections/Itinerary";
+import { useGetAccommodation } from "./hooks/getters/useGetAccommodation";
+import { useGetActivities } from "./hooks/getters/useGetActivities";
+import { useGetFood } from "./hooks/getters/useGetFood";
 import useGetTrip from "./hooks/getters/useGetTrip";
-import { useAuth } from "../../hooks/useAuth";
-import { twMerge } from "tailwind-merge";
-import Header from "./components/sections/Header";
-import CondensedTripHeader from "./components/sections/CondensedTripHeader";
-import Map from "react-map-gl/mapbox";
-import "mapbox-gl/dist/mapbox-gl.css";
+import mapboxgl from "mapbox-gl";
+import SimpleTooltip from "./components/SimpleTooltip";
+import { getMapMarker } from "./helpers";
 
 const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -99,18 +103,60 @@ const MapView: React.FC<MapViewProps> = ({ tripId }) => {
             />
           </div>
         </div>
-        <Map
-          mapboxAccessToken={API_KEY}
-          initialViewState={{
-            longitude: -122.4,
-            latitude: 37.8,
-            zoom: 14,
-          }}
-          style={{ width: "100%", height: "100vh" }}
-          mapStyle="mapbox://styles/mapbox/outdoors-v12"
+        <CustomMap
+          accommodation={accommodation}
+          food={food}
+          activities={activities}
         />
       </div>
     </div>
+  );
+};
+
+interface MapProps {
+  accommodation: AccommodationRow[];
+  food: LocationCardDetails[];
+  activities: LocationCardDetails[];
+}
+
+const CustomMap: React.FC<MapProps> = ({ accommodation, activities, food }) => {
+  const activityMarkers = useMemo(
+    () =>
+      activities.map((activity) => (
+        <div key={activity.id}>{getMapMarker(activity, "text-red-sienna")}</div>
+      )),
+    [activities]
+  );
+
+  const foodMarkers = useMemo(
+    () =>
+      food.map((f) => <div key={f.id}>{getMapMarker(f, "text-green")}</div>),
+    [food]
+  );
+
+  const accommodationMarkers = useMemo(
+    () =>
+      accommodation.map((acc) => (
+        <div key={acc.id}>{getMapMarker(acc, "text-blue-munsell")}</div>
+      )),
+    [accommodation]
+  );
+
+  return (
+    <Map
+      mapboxAccessToken={API_KEY}
+      initialViewState={{
+        longitude: activities[0]?.location.longitude || -122.4,
+        latitude: activities[0]?.location.latitude || 37.7,
+        zoom: 14,
+      }}
+      style={{ width: "100%", height: "100vh" }}
+      mapStyle="mapbox://styles/mapbox/dark-v11"
+    >
+      {activityMarkers}
+      {foodMarkers}
+      {accommodationMarkers}
+    </Map>
   );
 };
 

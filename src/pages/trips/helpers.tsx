@@ -1,3 +1,10 @@
+import { Marker } from "react-map-gl/mapbox";
+import { LocationCardDetails } from "./components/LocationWithPhotoCard";
+import { AccommodationRow } from "./components/sections/Accommodation";
+import SimpleTooltip from "./components/SimpleTooltip";
+import { HiLocationMarker } from "react-icons/hi";
+import { twMerge } from "tailwind-merge";
+
 export const compressAndConvertToBase64 = (
   file: File,
   maxWidth = 800,
@@ -43,4 +50,34 @@ export const compressAndConvertToBase64 = (
 
     img.onerror = (error) => reject(error);
   });
+};
+
+export const getMapMarker = (
+  location: AccommodationRow | LocationCardDetails,
+  markerColour: string
+) => {
+  if (!location.location.latitude || !location.location.longitude) return;
+
+  const popupContent = (
+    <div className="max-w-50 rounded-3xl">
+      <p className="text-sm text-center">{location.name}</p>
+    </div>
+  );
+
+  return (
+    <Marker
+      longitude={location.location.longitude}
+      latitude={location.location.latitude}
+    >
+      <SimpleTooltip content={popupContent}>
+        <HiLocationMarker
+          size={40}
+          className={twMerge(
+            "drop-shadow-(--drop-shadow-default)",
+            markerColour
+          )}
+        />
+      </SimpleTooltip>
+    </Marker>
+  );
 };
