@@ -31,7 +31,11 @@ const MapViewPage = () => {
     return <ErrorPage />;
   }
 
-  return <MapView tripId={tripId} />;
+  return (
+    <div className="max-h-screen h-screen overflow-hidden">
+      <MapView tripId={tripId} />;
+    </div>
+  );
 };
 
 interface MapViewProps {
@@ -85,10 +89,10 @@ const MapView: React.FC<MapViewProps> = ({ tripId }) => {
     : activitiesData;
 
   return (
-    <div className={twMerge("flex", settings?.font)}>
-      <div className="w-1/2">
+    <div className={twMerge("flex relative", settings?.font)}>
+      <div className="w-1/3 bg-primary absolute z-10 top-0 left-0 h-full overflow-y-scroll pb-4">
         <Header />
-        <div className="px-6 space-y-7">
+        <div className="px-6 space-y-5">
           <CondensedTripHeader trip={trip} />
           <Itinerary
             tripId={tripId}
