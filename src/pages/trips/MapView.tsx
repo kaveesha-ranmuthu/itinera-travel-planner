@@ -33,7 +33,7 @@ const MapViewPage = () => {
 
   return (
     <div className="max-h-screen h-screen overflow-hidden">
-      <MapView tripId={tripId} />;
+      <MapView tripId={tripId} />
     </div>
   );
 };
@@ -167,6 +167,7 @@ const CustomMap: React.FC<MapProps> = ({ accommodation, activities, food }) => {
         longitude: activities[0]?.location.longitude || -122.4,
         latitude: activities[0]?.location.latitude || 37.7,
         zoom: 10,
+        padding: { left: 300 },
       }}
       style={{ width: "100%", height: "100vh" }}
       mapStyle="mapbox://styles/mapbox/streets-v12"
