@@ -140,7 +140,7 @@ const CurrencyInput: React.FC<CurrencyInputProps> = ({
         onChange={onSelectChange}
         options={currencyOptions}
         inputBoxClassname="border-l-0 rounded-l-none w-12 cursor-pointer disabled:cursor-default"
-        optionsBoxClassname="text-xs w-20"
+        optionsBoxClassname="text-xs w-20 z-20"
         disabled={disabled}
       />
     </div>
