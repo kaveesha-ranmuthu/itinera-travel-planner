@@ -26,6 +26,9 @@ import useGetTrip from "./hooks/getters/useGetTrip";
 import mapboxgl from "mapbox-gl";
 import SimpleTooltip from "./components/SimpleTooltip";
 import { getMapMarker } from "./helpers";
+import { RiHotelBedFill } from "react-icons/ri";
+import { RiRestaurantFill } from "react-icons/ri";
+import { FaTh, FaTheaterMasks } from "react-icons/fa";
 
 const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -123,21 +126,41 @@ const CustomMap: React.FC<MapProps> = ({ accommodation, activities, food }) => {
   const activityMarkers = useMemo(
     () =>
       activities.map((activity) => (
-        <div key={activity.id}>{getMapMarker(activity, "text-red-sienna")}</div>
+        <div key={activity.id}>
+          {getMapMarker(
+            activity,
+            "bg-secondary",
+            <FaTheaterMasks size={20} className="text-primary" />
+          )}
+        </div>
       )),
     [activities]
   );
 
   const foodMarkers = useMemo(
     () =>
-      food.map((f) => <div key={f.id}>{getMapMarker(f, "text-green")}</div>),
+      food.map((f) => (
+        <div key={f.id}>
+          {getMapMarker(
+            f,
+            "bg-secondary",
+            <RiRestaurantFill size={20} className="text-primary" />
+          )}
+        </div>
+      )),
     [food]
   );
 
   const accommodationMarkers = useMemo(
     () =>
       accommodation.map((acc) => (
-        <div key={acc.id}>{getMapMarker(acc, "text-blue-munsell")}</div>
+        <div key={acc.id}>
+          {getMapMarker(
+            acc,
+            "bg-secondary",
+            <RiHotelBedFill size={20} className="text-primary" />
+          )}
+        </div>
       )),
     [accommodation]
   );
@@ -148,10 +171,10 @@ const CustomMap: React.FC<MapProps> = ({ accommodation, activities, food }) => {
       initialViewState={{
         longitude: activities[0]?.location.longitude || -122.4,
         latitude: activities[0]?.location.latitude || 37.7,
-        zoom: 14,
+        zoom: 10,
       }}
       style={{ width: "100%", height: "100vh" }}
-      mapStyle="mapbox://styles/mapbox/dark-v11"
+      mapStyle="mapbox://styles/mapbox/streets-v12"
     >
       {activityMarkers}
       {foodMarkers}

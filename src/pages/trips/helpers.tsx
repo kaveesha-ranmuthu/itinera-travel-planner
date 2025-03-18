@@ -57,7 +57,8 @@ export const compressAndConvertToBase64 = (
 
 export const getMapMarker = (
   location: AccommodationRow | LocationCardDetails,
-  markerColour: string
+  markerColour: string,
+  icon: React.ReactNode
 ) => {
   if (!location.location.latitude || !location.location.longitude) return;
 
@@ -82,13 +83,14 @@ export const getMapMarker = (
       latitude={location.location.latitude}
     >
       <SimpleTooltip content={popupContent}>
-        <HiLocationMarker
-          size={40}
+        <div
           className={twMerge(
-            "drop-shadow-(--drop-shadow-default)",
-            markerColour
+            markerColour,
+            "p-2 rounded-full border border-primary"
           )}
-        />
+        >
+          {icon}
+        </div>
       </SimpleTooltip>
     </Marker>
   );
