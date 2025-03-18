@@ -1,15 +1,13 @@
 import "mapbox-gl/dist/mapbox-gl.css";
 import React, { useMemo } from "react";
-import { HiLocationMarker } from "react-icons/hi";
-import Map, { Marker, Popup } from "react-map-gl/mapbox";
+import { FaTheaterMasks } from "react-icons/fa";
+import { RiHotelBedFill, RiRestaurantFill } from "react-icons/ri";
+import Map from "react-map-gl/mapbox";
 import { useParams } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../hooks/useAuth";
 import ErrorPage from "../error/ErrorPage";
-import {
-  LocationCardDetails,
-  PhotoCard,
-} from "./components/LocationWithPhotoCard";
+import { LocationCardDetails } from "./components/LocationWithPhotoCard";
 import { AccommodationRow } from "./components/sections/Accommodation";
 import CondensedTripHeader from "./components/sections/CondensedTripHeader";
 import Header from "./components/sections/Header";
@@ -19,16 +17,11 @@ import {
   getFoodLocalStorageKey,
 } from "./components/sections/helpers";
 import Itinerary from "./components/sections/Itinerary";
+import { getMapMarker } from "./helpers";
 import { useGetAccommodation } from "./hooks/getters/useGetAccommodation";
 import { useGetActivities } from "./hooks/getters/useGetActivities";
 import { useGetFood } from "./hooks/getters/useGetFood";
 import useGetTrip from "./hooks/getters/useGetTrip";
-import mapboxgl from "mapbox-gl";
-import SimpleTooltip from "./components/SimpleTooltip";
-import { getMapMarker } from "./helpers";
-import { RiHotelBedFill } from "react-icons/ri";
-import { RiRestaurantFill } from "react-icons/ri";
-import { FaTh, FaTheaterMasks } from "react-icons/fa";
 
 const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -92,26 +85,24 @@ const MapView: React.FC<MapViewProps> = ({ tripId }) => {
     : activitiesData;
 
   return (
-    <div>
-      <div className={twMerge("flex", settings?.font)}>
-        <div className="w-1/3">
-          <Header />
-          <div className="px-6 space-y-7">
-            <CondensedTripHeader trip={trip} />
-            <Itinerary
-              tripId={tripId}
-              endDate={trip.endDate}
-              startDate={trip.startDate}
-              showHeader={false}
-            />
-          </div>
+    <div className={twMerge("flex", settings?.font)}>
+      <div className="w-1/2">
+        <Header />
+        <div className="px-6 space-y-7">
+          <CondensedTripHeader trip={trip} />
+          <Itinerary
+            tripId={tripId}
+            endDate={trip.endDate}
+            startDate={trip.startDate}
+            showHeader={false}
+          />
         </div>
-        <CustomMap
-          accommodation={accommodation}
-          food={food}
-          activities={activities}
-        />
       </div>
+      <CustomMap
+        accommodation={accommodation}
+        food={food}
+        activities={activities}
+      />
     </div>
   );
 };
