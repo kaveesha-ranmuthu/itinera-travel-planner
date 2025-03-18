@@ -22,6 +22,8 @@ import { useGetAccommodation } from "./hooks/getters/useGetAccommodation";
 import { useGetActivities } from "./hooks/getters/useGetActivities";
 import { useGetFood } from "./hooks/getters/useGetFood";
 import useGetTrip from "./hooks/getters/useGetTrip";
+import { LoadingState } from "../landing-page/LandingPage";
+import { useHotToast } from "../../hooks/useHotToast";
 
 const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -64,7 +66,22 @@ const MapView: React.FC<MapViewProps> = ({ tripId }) => {
     activities: activitiesData,
   } = useGetActivities(tripId);
 
+  const { notify } = useHotToast();
+
   if (!trip) return;
+
+  if (error) {
+    return <ErrorPage />;
+  }
+
+  if (loading || accommodationLoading || foodLoading || activitiesLoading) {
+    return <LoadingState />;
+  }
+
+  // TODO: make more specific to type of error
+  if (activitiesError || accomodationError || foodError) {
+    notify("Something went wrong. Please try again.", "error");
+  }
 
   const accommodationLocalStorage = localStorage.getItem(
     getAccommodationLocalStorageKey(tripId)
