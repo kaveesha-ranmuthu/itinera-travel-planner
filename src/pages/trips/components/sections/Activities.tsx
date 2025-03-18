@@ -121,6 +121,8 @@ const Activities: React.FC<ActivitiesProps> = ({
                             const newItem: LocationCardDetails = {
                               id: crypto.randomUUID(),
                               name: location?.displayName?.text || "",
+                              formattedAddress:
+                                location?.formattedAddress || "",
                               location: {
                                 name:
                                   location?.addressComponents?.find((address) =>

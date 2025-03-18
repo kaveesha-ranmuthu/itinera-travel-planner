@@ -116,6 +116,8 @@ const Food: React.FC<FoodProps> = ({
                             const newItem: LocationCardDetails = {
                               id: crypto.randomUUID(),
                               name: location?.displayName?.text || "",
+                              formattedAddress:
+                                location?.formattedAddress || "",
                               location: {
                                 latitude: location?.location?.latitude,
                                 longitude: location?.location?.longitude,

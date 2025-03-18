@@ -28,6 +28,7 @@ export interface AccommodationRow {
   checkOut: string;
   pricePerNightPerPerson: number;
   mainPhotoName: string;
+  formattedAddress: string;
   location: {
     name: string;
     latitude?: number;
@@ -94,6 +95,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
     checkOut: `${endDate}T00:00`,
     pricePerNightPerPerson: 0,
     mainPhotoName: "",
+    formattedAddress: "",
     location: {
       name: "",
     },
@@ -232,6 +234,8 @@ const Accommodation: React.FC<AccommodationProps> = ({
                               ...defaultRow,
                               id: crypto.randomUUID(),
                               name: location?.displayName?.text || "",
+                              formattedAddress:
+                                location?.formattedAddress || "",
                               location: {
                                 name:
                                   location?.addressComponents?.find((address) =>

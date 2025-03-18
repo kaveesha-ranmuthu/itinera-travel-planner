@@ -1,5 +1,8 @@
 import { Marker } from "react-map-gl/mapbox";
-import { LocationCardDetails } from "./components/LocationWithPhotoCard";
+import {
+  LocationCardDetails,
+  PhotoCard,
+} from "./components/LocationWithPhotoCard";
 import { AccommodationRow } from "./components/sections/Accommodation";
 import SimpleTooltip from "./components/SimpleTooltip";
 import { HiLocationMarker } from "react-icons/hi";
@@ -59,8 +62,17 @@ export const getMapMarker = (
   if (!location.location.latitude || !location.location.longitude) return;
 
   const popupContent = (
-    <div className="max-w-50 rounded-3xl">
-      <p className="text-sm text-center">{location.name}</p>
+    <div className="max-w-50 rounded-3xl py-1">
+      <PhotoCard
+        className="rounded-lg mb-3"
+        photoName={location.mainPhotoName}
+        altText={location.name}
+        showPlaceholder={false}
+      />
+      <div className="px-1">
+        <p className="text-sm leading-4 mb-0.5">{location.name}</p>
+        <p className="opacity-70">{location.formattedAddress}</p>
+      </div>
     </div>
   );
 
