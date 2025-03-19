@@ -20,3 +20,20 @@ export const ErrorBox = () => {
     </Box>
   );
 };
+
+interface NoDataBoxProps {
+  subtitle?: string;
+}
+
+export const NoDataBox: React.FC<NoDataBoxProps> = ({ subtitle }) => {
+  return (
+    <Box>
+      <div className="flex flex-col items-center justify-center text-center">
+        <h1 className="text-2xl mb-1">Your journey hasn’t started yet!</h1>
+        <p className="text-base">
+          {subtitle ?? "Start by searching for a location."}
+        </p>
+      </div>
+    </Box>
+  );
+};
