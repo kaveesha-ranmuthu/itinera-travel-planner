@@ -14,7 +14,7 @@ import WarningConfirmationModal from "../WarningConfirmationModal";
 import { Grid2 } from "@mui/material";
 import { sortBy } from "lodash";
 import { getFoodLocalStorageKey } from "./helpers";
-import { ErrorBox } from "../ErrorBox";
+import { ErrorBox, NoDataBox } from "../InfoBox";
 
 interface FoodProps {
   userCurrencySymbol?: string;
@@ -146,40 +146,49 @@ const Food: React.FC<FoodProps> = ({
                               submitForm();
                             }}
                           />
-                          <div className="mt-4">
-                            <Grid2 container spacing={2.8}>
-                              {values.data.map((foodPlace, index) => {
-                                return (
-                                  <div key={`${foodPlace.id}-${index}`}>
-                                    <Grid2>
-                                      <LocationWithPhotoCard
-                                        location={foodPlace}
-                                        currencySymbol={userCurrencySymbol}
-                                        onDelete={() => {
-                                          setItemToDelete(foodPlace);
+                          {!values.data.length ? (
+                            <NoDataBox />
+                          ) : (
+                            <div className="mt-4">
+                              <Grid2 container spacing={2.8}>
+                                {values.data.map((foodPlace, index) => {
+                                  return (
+                                    <div key={`${foodPlace.id}-${index}`}>
+                                      <Grid2>
+                                        <LocationWithPhotoCard
+                                          location={foodPlace}
+                                          currencySymbol={userCurrencySymbol}
+                                          onDelete={() => {
+                                            setItemToDelete(foodPlace);
+                                          }}
+                                          locationFieldName={`data.${index}.location.name`}
+                                        />
+                                      </Grid2>
+                                      <WarningConfirmationModal
+                                        description="Once deleted, this is gone forever. Are you sure you want to continue?"
+                                        title={`Are you sure you want to delete "${foodPlace.name}"?`}
+                                        isOpen={
+                                          itemToDelete?.id === foodPlace.id
+                                        }
+                                        onClose={() => setItemToDelete(null)}
+                                        onConfirm={() => {
+                                          if (!itemToDelete) return;
+                                          arrayHelpers.remove(index);
+                                          submitForm();
+                                          deleteFoodItem(
+                                            tripId,
+                                            itemToDelete.id
+                                          );
+                                          setItemToDelete(null);
                                         }}
-                                        locationFieldName={`data.${index}.location.name`}
+                                        lightOpacity={true}
                                       />
-                                    </Grid2>
-                                    <WarningConfirmationModal
-                                      description="Once deleted, this is gone forever. Are you sure you want to continue?"
-                                      title={`Are you sure you want to delete "${foodPlace.name}"?`}
-                                      isOpen={itemToDelete?.id === foodPlace.id}
-                                      onClose={() => setItemToDelete(null)}
-                                      onConfirm={() => {
-                                        if (!itemToDelete) return;
-                                        arrayHelpers.remove(index);
-                                        submitForm();
-                                        deleteFoodItem(tripId, itemToDelete.id);
-                                        setItemToDelete(null);
-                                      }}
-                                      lightOpacity={true}
-                                    />
-                                  </div>
-                                );
-                              })}
-                            </Grid2>
-                          </div>
+                                    </div>
+                                  );
+                                })}
+                              </Grid2>
+                            </div>
+                          )}
                         </div>
                       </div>
                     );

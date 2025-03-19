@@ -30,7 +30,7 @@ import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { FontFamily } from "../../../../types";
 import { useSaveItinerary } from "../../hooks/setters/useSaveItinerary";
-import { ErrorBox } from "../ErrorBox";
+import { ErrorBox } from "../InfoBox";
 import SimpleTooltip from "../SimpleTooltip";
 export interface ItineraryDetails {
   id: string;

@@ -14,7 +14,7 @@ import LocationWithPhotoCard, {
 import SimpleTooltip from "../SimpleTooltip";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 import { getActivitiesLocalStorageKey } from "./helpers";
-import { ErrorBox } from "../ErrorBox";
+import { ErrorBox, NoDataBox } from "../InfoBox";
 
 interface ActivitiesProps {
   userCurrencySymbol?: string;
@@ -151,40 +151,49 @@ const Activities: React.FC<ActivitiesProps> = ({
                               submitForm();
                             }}
                           />
-                          <div className="mt-4">
-                            <Grid2 container spacing={2.8}>
-                              {values.data.map((activity, index) => {
-                                return (
-                                  <div key={`${activity.id}-${index}`}>
-                                    <Grid2>
-                                      <LocationWithPhotoCard
-                                        location={activity}
-                                        currencySymbol={userCurrencySymbol}
-                                        onDelete={() => {
-                                          setItemToDelete(activity);
+                          {!values.data.length ? (
+                            <NoDataBox />
+                          ) : (
+                            <div className="mt-4">
+                              <Grid2 container spacing={2.8}>
+                                {values.data.map((activity, index) => {
+                                  return (
+                                    <div key={`${activity.id}-${index}`}>
+                                      <Grid2>
+                                        <LocationWithPhotoCard
+                                          location={activity}
+                                          currencySymbol={userCurrencySymbol}
+                                          onDelete={() => {
+                                            setItemToDelete(activity);
+                                          }}
+                                          locationFieldName={`data.${index}.location.name`}
+                                        />
+                                      </Grid2>
+                                      <WarningConfirmationModal
+                                        description="Once deleted, this is gone forever. Are you sure you want to continue?"
+                                        title={`Are you sure you want to delete "${activity.name}"?`}
+                                        isOpen={
+                                          itemToDelete?.id === activity.id
+                                        }
+                                        onClose={() => setItemToDelete(null)}
+                                        onConfirm={() => {
+                                          if (!itemToDelete) return;
+                                          arrayHelpers.remove(index);
+                                          submitForm();
+                                          deleteActivity(
+                                            tripId,
+                                            itemToDelete.id
+                                          );
+                                          setItemToDelete(null);
                                         }}
-                                        locationFieldName={`data.${index}.location.name`}
+                                        lightOpacity={true}
                                       />
-                                    </Grid2>
-                                    <WarningConfirmationModal
-                                      description="Once deleted, this is gone forever. Are you sure you want to continue?"
-                                      title={`Are you sure you want to delete "${activity.name}"?`}
-                                      isOpen={itemToDelete?.id === activity.id}
-                                      onClose={() => setItemToDelete(null)}
-                                      onConfirm={() => {
-                                        if (!itemToDelete) return;
-                                        arrayHelpers.remove(index);
-                                        submitForm();
-                                        deleteActivity(tripId, itemToDelete.id);
-                                        setItemToDelete(null);
-                                      }}
-                                      lightOpacity={true}
-                                    />
-                                  </div>
-                                );
-                              })}
-                            </Grid2>
-                          </div>
+                                    </div>
+                                  );
+                                })}
+                              </Grid2>
+                            </div>
+                          )}
                         </div>
                       </div>
                     );

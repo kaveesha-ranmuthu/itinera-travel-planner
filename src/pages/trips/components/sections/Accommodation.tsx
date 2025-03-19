@@ -18,7 +18,7 @@ import {
   getAccommodationLocalStorageKey,
   getSortArrowComponent,
 } from "./helpers";
-import { ErrorBox } from "../ErrorBox";
+import { ErrorBox, NoDataBox } from "../InfoBox";
 
 export interface AccommodationRow {
   id: string;
@@ -251,283 +251,288 @@ const Accommodation: React.FC<AccommodationProps> = ({
                             }}
                           />
                         </div>
-                        <Table>
-                          <Table.Header>
-                            <Table.Row>
-                              <Table.HeaderCell
-                                className={
-                                  values.data.length ? "" : "border-b-0"
-                                }
-                              >
-                                <div className="flex items-center space-x-4 w-72">
-                                  <Checkbox
-                                    checked={values.data.every(
-                                      (row) => row.checked
-                                    )}
-                                    onClick={() => {
-                                      const allChecked = values.data.every(
+                        {!values.data.length ? (
+                          <NoDataBox />
+                        ) : (
+                          <Table>
+                            <Table.Header>
+                              <Table.Row>
+                                <Table.HeaderCell
+                                  className={
+                                    values.data.length ? "" : "border-b-0"
+                                  }
+                                >
+                                  <div className="flex items-center space-x-4 w-72">
+                                    <Checkbox
+                                      checked={values.data.every(
                                         (row) => row.checked
-                                      );
-                                      values.data.forEach((_, index) => {
-                                        setFieldValue(
-                                          `data.${index}.checked`,
-                                          !allChecked
+                                      )}
+                                      onClick={() => {
+                                        const allChecked = values.data.every(
+                                          (row) => row.checked
                                         );
-                                      });
-                                      submitForm();
-                                    }}
-                                  />
-                                  {getTableHeader(SortOptions.NAME, "name")}
-                                </div>
-                              </Table.HeaderCell>
-                              <Table.HeaderCell
-                                className={twMerge(
-                                  "w-40",
-                                  values.data.length ? "" : "border-b-0"
-                                )}
-                              >
-                                {getTableHeader(
-                                  SortOptions.TOTAL_PRICE,
-                                  "total price"
-                                )}
-                              </Table.HeaderCell>
-                              <Table.HeaderCell
-                                className={twMerge(
-                                  "w-60",
-                                  values.data.length ? "" : "border-b-0"
-                                )}
-                              >
-                                {getTableHeader(
-                                  SortOptions.CHECK_IN,
-                                  "check-in"
-                                )}
-                              </Table.HeaderCell>
-                              <Table.HeaderCell
-                                className={twMerge(
-                                  "w-60",
-                                  values.data.length ? "" : "border-b-0"
-                                )}
-                              >
-                                {getTableHeader(
-                                  SortOptions.CHECK_OUT,
-                                  "check-out"
-                                )}
-                              </Table.HeaderCell>
-                              <Table.HeaderCell
-                                className={twMerge(
-                                  "w-50",
-                                  values.data.length ? "" : "border-b-0"
-                                )}
-                              >
-                                {getTableHeader(
-                                  SortOptions.PRICE_PER_NIGHT_PER_PERSON,
-                                  "price / night / person"
-                                )}
-                              </Table.HeaderCell>
-                              <Table.HeaderCell
-                                className={twMerge(
-                                  "w-40",
-                                  values.data.length ? "" : "border-b-0"
-                                )}
-                              >
-                                {getTableHeader(
-                                  SortOptions.LOCATION,
-                                  "location"
-                                )}
-                              </Table.HeaderCell>
-                              <Table.HeaderCell
-                                className={twMerge(
-                                  "w-30",
-                                  values.data.length ? "" : "border-b-0"
-                                )}
-                              />
-                            </Table.Row>
-                          </Table.Header>
-                          <Table.Body>
-                            {values.data.map((row, index) => {
-                              return (
-                                <Table.Row key={index} className="group">
-                                  <Table.Cell
-                                    className={twMerge(
-                                      "group-last:border-b-0 group-last:rounded-bl-xl",
-                                      row.checked
-                                        ? "bg-blue-munsell/20 transition ease-in-out duration-200"
-                                        : "bg-transparent transition ease-in-out duration-200"
-                                    )}
-                                  >
-                                    <div className="flex items-center space-x-4">
-                                      <span>
-                                        <Checkbox
-                                          checked={row.checked}
+                                        values.data.forEach((_, index) => {
+                                          setFieldValue(
+                                            `data.${index}.checked`,
+                                            !allChecked
+                                          );
+                                        });
+                                        submitForm();
+                                      }}
+                                    />
+                                    {getTableHeader(SortOptions.NAME, "name")}
+                                  </div>
+                                </Table.HeaderCell>
+                                <Table.HeaderCell
+                                  className={twMerge(
+                                    "w-40",
+                                    values.data.length ? "" : "border-b-0"
+                                  )}
+                                >
+                                  {getTableHeader(
+                                    SortOptions.TOTAL_PRICE,
+                                    "total price"
+                                  )}
+                                </Table.HeaderCell>
+                                <Table.HeaderCell
+                                  className={twMerge(
+                                    "w-60",
+                                    values.data.length ? "" : "border-b-0"
+                                  )}
+                                >
+                                  {getTableHeader(
+                                    SortOptions.CHECK_IN,
+                                    "check-in"
+                                  )}
+                                </Table.HeaderCell>
+                                <Table.HeaderCell
+                                  className={twMerge(
+                                    "w-60",
+                                    values.data.length ? "" : "border-b-0"
+                                  )}
+                                >
+                                  {getTableHeader(
+                                    SortOptions.CHECK_OUT,
+                                    "check-out"
+                                  )}
+                                </Table.HeaderCell>
+                                <Table.HeaderCell
+                                  className={twMerge(
+                                    "w-50",
+                                    values.data.length ? "" : "border-b-0"
+                                  )}
+                                >
+                                  {getTableHeader(
+                                    SortOptions.PRICE_PER_NIGHT_PER_PERSON,
+                                    "price / night / person"
+                                  )}
+                                </Table.HeaderCell>
+                                <Table.HeaderCell
+                                  className={twMerge(
+                                    "w-40",
+                                    values.data.length ? "" : "border-b-0"
+                                  )}
+                                >
+                                  {getTableHeader(
+                                    SortOptions.LOCATION,
+                                    "location"
+                                  )}
+                                </Table.HeaderCell>
+                                <Table.HeaderCell
+                                  className={twMerge(
+                                    "w-30",
+                                    values.data.length ? "" : "border-b-0"
+                                  )}
+                                />
+                              </Table.Row>
+                            </Table.Header>
+                            <Table.Body>
+                              {values.data.map((row, index) => {
+                                return (
+                                  <Table.Row key={index} className="group">
+                                    <Table.Cell
+                                      className={twMerge(
+                                        "group-last:border-b-0 group-last:rounded-bl-xl",
+                                        row.checked
+                                          ? "bg-blue-munsell/20 transition ease-in-out duration-200"
+                                          : "bg-transparent transition ease-in-out duration-200"
+                                      )}
+                                    >
+                                      <div className="flex items-center space-x-4">
+                                        <span>
+                                          <Checkbox
+                                            checked={row.checked}
+                                            onClick={() => {
+                                              setFieldValue(
+                                                `data.${index}.checked`,
+                                                !row.checked
+                                              );
+                                              submitForm();
+                                            }}
+                                          />
+                                        </span>
+                                        <span className="w-full">
+                                          <Field
+                                            type="text"
+                                            className="focus:outline-0 w-full"
+                                            name={`data.${index}.name`}
+                                          />
+                                        </span>
+                                      </div>
+                                    </Table.Cell>
+                                    <Table.Cell
+                                      className={twMerge(
+                                        "group-last:border-b-0",
+                                        row.checked
+                                          ? "bg-blue-munsell/20 transition ease-in-out duration-200"
+                                          : "bg-transparent transition ease-in-out duration-200"
+                                      )}
+                                    >
+                                      <div className="flex w-full">
+                                        {userCurrencySymbol && (
+                                          <p className="text-nowrap w-fit">
+                                            {userCurrencySymbol}
+                                          </p>
+                                        )}
+                                        <Field
+                                          type="number"
+                                          className="focus:outline-0 ml-2 w-full"
+                                          name={`data.${index}.totalPrice`}
+                                        />
+                                      </div>
+                                    </Table.Cell>
+                                    <Table.Cell
+                                      className={twMerge(
+                                        "group-last:border-b-0",
+                                        row.checked
+                                          ? "bg-blue-munsell/20 transition ease-in-out duration-200"
+                                          : "bg-transparent transition ease-in-out duration-200"
+                                      )}
+                                    >
+                                      <Field
+                                        type="datetime-local"
+                                        className="focus:outline-0 w-full"
+                                        name={`data.${index}.checkIn`}
+                                      />
+                                    </Table.Cell>
+                                    <Table.Cell
+                                      className={twMerge(
+                                        "group-last:border-b-0",
+                                        row.checked
+                                          ? "bg-blue-munsell/20 transition ease-in-out duration-200"
+                                          : "bg-transparent transition ease-in-out duration-200"
+                                      )}
+                                    >
+                                      <Field
+                                        type="datetime-local"
+                                        className="focus:outline-0 w-full"
+                                        name={`data.${index}.checkOut`}
+                                      />
+                                    </Table.Cell>
+                                    <Table.Cell
+                                      className={twMerge(
+                                        "group-last:border-b-0",
+                                        row.checked
+                                          ? "bg-blue-munsell/20 transition ease-in-out duration-200"
+                                          : "bg-transparent transition ease-in-out duration-200"
+                                      )}
+                                    >
+                                      <div className="flex w-full">
+                                        {userCurrencySymbol && (
+                                          <p className="text-nowrap w-fit">
+                                            {userCurrencySymbol}
+                                          </p>
+                                        )}
+                                        <Field
+                                          type="number"
+                                          className="focus:outline-0 ml-2 w-full"
+                                          name={`data.${index}.pricePerNightPerPerson`}
+                                        />
+                                      </div>
+                                    </Table.Cell>
+                                    <Table.Cell
+                                      className={twMerge(
+                                        "group-last:border-b-0",
+                                        row.checked
+                                          ? "bg-blue-munsell/20 transition ease-in-out duration-200"
+                                          : "bg-transparent transition ease-in-out duration-200"
+                                      )}
+                                    >
+                                      <Field
+                                        type="text"
+                                        className="focus:outline-0 w-full"
+                                        name={`data.${index}.location.name`}
+                                      />
+                                    </Table.Cell>
+                                    <Table.Cell
+                                      className={twMerge(
+                                        "group-last:border-b-0 group-last:rounded-br-xl",
+                                        row.checked
+                                          ? "bg-blue-munsell/20 transition ease-in-out duration-200"
+                                          : "bg-transparent transition ease-in-out duration-200"
+                                      )}
+                                    >
+                                      <div className="space-x-3 flex items-center justify-center">
+                                        <button
+                                          type="button"
                                           onClick={() => {
-                                            setFieldValue(
-                                              `data.${index}.checked`,
-                                              !row.checked
-                                            );
+                                            const newRow = {
+                                              ...row,
+                                              id: crypto.randomUUID(),
+                                              createdAt:
+                                                new Date().toISOString(),
+                                            };
+                                            arrayHelpers.push(newRow);
                                             submitForm();
                                           }}
+                                          className="cursor-pointer hover:opacity-60 transition ease-in-out duration-300"
+                                        >
+                                          <GoCopy
+                                            stroke="var(--color-secondary)"
+                                            size={20}
+                                          />
+                                        </button>
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            setDeleteRow(row);
+                                          }}
+                                          className="cursor-pointer hover:opacity-60 transition ease-in-out duration-300 disabled:cursor-default disabled:opacity-50"
+                                        >
+                                          <IoTrashBinOutline
+                                            stroke="var(--color-secondary)"
+                                            size={20}
+                                          />
+                                        </button>
+                                        <WarningConfirmationModal
+                                          description="Once deleted, this row is gone forever. Are you sure you want to continue?"
+                                          title={
+                                            deleteRow?.name
+                                              ? `Are you sure you want to delete "${deleteRow.name}"?`
+                                              : `Are you sure you want to delete this row?`
+                                          }
+                                          isOpen={deleteRow?.id === row.id}
+                                          onClose={() => setDeleteRow(null)}
+                                          onConfirm={() => {
+                                            if (!deleteRow) return;
+                                            arrayHelpers.remove(index);
+                                            submitForm();
+                                            deleteAccommodationRow(
+                                              tripId,
+                                              deleteRow.id
+                                            );
+                                            setDeleteRow(null);
+                                          }}
+                                          lightOpacity={true}
                                         />
-                                      </span>
-                                      <span className="w-full">
-                                        <Field
-                                          type="text"
-                                          className="focus:outline-0 w-full"
-                                          name={`data.${index}.name`}
-                                        />
-                                      </span>
-                                    </div>
-                                  </Table.Cell>
-                                  <Table.Cell
-                                    className={twMerge(
-                                      "group-last:border-b-0",
-                                      row.checked
-                                        ? "bg-blue-munsell/20 transition ease-in-out duration-200"
-                                        : "bg-transparent transition ease-in-out duration-200"
-                                    )}
-                                  >
-                                    <div className="flex w-full">
-                                      {userCurrencySymbol && (
-                                        <p className="text-nowrap w-fit">
-                                          {userCurrencySymbol}
-                                        </p>
-                                      )}
-                                      <Field
-                                        type="number"
-                                        className="focus:outline-0 ml-2 w-full"
-                                        name={`data.${index}.totalPrice`}
-                                      />
-                                    </div>
-                                  </Table.Cell>
-                                  <Table.Cell
-                                    className={twMerge(
-                                      "group-last:border-b-0",
-                                      row.checked
-                                        ? "bg-blue-munsell/20 transition ease-in-out duration-200"
-                                        : "bg-transparent transition ease-in-out duration-200"
-                                    )}
-                                  >
-                                    <Field
-                                      type="datetime-local"
-                                      className="focus:outline-0 w-full"
-                                      name={`data.${index}.checkIn`}
-                                    />
-                                  </Table.Cell>
-                                  <Table.Cell
-                                    className={twMerge(
-                                      "group-last:border-b-0",
-                                      row.checked
-                                        ? "bg-blue-munsell/20 transition ease-in-out duration-200"
-                                        : "bg-transparent transition ease-in-out duration-200"
-                                    )}
-                                  >
-                                    <Field
-                                      type="datetime-local"
-                                      className="focus:outline-0 w-full"
-                                      name={`data.${index}.checkOut`}
-                                    />
-                                  </Table.Cell>
-                                  <Table.Cell
-                                    className={twMerge(
-                                      "group-last:border-b-0",
-                                      row.checked
-                                        ? "bg-blue-munsell/20 transition ease-in-out duration-200"
-                                        : "bg-transparent transition ease-in-out duration-200"
-                                    )}
-                                  >
-                                    <div className="flex w-full">
-                                      {userCurrencySymbol && (
-                                        <p className="text-nowrap w-fit">
-                                          {userCurrencySymbol}
-                                        </p>
-                                      )}
-                                      <Field
-                                        type="number"
-                                        className="focus:outline-0 ml-2 w-full"
-                                        name={`data.${index}.pricePerNightPerPerson`}
-                                      />
-                                    </div>
-                                  </Table.Cell>
-                                  <Table.Cell
-                                    className={twMerge(
-                                      "group-last:border-b-0",
-                                      row.checked
-                                        ? "bg-blue-munsell/20 transition ease-in-out duration-200"
-                                        : "bg-transparent transition ease-in-out duration-200"
-                                    )}
-                                  >
-                                    <Field
-                                      type="text"
-                                      className="focus:outline-0 w-full"
-                                      name={`data.${index}.location.name`}
-                                    />
-                                  </Table.Cell>
-                                  <Table.Cell
-                                    className={twMerge(
-                                      "group-last:border-b-0 group-last:rounded-br-xl",
-                                      row.checked
-                                        ? "bg-blue-munsell/20 transition ease-in-out duration-200"
-                                        : "bg-transparent transition ease-in-out duration-200"
-                                    )}
-                                  >
-                                    <div className="space-x-3 flex items-center justify-center">
-                                      <button
-                                        type="button"
-                                        onClick={() => {
-                                          const newRow = {
-                                            ...row,
-                                            id: crypto.randomUUID(),
-                                            createdAt: new Date().toISOString(),
-                                          };
-                                          arrayHelpers.push(newRow);
-                                          submitForm();
-                                        }}
-                                        className="cursor-pointer hover:opacity-60 transition ease-in-out duration-300"
-                                      >
-                                        <GoCopy
-                                          stroke="var(--color-secondary)"
-                                          size={20}
-                                        />
-                                      </button>
-                                      <button
-                                        type="button"
-                                        onClick={() => {
-                                          setDeleteRow(row);
-                                        }}
-                                        className="cursor-pointer hover:opacity-60 transition ease-in-out duration-300 disabled:cursor-default disabled:opacity-50"
-                                      >
-                                        <IoTrashBinOutline
-                                          stroke="var(--color-secondary)"
-                                          size={20}
-                                        />
-                                      </button>
-                                      <WarningConfirmationModal
-                                        description="Once deleted, this row is gone forever. Are you sure you want to continue?"
-                                        title={
-                                          deleteRow?.name
-                                            ? `Are you sure you want to delete "${deleteRow.name}"?`
-                                            : `Are you sure you want to delete this row?`
-                                        }
-                                        isOpen={deleteRow?.id === row.id}
-                                        onClose={() => setDeleteRow(null)}
-                                        onConfirm={() => {
-                                          if (!deleteRow) return;
-                                          arrayHelpers.remove(index);
-                                          submitForm();
-                                          deleteAccommodationRow(
-                                            tripId,
-                                            deleteRow.id
-                                          );
-                                          setDeleteRow(null);
-                                        }}
-                                        lightOpacity={true}
-                                      />
-                                    </div>
-                                  </Table.Cell>
-                                </Table.Row>
-                              );
-                            })}
-                          </Table.Body>
-                        </Table>
+                                      </div>
+                                    </Table.Cell>
+                                  </Table.Row>
+                                );
+                              })}
+                            </Table.Body>
+                          </Table>
+                        )}
                       </div>
                     );
                   }}
