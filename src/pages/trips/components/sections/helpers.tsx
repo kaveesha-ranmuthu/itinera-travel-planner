@@ -1,5 +1,7 @@
 import axios from "axios";
 import { IoIosArrowRoundDown, IoIosArrowRoundUp } from "react-icons/io";
+import { TransportRow } from "./Transport";
+import { AccommodationRow } from "./Accommodation";
 
 export const getAccommodationLocalStorageKey = (tripId: string) =>
   `unsaved-accommodation-${tripId}`;
@@ -43,4 +45,14 @@ export const convertCurrency = async (
   } catch (error) {
     throw new Error(`Failed to fetch currency conversion rate: ${error}`);
   }
+};
+
+export const getEstimatedCost = (rows: TransportRow[] | AccommodationRow[]) => {
+  return rows.reduce((acc, row) => {
+    if (row.checked) {
+      return acc + row.totalPrice;
+    } else {
+      return acc;
+    }
+  }, 0);
 };

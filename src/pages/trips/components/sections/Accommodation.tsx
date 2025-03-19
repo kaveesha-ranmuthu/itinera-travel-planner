@@ -1,5 +1,5 @@
 import { Field, FieldArray, Form, Formik } from "formik";
-import { orderBy } from "lodash";
+import { orderBy, round } from "lodash";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { GoCopy } from "react-icons/go";
@@ -16,6 +16,7 @@ import Table from "../Table";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 import {
   getAccommodationLocalStorageKey,
+  getEstimatedCost,
   getSortArrowComponent,
 } from "./helpers";
 import { ErrorBox, NoDataBox } from "../InfoBox";
@@ -113,7 +114,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
       const checkOutDate = moment(checkOut);
       const nights = checkOutDate.diff(checkInDate, "days");
       const pricePerNightPerPerson = row.totalPrice / nights / numberOfPeople;
-      row.pricePerNightPerPerson = pricePerNightPerPerson;
+      row.pricePerNightPerPerson = round(pricePerNightPerPerson, 2);
     });
     localStorage.setItem(
       getAccommodationLocalStorageKey(tripId),
@@ -211,6 +212,10 @@ const Accommodation: React.FC<AccommodationProps> = ({
             handleFormSubmit(values);
           }}
           component={({ values, setFieldValue, submitForm }) => {
+            const estimatedTotalcost = round(
+              getEstimatedCost(values.data) / numberOfPeople,
+              2
+            );
             return (
               <Form className="mt-2" onChange={submitForm}>
                 <FieldArray
@@ -218,38 +223,47 @@ const Accommodation: React.FC<AccommodationProps> = ({
                   render={(arrayHelpers) => {
                     return (
                       <div>
-                        <div className="mb-4">
-                          <LocationSearch
-                            userCurrency={userCurrencyCode}
-                            onSelectLocation={(
-                              location: LocationSearchResult
-                            ) => {
-                              if (!location) return;
-                              console.log(location);
+                        <div className="flex items-center justify-between">
+                          <div className="mb-4">
+                            <LocationSearch
+                              userCurrency={userCurrencyCode}
+                              onSelectLocation={(
+                                location: LocationSearchResult
+                              ) => {
+                                if (!location) return;
+                                console.log(location);
 
-                              const newRow: AccommodationRow = {
-                                ...defaultRow,
-                                id: crypto.randomUUID(),
-                                name: location?.displayName?.text || "",
-                                formattedAddress:
-                                  location?.formattedAddress || "",
-                                location: {
-                                  name:
-                                    location?.addressComponents?.find(
-                                      (address) =>
-                                        address.types?.includes("locality")
-                                    )?.shortText || "",
-                                  latitude: location?.location?.latitude,
-                                  longitude: location?.location?.longitude,
-                                },
-                                mainPhotoName:
-                                  location?.photos?.[0]?.name || "",
-                                createdAt: new Date().toISOString(),
-                              };
-                              arrayHelpers.push(newRow);
-                              submitForm();
-                            }}
-                          />
+                                const newRow: AccommodationRow = {
+                                  ...defaultRow,
+                                  id: crypto.randomUUID(),
+                                  name: location?.displayName?.text || "",
+                                  formattedAddress:
+                                    location?.formattedAddress || "",
+                                  location: {
+                                    name:
+                                      location?.addressComponents?.find(
+                                        (address) =>
+                                          address.types?.includes("locality")
+                                      )?.shortText || "",
+                                    latitude: location?.location?.latitude,
+                                    longitude: location?.location?.longitude,
+                                  },
+                                  mainPhotoName:
+                                    location?.photos?.[0]?.name || "",
+                                  createdAt: new Date().toISOString(),
+                                };
+                                arrayHelpers.push(newRow);
+                                submitForm();
+                              }}
+                            />
+                          </div>
+                          <div className="px-4 py-1 rounded-xl bg-blue-munsell/20">
+                            <span>Estimated cost per person: </span>
+                            <span>
+                              {userCurrencySymbol}
+                              {estimatedTotalcost}
+                            </span>
+                          </div>
                         </div>
                         {!values.data.length ? (
                           <NoDataBox />
@@ -447,6 +461,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                           type="number"
                                           className="focus:outline-0 ml-2 w-full"
                                           name={`data.${index}.pricePerNightPerPerson`}
+                                          readOnly
                                         />
                                       </div>
                                     </Table.Cell>
