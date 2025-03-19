@@ -1,5 +1,5 @@
 import "mapbox-gl/dist/mapbox-gl.css";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FaTheaterMasks } from "react-icons/fa";
 import { RiHotelBedFill, RiRestaurantFill } from "react-icons/ri";
 import Map from "react-map-gl/mapbox";
@@ -24,6 +24,7 @@ import { useGetFood } from "./hooks/getters/useGetFood";
 import useGetTrip from "./hooks/getters/useGetTrip";
 import { LoadingState } from "../landing-page/LandingPage";
 import { useHotToast } from "../../hooks/useHotToast";
+import { useGetItinerary } from "./hooks/getters/useGetItinerary";
 
 const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -66,16 +67,47 @@ const MapView: React.FC<MapViewProps> = ({ tripId }) => {
     activities: activitiesData,
   } = useGetActivities(tripId);
 
+  const {
+    error: itineraryError,
+    itinerary,
+    loading: itineraryLoading,
+  } = useGetItinerary(tripId);
+
   const { notify } = useHotToast();
 
-  if (!trip) return;
+  const [showLoading, setShowLoading] = useState(true);
 
-  if (error) {
-    return <ErrorPage />;
+  useEffect(() => {
+    const isLoading =
+      loading ||
+      accommodationLoading ||
+      foodLoading ||
+      activitiesLoading ||
+      itineraryLoading;
+
+    if (isLoading) {
+      setShowLoading(true); // Ensure loading state stays while data is loading
+    } else {
+      const timeout = setTimeout(() => {
+        setShowLoading(false); // Only hide loading after delay
+      }, 1500);
+
+      return () => clearTimeout(timeout); // Cleanup timeout
+    }
+  }, [
+    loading,
+    accommodationLoading,
+    foodLoading,
+    activitiesLoading,
+    itineraryLoading,
+  ]);
+
+  if (showLoading) {
+    return <LoadingState />;
   }
 
-  if (loading || accommodationLoading || foodLoading || activitiesLoading) {
-    return <LoadingState />;
+  if (error || !trip) {
+    return <ErrorPage />;
   }
 
   // TODO: make more specific to type of error
@@ -116,6 +148,8 @@ const MapView: React.FC<MapViewProps> = ({ tripId }) => {
             endDate={trip.endDate}
             startDate={trip.startDate}
             showHeader={false}
+            itinerary={itinerary}
+            error={itineraryError}
           />
         </div>
       </div>

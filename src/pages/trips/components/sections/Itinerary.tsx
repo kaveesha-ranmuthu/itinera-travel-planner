@@ -29,8 +29,8 @@ import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { FontFamily } from "../../../../types";
-import { useGetItinerary } from "../../hooks/getters/useGetItinerary";
 import { useSaveItinerary } from "../../hooks/setters/useSaveItinerary";
+import { ErrorBox } from "../ErrorBox";
 import SimpleTooltip from "../SimpleTooltip";
 export interface ItineraryDetails {
   id: string;
@@ -44,6 +44,8 @@ interface ItineraryProps {
   endDate: string;
   tripId: string;
   showHeader?: boolean;
+  error: string | null;
+  itinerary: ItineraryDetails[];
 }
 
 const LOCAL_STORAGE_KEY = (tripId: string) => `unsaved-itinerary-${tripId}`;
@@ -53,9 +55,10 @@ const Itinerary: React.FC<ItineraryProps> = ({
   startDate,
   tripId,
   showHeader = true,
+  error,
+  itinerary,
 }) => {
   const { settings } = useAuth();
-  const { error, itinerary, loading } = useGetItinerary(tripId);
   const { saveItinerary } = useSaveItinerary();
   const finalSaveData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
 
@@ -99,15 +102,6 @@ const Itinerary: React.FC<ItineraryProps> = ({
     };
   }, [saveItinerary, tripId]);
 
-  // TODO: Make these look better
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error...</div>;
-  }
-
   return (
     <div className="text-secondary">
       {showHeader && (
@@ -129,48 +123,55 @@ const Itinerary: React.FC<ItineraryProps> = ({
           </SimpleTooltip>
         </div>
       )}
-      <Formik
-        initialValues={{
-          itinerary:
-            sortedItinerary && sortedItinerary.length
-              ? sortedItinerary
-              : getDefaultItinerary(),
-        }}
-        onSubmit={async (values) => {
-          handleFormSubmit(values);
-        }}
-        component={({ values, setFieldValue, submitForm }) => {
-          return (
-            <Form className="mt-2" onChange={submitForm}>
-              <FieldArray
-                name="data"
-                render={() => {
-                  return (
-                    <div className="space-y-3">
-                      {values.itinerary.map((itinerary, index) => {
-                        return (
-                          <ItineraryBox
-                            key={itinerary.id}
-                            id={itinerary.id}
-                            date={itinerary.date}
-                            dayNumber={itinerary.dayNumber}
-                            plans={itinerary.plans}
-                            onPlansChange={(plans: string) => {
-                              setFieldValue(`itinerary[${index}].plans`, plans);
-                              submitForm();
-                            }}
-                            defaultOpen={index === 0}
-                          />
-                        );
-                      })}
-                    </div>
-                  );
-                }}
-              />
-            </Form>
-          );
-        }}
-      />
+      {error ? (
+        <ErrorBox />
+      ) : (
+        <Formik
+          initialValues={{
+            itinerary:
+              sortedItinerary && sortedItinerary.length
+                ? sortedItinerary
+                : getDefaultItinerary(),
+          }}
+          onSubmit={async (values) => {
+            handleFormSubmit(values);
+          }}
+          component={({ values, setFieldValue, submitForm }) => {
+            return (
+              <Form className="mt-2" onChange={submitForm}>
+                <FieldArray
+                  name="data"
+                  render={() => {
+                    return (
+                      <div className="space-y-3">
+                        {values.itinerary.map((itinerary, index) => {
+                          return (
+                            <ItineraryBox
+                              key={itinerary.id}
+                              id={itinerary.id}
+                              date={itinerary.date}
+                              dayNumber={itinerary.dayNumber}
+                              plans={itinerary.plans}
+                              onPlansChange={(plans: string) => {
+                                setFieldValue(
+                                  `itinerary[${index}].plans`,
+                                  plans
+                                );
+                                submitForm();
+                              }}
+                              defaultOpen={index === 0}
+                            />
+                          );
+                        })}
+                      </div>
+                    );
+                  }}
+                />
+              </Form>
+            );
+          }}
+        />
+      )}
     </div>
   );
 };
