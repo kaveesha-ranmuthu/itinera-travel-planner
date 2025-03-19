@@ -1,11 +1,11 @@
 import { Grid2 } from "@mui/material";
 import { FieldArray, Form, Formik } from "formik";
+import { sortBy } from "lodash";
 import { useEffect, useMemo, useState } from "react";
 import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { FontFamily } from "../../../../types";
-import { useGetActivities } from "../../hooks/getters/useGetActivities";
 import { useSaveActivities } from "../../hooks/setters/useSaveActivities";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
 import LocationWithPhotoCard, {
@@ -13,23 +13,26 @@ import LocationWithPhotoCard, {
 } from "../LocationWithPhotoCard";
 import SimpleTooltip from "../SimpleTooltip";
 import WarningConfirmationModal from "../WarningConfirmationModal";
-import { sortBy } from "lodash";
 import { getActivitiesLocalStorageKey } from "./helpers";
+import { ErrorBox } from "../ErrorBox";
 
 interface ActivitiesProps {
   userCurrencySymbol?: string;
   userCurrencyCode?: string;
   tripId: string;
+  error: string | null;
+  activities: LocationCardDetails[];
 }
 
 const Activities: React.FC<ActivitiesProps> = ({
   userCurrencySymbol,
   userCurrencyCode,
   tripId,
+  error,
+  activities,
 }) => {
   const { settings } = useAuth();
   const { deleteActivity, saveActivities } = useSaveActivities();
-  const { error, loading, activities } = useGetActivities(tripId);
   const [itemToDelete, setItemToDelete] = useState<LocationCardDetails | null>(
     null
   );
@@ -66,15 +69,6 @@ const Activities: React.FC<ActivitiesProps> = ({
     };
   }, [saveActivities, tripId]);
 
-  // TODO: Make these look better
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error...</div>;
-  }
-
   return (
     <div className="text-secondary">
       <div className="flex items-center space-x-3">
@@ -94,105 +88,113 @@ const Activities: React.FC<ActivitiesProps> = ({
           />
         </SimpleTooltip>
       </div>
-      <Formik
-        initialValues={{
-          data: sortedRows.length ? sortedRows : ([] as LocationCardDetails[]),
-        }}
-        enableReinitialize={true}
-        onSubmit={async (values) => {
-          handleFormSubmit(values);
-        }}
-        component={({ values, submitForm }) => {
-          return (
-            <Form className="mt-2" onChange={submitForm}>
-              <FieldArray
-                name="data"
-                render={(arrayHelpers) => {
-                  return (
-                    <div>
-                      <div className="mb-4">
-                        <LocationSearch
-                          userCurrency={userCurrencyCode}
-                          onSelectLocation={(
-                            location: LocationSearchResult
-                          ) => {
-                            if (!location) return;
+      {error ? (
+        <ErrorBox />
+      ) : (
+        <Formik
+          initialValues={{
+            data: sortedRows.length
+              ? sortedRows
+              : ([] as LocationCardDetails[]),
+          }}
+          enableReinitialize={true}
+          onSubmit={async (values) => {
+            handleFormSubmit(values);
+          }}
+          component={({ values, submitForm }) => {
+            return (
+              <Form className="mt-2" onChange={submitForm}>
+                <FieldArray
+                  name="data"
+                  render={(arrayHelpers) => {
+                    return (
+                      <div>
+                        <div className="mb-4">
+                          <LocationSearch
+                            userCurrency={userCurrencyCode}
+                            onSelectLocation={(
+                              location: LocationSearchResult
+                            ) => {
+                              if (!location) return;
 
-                            const newItem: LocationCardDetails = {
-                              id: crypto.randomUUID(),
-                              name: location?.displayName?.text || "",
-                              formattedAddress:
-                                location?.formattedAddress || "",
-                              location: {
-                                name:
-                                  location?.addressComponents?.find((address) =>
-                                    address.types?.includes("locality")
-                                  )?.shortText || "",
-                                latitude: location?.location?.latitude,
-                                longitude: location?.location?.longitude,
-                              },
-                              startPrice: location?.priceRange?.startPrice
-                                ?.units
-                                ? parseFloat(
-                                    location?.priceRange?.startPrice?.units
-                                  )
-                                : undefined,
-                              endPrice: location?.priceRange?.endPrice?.units
-                                ? parseFloat(
-                                    location?.priceRange?.endPrice?.units
-                                  )
-                                : undefined,
-                              mainPhotoName: location?.photos?.[0]?.name || "",
-                              websiteUri: location?.websiteUri,
-                              createdAt: new Date().toISOString(),
-                            };
-                            arrayHelpers.push(newItem);
-                            submitForm();
-                          }}
-                        />
-                        <div className="mt-4">
-                          <Grid2 container spacing={2.8}>
-                            {values.data.map((activity, index) => {
-                              return (
-                                <div key={`${activity.id}-${index}`}>
-                                  <Grid2>
-                                    <LocationWithPhotoCard
-                                      location={activity}
-                                      currencySymbol={userCurrencySymbol}
-                                      onDelete={() => {
-                                        setItemToDelete(activity);
+                              const newItem: LocationCardDetails = {
+                                id: crypto.randomUUID(),
+                                name: location?.displayName?.text || "",
+                                formattedAddress:
+                                  location?.formattedAddress || "",
+                                location: {
+                                  name:
+                                    location?.addressComponents?.find(
+                                      (address) =>
+                                        address.types?.includes("locality")
+                                    )?.shortText || "",
+                                  latitude: location?.location?.latitude,
+                                  longitude: location?.location?.longitude,
+                                },
+                                startPrice: location?.priceRange?.startPrice
+                                  ?.units
+                                  ? parseFloat(
+                                      location?.priceRange?.startPrice?.units
+                                    )
+                                  : undefined,
+                                endPrice: location?.priceRange?.endPrice?.units
+                                  ? parseFloat(
+                                      location?.priceRange?.endPrice?.units
+                                    )
+                                  : undefined,
+                                mainPhotoName:
+                                  location?.photos?.[0]?.name || "",
+                                websiteUri: location?.websiteUri,
+                                createdAt: new Date().toISOString(),
+                              };
+                              arrayHelpers.push(newItem);
+                              submitForm();
+                            }}
+                          />
+                          <div className="mt-4">
+                            <Grid2 container spacing={2.8}>
+                              {values.data.map((activity, index) => {
+                                return (
+                                  <div key={`${activity.id}-${index}`}>
+                                    <Grid2>
+                                      <LocationWithPhotoCard
+                                        location={activity}
+                                        currencySymbol={userCurrencySymbol}
+                                        onDelete={() => {
+                                          setItemToDelete(activity);
+                                        }}
+                                        locationFieldName={`data.${index}.location.name`}
+                                      />
+                                    </Grid2>
+                                    <WarningConfirmationModal
+                                      description="Once deleted, this is gone forever. Are you sure you want to continue?"
+                                      title={`Are you sure you want to delete "${activity.name}"?`}
+                                      isOpen={itemToDelete?.id === activity.id}
+                                      onClose={() => setItemToDelete(null)}
+                                      onConfirm={() => {
+                                        if (!itemToDelete) return;
+                                        arrayHelpers.remove(index);
+                                        submitForm();
+                                        deleteActivity(tripId, itemToDelete.id);
+                                        setItemToDelete(null);
                                       }}
-                                      locationFieldName={`data.${index}.location.name`}
+                                      lightOpacity={true}
                                     />
-                                  </Grid2>
-                                  <WarningConfirmationModal
-                                    description="Once deleted, this is gone forever. Are you sure you want to continue?"
-                                    title={`Are you sure you want to delete "${activity.name}"?`}
-                                    isOpen={itemToDelete?.id === activity.id}
-                                    onClose={() => setItemToDelete(null)}
-                                    onConfirm={() => {
-                                      if (!itemToDelete) return;
-                                      arrayHelpers.remove(index);
-                                      submitForm();
-                                      deleteActivity(tripId, itemToDelete.id);
-                                      setItemToDelete(null);
-                                    }}
-                                    lightOpacity={true}
-                                  />
-                                </div>
-                              );
-                            })}
-                          </Grid2>
+                                  </div>
+                                );
+                              })}
+                            </Grid2>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                }}
-              />
-            </Form>
-          );
-        }}
-      />
+                    );
+                  }}
+                />
+              </Form>
+            );
+          }}
+        />
+      )}
     </div>
   );
 };

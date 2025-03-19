@@ -24,6 +24,7 @@ import { useGetFood } from "./hooks/getters/useGetFood";
 import useGetTrip from "./hooks/getters/useGetTrip";
 import { LoadingState } from "../landing-page/LandingPage";
 import { useHotToast } from "../../hooks/useHotToast";
+import { useGetItinerary } from "./hooks/getters/useGetItinerary";
 
 const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -66,16 +67,26 @@ const MapView: React.FC<MapViewProps> = ({ tripId }) => {
     activities: activitiesData,
   } = useGetActivities(tripId);
 
+  const {
+    error: itineraryError,
+    itinerary,
+    loading: itineraryLoading,
+  } = useGetItinerary(tripId);
+
   const { notify } = useHotToast();
 
-  if (!trip) return;
-
-  if (error) {
-    return <ErrorPage />;
+  if (
+    loading ||
+    accommodationLoading ||
+    foodLoading ||
+    activitiesLoading ||
+    itineraryLoading
+  ) {
+    return <LoadingState />;
   }
 
-  if (loading || accommodationLoading || foodLoading || activitiesLoading) {
-    return <LoadingState />;
+  if (error || !trip) {
+    return <ErrorPage />;
   }
 
   // TODO: make more specific to type of error
@@ -116,6 +127,8 @@ const MapView: React.FC<MapViewProps> = ({ tripId }) => {
             endDate={trip.endDate}
             startDate={trip.startDate}
             showHeader={false}
+            itinerary={itinerary}
+            error={itineraryError}
           />
         </div>
       </div>

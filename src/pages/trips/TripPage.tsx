@@ -15,6 +15,11 @@ import Food from "./components/sections/Food";
 import Activities from "./components/sections/Activities";
 import Itinerary from "./components/sections/Itinerary";
 import { Element } from "react-scroll";
+import { useGetAccommodation } from "./hooks/getters/useGetAccommodation";
+import { useGetFood } from "./hooks/getters/useGetFood";
+import { useGetActivities } from "./hooks/getters/useGetActivities";
+import { useGetTransport } from "./hooks/getters/useGetTransport";
+import { useGetItinerary } from "./hooks/getters/useGetItinerary";
 
 const TripPage = () => {
   const { tripId } = useParams();
@@ -32,10 +37,43 @@ interface TripInfoProps {
 
 const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
   const { error, loading, trip, updateTripDetails } = useGetTrip(tripId);
+  const {
+    error: accommodationError,
+    loading: accommodationLoading,
+    accommodationRows,
+  } = useGetAccommodation(tripId);
+  const {
+    error: foodError,
+    loading: foodLoading,
+    foodItems,
+  } = useGetFood(tripId);
+  const {
+    error: activitiesError,
+    loading: activitiesLoading,
+    activities,
+  } = useGetActivities(tripId);
+  const {
+    error: transportError,
+    loading: transportLoading,
+    transportRows,
+  } = useGetTransport(tripId);
+  const {
+    error: itineraryError,
+    itinerary,
+    loading: itineraryLoading,
+  } = useGetItinerary(tripId);
+
   const { settings } = useAuth();
   const [isEditTripModalOpen, setIsEditTripModalOpen] = useState(false);
 
-  if (loading) {
+  if (
+    loading ||
+    accommodationLoading ||
+    foodLoading ||
+    activitiesLoading ||
+    transportLoading ||
+    itineraryLoading
+  ) {
     return <LoadingState />;
   }
 
@@ -61,6 +99,8 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
               startDate={trip.startDate}
               endDate={trip.endDate}
               tripId={trip.id}
+              transportRows={transportRows}
+              error={transportError}
             />
           </Element>
           <Element name="accommodation">
@@ -71,6 +111,8 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
               startDate={trip.startDate}
               endDate={trip.endDate}
               tripId={trip.id}
+              accommodationRows={accommodationRows}
+              error={accommodationError}
             />
           </Element>
           <Element name="food">
@@ -78,6 +120,8 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
               userCurrencySymbol={trip.currency?.otherInfo?.symbol}
               userCurrencyCode={trip.currency?.name}
               tripId={trip.id}
+              error={foodError}
+              foodItems={foodItems}
             />
           </Element>
           <Element name="activities">
@@ -85,6 +129,8 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
               userCurrencySymbol={trip.currency?.otherInfo?.symbol}
               userCurrencyCode={trip.currency?.name}
               tripId={trip.id}
+              error={activitiesError}
+              activities={activities}
             />
           </Element>
           <Element name="itinerary">
@@ -92,6 +138,8 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
               startDate={trip.startDate}
               endDate={trip.endDate}
               tripId={trip.id}
+              error={itineraryError}
+              itinerary={itinerary}
             />
           </Element>
         </div>

@@ -11,25 +11,28 @@ import LocationWithPhotoCard, {
 } from "../LocationWithPhotoCard";
 import SimpleTooltip from "../SimpleTooltip";
 import WarningConfirmationModal from "../WarningConfirmationModal";
-import { useGetFood } from "../../hooks/getters/useGetFood";
 import { Grid2 } from "@mui/material";
 import { sortBy } from "lodash";
 import { getFoodLocalStorageKey } from "./helpers";
+import { ErrorBox } from "../ErrorBox";
 
 interface FoodProps {
   userCurrencySymbol?: string;
   userCurrencyCode?: string;
   tripId: string;
+  foodItems: LocationCardDetails[];
+  error: string | null;
 }
 
 const Food: React.FC<FoodProps> = ({
   userCurrencySymbol,
   userCurrencyCode,
   tripId,
+  error,
+  foodItems,
 }) => {
   const { settings } = useAuth();
   const { deleteFoodItem, saveFood } = useSaveFood();
-  const { error, loading, foodItems } = useGetFood(tripId);
   const [itemToDelete, setItemToDelete] = useState<LocationCardDetails | null>(
     null
   );
@@ -62,15 +65,6 @@ const Food: React.FC<FoodProps> = ({
     };
   }, [saveFood, tripId]);
 
-  // TODO: Make these look better
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error...</div>;
-  }
-
   return (
     <div className="text-secondary">
       <div className="flex items-center space-x-3">
@@ -90,104 +84,112 @@ const Food: React.FC<FoodProps> = ({
           />
         </SimpleTooltip>
       </div>
-      <Formik
-        initialValues={{
-          data: sortedRows.length ? sortedRows : ([] as LocationCardDetails[]),
-        }}
-        enableReinitialize={true}
-        onSubmit={async (values) => {
-          handleFormSubmit(values);
-        }}
-        component={({ values, submitForm }) => {
-          return (
-            <Form className="mt-2" onChange={submitForm}>
-              <FieldArray
-                name="data"
-                render={(arrayHelpers) => {
-                  return (
-                    <div>
-                      <div className="mb-4">
-                        <LocationSearch
-                          userCurrency={userCurrencyCode}
-                          onSelectLocation={(
-                            location: LocationSearchResult
-                          ) => {
-                            if (!location) return;
-                            const newItem: LocationCardDetails = {
-                              id: crypto.randomUUID(),
-                              name: location?.displayName?.text || "",
-                              formattedAddress:
-                                location?.formattedAddress || "",
-                              location: {
-                                latitude: location?.location?.latitude,
-                                longitude: location?.location?.longitude,
-                                name:
-                                  location?.addressComponents?.find((address) =>
-                                    address.types?.includes("locality")
-                                  )?.shortText || "",
-                              },
-                              startPrice: location?.priceRange?.startPrice
-                                ?.units
-                                ? parseFloat(
-                                    location?.priceRange?.startPrice?.units
-                                  )
-                                : undefined,
-                              endPrice: location?.priceRange?.endPrice?.units
-                                ? parseFloat(
-                                    location?.priceRange?.endPrice?.units
-                                  )
-                                : undefined,
-                              mainPhotoName: location?.photos?.[0]?.name || "",
-                              websiteUri: location?.websiteUri,
-                              createdAt: new Date().toISOString(),
-                            };
-                            arrayHelpers.push(newItem);
-                            submitForm();
-                          }}
-                        />
-                        <div className="mt-4">
-                          <Grid2 container spacing={2.8}>
-                            {values.data.map((foodPlace, index) => {
-                              return (
-                                <div key={`${foodPlace.id}-${index}`}>
-                                  <Grid2>
-                                    <LocationWithPhotoCard
-                                      location={foodPlace}
-                                      currencySymbol={userCurrencySymbol}
-                                      onDelete={() => {
-                                        setItemToDelete(foodPlace);
+      {error ? (
+        <ErrorBox />
+      ) : (
+        <Formik
+          initialValues={{
+            data: sortedRows.length
+              ? sortedRows
+              : ([] as LocationCardDetails[]),
+          }}
+          enableReinitialize={true}
+          onSubmit={async (values) => {
+            handleFormSubmit(values);
+          }}
+          component={({ values, submitForm }) => {
+            return (
+              <Form className="mt-2" onChange={submitForm}>
+                <FieldArray
+                  name="data"
+                  render={(arrayHelpers) => {
+                    return (
+                      <div>
+                        <div className="mb-4">
+                          <LocationSearch
+                            userCurrency={userCurrencyCode}
+                            onSelectLocation={(
+                              location: LocationSearchResult
+                            ) => {
+                              if (!location) return;
+                              const newItem: LocationCardDetails = {
+                                id: crypto.randomUUID(),
+                                name: location?.displayName?.text || "",
+                                formattedAddress:
+                                  location?.formattedAddress || "",
+                                location: {
+                                  latitude: location?.location?.latitude,
+                                  longitude: location?.location?.longitude,
+                                  name:
+                                    location?.addressComponents?.find(
+                                      (address) =>
+                                        address.types?.includes("locality")
+                                    )?.shortText || "",
+                                },
+                                startPrice: location?.priceRange?.startPrice
+                                  ?.units
+                                  ? parseFloat(
+                                      location?.priceRange?.startPrice?.units
+                                    )
+                                  : undefined,
+                                endPrice: location?.priceRange?.endPrice?.units
+                                  ? parseFloat(
+                                      location?.priceRange?.endPrice?.units
+                                    )
+                                  : undefined,
+                                mainPhotoName:
+                                  location?.photos?.[0]?.name || "",
+                                websiteUri: location?.websiteUri,
+                                createdAt: new Date().toISOString(),
+                              };
+                              arrayHelpers.push(newItem);
+                              submitForm();
+                            }}
+                          />
+                          <div className="mt-4">
+                            <Grid2 container spacing={2.8}>
+                              {values.data.map((foodPlace, index) => {
+                                return (
+                                  <div key={`${foodPlace.id}-${index}`}>
+                                    <Grid2>
+                                      <LocationWithPhotoCard
+                                        location={foodPlace}
+                                        currencySymbol={userCurrencySymbol}
+                                        onDelete={() => {
+                                          setItemToDelete(foodPlace);
+                                        }}
+                                        locationFieldName={`data.${index}.location.name`}
+                                      />
+                                    </Grid2>
+                                    <WarningConfirmationModal
+                                      description="Once deleted, this is gone forever. Are you sure you want to continue?"
+                                      title={`Are you sure you want to delete "${foodPlace.name}"?`}
+                                      isOpen={itemToDelete?.id === foodPlace.id}
+                                      onClose={() => setItemToDelete(null)}
+                                      onConfirm={() => {
+                                        if (!itemToDelete) return;
+                                        arrayHelpers.remove(index);
+                                        submitForm();
+                                        deleteFoodItem(tripId, itemToDelete.id);
+                                        setItemToDelete(null);
                                       }}
-                                      locationFieldName={`data.${index}.location.name`}
+                                      lightOpacity={true}
                                     />
-                                  </Grid2>
-                                  <WarningConfirmationModal
-                                    description="Once deleted, this is gone forever. Are you sure you want to continue?"
-                                    title={`Are you sure you want to delete "${foodPlace.name}"?`}
-                                    isOpen={itemToDelete?.id === foodPlace.id}
-                                    onClose={() => setItemToDelete(null)}
-                                    onConfirm={() => {
-                                      if (!itemToDelete) return;
-                                      arrayHelpers.remove(index);
-                                      submitForm();
-                                      deleteFoodItem(tripId, itemToDelete.id);
-                                      setItemToDelete(null);
-                                    }}
-                                    lightOpacity={true}
-                                  />
-                                </div>
-                              );
-                            })}
-                          </Grid2>
+                                  </div>
+                                );
+                              })}
+                            </Grid2>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                }}
-              />
-            </Form>
-          );
-        }}
-      />
+                    );
+                  }}
+                />
+              </Form>
+            );
+          }}
+        />
+      )}
     </div>
   );
 };
