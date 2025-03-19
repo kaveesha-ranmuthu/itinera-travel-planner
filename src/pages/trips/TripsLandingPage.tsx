@@ -2,7 +2,7 @@ import Grid from "@mui/material/Grid2";
 import { deleteDoc, doc } from "firebase/firestore";
 import { sortBy } from "lodash";
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { GoCopy } from "react-icons/go";
 import { IoTrashBinOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
@@ -41,7 +41,21 @@ const TripsLandingPage = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  if (loading) {
+  const [showLoading, setShowLoading] = useState(true);
+
+  useEffect(() => {
+    if (loading) {
+      setShowLoading(true); // Ensure loading state stays while data is loading
+    } else {
+      const timeout = setTimeout(() => {
+        setShowLoading(false); // Only hide loading after delay
+      }, 1500);
+
+      return () => clearTimeout(timeout); // Cleanup timeout
+    }
+  }, [loading]);
+
+  if (showLoading) {
     return <LoadingState />;
   }
 

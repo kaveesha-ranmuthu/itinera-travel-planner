@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import ErrorPage from "../error/ErrorPage";
@@ -65,15 +65,36 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
 
   const { settings } = useAuth();
   const [isEditTripModalOpen, setIsEditTripModalOpen] = useState(false);
+  const [showLoading, setShowLoading] = useState(true);
 
-  if (
-    loading ||
-    accommodationLoading ||
-    foodLoading ||
-    activitiesLoading ||
-    transportLoading ||
-    itineraryLoading
-  ) {
+  useEffect(() => {
+    const isLoading =
+      loading ||
+      accommodationLoading ||
+      foodLoading ||
+      activitiesLoading ||
+      transportLoading ||
+      itineraryLoading;
+
+    if (isLoading) {
+      setShowLoading(true);
+    } else {
+      const timeout = setTimeout(() => {
+        setShowLoading(false);
+      }, 1500);
+
+      return () => clearTimeout(timeout); // Cleanup timeout
+    }
+  }, [
+    loading,
+    accommodationLoading,
+    foodLoading,
+    activitiesLoading,
+    transportLoading,
+    itineraryLoading,
+  ]);
+
+  if (showLoading) {
     return <LoadingState />;
   }
 

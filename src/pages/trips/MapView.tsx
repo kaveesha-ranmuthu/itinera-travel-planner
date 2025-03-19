@@ -1,5 +1,5 @@
 import "mapbox-gl/dist/mapbox-gl.css";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FaTheaterMasks } from "react-icons/fa";
 import { RiHotelBedFill, RiRestaurantFill } from "react-icons/ri";
 import Map from "react-map-gl/mapbox";
@@ -75,13 +75,34 @@ const MapView: React.FC<MapViewProps> = ({ tripId }) => {
 
   const { notify } = useHotToast();
 
-  if (
-    loading ||
-    accommodationLoading ||
-    foodLoading ||
-    activitiesLoading ||
-    itineraryLoading
-  ) {
+  const [showLoading, setShowLoading] = useState(true);
+
+  useEffect(() => {
+    const isLoading =
+      loading ||
+      accommodationLoading ||
+      foodLoading ||
+      activitiesLoading ||
+      itineraryLoading;
+
+    if (isLoading) {
+      setShowLoading(true); // Ensure loading state stays while data is loading
+    } else {
+      const timeout = setTimeout(() => {
+        setShowLoading(false); // Only hide loading after delay
+      }, 1500);
+
+      return () => clearTimeout(timeout); // Cleanup timeout
+    }
+  }, [
+    loading,
+    accommodationLoading,
+    foodLoading,
+    activitiesLoading,
+    itineraryLoading,
+  ]);
+
+  if (showLoading) {
     return <LoadingState />;
   }
 
