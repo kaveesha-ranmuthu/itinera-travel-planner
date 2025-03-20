@@ -1,5 +1,4 @@
 import { Field } from "formik";
-import { round } from "lodash";
 import React, { useState } from "react";
 import { IoTrashBinOutline } from "react-icons/io5";
 import { MdPhoto } from "react-icons/md";
@@ -15,6 +14,7 @@ export interface LocationCardDetails {
   };
   startPrice?: number;
   endPrice?: number;
+  averagePrice?: number;
   mainPhotoName: string;
   createdAt: string;
   websiteUri?: string;
@@ -26,32 +26,19 @@ interface LocationWithPhotoCardProps {
   currencySymbol?: string;
   onDelete?: () => void;
   locationFieldName: string;
+  priceFieldName: string;
 }
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-
-const getFormattedPrice = (
-  startPrice?: number,
-  endPrice?: number,
-  currencySymbol?: string
-) => {
-  const symbol = currencySymbol || "";
-  if (startPrice && endPrice) {
-    return `${symbol}${round(startPrice)}-${round(endPrice)}`;
-  } else if (startPrice) {
-    return `${symbol}${round(startPrice)}`;
-  } else if (endPrice) {
-    return `${symbol}${round(endPrice)}`;
-  }
-};
 
 const LocationWithPhotoCard: React.FC<LocationWithPhotoCardProps> = ({
   location,
   currencySymbol,
   onDelete,
   locationFieldName,
+  priceFieldName,
 }) => {
-  const { mainPhotoName, name, startPrice, endPrice, websiteUri } = location;
+  const { mainPhotoName, name, websiteUri } = location;
 
   return (
     <div className="border border-secondary w-50 rounded-2xl p-3 group">
@@ -80,16 +67,19 @@ const LocationWithPhotoCard: React.FC<LocationWithPhotoCardProps> = ({
         {name}
       </a>
       <div className="text-sm mt-5 text-secondary/70 flex items-center justify-between">
+        <div className="w-1/2 flex items-center justify-start">
+          <span>{currencySymbol}</span>
+          <Field
+            type="number"
+            className="focus:outline-0 w-full"
+            name={priceFieldName}
+          />
+        </div>
         <Field
           type="text"
-          className="focus:outline-0 w-1/2"
+          className="focus:outline-0 w-1/2 text-right"
           name={locationFieldName}
         />
-        <div>
-          <span className="truncate">
-            {getFormattedPrice(startPrice, endPrice, currencySymbol)}
-          </span>
-        </div>
       </div>
     </div>
   );

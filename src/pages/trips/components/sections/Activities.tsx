@@ -13,7 +13,7 @@ import LocationWithPhotoCard, {
 } from "../LocationWithPhotoCard";
 import SimpleTooltip from "../SimpleTooltip";
 import WarningConfirmationModal from "../WarningConfirmationModal";
-import { getActivitiesLocalStorageKey } from "./helpers";
+import { getActivitiesLocalStorageKey, getAveragePrice } from "./helpers";
 import { ErrorBox, NoDataBox } from "../InfoBox";
 
 interface ActivitiesProps {
@@ -116,6 +116,18 @@ const Activities: React.FC<ActivitiesProps> = ({
                               location: LocationSearchResult
                             ) => {
                               if (!location) return;
+                              const startPrice = location?.priceRange
+                                ?.startPrice?.units
+                                ? parseFloat(
+                                    location?.priceRange?.startPrice?.units
+                                  )
+                                : undefined;
+                              const endPrice = location?.priceRange?.endPrice
+                                ?.units
+                                ? parseFloat(
+                                    location?.priceRange?.endPrice?.units
+                                  )
+                                : undefined;
 
                               const newItem: LocationCardDetails = {
                                 id: crypto.randomUUID(),
@@ -131,17 +143,12 @@ const Activities: React.FC<ActivitiesProps> = ({
                                   latitude: location?.location?.latitude,
                                   longitude: location?.location?.longitude,
                                 },
-                                startPrice: location?.priceRange?.startPrice
-                                  ?.units
-                                  ? parseFloat(
-                                      location?.priceRange?.startPrice?.units
-                                    )
-                                  : undefined,
-                                endPrice: location?.priceRange?.endPrice?.units
-                                  ? parseFloat(
-                                      location?.priceRange?.endPrice?.units
-                                    )
-                                  : undefined,
+                                startPrice,
+                                endPrice,
+                                averagePrice: getAveragePrice(
+                                  startPrice,
+                                  endPrice
+                                ),
                                 mainPhotoName:
                                   location?.photos?.[0]?.name || "",
                                 websiteUri: location?.websiteUri,
@@ -167,6 +174,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                                             setItemToDelete(activity);
                                           }}
                                           locationFieldName={`data.${index}.location.name`}
+                                          priceFieldName={`data.${index}.averagePrice`}
                                         />
                                       </Grid2>
                                       <WarningConfirmationModal

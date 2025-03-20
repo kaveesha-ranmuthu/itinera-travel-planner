@@ -13,7 +13,7 @@ import SimpleTooltip from "../SimpleTooltip";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 import { Grid2 } from "@mui/material";
 import { sortBy } from "lodash";
-import { getFoodLocalStorageKey } from "./helpers";
+import { getAveragePrice, getFoodLocalStorageKey } from "./helpers";
 import { ErrorBox, NoDataBox } from "../InfoBox";
 
 interface FoodProps {
@@ -112,6 +112,19 @@ const Food: React.FC<FoodProps> = ({
                               location: LocationSearchResult
                             ) => {
                               if (!location) return;
+                              const startPrice = location?.priceRange
+                                ?.startPrice?.units
+                                ? parseFloat(
+                                    location?.priceRange?.startPrice?.units
+                                  )
+                                : undefined;
+                              const endPrice = location?.priceRange?.endPrice
+                                ?.units
+                                ? parseFloat(
+                                    location?.priceRange?.endPrice?.units
+                                  )
+                                : undefined;
+
                               const newItem: LocationCardDetails = {
                                 id: crypto.randomUUID(),
                                 name: location?.displayName?.text || "",
@@ -126,17 +139,12 @@ const Food: React.FC<FoodProps> = ({
                                         address.types?.includes("locality")
                                     )?.shortText || "",
                                 },
-                                startPrice: location?.priceRange?.startPrice
-                                  ?.units
-                                  ? parseFloat(
-                                      location?.priceRange?.startPrice?.units
-                                    )
-                                  : undefined,
-                                endPrice: location?.priceRange?.endPrice?.units
-                                  ? parseFloat(
-                                      location?.priceRange?.endPrice?.units
-                                    )
-                                  : undefined,
+                                startPrice,
+                                endPrice,
+                                averagePrice: getAveragePrice(
+                                  startPrice,
+                                  endPrice
+                                ),
                                 mainPhotoName:
                                   location?.photos?.[0]?.name || "",
                                 websiteUri: location?.websiteUri,
@@ -162,6 +170,7 @@ const Food: React.FC<FoodProps> = ({
                                             setItemToDelete(foodPlace);
                                           }}
                                           locationFieldName={`data.${index}.location.name`}
+                                          priceFieldName={`data.${index}.averagePrice`}
                                         />
                                       </Grid2>
                                       <WarningConfirmationModal

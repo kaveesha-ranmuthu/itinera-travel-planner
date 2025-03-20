@@ -2,6 +2,7 @@ import axios from "axios";
 import { IoIosArrowRoundDown, IoIosArrowRoundUp } from "react-icons/io";
 import { TransportRow } from "./Transport";
 import { AccommodationRow } from "./Accommodation";
+import { round } from "lodash";
 
 export const getAccommodationLocalStorageKey = (tripId: string) =>
   `unsaved-accommodation-${tripId}`;
@@ -55,4 +56,17 @@ export const getEstimatedCost = (rows: TransportRow[] | AccommodationRow[]) => {
       return acc;
     }
   }, 0);
+};
+
+export const getAveragePrice = (startPrice?: number, endPrice?: number) => {
+  let averagePrice = 0;
+  if (startPrice && endPrice) {
+    averagePrice = (startPrice + endPrice) / 2;
+  } else if (startPrice) {
+    averagePrice = startPrice;
+  } else if (endPrice) {
+    averagePrice = endPrice;
+  }
+
+  return !averagePrice ? undefined : round(averagePrice);
 };
