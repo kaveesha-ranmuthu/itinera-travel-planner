@@ -1,5 +1,9 @@
 import axios from "axios";
 import { IoIosArrowRoundDown, IoIosArrowRoundUp } from "react-icons/io";
+import { TransportRow } from "./Transport";
+import { AccommodationRow } from "./Accommodation";
+import { round } from "lodash";
+import { LocationCardDetails } from "../LocationWithPhotoCard";
 
 export const getAccommodationLocalStorageKey = (tripId: string) =>
   `unsaved-accommodation-${tripId}`;
@@ -43,4 +47,41 @@ export const convertCurrency = async (
   } catch (error) {
     throw new Error(`Failed to fetch currency conversion rate: ${error}`);
   }
+};
+
+export const getEstimatedTransportAndAccommodationCost = (
+  rows: TransportRow[] | AccommodationRow[]
+) => {
+  return rows.reduce((acc, row) => {
+    if (row.checked) {
+      return acc + row.totalPrice;
+    } else {
+      return acc;
+    }
+  }, 0);
+};
+
+export const getEstimatedFoodAndActivitiesCost = (
+  rows: LocationCardDetails[]
+) => {
+  return rows.reduce((acc, row) => {
+    if (row.averagePrice) {
+      return acc + row.averagePrice;
+    } else {
+      return acc;
+    }
+  }, 0);
+};
+
+export const getAveragePrice = (startPrice?: number, endPrice?: number) => {
+  let averagePrice = 0;
+  if (startPrice && endPrice) {
+    averagePrice = (startPrice + endPrice) / 2;
+  } else if (startPrice) {
+    averagePrice = startPrice;
+  } else if (endPrice) {
+    averagePrice = endPrice;
+  }
+
+  return !averagePrice ? undefined : round(averagePrice);
 };

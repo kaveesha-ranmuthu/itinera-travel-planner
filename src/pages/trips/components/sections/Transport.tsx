@@ -1,5 +1,5 @@
 import { Field, FieldArray, Form, Formik } from "formik";
-import { isEqual, orderBy } from "lodash";
+import { isEqual, orderBy, round } from "lodash";
 import { useEffect, useMemo, useState } from "react";
 import { GoCopy } from "react-icons/go";
 import { IoTrashBinOutline } from "react-icons/io5";
@@ -13,8 +13,12 @@ import SimpleTooltip from "../SimpleTooltip";
 import SmallButton from "../SmallButton";
 import Table from "../Table";
 import WarningConfirmationModal from "../WarningConfirmationModal";
-import { getSortArrowComponent } from "./helpers";
+import {
+  getEstimatedTransportAndAccommodationCost,
+  getSortArrowComponent,
+} from "./helpers";
 import { ErrorBox, NoDataBox } from "../InfoBox";
+import EstimatedCostContainer from "../EstimatedCostContainer";
 
 export interface TransportRow {
   id: string;
@@ -178,13 +182,18 @@ const Transport: React.FC<TransportProps> = ({
             handleFormSubmit(values);
           }}
           component={({ values, setFieldValue, submitForm }) => {
+            const estimatedTotalCost = round(
+              getEstimatedTransportAndAccommodationCost(values.data),
+              2
+            );
+
             return (
               <Form className="mt-2" onChange={submitForm}>
                 <FieldArray
                   name="data"
                   render={(arrayHelpers) => (
                     <div>
-                      <div className="mb-4">
+                      <div className="mb-4 flex items-center justify-between">
                         <SmallButton
                           onClick={() => {
                             setSortDirection("asc");
@@ -198,6 +207,11 @@ const Transport: React.FC<TransportProps> = ({
                         >
                           + Add item
                         </SmallButton>
+                        <EstimatedCostContainer
+                          estimatedTotalCost={estimatedTotalCost}
+                          userCurrencySymbol={userCurrency}
+                          backgroundColor="bg-green/20"
+                        />
                       </div>
                       {!values.data.length ? (
                         <NoDataBox subtitle="Start by adding an item." />
@@ -230,7 +244,7 @@ const Transport: React.FC<TransportProps> = ({
                               <Table.HeaderCell className="w-50">
                                 {getTableHeader(
                                   SortOptions.TOTAL_PRICE,
-                                  "total price"
+                                  "total price / person"
                                 )}
                               </Table.HeaderCell>
                               <Table.HeaderCell className="w-60">

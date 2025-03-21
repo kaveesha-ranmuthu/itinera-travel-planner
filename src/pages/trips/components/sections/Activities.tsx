@@ -1,6 +1,6 @@
 import { Grid2 } from "@mui/material";
 import { FieldArray, Form, Formik } from "formik";
-import { sortBy } from "lodash";
+import { round, sortBy } from "lodash";
 import { useEffect, useMemo, useState } from "react";
 import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
@@ -13,8 +13,13 @@ import LocationWithPhotoCard, {
 } from "../LocationWithPhotoCard";
 import SimpleTooltip from "../SimpleTooltip";
 import WarningConfirmationModal from "../WarningConfirmationModal";
-import { getActivitiesLocalStorageKey } from "./helpers";
+import {
+  getActivitiesLocalStorageKey,
+  getAveragePrice,
+  getEstimatedFoodAndActivitiesCost,
+} from "./helpers";
 import { ErrorBox, NoDataBox } from "../InfoBox";
+import EstimatedCostContainer from "../EstimatedCostContainer";
 
 interface ActivitiesProps {
   userCurrencySymbol?: string;
@@ -102,6 +107,11 @@ const Activities: React.FC<ActivitiesProps> = ({
             handleFormSubmit(values);
           }}
           component={({ values, submitForm }) => {
+            const estimatedTotalCost = round(
+              getEstimatedFoodAndActivitiesCost(values.data),
+              2
+            );
+
             return (
               <Form className="mt-2" onChange={submitForm}>
                 <FieldArray
@@ -110,47 +120,61 @@ const Activities: React.FC<ActivitiesProps> = ({
                     return (
                       <div>
                         <div className="mb-4">
-                          <LocationSearch
-                            userCurrency={userCurrencyCode}
-                            onSelectLocation={(
-                              location: LocationSearchResult
-                            ) => {
-                              if (!location) return;
-
-                              const newItem: LocationCardDetails = {
-                                id: crypto.randomUUID(),
-                                name: location?.displayName?.text || "",
-                                formattedAddress:
-                                  location?.formattedAddress || "",
-                                location: {
-                                  name:
-                                    location?.addressComponents?.find(
-                                      (address) =>
-                                        address.types?.includes("locality")
-                                    )?.shortText || "",
-                                  latitude: location?.location?.latitude,
-                                  longitude: location?.location?.longitude,
-                                },
-                                startPrice: location?.priceRange?.startPrice
-                                  ?.units
+                          <div className="flex items-center justify-between">
+                            <LocationSearch
+                              userCurrency={userCurrencyCode}
+                              onSelectLocation={(
+                                location: LocationSearchResult
+                              ) => {
+                                if (!location) return;
+                                const startPrice = location?.priceRange
+                                  ?.startPrice?.units
                                   ? parseFloat(
                                       location?.priceRange?.startPrice?.units
                                     )
-                                  : undefined,
-                                endPrice: location?.priceRange?.endPrice?.units
+                                  : undefined;
+                                const endPrice = location?.priceRange?.endPrice
+                                  ?.units
                                   ? parseFloat(
                                       location?.priceRange?.endPrice?.units
                                     )
-                                  : undefined,
-                                mainPhotoName:
-                                  location?.photos?.[0]?.name || "",
-                                websiteUri: location?.websiteUri,
-                                createdAt: new Date().toISOString(),
-                              };
-                              arrayHelpers.push(newItem);
-                              submitForm();
-                            }}
-                          />
+                                  : undefined;
+
+                                const newItem: LocationCardDetails = {
+                                  id: crypto.randomUUID(),
+                                  name: location?.displayName?.text || "",
+                                  formattedAddress:
+                                    location?.formattedAddress || "",
+                                  location: {
+                                    name:
+                                      location?.addressComponents?.find(
+                                        (address) =>
+                                          address.types?.includes("locality")
+                                      )?.shortText || "",
+                                    latitude: location?.location?.latitude,
+                                    longitude: location?.location?.longitude,
+                                  },
+                                  startPrice,
+                                  endPrice,
+                                  averagePrice: getAveragePrice(
+                                    startPrice,
+                                    endPrice
+                                  ),
+                                  mainPhotoName:
+                                    location?.photos?.[0]?.name || "",
+                                  websiteUri: location?.websiteUri,
+                                  createdAt: new Date().toISOString(),
+                                };
+                                arrayHelpers.push(newItem);
+                                submitForm();
+                              }}
+                            />
+                            <EstimatedCostContainer
+                              estimatedTotalCost={estimatedTotalCost}
+                              userCurrencySymbol={userCurrencySymbol}
+                              backgroundColor="bg-secondary/20"
+                            />
+                          </div>
                           {!values.data.length ? (
                             <NoDataBox />
                           ) : (
@@ -167,6 +191,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                                             setItemToDelete(activity);
                                           }}
                                           locationFieldName={`data.${index}.location.name`}
+                                          priceFieldName={`data.${index}.averagePrice`}
                                         />
                                       </Grid2>
                                       <WarningConfirmationModal
