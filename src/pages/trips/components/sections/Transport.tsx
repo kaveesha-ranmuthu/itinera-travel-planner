@@ -13,8 +13,12 @@ import SimpleTooltip from "../SimpleTooltip";
 import SmallButton from "../SmallButton";
 import Table from "../Table";
 import WarningConfirmationModal from "../WarningConfirmationModal";
-import { getEstimatedCost, getSortArrowComponent } from "./helpers";
+import {
+  getEstimatedTransportAndAccommodationCost,
+  getSortArrowComponent,
+} from "./helpers";
 import { ErrorBox, NoDataBox } from "../InfoBox";
+import EstimatedCostContainer from "../EstimatedCostContainer";
 
 export interface TransportRow {
   id: string;
@@ -178,7 +182,10 @@ const Transport: React.FC<TransportProps> = ({
             handleFormSubmit(values);
           }}
           component={({ values, setFieldValue, submitForm }) => {
-            const estimatedTotalcost = round(getEstimatedCost(values.data), 2);
+            const estimatedTotalCost = round(
+              getEstimatedTransportAndAccommodationCost(values.data),
+              2
+            );
 
             return (
               <Form className="mt-2" onChange={submitForm}>
@@ -200,13 +207,11 @@ const Transport: React.FC<TransportProps> = ({
                         >
                           + Add item
                         </SmallButton>
-                        <div className="px-4 py-1 rounded-xl bg-green/20">
-                          <span>Estimated cost per person: </span>
-                          <span>
-                            {userCurrency}
-                            {estimatedTotalcost}
-                          </span>
-                        </div>
+                        <EstimatedCostContainer
+                          estimatedTotalCost={estimatedTotalCost}
+                          userCurrencySymbol={userCurrency}
+                          backgroundColor="bg-green/20"
+                        />
                       </div>
                       {!values.data.length ? (
                         <NoDataBox subtitle="Start by adding an item." />

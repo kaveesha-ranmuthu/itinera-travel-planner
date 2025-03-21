@@ -3,6 +3,7 @@ import { IoIosArrowRoundDown, IoIosArrowRoundUp } from "react-icons/io";
 import { TransportRow } from "./Transport";
 import { AccommodationRow } from "./Accommodation";
 import { round } from "lodash";
+import { LocationCardDetails } from "../LocationWithPhotoCard";
 
 export const getAccommodationLocalStorageKey = (tripId: string) =>
   `unsaved-accommodation-${tripId}`;
@@ -48,10 +49,24 @@ export const convertCurrency = async (
   }
 };
 
-export const getEstimatedCost = (rows: TransportRow[] | AccommodationRow[]) => {
+export const getEstimatedTransportAndAccommodationCost = (
+  rows: TransportRow[] | AccommodationRow[]
+) => {
   return rows.reduce((acc, row) => {
     if (row.checked) {
       return acc + row.totalPrice;
+    } else {
+      return acc;
+    }
+  }, 0);
+};
+
+export const getEstimatedFoodAndActivitiesCost = (
+  rows: LocationCardDetails[]
+) => {
+  return rows.reduce((acc, row) => {
+    if (row.averagePrice) {
+      return acc + row.averagePrice;
     } else {
       return acc;
     }

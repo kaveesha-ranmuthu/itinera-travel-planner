@@ -16,10 +16,11 @@ import Table from "../Table";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 import {
   getAccommodationLocalStorageKey,
-  getEstimatedCost,
+  getEstimatedTransportAndAccommodationCost,
   getSortArrowComponent,
 } from "./helpers";
 import { ErrorBox, NoDataBox } from "../InfoBox";
+import EstimatedCostContainer from "../EstimatedCostContainer";
 
 export interface AccommodationRow {
   id: string;
@@ -212,8 +213,9 @@ const Accommodation: React.FC<AccommodationProps> = ({
             handleFormSubmit(values);
           }}
           component={({ values, setFieldValue, submitForm }) => {
-            const estimatedTotalcost = round(
-              getEstimatedCost(values.data) / numberOfPeople,
+            const estimatedTotalCost = round(
+              getEstimatedTransportAndAccommodationCost(values.data) /
+                numberOfPeople,
               2
             );
             return (
@@ -257,13 +259,11 @@ const Accommodation: React.FC<AccommodationProps> = ({
                               }}
                             />
                           </div>
-                          <div className="px-4 py-1 rounded-xl bg-blue-munsell/20">
-                            <span>Estimated cost per person: </span>
-                            <span>
-                              {userCurrencySymbol}
-                              {estimatedTotalcost}
-                            </span>
-                          </div>
+                          <EstimatedCostContainer
+                            estimatedTotalCost={estimatedTotalCost}
+                            userCurrencySymbol={userCurrencySymbol}
+                            backgroundColor="bg-blue-munsell/20"
+                          />
                         </div>
                         {!values.data.length ? (
                           <NoDataBox />
