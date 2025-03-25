@@ -3,20 +3,19 @@ import React, { PropsWithChildren } from "react";
 import { FiEdit } from "react-icons/fi";
 import { GoTasklist } from "react-icons/go";
 import { IoMapOutline } from "react-icons/io5";
-import { LuSave } from "react-icons/lu";
-import { MdOutlineMenuBook } from "react-icons/md";
 import { PiMoneyWavy } from "react-icons/pi";
-import { Link } from "react-router-dom";
-import { twMerge } from "tailwind-merge";
 import { useGetCurrencies } from "../../hooks/getters/useGetCurrencies";
-import useGetTrip from "../../hooks/getters/useGetTrip";
 import { TripData } from "../../hooks/getters/useGetTrips";
 import CurrencyConverter from "../CurrencyConverter";
-import PageNavigation from "../PageNavigation";
 import PopoverMenu from "../PopoverMenu";
 import { SelectOption } from "../Select";
 import SimpleTooltip from "../SimpleTooltip";
 import Tasklist from "../Tasklist";
+import { twMerge } from "tailwind-merge";
+import useGetTrip from "../../hooks/getters/useGetTrip";
+import { MdOutlineMenuBook } from "react-icons/md";
+import PageNavigation from "../PageNavigation";
+import { Link } from "react-router-dom";
 
 type HeaderIcon = {
   icon: React.ReactNode;
@@ -25,7 +24,6 @@ type HeaderIcon = {
   popoverComponent?: React.ReactNode;
   popoverHeight?: string;
   popoverWidth?: string;
-  buttonColor?: string;
 };
 
 type CurrencyForm = {
@@ -76,17 +74,6 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
   const { baseAmount, otherAmount, selectedCurrency } = formik.values;
 
   const headerIcons: HeaderIcon[] = [
-    {
-      icon: (
-        <LuSave stroke="var(--color-primary)" size={20} strokeWidth={1.5} />
-      ),
-      tooltipText: "Save changes",
-      onClick: () => null,
-      popoverComponent: <PageNavigation subCollections={trip.subCollections} />,
-      popoverHeight: "h-fit",
-      popoverWidth: "w-fit",
-      buttonColor: "bg-blue-munsell/80",
-    },
     {
       icon: <MdOutlineMenuBook fill="var(--color-primary)" size={20} />,
       tooltipText: "Page navigation",
@@ -165,7 +152,6 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
           popoverComponent={icon.popoverComponent}
           popoverHeight={icon.popoverHeight}
           popoverWidth={icon.popoverWidth}
-          buttonColor={icon.buttonColor}
         >
           {icon.icon}
         </HeaderIconButton>
@@ -180,7 +166,6 @@ interface HeaderIconButtonProps {
   popoverComponent?: React.ReactNode;
   popoverHeight?: string;
   popoverWidth?: string;
-  buttonColor?: string;
 }
 
 const HeaderIconButton: React.FC<PropsWithChildren<HeaderIconButtonProps>> = ({
@@ -190,7 +175,6 @@ const HeaderIconButton: React.FC<PropsWithChildren<HeaderIconButtonProps>> = ({
   popoverComponent,
   popoverHeight,
   popoverWidth,
-  buttonColor,
 }) => {
   if (!popoverComponent) {
     return (
@@ -198,10 +182,7 @@ const HeaderIconButton: React.FC<PropsWithChildren<HeaderIconButtonProps>> = ({
         <button
           onClick={onClick}
           type="button"
-          className={twMerge(
-            "focus:outline-0  rounded-full p-2 hover:scale-105 cursor-pointer hover:opacity-95",
-            buttonColor || "bg-secondary"
-          )}
+          className="focus:outline-0 bg-secondary rounded-full p-2 hover:scale-105 cursor-pointer hover:opacity-95"
         >
           {children}
         </button>
@@ -221,10 +202,7 @@ const HeaderIconButton: React.FC<PropsWithChildren<HeaderIconButtonProps>> = ({
         <SimpleTooltip content={tooltipText} marginTop="mt-2" theme="dark">
           <div
             onClick={onClick}
-            className={twMerge(
-              "bg-secondary rounded-full p-2 hover:scale-105 cursor-pointer hover:opacity-95",
-              buttonColor || "bg-secondary"
-            )}
+            className="bg-secondary rounded-full p-2 hover:scale-105 cursor-pointer hover:opacity-95"
           >
             {children}
           </div>
