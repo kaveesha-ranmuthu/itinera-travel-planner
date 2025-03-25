@@ -31,7 +31,6 @@ export interface Trip {
   currency: SelectOption | null;
   budget: number;
   imageData: string;
-  taskList: string;
 }
 
 const TripsLandingPage = () => {

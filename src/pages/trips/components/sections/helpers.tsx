@@ -20,6 +20,9 @@ export const getTransportLocalStorageKey = (tripId: string) =>
 export const getItineraryLocalStorageKey = (tripId: string) =>
   `unsaved-itinerary-${tripId}`;
 
+export const getTasklistLocalStorageKey = (tripId: string) =>
+  `unsaved-tasklist-${tripId}`;
+
 export const getUnsavedTripsStorageKey = () => `unsaved-trips`;
 
 export const addTripToLocalStorage = (tripId: string) => {
