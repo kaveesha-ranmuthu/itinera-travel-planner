@@ -14,6 +14,30 @@ export const getFoodLocalStorageKey = (tripId: string) =>
 export const getActivitiesLocalStorageKey = (tripId: string) =>
   `unsaved-activities-${tripId}`;
 
+export const getTransportLocalStorageKey = (tripId: string) =>
+  `unsaved-transport-${tripId}`;
+
+export const getItineraryLocalStorageKey = (tripId: string) =>
+  `unsaved-itinerary-${tripId}`;
+
+export const getUnsavedTripsStorageKey = () => `unsaved-trips`;
+
+export const addTripToLocalStorage = (tripId: string) => {
+  const unsavedTripsStorageKey = getUnsavedTripsStorageKey();
+  const unsavedTrips = localStorage.getItem(unsavedTripsStorageKey);
+  if (unsavedTrips) {
+    const unsavedTripsArray = JSON.parse(unsavedTrips);
+    if (!unsavedTrips.includes(tripId)) {
+      localStorage.setItem(
+        unsavedTripsStorageKey,
+        JSON.stringify([...unsavedTripsArray, tripId])
+      );
+    }
+  } else {
+    localStorage.setItem(unsavedTripsStorageKey, JSON.stringify([tripId]));
+  }
+};
+
 export const getSortArrowComponent = (currentSortDirection: "asc" | "desc") => {
   return currentSortDirection === "desc" ? (
     <IoIosArrowRoundUp size={20} />

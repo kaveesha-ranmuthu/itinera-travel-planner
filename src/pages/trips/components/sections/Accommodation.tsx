@@ -18,6 +18,7 @@ import {
   getAccommodationLocalStorageKey,
   getEstimatedTransportAndAccommodationCost,
   getSortArrowComponent,
+  addTripToLocalStorage,
 } from "./helpers";
 import { ErrorBox, NoDataBox } from "../InfoBox";
 import EstimatedCostContainer from "../EstimatedCostContainer";
@@ -73,7 +74,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
   error,
 }) => {
   const { settings } = useAuth();
-  const { deleteAccommodationRow, saveAccommodation } = useSaveAccommodation();
+  const { deleteAccommodationRow } = useSaveAccommodation();
   const [deleteRow, setDeleteRow] = useState<AccommodationRow | null>(null);
   const finalSaveData = localStorage.getItem(
     getAccommodationLocalStorageKey(tripId)
@@ -121,27 +122,13 @@ const Accommodation: React.FC<AccommodationProps> = ({
       getAccommodationLocalStorageKey(tripId),
       JSON.stringify(values)
     );
+    addTripToLocalStorage(tripId);
   };
 
   useEffect(() => {
     const newSortedRows = orderBy(allRows, sortOption, sortDirection);
     setSortedAccommodationRows([...newSortedRows]);
   }, [allRows, sortOption, sortDirection]);
-
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      const unsavedData = localStorage.getItem(
-        getAccommodationLocalStorageKey(tripId)
-      );
-      if (unsavedData) {
-        await saveAccommodation(tripId, JSON.parse(unsavedData).data);
-      }
-    }, 5 * 60 * 1000); // 10 * 60 * 1000
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [saveAccommodation, tripId]);
 
   const setSorting = (clickedOption: SortOptions) => {
     if (sortOption === clickedOption) {
@@ -233,7 +220,6 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                 location: LocationSearchResult
                               ) => {
                                 if (!location) return;
-                                console.log(location);
 
                                 const newRow: AccommodationRow = {
                                   ...defaultRow,
