@@ -3,24 +3,23 @@ import React, { PropsWithChildren } from "react";
 import { FiEdit } from "react-icons/fi";
 import { GoTasklist } from "react-icons/go";
 import { IoMapOutline } from "react-icons/io5";
+import { MdOutlineMenuBook } from "react-icons/md";
 import { PiMoneyWavy } from "react-icons/pi";
+import { Link } from "react-router-dom";
+import { twMerge } from "tailwind-merge";
 import { useGetCurrencies } from "../../hooks/getters/useGetCurrencies";
 import { TripData } from "../../hooks/getters/useGetTrips";
 import CurrencyConverter from "../CurrencyConverter";
+import PageNavigation from "../PageNavigation";
 import PopoverMenu from "../PopoverMenu";
 import { SelectOption } from "../Select";
 import SimpleTooltip from "../SimpleTooltip";
 import Tasklist from "../Tasklist";
-import { twMerge } from "tailwind-merge";
-import useGetTrip from "../../hooks/getters/useGetTrip";
-import { MdOutlineMenuBook } from "react-icons/md";
-import PageNavigation from "../PageNavigation";
-import { Link } from "react-router-dom";
 
 type HeaderIcon = {
   icon: React.ReactNode;
   tooltipText: string;
-  onClick: () => void;
+  onClick?: () => void;
   popoverComponent?: React.ReactNode;
   popoverHeight?: string;
   popoverWidth?: string;
@@ -46,8 +45,6 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
     error: currencyFetchError,
     loading: currencyFetchLoading,
   } = useGetCurrencies();
-
-  const { updateTripDetails } = useGetTrip(trip.id);
 
   const userCurrency = trip.currency?.name;
   const countriesVisiting = trip.countries.map((country) => country.id);
@@ -77,7 +74,6 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
     {
       icon: <MdOutlineMenuBook fill="var(--color-primary)" size={20} />,
       tooltipText: "Page navigation",
-      onClick: () => null,
       popoverComponent: <PageNavigation subCollections={trip.subCollections} />,
       popoverHeight: "h-fit",
       popoverWidth: "w-fit",
@@ -92,15 +88,8 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
     {
       icon: <GoTasklist fill="var(--color-primary)" size={20} />,
       tooltipText: "Tasklist",
-      onClick: () => null,
       popoverComponent: (
-        <Tasklist
-          savedTaskList={trip.taskList}
-          onSubmit={async (tasklist: string) =>
-            await updateTripDetails({ ...trip, taskList: tasklist })
-          }
-          tripId={trip.id}
-        />
+        <Tasklist savedTaskList={trip.taskList} tripId={trip.id} />
       ),
       popoverHeight: "h-60",
       popoverWidth: "w-60",
@@ -108,7 +97,6 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
     {
       icon: <PiMoneyWavy fill="var(--color-primary)" size={20} />,
       tooltipText: "Currency converter",
-      onClick: () => null,
       popoverHeight: "h-32",
       popoverComponent: currencyFetchLoading ? (
         <>Loading...</>
@@ -139,7 +127,6 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
         </Link>
       ),
       tooltipText: "View map",
-      onClick: () => null,
     },
   ];
   return (
@@ -162,7 +149,7 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
 
 interface HeaderIconButtonProps {
   tooltipText: string;
-  onClick: () => void;
+  onClick?: () => void;
   popoverComponent?: React.ReactNode;
   popoverHeight?: string;
   popoverWidth?: string;

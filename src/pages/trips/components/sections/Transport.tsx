@@ -14,8 +14,10 @@ import SmallButton from "../SmallButton";
 import Table from "../Table";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 import {
+  addTripToLocalStorage,
   getEstimatedTransportAndAccommodationCost,
   getSortArrowComponent,
+  getTransportLocalStorageKey,
 } from "./helpers";
 import { ErrorBox, NoDataBox } from "../InfoBox";
 import EstimatedCostContainer from "../EstimatedCostContainer";
@@ -52,8 +54,6 @@ interface TransportProps {
   error: string | null;
 }
 
-const LOCAL_STORAGE_KEY = (tripId: string) => `unsaved-transport-${tripId}`;
-
 const Transport: React.FC<TransportProps> = ({
   userCurrency,
   startDate,
@@ -63,9 +63,11 @@ const Transport: React.FC<TransportProps> = ({
   transportRows,
 }) => {
   const { settings } = useAuth();
-  const { saveTransport, deleteTransportRow } = useSaveTransport();
+  const { deleteTransportRow } = useSaveTransport();
   const [deleteRow, setDeleteRow] = useState<TransportRow | null>(null);
-  const finalSaveData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+  const finalSaveData = localStorage.getItem(
+    getTransportLocalStorageKey(tripId)
+  );
 
   const allRows: TransportRow[] = useMemo(
     () => (finalSaveData ? JSON.parse(finalSaveData).data : transportRows),
@@ -93,26 +95,17 @@ const Transport: React.FC<TransportProps> = ({
   };
 
   const handleFormSubmit = (values: { data: TransportRow[] }) => {
-    localStorage.setItem(LOCAL_STORAGE_KEY(tripId), JSON.stringify(values));
+    localStorage.setItem(
+      getTransportLocalStorageKey(tripId),
+      JSON.stringify(values)
+    );
+    addTripToLocalStorage(tripId);
   };
 
   useEffect(() => {
     const newSortedRows = orderBy(allRows, sortOption, sortDirection);
     setSortedTransportRows([...newSortedRows]);
   }, [allRows, sortOption, sortDirection]);
-
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      const unsavedData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
-      if (unsavedData) {
-        await saveTransport(tripId, JSON.parse(unsavedData).data);
-      }
-    }, 5 * 60 * 1000); // 10 * 60 * 1000
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [saveTransport, tripId]);
 
   const setSorting = (clickedOption: SortOptions) => {
     if (sortOption === clickedOption) {

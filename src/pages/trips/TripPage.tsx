@@ -1,25 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Element } from "react-scroll";
+import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../hooks/useAuth";
 import ErrorPage from "../error/ErrorPage";
 import { LoadingState } from "../landing-page/LandingPage";
 import CreateTripPopup from "./components/CreateTripPopup";
-import useGetTrip from "./hooks/getters/useGetTrip";
-import Header from "./components/sections/Header";
-import TripHeader from "./components/sections/TripHeader";
-import HeaderIcons from "./components/sections/HeaderIcons";
-import Transport from "./components/sections/Transport";
-import { twMerge } from "tailwind-merge";
 import Accommodation from "./components/sections/Accommodation";
-import Food from "./components/sections/Food";
 import Activities from "./components/sections/Activities";
+import Food from "./components/sections/Food";
+import Header from "./components/sections/Header";
+import HeaderIcons from "./components/sections/HeaderIcons";
 import Itinerary from "./components/sections/Itinerary";
-import { Element } from "react-scroll";
-import { useGetAccommodation } from "./hooks/getters/useGetAccommodation";
-import { useGetFood } from "./hooks/getters/useGetFood";
-import { useGetActivities } from "./hooks/getters/useGetActivities";
-import { useGetTransport } from "./hooks/getters/useGetTransport";
-import { useGetItinerary } from "./hooks/getters/useGetItinerary";
+import Transport from "./components/sections/Transport";
+import TripHeader from "./components/sections/TripHeader";
+import useGetTrip from "./hooks/getters/useGetTrip";
+import useGetTripData from "./hooks/setters/useGetTripData";
 
 const TripPage = () => {
   const { tripId } = useParams();
@@ -38,43 +34,25 @@ interface TripInfoProps {
 const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
   const { error, loading, trip, updateTripDetails } = useGetTrip(tripId);
   const {
-    error: accommodationError,
-    loading: accommodationLoading,
+    accommodationError,
     accommodationRows,
-  } = useGetAccommodation(tripId);
-  const {
-    error: foodError,
-    loading: foodLoading,
+    foodError,
     foodItems,
-  } = useGetFood(tripId);
-  const {
-    error: activitiesError,
-    loading: activitiesLoading,
+    activitiesError,
     activities,
-  } = useGetActivities(tripId);
-  const {
-    error: transportError,
-    loading: transportLoading,
+    transportError,
     transportRows,
-  } = useGetTransport(tripId);
-  const {
-    error: itineraryError,
+    itineraryError,
     itinerary,
-    loading: itineraryLoading,
-  } = useGetItinerary(tripId);
+    loading: tripDataLoading,
+  } = useGetTripData(tripId);
 
   const { settings } = useAuth();
   const [isEditTripModalOpen, setIsEditTripModalOpen] = useState(false);
   const [showLoading, setShowLoading] = useState(true);
 
   useEffect(() => {
-    const isLoading =
-      loading ||
-      accommodationLoading ||
-      foodLoading ||
-      activitiesLoading ||
-      transportLoading ||
-      itineraryLoading;
+    const isLoading = loading || tripDataLoading;
 
     if (isLoading) {
       setShowLoading(true);
@@ -85,14 +63,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
 
       return () => clearTimeout(timeout); // Cleanup timeout
     }
-  }, [
-    loading,
-    accommodationLoading,
-    foodLoading,
-    activitiesLoading,
-    transportLoading,
-    itineraryLoading,
-  ]);
+  }, [loading, tripDataLoading]);
 
   if (showLoading) {
     return <LoadingState />;

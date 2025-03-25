@@ -1,7 +1,7 @@
 import { Grid2 } from "@mui/material";
 import { FieldArray, Form, Formik } from "formik";
 import { round, sortBy } from "lodash";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
@@ -16,6 +16,7 @@ import LocationWithPhotoCard, {
 import SimpleTooltip from "../SimpleTooltip";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 import {
+  addTripToLocalStorage,
   getAveragePrice,
   getEstimatedFoodAndActivitiesCost,
   getFoodLocalStorageKey,
@@ -37,7 +38,7 @@ const Food: React.FC<FoodProps> = ({
   foodItems,
 }) => {
   const { settings } = useAuth();
-  const { deleteFoodItem, saveFood } = useSaveFood();
+  const { deleteFoodItem } = useSaveFood();
   const [itemToDelete, setItemToDelete] = useState<LocationCardDetails | null>(
     null
   );
@@ -55,20 +56,8 @@ const Food: React.FC<FoodProps> = ({
       getFoodLocalStorageKey(tripId),
       JSON.stringify(values)
     );
+    addTripToLocalStorage(tripId);
   };
-
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      const unsavedData = localStorage.getItem(getFoodLocalStorageKey(tripId));
-      if (unsavedData) {
-        await saveFood(tripId, JSON.parse(unsavedData).data);
-      }
-    }, 5 * 60 * 1000); // 10 * 60 * 1000
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [saveFood, tripId]);
 
   return (
     <div className="text-secondary">

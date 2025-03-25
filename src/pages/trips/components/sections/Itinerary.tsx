@@ -29,9 +29,9 @@ import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { FontFamily } from "../../../../types";
-import { useSaveItinerary } from "../../hooks/setters/useSaveItinerary";
 import { ErrorBox } from "../InfoBox";
 import SimpleTooltip from "../SimpleTooltip";
+import { addTripToLocalStorage, getItineraryLocalStorageKey } from "./helpers";
 export interface ItineraryDetails {
   id: string;
   dayNumber: number;
@@ -48,8 +48,6 @@ interface ItineraryProps {
   itinerary: ItineraryDetails[];
 }
 
-const LOCAL_STORAGE_KEY = (tripId: string) => `unsaved-itinerary-${tripId}`;
-
 const Itinerary: React.FC<ItineraryProps> = ({
   endDate,
   startDate,
@@ -59,8 +57,9 @@ const Itinerary: React.FC<ItineraryProps> = ({
   itinerary,
 }) => {
   const { settings } = useAuth();
-  const { saveItinerary } = useSaveItinerary();
-  const finalSaveData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+  const finalSaveData = localStorage.getItem(
+    getItineraryLocalStorageKey(tripId)
+  );
 
   const savedItinerary: ItineraryDetails[] = useMemo(
     () => (finalSaveData ? JSON.parse(finalSaveData).itinerary : itinerary),
@@ -86,21 +85,12 @@ const Itinerary: React.FC<ItineraryProps> = ({
   };
 
   const handleFormSubmit = (values: { itinerary: ItineraryDetails[] }) => {
-    localStorage.setItem(LOCAL_STORAGE_KEY(tripId), JSON.stringify(values));
+    localStorage.setItem(
+      getItineraryLocalStorageKey(tripId),
+      JSON.stringify(values)
+    );
+    addTripToLocalStorage(tripId);
   };
-
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      const unsavedData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
-      if (unsavedData) {
-        await saveItinerary(tripId, JSON.parse(unsavedData).itinerary);
-      }
-    }, 5 * 60 * 1000); // 10 * 60 * 1000
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [saveItinerary, tripId]);
 
   return (
     <div className="text-secondary">

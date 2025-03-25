@@ -1,12 +1,14 @@
 import { Grid2 } from "@mui/material";
 import { FieldArray, Form, Formik } from "formik";
 import { round, sortBy } from "lodash";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { FontFamily } from "../../../../types";
 import { useSaveActivities } from "../../hooks/setters/useSaveActivities";
+import EstimatedCostContainer from "../EstimatedCostContainer";
+import { ErrorBox, NoDataBox } from "../InfoBox";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
 import LocationWithPhotoCard, {
   LocationCardDetails,
@@ -14,12 +16,11 @@ import LocationWithPhotoCard, {
 import SimpleTooltip from "../SimpleTooltip";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 import {
+  addTripToLocalStorage,
   getActivitiesLocalStorageKey,
   getAveragePrice,
   getEstimatedFoodAndActivitiesCost,
 } from "./helpers";
-import { ErrorBox, NoDataBox } from "../InfoBox";
-import EstimatedCostContainer from "../EstimatedCostContainer";
 
 interface ActivitiesProps {
   userCurrencySymbol?: string;
@@ -37,7 +38,7 @@ const Activities: React.FC<ActivitiesProps> = ({
   activities,
 }) => {
   const { settings } = useAuth();
-  const { deleteActivity, saveActivities } = useSaveActivities();
+  const { deleteActivity } = useSaveActivities();
   const [itemToDelete, setItemToDelete] = useState<LocationCardDetails | null>(
     null
   );
@@ -57,22 +58,8 @@ const Activities: React.FC<ActivitiesProps> = ({
       getActivitiesLocalStorageKey(tripId),
       JSON.stringify(values)
     );
+    addTripToLocalStorage(tripId);
   };
-
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      const unsavedData = localStorage.getItem(
-        getActivitiesLocalStorageKey(tripId)
-      );
-      if (unsavedData) {
-        await saveActivities(tripId, JSON.parse(unsavedData).data);
-      }
-    }, 5 * 60 * 1000); // 10 * 60 * 1000
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [saveActivities, tripId]);
 
   return (
     <div className="text-secondary">

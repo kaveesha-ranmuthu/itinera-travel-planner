@@ -2,54 +2,34 @@ import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useAuth } from "../../../hooks/useAuth";
-import { twMerge } from "tailwind-merge";
-import { useEffect } from "react";
 import { MdOutlineAddTask } from "react-icons/md";
+import { twMerge } from "tailwind-merge";
+import { useAuth } from "../../../hooks/useAuth";
+import {
+  addTripToLocalStorage,
+  getTasklistLocalStorageKey,
+} from "./sections/helpers";
 
 interface TasklistProps {
-  onSubmit: (tasklist: string) => Promise<undefined | Error>;
   savedTaskList: string;
   tripId: string;
 }
 
-const LOCAL_STORAGE_KEY = (tripId: string) => `unsaved-tasklist-${tripId}`;
-
-const Tasklist: React.FC<TasklistProps> = ({
-  onSubmit,
-  savedTaskList,
-  tripId,
-}) => {
+const Tasklist: React.FC<TasklistProps> = ({ savedTaskList, tripId }) => {
   const { settings } = useAuth();
-  const lastChanges = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
+  const lastChanges = localStorage.getItem(getTasklistLocalStorageKey(tripId));
+
   const editor = useEditor({
     extensions: [StarterKit, TaskList, TaskItem],
-    content: lastChanges ?? savedTaskList,
+    content: lastChanges || savedTaskList,
     onUpdate: ({ editor }) => {
-      localStorage.setItem(LOCAL_STORAGE_KEY(tripId), editor.getHTML());
+      localStorage.setItem(
+        getTasklistLocalStorageKey(tripId),
+        editor.getHTML()
+      );
+      addTripToLocalStorage(tripId);
     },
   });
-
-  useEffect(() => {
-    return () => {
-      (async () => {
-        const unsavedData = localStorage.getItem(LOCAL_STORAGE_KEY(tripId));
-
-        if (unsavedData) {
-          try {
-            const error = await onSubmit(unsavedData);
-            if (!error) {
-              localStorage.removeItem(LOCAL_STORAGE_KEY(tripId));
-            } else {
-              console.error("Failed to save tasklist:", error);
-            }
-          } catch (err) {
-            console.error("Error during unmount save:", err);
-          }
-        }
-      })();
-    };
-  }, [tripId, onSubmit]);
 
   return (
     <div className={twMerge("space-y-3 text-secondary", settings?.font)}>
