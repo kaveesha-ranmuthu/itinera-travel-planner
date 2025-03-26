@@ -1,5 +1,5 @@
 import Grid from "@mui/material/Grid2";
-import { deleteDoc, doc } from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
 import { sortBy } from "lodash";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
@@ -8,7 +8,7 @@ import { IoTrashBinOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 import Button from "../../components/Button";
-import { auth, db } from "../../firebase-config";
+import { functions } from "../../firebase-config";
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
 import { FontFamily } from "../../types";
@@ -16,13 +16,12 @@ import ErrorPage from "../error/ErrorPage";
 import { LoadingState } from "../landing-page/LandingPage";
 import CreateTripPopup from "./components/CreateTripPopup";
 import Header from "./components/sections/Header";
+import { deleteTripFromLocalStorage } from "./components/sections/helpers";
 import { SelectOption } from "./components/Select";
+import WarningConfirmationModal from "./components/WarningConfirmationModal";
 import { TripData, useGetTrips } from "./hooks/getters/useGetTrips";
 import { useCreateNewTrip } from "./hooks/setters/useCreateNewTrip";
 import useDuplicateTrip from "./hooks/setters/useDuplicateTrip";
-import WarningConfirmationModal from "./components/WarningConfirmationModal";
-import { deleteTripFromLocalStorage } from "./components/sections/helpers";
-
 export interface Trip {
   tripName: string;
   startDate: string;
@@ -138,18 +137,13 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
   const { duplicateTrip } = useDuplicateTrip();
 
   const deleteTrip = async (tripId: string) => {
+    const deleteTripFn = httpsCallable(functions, "deleteTrip");
     try {
-      const user = auth.currentUser;
-      if (!user) {
-        notify("Something went wrong. Please try again.", "error");
-        return;
-      }
-
-      const tripRef = doc(db, `users/${user.uid}/trips/${tripId}`);
-      await deleteDoc(tripRef);
+      await deleteTripFn({ tripId });
       deleteTripFromLocalStorage(tripId);
       notify(`Trip deleted successfully!`, "success");
-    } catch {
+    } catch (error) {
+      console.error("Failed to delete trip:", error);
       notify("Something went wrong. Please try again.", "error");
     }
   };
