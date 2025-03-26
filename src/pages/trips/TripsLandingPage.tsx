@@ -21,6 +21,7 @@ import { TripData, useGetTrips } from "./hooks/getters/useGetTrips";
 import { useCreateNewTrip } from "./hooks/setters/useCreateNewTrip";
 import useDuplicateTrip from "./hooks/setters/useDuplicateTrip";
 import WarningConfirmationModal from "./components/WarningConfirmationModal";
+import { deleteTripFromLocalStorage } from "./components/sections/helpers";
 
 export interface Trip {
   tripName: string;
@@ -146,6 +147,7 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
 
       const tripRef = doc(db, `users/${user.uid}/trips/${tripId}`);
       await deleteDoc(tripRef);
+      deleteTripFromLocalStorage(tripId);
       notify(`Trip deleted successfully!`, "success");
     } catch {
       notify("Something went wrong. Please try again.", "error");

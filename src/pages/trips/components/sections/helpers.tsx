@@ -30,7 +30,7 @@ export const addTripToLocalStorage = (tripId: string) => {
   const unsavedTrips = localStorage.getItem(unsavedTripsStorageKey);
   if (unsavedTrips) {
     const unsavedTripsArray = JSON.parse(unsavedTrips);
-    if (!unsavedTrips.includes(tripId)) {
+    if (!unsavedTripsArray.includes(tripId)) {
       localStorage.setItem(
         unsavedTripsStorageKey,
         JSON.stringify([...unsavedTripsArray, tripId])
@@ -38,6 +38,26 @@ export const addTripToLocalStorage = (tripId: string) => {
     }
   } else {
     localStorage.setItem(unsavedTripsStorageKey, JSON.stringify([tripId]));
+  }
+};
+
+export const deleteTripFromLocalStorage = (tripId: string) => {
+  const unsavedTripsStorageKey = getUnsavedTripsStorageKey();
+  const unsavedTrips = localStorage.getItem(unsavedTripsStorageKey);
+  if (unsavedTrips) {
+    const unsavedTripsArray = JSON.parse(unsavedTrips);
+    if (unsavedTripsArray.includes(tripId)) {
+      localStorage.setItem(
+        unsavedTripsStorageKey,
+        JSON.stringify(unsavedTripsArray.filter((id: string) => id !== tripId))
+      );
+      localStorage.removeItem(getAccommodationLocalStorageKey(tripId));
+      localStorage.removeItem(getFoodLocalStorageKey(tripId));
+      localStorage.removeItem(getActivitiesLocalStorageKey(tripId));
+      localStorage.removeItem(getTransportLocalStorageKey(tripId));
+      localStorage.removeItem(getItineraryLocalStorageKey(tripId));
+      localStorage.removeItem(getTasklistLocalStorageKey(tripId));
+    }
   }
 };
 
