@@ -10,7 +10,7 @@ import { useAuth } from "./hooks/useAuth";
 import TripPage from "./pages/trips/TripPage";
 import MapViewPage from "./pages/trips/MapView";
 import { useEffect } from "react";
-import { getUnsavedTripsStorageKey } from "./pages/trips/components/sections/helpers";
+import { saveTripData } from "./pages/trips/components/sections/helpers";
 import useSaveAllData from "./pages/trips/hooks/setters/useSaveAllData";
 
 function App() {
@@ -19,27 +19,7 @@ function App() {
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      const unsavedTrips = localStorage.getItem(getUnsavedTripsStorageKey());
-      if (unsavedTrips) {
-        const unsavedTripsArray = JSON.parse(unsavedTrips);
-        const stillUnsaved: string[] = [];
-
-        for (const tripId of unsavedTripsArray) {
-          const success = await saveAllData(tripId);
-          if (!success) {
-            stillUnsaved.push(tripId);
-          }
-        }
-
-        if (stillUnsaved.length > 0) {
-          localStorage.setItem(
-            getUnsavedTripsStorageKey(),
-            JSON.stringify(stillUnsaved)
-          );
-        } else {
-          localStorage.removeItem(getUnsavedTripsStorageKey());
-        }
-      }
+      await saveTripData(saveAllData);
     }, 5 * 60 * 1000);
 
     return () => {

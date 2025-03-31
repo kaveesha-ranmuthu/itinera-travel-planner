@@ -11,15 +11,19 @@ import { PaperPlane } from "../../assets/PaperPlane";
 import { useUpdateUserSettings } from "../../hooks/setters/useUpdateUserSettings";
 import PopoverMenu from "../PopoverMenu";
 import Button from "../../../../components/Button";
+import useSaveAllData from "../../hooks/setters/useSaveAllData";
+import { saveTripData } from "./helpers";
 
 const Header = () => {
   const { notify } = useHotToast();
   const navigate = useNavigate();
   const { settings, setSettings } = useAuth();
   const { updateSettings } = useUpdateUserSettings();
+  const { saveAllData } = useSaveAllData();
 
   const handleLogout = async () => {
     try {
+      await saveTripData(saveAllData);
       await signOut(auth);
       navigate("/login");
     } catch {
