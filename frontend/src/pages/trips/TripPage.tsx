@@ -16,6 +16,7 @@ import Transport from "./components/sections/Transport";
 import TripHeader from "./components/sections/TripHeader";
 import useGetTrip from "./hooks/getters/useGetTrip";
 import useGetTripData from "./hooks/setters/useGetTripData";
+import FadeInSection from "./components/FadeInSection";
 
 const TripPage = () => {
   const { tripId } = useParams();
@@ -76,63 +77,77 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
   return (
     <div className={twMerge(settings?.font, "pb-16")}>
       <Header />
-      <div className="px-10">
-        <TripHeader trip={trip} />
-      </div>
+      <FadeInSection>
+        <div className="px-10">
+          <TripHeader trip={trip} />
+        </div>
+      </FadeInSection>
       <div className="px-16">
-        <HeaderIcons
-          trip={trip}
-          onEditButtonClick={() => setIsEditTripModalOpen(true)}
-        />
+        <FadeInSection>
+          <HeaderIcons
+            trip={trip}
+            onEditButtonClick={() => setIsEditTripModalOpen(true)}
+          />
+        </FadeInSection>
         <div className="space-y-10">
           <Element name="transport">
-            <Transport
-              userCurrency={trip.currency?.otherInfo?.symbol}
-              startDate={trip.startDate}
-              endDate={trip.endDate}
-              tripId={trip.id}
-              transportRows={transportRows}
-              error={transportError}
-            />
+            <FadeInSection>
+              <Transport
+                userCurrency={trip.currency?.otherInfo?.symbol}
+                startDate={trip.startDate}
+                endDate={trip.endDate}
+                tripId={trip.id}
+                transportRows={transportRows}
+                error={transportError}
+              />
+            </FadeInSection>
           </Element>
           <Element name="accommodation">
-            <Accommodation
-              userCurrencySymbol={trip.currency?.otherInfo?.symbol}
-              userCurrencyCode={trip.currency?.name}
-              numberOfPeople={trip.numberOfPeople}
-              startDate={trip.startDate}
-              endDate={trip.endDate}
-              tripId={trip.id}
-              accommodationRows={accommodationRows}
-              error={accommodationError}
-            />
+            <FadeInSection>
+              <Accommodation
+                userCurrencySymbol={trip.currency?.otherInfo?.symbol}
+                userCurrencyCode={trip.currency?.name}
+                numberOfPeople={trip.numberOfPeople}
+                startDate={trip.startDate}
+                endDate={trip.endDate}
+                tripId={trip.id}
+                accommodationRows={accommodationRows}
+                error={accommodationError}
+              />
+            </FadeInSection>
           </Element>
           <Element name="food">
-            <Food
-              userCurrencySymbol={trip.currency?.otherInfo?.symbol}
-              userCurrencyCode={trip.currency?.name}
-              tripId={trip.id}
-              error={foodError}
-              foodItems={foodItems}
-            />
+            <FadeInSection>
+              <Food
+                userCurrencySymbol={trip.currency?.otherInfo?.symbol}
+                userCurrencyCode={trip.currency?.name}
+                tripId={trip.id}
+                error={foodError}
+                foodItems={foodItems}
+              />
+            </FadeInSection>
           </Element>
           <Element name="activities">
-            <Activities
-              userCurrencySymbol={trip.currency?.otherInfo?.symbol}
-              userCurrencyCode={trip.currency?.name}
-              tripId={trip.id}
-              error={activitiesError}
-              activities={activities}
-            />
+            <FadeInSection>
+              <Activities
+                userCurrencySymbol={trip.currency?.otherInfo?.symbol}
+                userCurrencyCode={trip.currency?.name}
+                tripId={trip.id}
+                error={activitiesError}
+                activities={activities}
+              />
+            </FadeInSection>
           </Element>
           <Element name="itinerary">
-            <Itinerary
-              startDate={trip.startDate}
-              endDate={trip.endDate}
-              tripId={trip.id}
-              error={itineraryError}
-              itinerary={itinerary}
-            />
+            <FadeInSection>
+              <Itinerary
+                startDate={trip.startDate}
+                endDate={trip.endDate}
+                tripId={trip.id}
+                error={itineraryError}
+                itinerary={itinerary}
+              />
+            </FadeInSection>
           </Element>
         </div>
       </div>
