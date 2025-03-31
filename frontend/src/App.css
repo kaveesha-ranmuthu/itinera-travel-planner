@@ -22,24 +22,36 @@
   --font-family-monospace: "Inconsolata", monospace;
   --drop-shadow-default: 2px 2px 2px rgba(0, 0, 0, 0.1);
 
-  --animate-fade: fade 2s ease-in-out;
+  --animate-fade: fade 1s ease-in-out;
   --animate-quick-fade: fade 0.8s ease-in-out;
   @keyframes fade {
     0% {
       opacity: 0;
     }
-    50% {
+    100% {
       opacity: 1;
     }
   }
 
-  --animate-fade-in-top: fade-in-top 2s ease-in-out;
+  --animate-scale-in: scaleIn 0.4s ease-in-out;
+  @keyframes scaleIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  --animate-fade-in-top: fade-in-top 1s ease-in-out;
   @keyframes fade-in-top {
     0% {
       opacity: 0;
       margin-top: -3px;
     }
-    50% {
+    100% {
       opacity: 1;
     }
   }
@@ -50,7 +62,7 @@
       opacity: 0;
       margin-bottom: -10px;
     }
-    50% {
+    100% {
       opacity: 1;
     }
   }

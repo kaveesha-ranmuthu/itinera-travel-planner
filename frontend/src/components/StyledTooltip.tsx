@@ -23,7 +23,7 @@ const StyledTooltip: React.FC<PropsWithChildren<TooltipProps>> = ({
         <Tooltip.Portal>
           <Tooltip.Content
             side="bottom"
-            className="animate-quick-fade bg-red-sienna rounded-md p-3 text-primary font-brand italic mt-1 tracking-wide"
+            className="origin-[var(--radix-tooltip-content-transform-origin)] animate-scale-in bg-red-sienna rounded-md p-3 text-primary font-brand italic mt-1 tracking-wide"
           >
             {content}
           </Tooltip.Content>
