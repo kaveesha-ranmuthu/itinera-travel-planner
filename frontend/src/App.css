@@ -32,11 +32,11 @@
     }
   }
 
-  --animate-fade-in-top: fade-in-top 1s ease-in-out;
+  --animate-fade-in-top: fade-in-top 2s ease-in-out;
   @keyframes fade-in-top {
     0% {
       opacity: 0;
-      margin-top: -10px;
+      margin-top: -3px;
     }
     50% {
       opacity: 1;
