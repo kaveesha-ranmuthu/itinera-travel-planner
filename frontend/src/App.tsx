@@ -9,13 +9,14 @@ import TripsLandingPage from "./pages/trips/TripsLandingPage";
 import { useAuth } from "./hooks/useAuth";
 import TripPage from "./pages/trips/TripPage";
 import MapViewPage from "./pages/trips/MapView";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { saveTripData } from "./pages/trips/components/sections/helpers";
 import useSaveAllData from "./pages/trips/hooks/setters/useSaveAllData";
 
 function App() {
   const { user, loading } = useAuth();
   const { saveAllData } = useSaveAllData();
+  const [showLoading, setShowLoading] = useState(true);
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -27,6 +28,20 @@ function App() {
     };
   }, [saveAllData]);
 
+  useEffect(() => {
+    const isLoading = loading;
+
+    if (isLoading) {
+      setShowLoading(true);
+    } else {
+      const timeout = setTimeout(() => {
+        setShowLoading(false);
+      }, 1500);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [loading]);
+
   return (
     <>
       <BrowserRouter>
@@ -34,7 +49,7 @@ function App() {
           <Route
             path="/"
             element={
-              loading ? (
+              showLoading ? (
                 <LoadingState />
               ) : user ? (
                 <TripsLandingPage />
@@ -46,7 +61,7 @@ function App() {
           <Route
             path="/login"
             element={
-              loading ? (
+              showLoading ? (
                 <LoadingState />
               ) : user ? (
                 <Navigate to="/" />
@@ -58,7 +73,7 @@ function App() {
           <Route
             path="/signup"
             element={
-              loading ? (
+              showLoading ? (
                 <LoadingState />
               ) : user ? (
                 <Navigate to="/" />
