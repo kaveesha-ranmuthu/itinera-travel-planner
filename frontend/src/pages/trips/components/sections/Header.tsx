@@ -11,20 +11,27 @@ import { PaperPlane } from "../../assets/PaperPlane";
 import { useUpdateUserSettings } from "../../hooks/setters/useUpdateUserSettings";
 import PopoverMenu from "../PopoverMenu";
 import Button from "../../../../components/Button";
+import useSaveAllData from "../../hooks/setters/useSaveAllData";
+import { saveTripData } from "./helpers";
 
 const Header = () => {
   const { notify } = useHotToast();
   const navigate = useNavigate();
   const { settings, setSettings } = useAuth();
   const { updateSettings } = useUpdateUserSettings();
+  const { saveAllData } = useSaveAllData();
+  const [logoutLoading, setLogoutLoading] = React.useState(false);
 
   const handleLogout = async () => {
     try {
+      setLogoutLoading(true);
+      await saveTripData(saveAllData);
       await signOut(auth);
       navigate("/login");
     } catch {
       notify("Something went wrong. Please try again.", "error");
     }
+    setLogoutLoading(false);
   };
 
   const updateFont = async (newFont: FontFamily) => {
@@ -74,6 +81,7 @@ const Header = () => {
             <Button.Secondary
               onClick={handleLogout}
               className={twMerge("normal-case text-sm px-3", settings?.font)}
+              loading={logoutLoading}
             >
               Log Out
             </Button.Secondary>

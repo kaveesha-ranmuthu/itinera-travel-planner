@@ -6,6 +6,7 @@ interface ButtonProps {
   className?: string;
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
+  loading?: boolean;
 }
 
 const DefaultButton: React.FC<PropsWithChildren<ButtonProps>> = ({
@@ -36,10 +37,11 @@ const Primary: React.FC<PropsWithChildren<ButtonProps>> = ({
   className,
   disabled,
   type = "button",
+  loading,
 }) => {
   return (
     <button
-      disabled={disabled}
+      disabled={disabled || loading}
       type={type}
       onClick={onClick}
       className={twMerge(
@@ -58,10 +60,11 @@ const Secondary: React.FC<PropsWithChildren<ButtonProps>> = ({
   className,
   disabled,
   type = "button",
+  loading,
 }) => {
   return (
     <button
-      disabled={disabled}
+      disabled={disabled || loading}
       type={type}
       onClick={onClick}
       className={twMerge(

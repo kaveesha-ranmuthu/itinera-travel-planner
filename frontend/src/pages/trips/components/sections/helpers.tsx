@@ -132,3 +132,29 @@ export const getAveragePrice = (startPrice?: number, endPrice?: number) => {
 
   return !averagePrice ? undefined : round(averagePrice);
 };
+
+export const saveTripData = async (
+  saveAllData: (tripId: string) => Promise<boolean>
+) => {
+  const unsavedTrips = localStorage.getItem(getUnsavedTripsStorageKey());
+  if (unsavedTrips) {
+    const unsavedTripsArray = JSON.parse(unsavedTrips);
+    const stillUnsaved: string[] = [];
+
+    for (const tripId of unsavedTripsArray) {
+      const success = await saveAllData(tripId);
+      if (!success) {
+        stillUnsaved.push(tripId);
+      }
+    }
+
+    if (stillUnsaved.length > 0) {
+      localStorage.setItem(
+        getUnsavedTripsStorageKey(),
+        JSON.stringify(stillUnsaved)
+      );
+    } else {
+      localStorage.removeItem(getUnsavedTripsStorageKey());
+    }
+  }
+};
