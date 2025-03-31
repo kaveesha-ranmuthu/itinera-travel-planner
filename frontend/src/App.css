@@ -23,6 +23,7 @@
   --drop-shadow-default: 2px 2px 2px rgba(0, 0, 0, 0.1);
 
   --animate-fade: fade 2s ease-in-out;
+  --animate-quick-fade: fade 0.8s ease-in-out;
   @keyframes fade {
     0% {
       opacity: 0;
