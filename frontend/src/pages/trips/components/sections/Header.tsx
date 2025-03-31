@@ -20,15 +20,18 @@ const Header = () => {
   const { settings, setSettings } = useAuth();
   const { updateSettings } = useUpdateUserSettings();
   const { saveAllData } = useSaveAllData();
+  const [logoutLoading, setLogoutLoading] = React.useState(false);
 
   const handleLogout = async () => {
     try {
+      setLogoutLoading(true);
       await saveTripData(saveAllData);
       await signOut(auth);
       navigate("/login");
     } catch {
       notify("Something went wrong. Please try again.", "error");
     }
+    setLogoutLoading(false);
   };
 
   const updateFont = async (newFont: FontFamily) => {
@@ -78,6 +81,7 @@ const Header = () => {
             <Button.Secondary
               onClick={handleLogout}
               className={twMerge("normal-case text-sm px-3", settings?.font)}
+              loading={logoutLoading}
             >
               Log Out
             </Button.Secondary>
