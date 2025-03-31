@@ -138,7 +138,7 @@ const MapView: React.FC<MapViewProps> = ({ tripId }) => {
     : activitiesData;
 
   return (
-    <div className={twMerge("flex relative", settings?.font)}>
+    <div className={twMerge("flex relative animate-fade", settings?.font)}>
       <div className="w-1/3 bg-primary absolute z-10 top-0 left-0 h-full overflow-y-scroll pb-4">
         <Header />
         <div className="px-6 space-y-5">
