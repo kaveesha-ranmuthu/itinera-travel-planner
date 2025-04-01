@@ -33,7 +33,7 @@
     }
   }
 
-  --animate-scale-in: scaleIn 0.4s ease-in-out;
+  --animate-scale-in: scaleIn 0.3s ease-in-out;
   @keyframes scaleIn {
     0% {
       opacity: 0;
@@ -42,6 +42,18 @@
     100% {
       opacity: 1;
       transform: scale(1);
+    }
+  }
+
+  --animate-scale-out: scaleOut 0.3s ease-in-out;
+  @keyframes scaleOut {
+    0% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.9);
     }
   }
 
