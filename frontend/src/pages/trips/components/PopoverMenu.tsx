@@ -22,8 +22,9 @@ const PopoverMenu: React.FC<PropsWithChildren<PopoverProps>> = ({
       <PopoverButton>{popoverTrigger}</PopoverButton>
       <PopoverPanel
         anchor="bottom end"
+        transition
         className={twMerge(
-          "h-60 mr-7 z-20 rounded-xl px-4 py-4 bg-primary border border-secondary drop-shadow-(--drop-shadow-default)",
+          "transition duration-200 ease-out data-[closed]:scale-95 data-[closed]:opacity-0 h-60 mr-7 z-20 rounded-xl px-4 py-4 bg-primary border border-secondary drop-shadow-(--drop-shadow-default)",
           FontFamily.HANDWRITTEN,
           popoverWidth || "w-xs",
           panelClassName

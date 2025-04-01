@@ -48,7 +48,7 @@ const Header = () => {
   };
 
   return (
-    <nav className="px-6 py-2 flex items-center justify-between sticky top-0 z-10 h-16 bg-primary ">
+    <nav className="px-6 py-2 flex items-center justify-between sticky top-0 z-10 h-16 bg-primary animate-fade">
       <Link to="/">
         <PaperPlane fill="#3b4043" width={30} />
       </Link>

@@ -72,7 +72,7 @@ const TripsLandingPage = () => {
   return (
     <div className={settings?.font ?? FontFamily.HANDWRITTEN}>
       <Header />
-      <div className="px-20">
+      <div className="px-20 animate-fade">
         <div className="flex justify-center flex-col items-center space-y-8">
           <h1 className="text-5xl tracking-widest">my trips</h1>
           <Button.Primary

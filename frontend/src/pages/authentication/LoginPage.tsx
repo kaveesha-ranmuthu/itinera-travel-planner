@@ -58,7 +58,7 @@ const LoginPage = () => {
 
   return (
     <BackgroundWrapper>
-      <div className="absolute left-0 top-0 flex flex-col items-center justify-center w-full">
+      <div className="absolute left-0 top-0 flex flex-col items-center justify-center w-full animate-fade-in-top">
         <Logo scale="scale-70" />
         <FormWrapper>
           <form className="text-secondary" onSubmit={formik.handleSubmit}>
@@ -106,7 +106,7 @@ const LoginPage = () => {
           >
             Forgot password?
           </Link>
-          <div className="text-primary cursor-pointer font-brand italic text-lg font-light tracking-wide">
+          <div className="text-primary font-brand italic text-lg font-light tracking-wide">
             Need an account?{" "}
             <Link to="/signup" className="underline">
               Sign up

@@ -51,12 +51,12 @@ const ResetPassword = () => {
 
   return (
     <BackgroundWrapper>
-      <div className="absolute left-0 top-0 flex flex-col items-center justify-center w-full">
+      <div className="absolute left-0 top-0 flex flex-col items-center justify-center w-full animate-fade-in-top">
         <Logo scale="scale-70" />
         <FormWrapper>
           <form className="text-secondary" onSubmit={formik.handleSubmit}>
             <h1 className="font-brand uppercase italic text-3xl font-light text-center">
-              Log in
+              Reset password
             </h1>
             <AuthenticationInput
               label="email"

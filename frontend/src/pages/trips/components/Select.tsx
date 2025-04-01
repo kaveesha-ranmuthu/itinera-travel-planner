@@ -65,7 +65,8 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
       {(!!filteredOptions.length || !!currentlySelectedOptions.length) && (
         <ComboboxOptions
           anchor="bottom start"
-          className="bg-primary border border-secondary w-3xs rounded-lg mt-1"
+          transition
+          className="bg-primary border border-secondary w-3xs rounded-lg mt-1 transition duration-200 ease-out empty:invisible data-[closed]:scale-95 data-[closed]:opacity-0"
         >
           {currentlySelectedOptions.map((opt) => {
             return (
@@ -154,8 +155,9 @@ export const SingleSelect: React.FC<SingleSelectProps> = ({
       {(!!filteredOptions.length || !!currentlySelectedOption) && (
         <ComboboxOptions
           anchor="bottom start"
+          transition
           className={twMerge(
-            "bg-primary border border-secondary w-3xs rounded-lg mt-1",
+            "bg-primary border border-secondary w-3xs rounded-lg mt-1 transition duration-200 ease-out empty:invisible data-[closed]:scale-95 data-[closed]:opacity-0",
             settings?.font,
             optionsBoxClassname
           )}

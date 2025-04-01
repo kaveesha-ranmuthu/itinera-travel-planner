@@ -169,8 +169,9 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
       {options && !!options.length && (
         <ComboboxOptions
           anchor="bottom start"
+          transition
           className={twMerge(
-            "bg-primary border border-secondary w-3xs rounded-lg mt-1",
+            "bg-primary border border-secondary w-3xs rounded-lg mt-1 transition duration-200 ease-out empty:invisible data-[closed]:scale-95 data-[closed]:opacity-0",
             settings?.font,
             optionsBoxClassname
           )}

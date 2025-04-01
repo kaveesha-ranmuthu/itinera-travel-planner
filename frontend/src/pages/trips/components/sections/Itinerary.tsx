@@ -211,92 +211,94 @@ const ItineraryBox: React.FC<ItineraryBoxProps> = ({
   }, [editor, onPlansChange]);
 
   return (
-    <div className="border border-secondary w-full rounded-2xl py-3 pl-4 pr-7 space-x-4 drop-shadow-(--drop-shadow-default)">
-      <Disclosure defaultOpen={defaultOpen}>
-        <DisclosureButton className="flex items-center space-x-4 cursor-pointer hover:opacity-70 transition ease-in-out duration-200">
-          <div
-            className={twMerge(
-              "flex flex-col items-start",
-              settings?.font === FontFamily.HANDWRITTEN ? "mb-1" : ""
-            )}
-          >
-            <span className="text-xl">day {dayNumber}</span>
-            <span className="text-sm opacity-70">
-              {moment(date).format("MMM D, YYYY")}
-            </span>
-          </div>
-        </DisclosureButton>
-        <DisclosurePanel className="text-gray-500">
-          {editor && (
-            <>
-              <BubbleMenu
-                editor={editor}
-                tippyOptions={{ duration: 100 }}
-                className="bg-primary"
-              >
-                <div className="bubble-menu flex items-center">
-                  <button
-                    onClick={() => editor.chain().focus().toggleBold().run()}
-                    disabled={settings?.font === FontFamily.HANDWRITTEN}
-                    className={twMerge(
-                      "p-2 cursor-pointer hover:bg-primary-hover transition ease-in-out duration-200 disabled:cursor-default disabled:opacity-50 disabled:hover:bg-primary",
-                      editor.isActive("bold") ? "is-active" : ""
-                    )}
-                  >
-                    <BsTypeBold size={20} />
-                  </button>
-                  <button
-                    onClick={() => editor.chain().focus().toggleItalic().run()}
-                    className={twMerge(
-                      "p-2 cursor-pointer hover:bg-primary-hover transition ease-in-out duration-200",
-                      editor.isActive("italic") ? "is-active" : ""
-                    )}
-                  >
-                    <BsTypeItalic size={20} />
-                  </button>
-                  <button
-                    onClick={() => editor.chain().focus().toggleStrike().run()}
-                    className={twMerge(
-                      "p-2 cursor-pointer hover:bg-primary-hover transition ease-in-out duration-200",
-                      editor.isActive("strike") ? "is-active" : ""
-                    )}
-                  >
-                    <BsTypeStrikethrough size={20} />
-                  </button>
-                  <button
-                    onClick={() =>
-                      editor.chain().focus().toggleBulletList().run()
-                    }
-                    className={twMerge(
-                      "p-2 cursor-pointer hover:bg-primary-hover transition ease-in-out duration-200",
-                      editor.isActive("bulletList") ? "is-active" : ""
-                    )}
-                  >
-                    <BsListUl size={20} />
-                  </button>
-                  <button
-                    onClick={() =>
-                      editor.chain().focus().toggleOrderedList().run()
-                    }
-                    className={twMerge(
-                      "p-2 cursor-pointer hover:bg-primary-hover transition ease-in-out duration-200",
-                      editor.isActive("orderedList") ? "is-active" : ""
-                    )}
-                  >
-                    <BsListOl size={20} />
-                  </button>
-                </div>
-              </BubbleMenu>
-              <EditorContent
-                editor={editor}
-                className="ml-5 mt-2 mb-3"
-                onBlur={() => onPlansChange(editor.getHTML())}
-              />
-            </>
+    <Disclosure
+      as="div"
+      className="border border-secondary w-full rounded-2xl py-3 pl-4 pr-7 space-x-4 drop-shadow-(--drop-shadow-default)"
+      defaultOpen={defaultOpen}
+    >
+      <DisclosureButton className="flex items-center space-x-4 cursor-pointer hover:opacity-70 transition ease-in-out duration-200">
+        <div
+          className={twMerge(
+            "flex flex-col items-start",
+            settings?.font === FontFamily.HANDWRITTEN ? "mb-1" : ""
           )}
-        </DisclosurePanel>
-      </Disclosure>
-    </div>
+        >
+          <span className="text-xl">day {dayNumber}</span>
+          <span className="text-sm opacity-70">
+            {moment(date).format("MMM D, YYYY")}
+          </span>
+        </div>
+      </DisclosureButton>
+      <DisclosurePanel className="text-secondary/80">
+        {editor && (
+          <>
+            <BubbleMenu
+              editor={editor}
+              tippyOptions={{ duration: 100 }}
+              className="bg-primary"
+            >
+              <div className="bubble-menu flex items-center">
+                <button
+                  onClick={() => editor.chain().focus().toggleBold().run()}
+                  disabled={settings?.font === FontFamily.HANDWRITTEN}
+                  className={twMerge(
+                    "p-2 cursor-pointer hover:bg-primary-hover transition ease-in-out duration-200 disabled:cursor-default disabled:opacity-50 disabled:hover:bg-primary",
+                    editor.isActive("bold") ? "is-active" : ""
+                  )}
+                >
+                  <BsTypeBold size={20} />
+                </button>
+                <button
+                  onClick={() => editor.chain().focus().toggleItalic().run()}
+                  className={twMerge(
+                    "p-2 cursor-pointer hover:bg-primary-hover transition ease-in-out duration-200",
+                    editor.isActive("italic") ? "is-active" : ""
+                  )}
+                >
+                  <BsTypeItalic size={20} />
+                </button>
+                <button
+                  onClick={() => editor.chain().focus().toggleStrike().run()}
+                  className={twMerge(
+                    "p-2 cursor-pointer hover:bg-primary-hover transition ease-in-out duration-200",
+                    editor.isActive("strike") ? "is-active" : ""
+                  )}
+                >
+                  <BsTypeStrikethrough size={20} />
+                </button>
+                <button
+                  onClick={() =>
+                    editor.chain().focus().toggleBulletList().run()
+                  }
+                  className={twMerge(
+                    "p-2 cursor-pointer hover:bg-primary-hover transition ease-in-out duration-200",
+                    editor.isActive("bulletList") ? "is-active" : ""
+                  )}
+                >
+                  <BsListUl size={20} />
+                </button>
+                <button
+                  onClick={() =>
+                    editor.chain().focus().toggleOrderedList().run()
+                  }
+                  className={twMerge(
+                    "p-2 cursor-pointer hover:bg-primary-hover transition ease-in-out duration-200",
+                    editor.isActive("orderedList") ? "is-active" : ""
+                  )}
+                >
+                  <BsListOl size={20} />
+                </button>
+              </div>
+            </BubbleMenu>
+            <EditorContent
+              editor={editor}
+              className="ml-5 mt-2 mb-3"
+              onBlur={() => onPlansChange(editor.getHTML())}
+            />
+          </>
+        )}
+      </DisclosurePanel>
+    </Disclosure>
   );
 };
 

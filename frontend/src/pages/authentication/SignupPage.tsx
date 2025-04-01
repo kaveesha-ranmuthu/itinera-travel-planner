@@ -78,7 +78,7 @@ const SignupPage = () => {
 
   return (
     <BackgroundWrapper>
-      <div className="absolute left-0 top-0 flex flex-col items-center justify-center w-full">
+      <div className="absolute left-0 top-0 flex flex-col items-center justify-center w-full animate-fade-in-top">
         <Logo scale="scale-70" />
         <FormWrapper>
           <form className="text-secondary" onSubmit={formik.handleSubmit}>
@@ -137,7 +137,7 @@ const SignupPage = () => {
             <ContinueWithGoogle />
           </div>
         </FormWrapper>
-        <div className="text-center mt-10 text-primary cursor-pointer font-brand italic text-lg font-light tracking-wide">
+        <div className="text-center mt-10 text-primary font-brand italic text-lg font-light tracking-wide">
           Already have an account?{" "}
           <Link to="/login" className="underline">
             Log in

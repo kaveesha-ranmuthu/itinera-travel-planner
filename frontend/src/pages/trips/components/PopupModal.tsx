@@ -23,7 +23,11 @@ const PopupModal: React.FC<PropsWithChildren<PopupModalProps>> = ({
     <Dialog
       open={isOpen}
       onClose={onClose}
-      className={twMerge("relative z-10", settings?.font)}
+      transition
+      className={twMerge(
+        "relative z-10 transition duration-400 ease-out data-[closed]:opacity-0",
+        settings?.font
+      )}
     >
       <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
         <DialogBackdrop
