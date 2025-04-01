@@ -83,12 +83,10 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
         </div>
       </FadeInSection>
       <div className="px-16">
-        <FadeInSection>
-          <HeaderIcons
-            trip={trip}
-            onEditButtonClick={() => setIsEditTripModalOpen(true)}
-          />
-        </FadeInSection>
+        <HeaderIcons
+          trip={trip}
+          onEditButtonClick={() => setIsEditTripModalOpen(true)}
+        />
         <div className="space-y-10">
           <Element name="transport">
             <FadeInSection>

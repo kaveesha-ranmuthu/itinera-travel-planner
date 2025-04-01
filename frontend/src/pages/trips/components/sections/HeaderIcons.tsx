@@ -15,6 +15,7 @@ import PopoverMenu from "../PopoverMenu";
 import { SelectOption } from "../Select";
 import SimpleTooltip from "../SimpleTooltip";
 import Tasklist from "../Tasklist";
+import FadeInSection from "../FadeInSection";
 
 type HeaderIcon = {
   icon: React.ReactNode;
@@ -130,7 +131,7 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
     },
   ];
   return (
-    <div className="space-x-2 mt-4 w-full flex items-center justify-end sticky top-2 z-10 bg-primary">
+    <FadeInSection className="space-x-2 mt-4 w-full flex items-center justify-end sticky top-2 z-10 bg-primary">
       {headerIcons.map((icon, index) => (
         <HeaderIconButton
           key={index}
@@ -143,7 +144,7 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
           {icon.icon}
         </HeaderIconButton>
       ))}
-    </div>
+    </FadeInSection>
   );
 };
 
