@@ -418,7 +418,6 @@ const Transport: React.FC<TransportProps> = ({
                                             submitForm();
                                           }
                                         }}
-                                        disabled={values.data.length === 1}
                                         className="cursor-pointer hover:opacity-60 transition ease-in-out duration-300 disabled:cursor-default disabled:opacity-50"
                                       >
                                         <IoTrashBinOutline
