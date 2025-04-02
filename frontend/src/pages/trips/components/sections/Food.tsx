@@ -1,6 +1,6 @@
 import { Grid2 } from "@mui/material";
 import { FieldArray, Form, Formik } from "formik";
-import { round, sortBy } from "lodash";
+import { round, sortBy, uniqBy } from "lodash";
 import { useMemo, useState } from "react";
 import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
@@ -21,6 +21,8 @@ import {
   getEstimatedFoodAndActivitiesCost,
   getFoodLocalStorageKey,
 } from "./helpers";
+import { MdFilterList } from "react-icons/md";
+import PopoverMenu from "../PopoverMenu";
 
 interface FoodProps {
   userCurrencySymbol?: string;
@@ -43,6 +45,9 @@ const Food: React.FC<FoodProps> = ({
     null
   );
   const finalSaveData = localStorage.getItem(getFoodLocalStorageKey(tripId));
+  const [selectedFilterLocations, setSelectedFilterLocations] = useState<
+    string[]
+  >([]);
 
   const allRows: LocationCardDetails[] = useMemo(
     () => (finalSaveData ? JSON.parse(finalSaveData).data : foodItems),
@@ -96,6 +101,24 @@ const Food: React.FC<FoodProps> = ({
               getEstimatedFoodAndActivitiesCost(values.data),
               2
             );
+
+            const locations = uniqBy(
+              values.data.map((location) => location.location),
+              "name"
+            )
+              .map((location) => location.name)
+              .filter(Boolean);
+
+            if (
+              selectedFilterLocations.some(
+                (location) => !locations.includes(location)
+              )
+            ) {
+              setSelectedFilterLocations((prev) =>
+                prev.filter((location) => locations.includes(location))
+              );
+            }
+
             return (
               <Form className="mt-2" onChange={submitForm}>
                 <FieldArray
@@ -105,54 +128,105 @@ const Food: React.FC<FoodProps> = ({
                       <div>
                         <div className="mb-4">
                           <div className="flex items-center justify-between">
-                            <LocationSearch
-                              userCurrency={userCurrencyCode}
-                              onSelectLocation={(
-                                location: LocationSearchResult
-                              ) => {
-                                if (!location) return;
-                                const startPrice = location?.priceRange
-                                  ?.startPrice?.units
-                                  ? parseFloat(
-                                      location?.priceRange?.startPrice?.units
-                                    )
-                                  : undefined;
-                                const endPrice = location?.priceRange?.endPrice
-                                  ?.units
-                                  ? parseFloat(
-                                      location?.priceRange?.endPrice?.units
-                                    )
-                                  : undefined;
+                            <div className="flex items-center space-x-2">
+                              <LocationSearch
+                                userCurrency={userCurrencyCode}
+                                onSelectLocation={(
+                                  location: LocationSearchResult
+                                ) => {
+                                  if (!location) return;
+                                  const startPrice = location?.priceRange
+                                    ?.startPrice?.units
+                                    ? parseFloat(
+                                        location?.priceRange?.startPrice?.units
+                                      )
+                                    : undefined;
+                                  const endPrice = location?.priceRange
+                                    ?.endPrice?.units
+                                    ? parseFloat(
+                                        location?.priceRange?.endPrice?.units
+                                      )
+                                    : undefined;
 
-                                const newItem: LocationCardDetails = {
-                                  id: crypto.randomUUID(),
-                                  name: location?.displayName?.text || "",
-                                  formattedAddress:
-                                    location?.formattedAddress || "",
-                                  location: {
-                                    latitude: location?.location?.latitude,
-                                    longitude: location?.location?.longitude,
-                                    name:
-                                      location?.addressComponents?.find(
-                                        (address) =>
-                                          address.types?.includes("locality")
-                                      )?.shortText || "",
-                                  },
-                                  startPrice,
-                                  endPrice,
-                                  averagePrice: getAveragePrice(
+                                  const newItem: LocationCardDetails = {
+                                    id: crypto.randomUUID(),
+                                    name: location?.displayName?.text || "",
+                                    formattedAddress:
+                                      location?.formattedAddress || "",
+                                    location: {
+                                      latitude: location?.location?.latitude,
+                                      longitude: location?.location?.longitude,
+                                      name:
+                                        location?.addressComponents?.find(
+                                          (address) =>
+                                            address.types?.includes("locality")
+                                        )?.shortText || "",
+                                    },
                                     startPrice,
-                                    endPrice
-                                  ),
-                                  mainPhotoName:
-                                    location?.photos?.[0]?.name || "",
-                                  websiteUri: location?.websiteUri,
-                                  createdAt: new Date().toISOString(),
-                                };
-                                arrayHelpers.push(newItem);
-                                submitForm();
-                              }}
-                            />
+                                    endPrice,
+                                    averagePrice: getAveragePrice(
+                                      startPrice,
+                                      endPrice
+                                    ),
+                                    mainPhotoName:
+                                      location?.photos?.[0]?.name || "",
+                                    websiteUri: location?.websiteUri,
+                                    createdAt: new Date().toISOString(),
+                                  };
+                                  arrayHelpers.push(newItem);
+                                  submitForm();
+                                }}
+                              />
+                              <PopoverMenu
+                                anchor="bottom start"
+                                popoverTrigger={
+                                  <div className="cursor-pointer hover:opacity-70 transition ease-in-out duration-300">
+                                    <MdFilterList
+                                      size={25}
+                                      className="text-secondary"
+                                    />
+                                  </div>
+                                }
+                              >
+                                <h1 className="text-lg">Filter by</h1>
+                                <div className="flex space-x-2 mt-2">
+                                  {locations.map((location, index) => {
+                                    return (
+                                      <div
+                                        onClick={() => {
+                                          const newList =
+                                            selectedFilterLocations.includes(
+                                              location
+                                            )
+                                              ? selectedFilterLocations.filter(
+                                                  (selectedLocation) =>
+                                                    selectedLocation !==
+                                                    location
+                                                )
+                                              : [
+                                                  ...selectedFilterLocations,
+                                                  location,
+                                                ];
+                                          setSelectedFilterLocations(newList);
+                                        }}
+                                        key={`${location}=${index}`}
+                                        className={twMerge(
+                                          "bg-blue-munsell/20 hover:bg-blue-munsell/50 hover:scale-98 transition ease-in-out duration-300 cursor-pointer w-fit px-3 rounded-xl py-1",
+                                          selectedFilterLocations.includes(
+                                            location
+                                          )
+                                            ? "bg-blue-munsell/50"
+                                            : ""
+                                        )}
+                                      >
+                                        {location}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </PopoverMenu>
+                            </div>
+
                             <EstimatedCostContainer
                               estimatedTotalCost={estimatedTotalCost}
                               userCurrencySymbol={userCurrencySymbol}
@@ -165,6 +239,14 @@ const Food: React.FC<FoodProps> = ({
                             <div className="mt-4">
                               <Grid2 container spacing={2.8}>
                                 {values.data.map((foodPlace, index) => {
+                                  if (
+                                    selectedFilterLocations.length &&
+                                    !selectedFilterLocations.includes(
+                                      foodPlace.location.name
+                                    )
+                                  ) {
+                                    return null;
+                                  }
                                   return (
                                     <div key={`${foodPlace.id}-${index}`}>
                                       <Grid2>
