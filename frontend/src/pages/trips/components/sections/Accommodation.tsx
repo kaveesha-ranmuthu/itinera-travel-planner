@@ -2,7 +2,6 @@ import { Field, FieldArray, Form, Formik } from "formik";
 import { orderBy, round } from "lodash";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
-import { GoCopy } from "react-icons/go";
 import { IoTrashBinOutline } from "react-icons/io5";
 import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
@@ -10,18 +9,18 @@ import { useAuth } from "../../../../hooks/useAuth";
 import { FontFamily } from "../../../../types";
 import { useSaveAccommodation } from "../../hooks/setters/useSaveAccommodation";
 import Checkbox from "../Checkbox";
+import EstimatedCostContainer from "../EstimatedCostContainer";
+import { ErrorBox, NoDataBox } from "../InfoBox";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
 import SimpleTooltip from "../SimpleTooltip";
 import Table from "../Table";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 import {
+  addTripToLocalStorage,
   getAccommodationLocalStorageKey,
   getEstimatedTransportAndAccommodationCost,
   getSortArrowComponent,
-  addTripToLocalStorage,
 } from "./helpers";
-import { ErrorBox, NoDataBox } from "../InfoBox";
-import EstimatedCostContainer from "../EstimatedCostContainer";
 
 export interface AccommodationRow {
   id: string;
@@ -340,7 +339,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                 </Table.HeaderCell>
                                 <Table.HeaderCell
                                   className={twMerge(
-                                    "w-30",
+                                    "w-20",
                                     values.data.length ? "" : "border-b-0"
                                   )}
                                 />
@@ -473,26 +472,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                           : "bg-transparent transition ease-in-out duration-200"
                                       )}
                                     >
-                                      <div className="space-x-3 flex items-center justify-center">
-                                        <button
-                                          type="button"
-                                          onClick={() => {
-                                            const newRow = {
-                                              ...row,
-                                              id: crypto.randomUUID(),
-                                              createdAt:
-                                                new Date().toISOString(),
-                                            };
-                                            arrayHelpers.push(newRow);
-                                            submitForm();
-                                          }}
-                                          className="cursor-pointer hover:opacity-60 transition ease-in-out duration-300"
-                                        >
-                                          <GoCopy
-                                            stroke="var(--color-secondary)"
-                                            size={20}
-                                          />
-                                        </button>
+                                      <div className="flex items-center justify-center">
                                         <button
                                           type="button"
                                           onClick={() => {

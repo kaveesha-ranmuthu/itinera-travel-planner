@@ -101,7 +101,9 @@ const Food: React.FC<FoodProps> = ({
     }
   }, [locations, selectedFilterLocations]);
 
-  const getLocationCardDetails = (location: LocationSearchResult) => {
+  const getLocationCardDetails = (
+    location: LocationSearchResult
+  ): LocationCardDetails => {
     const startPrice = location?.priceRange?.startPrice?.units
       ? parseFloat(location?.priceRange?.startPrice?.units)
       : undefined;
