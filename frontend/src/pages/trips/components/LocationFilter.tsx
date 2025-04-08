@@ -8,7 +8,7 @@ interface LocationFilterProps {
   locations: string[];
   selectedLocations: string[];
   handleLocationSelect: (locations: string[]) => void;
-  maxPrice: number;
+  maxPrice?: number;
   userCurrencySymbol?: string;
   selectedPrices?: number[];
   handlePriceChange: (prices: number[]) => void;
@@ -26,6 +26,7 @@ const LocationFilter: React.FC<LocationFilterProps> = ({
   return (
     <PopoverMenu
       anchor="bottom start"
+      panelClassName="h-fit pb-7"
       popoverTrigger={
         <div className="cursor-pointer hover:opacity-70 transition ease-in-out duration-300">
           <MdFilterList size={25} className="text-secondary" />
@@ -61,33 +62,35 @@ const LocationFilter: React.FC<LocationFilterProps> = ({
           })}
         </div>
       </div>
-      <div className="mt-2">
-        <h1 className="text-base mb-1">price</h1>
-        <Slider.Root
-          className="relative flex h-5 w-full touch-none select-none items-center"
-          defaultValue={[0, maxPrice]}
-          max={maxPrice}
-          step={10}
-          minStepsBetweenThumbs={1}
-          onValueChange={(value) => handlePriceChange(value)}
-        >
-          <Slider.Track className="relative h-[3px] grow rounded-full bg-secondary/60">
-            <Slider.Range className="absolute h-full rounded-full bg-secondary" />
-          </Slider.Track>
-          <Slider.Thumb className="group hover:scale-105 cursor-pointer flex flex-col items-center size-4 text-sm rounded-[10px] bg-secondary focus:outline-none">
-            <span className="mt-4 opacity-0 group-hover:opacity-100 transition ease-in-out duration-300">
-              {userCurrencySymbol}
-              {selectedPrices?.[0] || 0}
-            </span>
-          </Slider.Thumb>
-          <Slider.Thumb className="group hover:scale-105 cursor-pointer flex flex-col items-center size-4 text-sm rounded-[10px] bg-secondary focus:outline-none">
-            <span className="mt-4 opacity-0 group-hover:opacity-100 transition ease-in-out duration-300">
-              {userCurrencySymbol}
-              {selectedPrices?.[1] || maxPrice}
-            </span>
-          </Slider.Thumb>
-        </Slider.Root>
-      </div>
+      {!!maxPrice && (
+        <div className="mt-4">
+          <h1 className="text-base mb-1">price</h1>
+          <Slider.Root
+            className="relative flex h-5 w-full touch-none select-none items-center"
+            defaultValue={selectedPrices ?? [0, maxPrice]}
+            max={maxPrice}
+            step={5}
+            minStepsBetweenThumbs={1}
+            onValueChange={(value) => handlePriceChange(value)}
+          >
+            <Slider.Track className="relative h-[3px] grow rounded-full bg-secondary/60">
+              <Slider.Range className="absolute h-full rounded-full bg-secondary" />
+            </Slider.Track>
+            <Slider.Thumb className="group hover:scale-105 cursor-pointer flex flex-col items-center size-4 text-sm rounded-[10px] bg-secondary focus:outline-none">
+              <span className="mt-4 opacity-0 group-hover:opacity-100 transition ease-in-out duration-300">
+                {userCurrencySymbol}
+                {selectedPrices?.[0] || 0}
+              </span>
+            </Slider.Thumb>
+            <Slider.Thumb className="group hover:scale-105 cursor-pointer flex flex-col items-center size-4 text-sm rounded-[10px] bg-secondary focus:outline-none">
+              <span className="mt-4 opacity-0 group-hover:opacity-100 transition ease-in-out duration-300">
+                {userCurrencySymbol}
+                {selectedPrices?.[1] || maxPrice}
+              </span>
+            </Slider.Thumb>
+          </Slider.Root>
+        </div>
+      )}
     </PopoverMenu>
   );
 };

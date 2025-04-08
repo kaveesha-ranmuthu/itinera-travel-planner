@@ -1,6 +1,6 @@
 import { Grid2 } from "@mui/material";
 import { FieldArray, Form, FormikProvider, useFormik } from "formik";
-import { round, sortBy, uniqBy } from "lodash";
+import { round, sortBy } from "lodash";
 import { useEffect, useMemo, useState } from "react";
 import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
@@ -21,6 +21,10 @@ import {
   getAveragePrice,
   getEstimatedFoodAndActivitiesCost,
   getFoodLocalStorageKey,
+  getPricesList,
+  getUniqueLocations,
+  isLocationIncluded,
+  isPriceIncluded,
 } from "./helpers";
 
 interface FoodProps {
@@ -80,16 +84,8 @@ const Food: React.FC<FoodProps> = ({
     2
   );
 
-  const locations = uniqBy(
-    formik.values.data.map((location) => location.location),
-    "name"
-  )
-    .map((location) => location.name)
-    .filter(Boolean);
-
-  const prices = formik.values.data
-    .map((location) => location.averagePrice)
-    .filter(Boolean) as number[];
+  const locations = getUniqueLocations(formik.values.data);
+  const prices = getPricesList(formik.values.data);
 
   useEffect(() => {
     if (
@@ -99,7 +95,11 @@ const Food: React.FC<FoodProps> = ({
         prev.filter((location) => locations.includes(location))
       );
     }
-  }, [locations, selectedFilterLocations]);
+
+    if (selectedFilterPrices && selectedFilterPrices[1] > Math.max(...prices)) {
+      setSelectedFilterPrices([0, Math.max(...prices)]);
+    }
+  }, [locations, prices, selectedFilterLocations, selectedFilterPrices]);
 
   const getLocationCardDetails = (
     location: LocationSearchResult
@@ -198,19 +198,17 @@ const Food: React.FC<FoodProps> = ({
                         <div className="mt-4">
                           <Grid2 container spacing={2.8}>
                             {formik.values.data.map((foodPlace, index) => {
-                              const isFilteredOut =
-                                (selectedFilterLocations.length &&
-                                  !selectedFilterLocations.includes(
-                                    foodPlace.location.name
-                                  )) ||
-                                (foodPlace.averagePrice && selectedFilterPrices
-                                  ? foodPlace.averagePrice <
-                                      selectedFilterPrices[0] ||
-                                    foodPlace.averagePrice >
-                                      selectedFilterPrices[1]
-                                  : false);
+                              const isIncluded =
+                                isLocationIncluded(
+                                  selectedFilterLocations,
+                                  foodPlace.location.name
+                                ) &&
+                                isPriceIncluded(
+                                  selectedFilterPrices,
+                                  foodPlace.averagePrice
+                                );
 
-                              if (isFilteredOut) {
+                              if (!isIncluded) {
                                 return null;
                               }
                               return (
