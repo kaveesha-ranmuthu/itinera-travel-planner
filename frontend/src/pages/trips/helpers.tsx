@@ -5,7 +5,6 @@ import {
 } from "./components/LocationWithPhotoCard";
 import { AccommodationRow } from "./components/sections/Accommodation";
 import SimpleTooltip from "./components/SimpleTooltip";
-import { HiLocationMarker } from "react-icons/hi";
 import { twMerge } from "tailwind-merge";
 
 export const compressAndConvertToBase64 = (
@@ -86,7 +85,7 @@ export const getMapMarker = (
         <div
           className={twMerge(
             markerColour,
-            "p-2 rounded-full border border-primary"
+            "p-2 rounded-full border border-secondary"
           )}
         >
           {icon}

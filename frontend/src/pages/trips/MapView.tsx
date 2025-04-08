@@ -175,8 +175,8 @@ const CustomMap: React.FC<MapProps> = ({ accommodation, activities, food }) => {
         <div key={activity.id}>
           {getMapMarker(
             activity,
-            "bg-[#609553]",
-            <FaTheaterMasks size={20} className="text-primary" />
+            "bg-[#D6E5BD]",
+            <FaTheaterMasks size={20} className="text-secondary" />
           )}
         </div>
       )),
@@ -189,8 +189,8 @@ const CustomMap: React.FC<MapProps> = ({ accommodation, activities, food }) => {
         <div key={f.id}>
           {getMapMarker(
             f,
-            "bg-[#E3B219]",
-            <RiRestaurantFill size={20} className="text-primary" />
+            "bg-[#f9e1a8]",
+            <RiRestaurantFill size={20} className="text-secondary" />
           )}
         </div>
       )),
@@ -203,8 +203,8 @@ const CustomMap: React.FC<MapProps> = ({ accommodation, activities, food }) => {
         <div key={acc.id}>
           {getMapMarker(
             acc,
-            "bg-[#05829E]",
-            <RiHotelBedFill size={20} className="text-primary" />
+            "bg-[#BCD8EC]",
+            <RiHotelBedFill size={20} className="text-secondary" />
           )}
         </div>
       )),
