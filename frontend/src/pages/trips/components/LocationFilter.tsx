@@ -3,6 +3,8 @@ import PopoverMenu from "./PopoverMenu";
 import { Slider } from "radix-ui";
 import { MdFilterList } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
+import SmallButton from "./SmallButton";
+import { useAuth } from "../../../hooks/useAuth";
 
 interface LocationFilterProps {
   locations: string[];
@@ -11,7 +13,7 @@ interface LocationFilterProps {
   maxPrice?: number;
   userCurrencySymbol?: string;
   selectedPrices?: number[];
-  handlePriceChange: (prices: number[]) => void;
+  handlePriceChange: (prices: number[] | undefined) => void;
 }
 
 const LocationFilter: React.FC<LocationFilterProps> = ({
@@ -23,17 +25,31 @@ const LocationFilter: React.FC<LocationFilterProps> = ({
   selectedPrices,
   handlePriceChange,
 }) => {
+  const { settings } = useAuth();
+
   return (
     <PopoverMenu
       anchor="bottom start"
-      panelClassName="h-fit pb-7"
+      panelClassName={twMerge("h-fit pb-7", settings?.font)}
       popoverTrigger={
         <div className="cursor-pointer hover:opacity-70 transition ease-in-out duration-300">
           <MdFilterList size={25} className="text-secondary" />
         </div>
       }
     >
-      <h1 className="text-lg">Filter by</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-lg">Filter by</h1>
+        <div className="mt-1">
+          <SmallButton
+            onClick={() => {
+              handlePriceChange(undefined);
+              handleLocationSelect([]);
+            }}
+          >
+            Clear all
+          </SmallButton>
+        </div>
+      </div>
       <div className="my-1">
         <h1 className="text-base mb-1">location</h1>
         <div className="flex space-x-2 flex-wrap gap-y-2">
