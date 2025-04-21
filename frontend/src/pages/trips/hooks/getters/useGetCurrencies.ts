@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { sortBy } from "lodash";
+import { currencyCodeToSymbol } from "../currencyCodeToSymbol";
 
 export type Currency = {
   id: string;
@@ -9,6 +10,8 @@ export type Currency = {
   country: string;
 };
 
+export type Country = { iso3: string; name: string; currency: string };
+
 export const useGetCurrencies = () => {
   const [currencies, setCurrencies] = useState<Currency[]>([]);
   const [loading, setLoading] = useState(true);
@@ -16,35 +19,32 @@ export const useGetCurrencies = () => {
 
   useEffect(() => {
     axios
-      .get("https://restcountries.com/v3.1/all")
+      .get("https://restfulcountries.com/api/v1/countries", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${
+            import.meta.env.VITE_RESTFUL_COUNTRIES_API_KEY
+          }`,
+        },
+      })
       .then((response) => {
+        console.log(response);
+
         const currencyData = sortBy(
-          response.data
-            .map(
-              (country: {
-                currencies: {
-                  [key: string]: { symbol: string };
-                };
-                cca2: string;
-                name: { common: string };
-              }) => {
-                if (
-                  !country.currencies ||
-                  Object.keys(country.currencies).length === 0
-                )
-                  return null;
+          response.data.data
+            .map((country: Country) => {
+              if (!country.currency) return null;
 
-                const currencyCode = Object.keys(country.currencies)[0];
-                const symbol = country.currencies[currencyCode]?.symbol || "";
+              const currencyCode = country.currency.toUpperCase();
+              const symbol = currencyCodeToSymbol(currencyCode);
 
-                return {
-                  id: country.cca2,
-                  currencyCode,
-                  symbol,
-                  country: country.name.common,
-                };
-              }
-            )
+              return {
+                id: country.iso3,
+                currencyCode,
+                symbol,
+                country: country.name,
+              };
+            })
             .filter(Boolean),
           "currencyCode"
         ) as Currency[];
