@@ -1,7 +1,7 @@
 import { Grid2 } from "@mui/material";
-import { FieldArray, Form, Formik } from "formik";
+import { FieldArray, Form, FormikProvider, useFormik } from "formik";
 import { round, sortBy } from "lodash";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
@@ -9,6 +9,7 @@ import { FontFamily } from "../../../../types";
 import { useSaveFood } from "../../hooks/setters/useSaveFood";
 import EstimatedCostContainer from "../EstimatedCostContainer";
 import { ErrorBox, NoDataBox } from "../InfoBox";
+import LocationFilter from "../LocationFilter";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
 import LocationWithPhotoCard, {
   LocationCardDetails,
@@ -20,6 +21,10 @@ import {
   getAveragePrice,
   getEstimatedFoodAndActivitiesCost,
   getFoodLocalStorageKey,
+  getPricesList,
+  getUniqueLocations,
+  isLocationIncluded,
+  isPriceIncluded,
 } from "./helpers";
 
 interface FoodProps {
@@ -39,10 +44,15 @@ const Food: React.FC<FoodProps> = ({
 }) => {
   const { settings } = useAuth();
   const { deleteFoodItem } = useSaveFood();
+
   const [itemToDelete, setItemToDelete] = useState<LocationCardDetails | null>(
     null
   );
   const finalSaveData = localStorage.getItem(getFoodLocalStorageKey(tripId));
+  const [selectedFilterLocations, setSelectedFilterLocations] = useState<
+    string[]
+  >([]);
+  const [selectedFilterPrices, setSelectedFilterPrices] = useState<number[]>();
 
   const allRows: LocationCardDetails[] = useMemo(
     () => (finalSaveData ? JSON.parse(finalSaveData).data : foodItems),
@@ -57,6 +67,69 @@ const Food: React.FC<FoodProps> = ({
       JSON.stringify(values)
     );
     addTripToLocalStorage(tripId);
+  };
+
+  const formik = useFormik<{ data: LocationCardDetails[] }>({
+    initialValues: {
+      data: sortedRows.length ? sortedRows : ([] as LocationCardDetails[]),
+    },
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      handleFormSubmit(values);
+    },
+  });
+
+  const estimatedTotalCost = round(
+    getEstimatedFoodAndActivitiesCost(formik.values.data),
+    2
+  );
+
+  const locations = getUniqueLocations(formik.values.data);
+  const prices = getPricesList(formik.values.data);
+
+  useEffect(() => {
+    if (
+      selectedFilterLocations.some((location) => !locations.includes(location))
+    ) {
+      setSelectedFilterLocations((prev) =>
+        prev.filter((location) => locations.includes(location))
+      );
+    }
+
+    if (selectedFilterPrices && selectedFilterPrices[1] > Math.max(...prices)) {
+      setSelectedFilterPrices([0, Math.max(...prices)]);
+    }
+  }, [locations, prices, selectedFilterLocations, selectedFilterPrices]);
+
+  const getLocationCardDetails = (
+    location: LocationSearchResult
+  ): LocationCardDetails => {
+    const startPrice = location?.priceRange?.startPrice?.units
+      ? parseFloat(location?.priceRange?.startPrice?.units)
+      : undefined;
+    const endPrice = location?.priceRange?.endPrice?.units
+      ? parseFloat(location?.priceRange?.endPrice?.units)
+      : undefined;
+
+    return {
+      id: crypto.randomUUID(),
+      name: location?.displayName?.text || "",
+      formattedAddress: location?.formattedAddress || "",
+      location: {
+        latitude: location?.location?.latitude,
+        longitude: location?.location?.longitude,
+        name:
+          location?.addressComponents?.find((address) =>
+            address.types?.includes("locality")
+          )?.shortText || "",
+      },
+      startPrice,
+      endPrice,
+      averagePrice: getAveragePrice(startPrice, endPrice),
+      mainPhotoName: location?.photos?.[0]?.name || "",
+      websiteUri: location?.websiteUri,
+      createdAt: new Date().toISOString(),
+    };
   };
 
   return (
@@ -81,137 +154,106 @@ const Food: React.FC<FoodProps> = ({
       {error ? (
         <ErrorBox />
       ) : (
-        <Formik
-          initialValues={{
-            data: sortedRows.length
-              ? sortedRows
-              : ([] as LocationCardDetails[]),
-          }}
-          enableReinitialize={true}
-          onSubmit={async (values) => {
-            handleFormSubmit(values);
-          }}
-          component={({ values, submitForm }) => {
-            const estimatedTotalCost = round(
-              getEstimatedFoodAndActivitiesCost(values.data),
-              2
-            );
-            return (
-              <Form className="mt-2" onChange={submitForm}>
-                <FieldArray
-                  name="data"
-                  render={(arrayHelpers) => {
-                    return (
-                      <div>
-                        <div className="mb-4">
-                          <div className="flex items-center justify-between">
-                            <LocationSearch
-                              userCurrency={userCurrencyCode}
-                              onSelectLocation={(
-                                location: LocationSearchResult
-                              ) => {
-                                if (!location) return;
-                                const startPrice = location?.priceRange
-                                  ?.startPrice?.units
-                                  ? parseFloat(
-                                      location?.priceRange?.startPrice?.units
-                                    )
-                                  : undefined;
-                                const endPrice = location?.priceRange?.endPrice
-                                  ?.units
-                                  ? parseFloat(
-                                      location?.priceRange?.endPrice?.units
-                                    )
-                                  : undefined;
-
-                                const newItem: LocationCardDetails = {
-                                  id: crypto.randomUUID(),
-                                  name: location?.displayName?.text || "",
-                                  formattedAddress:
-                                    location?.formattedAddress || "",
-                                  location: {
-                                    latitude: location?.location?.latitude,
-                                    longitude: location?.location?.longitude,
-                                    name:
-                                      location?.addressComponents?.find(
-                                        (address) =>
-                                          address.types?.includes("locality")
-                                      )?.shortText || "",
-                                  },
-                                  startPrice,
-                                  endPrice,
-                                  averagePrice: getAveragePrice(
-                                    startPrice,
-                                    endPrice
-                                  ),
-                                  mainPhotoName:
-                                    location?.photos?.[0]?.name || "",
-                                  websiteUri: location?.websiteUri,
-                                  createdAt: new Date().toISOString(),
-                                };
-                                arrayHelpers.push(newItem);
-                                submitForm();
-                              }}
-                            />
-                            <EstimatedCostContainer
-                              estimatedTotalCost={estimatedTotalCost}
+        <FormikProvider value={formik}>
+          <Form className="mt-2" onChange={formik.submitForm}>
+            <FieldArray
+              name="data"
+              render={(arrayHelpers) => {
+                return (
+                  <div>
+                    <div className="mb-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <LocationSearch
+                            userCurrency={userCurrencyCode}
+                            placeholder="e.g. breakfast in Paris, Nobu LA"
+                            onSelectLocation={(
+                              location: LocationSearchResult
+                            ) => {
+                              if (!location) return;
+                              const newItem = getLocationCardDetails(location);
+                              arrayHelpers.push(newItem);
+                              formik.submitForm();
+                            }}
+                          />
+                          {!!formik.values.data.length && (
+                            <LocationFilter
+                              locations={locations}
+                              selectedLocations={selectedFilterLocations}
+                              handleLocationSelect={setSelectedFilterLocations}
+                              maxPrice={Math.max(...prices)}
+                              selectedPrices={selectedFilterPrices}
+                              handlePriceChange={setSelectedFilterPrices}
                               userCurrencySymbol={userCurrencySymbol}
-                              backgroundColor="bg-secondary/20"
                             />
-                          </div>
-                          {!values.data.length ? (
-                            <NoDataBox />
-                          ) : (
-                            <div className="mt-4">
-                              <Grid2 container spacing={2.8}>
-                                {values.data.map((foodPlace, index) => {
-                                  return (
-                                    <div key={`${foodPlace.id}-${index}`}>
-                                      <Grid2>
-                                        <LocationWithPhotoCard
-                                          location={foodPlace}
-                                          currencySymbol={userCurrencySymbol}
-                                          onDelete={() => {
-                                            setItemToDelete(foodPlace);
-                                          }}
-                                          locationFieldName={`data.${index}.location.name`}
-                                          priceFieldName={`data.${index}.averagePrice`}
-                                        />
-                                      </Grid2>
-                                      <WarningConfirmationModal
-                                        description="Once deleted, this is gone forever. Are you sure you want to continue?"
-                                        title={`Are you sure you want to delete "${foodPlace.name}"?`}
-                                        isOpen={
-                                          itemToDelete?.id === foodPlace.id
-                                        }
-                                        onClose={() => setItemToDelete(null)}
-                                        onConfirm={() => {
-                                          if (!itemToDelete) return;
-                                          arrayHelpers.remove(index);
-                                          submitForm();
-                                          deleteFoodItem(
-                                            tripId,
-                                            itemToDelete.id
-                                          );
-                                          setItemToDelete(null);
-                                        }}
-                                        lightOpacity={true}
-                                      />
-                                    </div>
-                                  );
-                                })}
-                              </Grid2>
-                            </div>
                           )}
                         </div>
+
+                        <EstimatedCostContainer
+                          estimatedTotalCost={estimatedTotalCost}
+                          userCurrencySymbol={userCurrencySymbol}
+                          backgroundColor="bg-secondary/20"
+                        />
                       </div>
-                    );
-                  }}
-                />
-              </Form>
-            );
-          }}
-        />
+                      {!formik.values.data.length ? (
+                        <NoDataBox />
+                      ) : (
+                        <div className="mt-4">
+                          <Grid2 container spacing={2.8}>
+                            {formik.values.data.map((foodPlace, index) => {
+                              const isIncluded =
+                                isLocationIncluded(
+                                  selectedFilterLocations,
+                                  foodPlace.location.name
+                                ) &&
+                                isPriceIncluded(
+                                  selectedFilterPrices,
+                                  foodPlace.averagePrice
+                                );
+
+                              if (!isIncluded) {
+                                return null;
+                              }
+                              return (
+                                <div key={`${foodPlace.id}-${index}`}>
+                                  <Grid2>
+                                    <LocationWithPhotoCard
+                                      location={foodPlace}
+                                      currencySymbol={userCurrencySymbol}
+                                      onDelete={() => {
+                                        setItemToDelete(foodPlace);
+                                      }}
+                                      locationFieldName={`data.${index}.location.name`}
+                                      priceFieldName={`data.${index}.averagePrice`}
+                                    />
+                                  </Grid2>
+                                  <WarningConfirmationModal
+                                    description="Once deleted, this is gone forever. Are you sure you want to continue?"
+                                    title={`Are you sure you want to delete "${foodPlace.name}"?`}
+                                    isOpen={itemToDelete?.id === foodPlace.id}
+                                    onClose={() => setItemToDelete(null)}
+                                    onConfirm={() => {
+                                      if (!itemToDelete) return;
+                                      arrayHelpers.remove(index);
+                                      formik.submitForm();
+                                      deleteFoodItem(tripId, itemToDelete.id);
+                                      setItemToDelete(null);
+                                    }}
+                                    lightOpacity={true}
+                                  />
+                                </div>
+                              );
+                            })}
+                          </Grid2>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              }}
+            />
+          </Form>
+        </FormikProvider>
       )}
     </div>
   );

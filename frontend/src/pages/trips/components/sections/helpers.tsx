@@ -2,7 +2,7 @@ import axios from "axios";
 import { IoIosArrowRoundDown, IoIosArrowRoundUp } from "react-icons/io";
 import { TransportRow } from "./Transport";
 import { AccommodationRow } from "./Accommodation";
-import { round } from "lodash";
+import { round, uniqBy } from "lodash";
 import { LocationCardDetails } from "../LocationWithPhotoCard";
 
 export const getAccommodationLocalStorageKey = (tripId: string) =>
@@ -118,6 +118,46 @@ export const getEstimatedFoodAndActivitiesCost = (
       return acc;
     }
   }, 0);
+};
+
+export const getUniqueLocations = (
+  locations: LocationCardDetails[] | AccommodationRow[]
+) => {
+  return uniqBy(
+    locations.map((location) => location.location),
+    "name"
+  )
+    .map((location) => location.name)
+    .filter(Boolean);
+};
+
+export const getPricesList = (locations: LocationCardDetails[]) => {
+  return locations
+    .map((location) => location.averagePrice)
+    .filter(Boolean) as number[];
+};
+
+export const getAccommodationPricesList = (locations: AccommodationRow[]) => {
+  return locations
+    .map((location) => location.pricePerNightPerPerson)
+    .filter(Boolean) as number[];
+};
+
+export const isLocationIncluded = (
+  selectedLocations: string[],
+  locationToCheck: string
+) => {
+  if (!selectedLocations.length) return true;
+  return selectedLocations.includes(locationToCheck);
+};
+
+export const isPriceIncluded = (
+  selectedPrices?: number[],
+  averagePrice?: number
+) => {
+  if (!selectedPrices || averagePrice === undefined) return true;
+
+  return averagePrice >= selectedPrices[0] && averagePrice <= selectedPrices[1];
 };
 
 export const getAveragePrice = (startPrice?: number, endPrice?: number) => {
