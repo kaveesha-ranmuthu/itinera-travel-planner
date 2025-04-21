@@ -3,15 +3,14 @@ import React from "react";
 import { HiOutlineCog6Tooth } from "react-icons/hi2";
 import { Link, useNavigate } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
+import Button from "../../../../components/Button";
 import { auth } from "../../../../firebase-config";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useHotToast } from "../../../../hooks/useHotToast";
 import { FontFamily } from "../../../../types";
-import { PaperPlane } from "../../assets/PaperPlane";
+import useSaveAllData from "../../hooks/setters/useSaveAllData";
 import { useUpdateUserSettings } from "../../hooks/setters/useUpdateUserSettings";
 import PopoverMenu from "../PopoverMenu";
-import Button from "../../../../components/Button";
-import useSaveAllData from "../../hooks/setters/useSaveAllData";
 import { saveTripData } from "./helpers";
 
 const Header = () => {
@@ -50,7 +49,9 @@ const Header = () => {
   return (
     <nav className="px-6 py-2 flex items-center justify-between sticky top-0 z-10 h-16 bg-primary animate-fade">
       <Link to="/">
-        <PaperPlane fill="#3b4043" width={30} />
+        <h1 className="text-3xl font-brand uppercase text-secondary">
+          Itinera
+        </h1>
       </Link>
       <PopoverMenu
         popoverWidth="w-58 h-fit pb-7"

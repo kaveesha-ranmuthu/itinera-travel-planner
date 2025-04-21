@@ -131,7 +131,7 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
     },
   ];
   return (
-    <FadeInSection className="space-x-2 mt-4 w-full flex items-center justify-end sticky top-2 z-10 bg-primary">
+    <FadeInSection className="space-x-2 mt-4 w-full flex items-center justify-end sticky top-2 z-10">
       {headerIcons.map((icon, index) => (
         <HeaderIconButton
           key={index}
