@@ -170,6 +170,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                         <div className="flex items-center space-x-2">
                           <LocationSearch
                             userCurrency={userCurrencyCode}
+                            placeholder="e.g. Sydney activities, Disneyland"
                             onSelectLocation={(
                               location: LocationSearchResult
                             ) => {

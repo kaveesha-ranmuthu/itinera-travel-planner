@@ -166,6 +166,7 @@ const Food: React.FC<FoodProps> = ({
                         <div className="flex items-center space-x-2">
                           <LocationSearch
                             userCurrency={userCurrencyCode}
+                            placeholder="e.g. breakfast in Paris, Nobu LA"
                             onSelectLocation={(
                               location: LocationSearchResult
                             ) => {
