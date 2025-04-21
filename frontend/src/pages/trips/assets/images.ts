@@ -9,7 +9,6 @@ export const images: ImageInfo[] = [
     images: [
       "/images/jan-brueghel-the-younger/art-1.jpg",
       "/images/jan-brueghel-the-younger/art-2.jpg",
-      "/images/jan-brueghel-the-younger/art-3.jpg",
       "/images/jan-brueghel-the-younger/art-4.jpg",
       "/images/jan-brueghel-the-younger/art-5.jpg",
       "/images/jan-brueghel-the-younger/art-6.jpg",

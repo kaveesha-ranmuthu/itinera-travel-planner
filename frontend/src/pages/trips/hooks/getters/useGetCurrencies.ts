@@ -28,8 +28,6 @@ export const useGetCurrencies = () => {
         },
       })
       .then((response) => {
-        console.log(response);
-
         const currencyData = sortBy(
           response.data.data
             .map((country: Country) => {

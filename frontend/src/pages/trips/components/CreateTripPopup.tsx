@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import { Trip } from "../TripsLandingPage";
 import MultiSelect, { SelectOption, SingleSelect } from "./Select";
 import { useHotToast } from "../../../hooks/useHotToast";
-import art1 from "../../../../public/images/jan-brueghel-the-younger/art-1.jpg";
+import art1 from "/images/jan-brueghel-the-younger/art-1.jpg";
 import { compressAndConvertToBase64 } from "../helpers";
 import EditImagePopup from "./EditImagePopup";
 import TripsInput from "./TripsInput";
