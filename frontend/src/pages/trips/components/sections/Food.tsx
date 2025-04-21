@@ -176,15 +176,17 @@ const Food: React.FC<FoodProps> = ({
                               formik.submitForm();
                             }}
                           />
-                          <LocationFilter
-                            locations={locations}
-                            selectedLocations={selectedFilterLocations}
-                            handleLocationSelect={setSelectedFilterLocations}
-                            maxPrice={Math.max(...prices)}
-                            selectedPrices={selectedFilterPrices}
-                            handlePriceChange={setSelectedFilterPrices}
-                            userCurrencySymbol={userCurrencySymbol}
-                          />
+                          {!!formik.values.data.length && (
+                            <LocationFilter
+                              locations={locations}
+                              selectedLocations={selectedFilterLocations}
+                              handleLocationSelect={setSelectedFilterLocations}
+                              maxPrice={Math.max(...prices)}
+                              selectedPrices={selectedFilterPrices}
+                              handlePriceChange={setSelectedFilterPrices}
+                              userCurrencySymbol={userCurrencySymbol}
+                            />
+                          )}
                         </div>
 
                         <EstimatedCostContainer

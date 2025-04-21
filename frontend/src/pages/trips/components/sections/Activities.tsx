@@ -180,17 +180,19 @@ const Activities: React.FC<ActivitiesProps> = ({
                               formik.submitForm();
                             }}
                           />
-                          <LocationFilter
-                            locations={locations}
-                            selectedLocations={selectedFilterLocations}
-                            handleLocationSelect={setSelectedFilterLocations}
-                            maxPrice={
-                              prices.length ? Math.max(...prices) : undefined
-                            }
-                            selectedPrices={selectedFilterPrices}
-                            handlePriceChange={setSelectedFilterPrices}
-                            userCurrencySymbol={userCurrencySymbol}
-                          />
+                          {!!formik.values.data.length && (
+                            <LocationFilter
+                              locations={locations}
+                              selectedLocations={selectedFilterLocations}
+                              handleLocationSelect={setSelectedFilterLocations}
+                              maxPrice={
+                                prices.length ? Math.max(...prices) : undefined
+                              }
+                              selectedPrices={selectedFilterPrices}
+                              handlePriceChange={setSelectedFilterPrices}
+                              userCurrencySymbol={userCurrencySymbol}
+                            />
+                          )}
                         </div>
                         <EstimatedCostContainer
                           estimatedTotalCost={estimatedTotalCost}

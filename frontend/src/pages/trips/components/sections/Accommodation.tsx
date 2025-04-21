@@ -278,17 +278,21 @@ const Accommodation: React.FC<AccommodationProps> = ({
                               formik.submitForm();
                             }}
                           />
-                          <LocationFilter
-                            locations={locations}
-                            selectedLocations={selectedFilterLocations}
-                            handleLocationSelect={setSelectedFilterLocations}
-                            maxPrice={
-                              Math.max(...prices) < 0 ? 0 : Math.max(...prices)
-                            }
-                            selectedPrices={selectedFilterPrices}
-                            handlePriceChange={setSelectedFilterPrices}
-                            userCurrencySymbol={userCurrencySymbol}
-                          />
+                          {!!formik.values.data.length && (
+                            <LocationFilter
+                              locations={locations}
+                              selectedLocations={selectedFilterLocations}
+                              handleLocationSelect={setSelectedFilterLocations}
+                              maxPrice={
+                                Math.max(...prices) < 0
+                                  ? 0
+                                  : Math.max(...prices)
+                              }
+                              selectedPrices={selectedFilterPrices}
+                              handlePriceChange={setSelectedFilterPrices}
+                              userCurrencySymbol={userCurrencySymbol}
+                            />
+                          )}
                         </div>
                       </div>
                       <EstimatedCostContainer
