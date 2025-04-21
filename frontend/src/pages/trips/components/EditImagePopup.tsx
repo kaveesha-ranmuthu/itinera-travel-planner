@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import PopoverMenu from "./PopoverMenu";
 import { FiEdit } from "react-icons/fi";
-import { ImageInfo, images } from "../images/images";
+import { ImageInfo, images } from "../assets/images";
 import Button from "../../../components/Button";
 
 interface EditImagePopupProps {

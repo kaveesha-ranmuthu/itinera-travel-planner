@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { SelectOption } from "../../components/Select";
 import { sortBy } from "lodash";
+import { Country } from "./useGetCurrencies";
 
 export const useGetCountries = () => {
   const [countries, setCountries] = useState<SelectOption[]>([]);
@@ -10,15 +11,20 @@ export const useGetCountries = () => {
 
   useEffect(() => {
     axios
-      .get("https://restcountries.com/v3.1/all")
+      .get("https://restfulcountries.com/api/v1/countries", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${
+            import.meta.env.VITE_RESTFUL_COUNTRIES_API_KEY
+          }`,
+        },
+      })
       .then((response) => {
         const sortedCountries = sortBy(
-          response.data.map(
-            (country: { cca2: string; name: { common: string } }) => ({
-              id: country.cca2,
-              name: country.name.common,
-            })
-          ),
+          response.data.data.map((country: Country) => ({
+            id: country.iso3,
+            name: country.name,
+          })),
           "name"
         );
         setCountries(sortedCountries);
