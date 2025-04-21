@@ -110,7 +110,6 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
 
   const handleCountryInputChange = (countries: SelectOption[]) => {
     if (!countries) return;
-
     formik.setFieldValue("countries", countries);
   };
 
