@@ -120,7 +120,9 @@ export const getEstimatedFoodAndActivitiesCost = (
   }, 0);
 };
 
-export const getUniqueLocations = (locations: LocationCardDetails[]) => {
+export const getUniqueLocations = (
+  locations: LocationCardDetails[] | AccommodationRow[]
+) => {
   return uniqBy(
     locations.map((location) => location.location),
     "name"
@@ -132,6 +134,12 @@ export const getUniqueLocations = (locations: LocationCardDetails[]) => {
 export const getPricesList = (locations: LocationCardDetails[]) => {
   return locations
     .map((location) => location.averagePrice)
+    .filter(Boolean) as number[];
+};
+
+export const getAccommodationPricesList = (locations: AccommodationRow[]) => {
+  return locations
+    .map((location) => location.pricePerNightPerPerson)
     .filter(Boolean) as number[];
 };
 
