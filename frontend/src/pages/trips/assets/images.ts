@@ -40,7 +40,7 @@ export const images: ImageInfo[] = [
       "/images/felix-brard/art-5.jpg",
       "/images/felix-brard/art-6.jpg",
       "/images/felix-brard/art-7.jpg",
-      "/images/felix-brard/art-8.jpg",
+      "/images/felix-brard/art-8-new.jpg",
     ],
   },
 ];
