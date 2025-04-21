@@ -1,8 +1,4 @@
 import { FirebaseError } from "firebase/app";
-import { User } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { UserSettings } from "../../types";
-import { db } from "../../firebase-config";
 
 export const getFirebaseErrorMessage = (error: FirebaseError) => {
   const errorMessages: Record<string, string> = {
