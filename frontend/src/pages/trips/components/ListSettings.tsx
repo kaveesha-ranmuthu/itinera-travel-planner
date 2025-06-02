@@ -6,6 +6,7 @@ import SmallButton from "./SmallButton";
 import { useAuth } from "../../../hooks/useAuth";
 import { HiOutlineCog6Tooth } from "react-icons/hi2";
 import ViewSelector from "./ViewSelector";
+import Checkbox from "./Checkbox";
 
 interface ListSettingsProps {
   locations: string[];
@@ -29,6 +30,15 @@ const ListSettings: React.FC<ListSettingsProps> = ({
   selectedGalleryView,
 }) => {
   const { settings } = useAuth();
+
+  const onLocationSelect = (location: string) => {
+    const newList = selectedLocations.includes(location)
+      ? selectedLocations.filter(
+          (selectedLocation) => selectedLocation !== location
+        )
+      : [...selectedLocations, location];
+    handleLocationSelect(newList);
+  };
 
   return (
     <PopoverMenu
@@ -64,27 +74,19 @@ const ListSettings: React.FC<ListSettingsProps> = ({
           </div>
           <div className="my-1">
             <h1 className="text-base mb-1">location</h1>
-            <div className="flex space-x-2 flex-wrap gap-y-2">
+            <div className="grid grid-cols-2 gap-2">
               {locations.map((location, index) => {
                 return (
                   <div
-                    onClick={() => {
-                      const newList = selectedLocations.includes(location)
-                        ? selectedLocations.filter(
-                            (selectedLocation) => selectedLocation !== location
-                          )
-                        : [...selectedLocations, location];
-                      handleLocationSelect(newList);
-                    }}
                     key={`${location}=${index}`}
-                    className={twMerge(
-                      "bg-secondary/20 text-sm hover:bg-secondary/80 hover:text-primary hover:scale-95 transition ease-in-out duration-300 cursor-pointer w-fit px-3 rounded-xl py-1",
-                      selectedLocations.includes(location)
-                        ? "bg-secondary/80 text-primary"
-                        : ""
-                    )}
+                    className="flex items-center space-x-2"
                   >
-                    {location}
+                    <Checkbox
+                      onClick={() => onLocationSelect(location)}
+                      checked={selectedLocations.includes(location)}
+                      className="min-w-4 min-h-4 w-4 h-4 rounded mt-0.5"
+                    />
+                    <span className="truncate">{location}</span>
                   </div>
                 );
               })}
