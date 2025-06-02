@@ -234,22 +234,35 @@ const Accommodation: React.FC<AccommodationProps> = ({
 
   return (
     <div className="text-secondary">
-      <div className="flex items-center space-x-3">
-        <h1 className="text-3xl">accommodation</h1>
-        <SimpleTooltip
-          content="Find your accommodation by searching for a specific place or a general term like 'hotel in Tokyo'. Tick the checkboxes to include them in your estimated total cost."
-          theme="dark"
-          side="top"
-          width="w-50"
-        >
-          <PiSealQuestionFill
-            size={20}
-            className={twMerge(
-              "opacity-50 cursor-pointer",
-              settings?.font === FontFamily.HANDWRITTEN ? "mt-2.5" : ""
-            )}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <h1 className="text-3xl">accommodation</h1>
+          <SimpleTooltip
+            content="Find your accommodation by searching for a specific place or a general term like 'hotel in Tokyo'. Tick the checkboxes to include them in your estimated total cost."
+            theme="dark"
+            side="top"
+            width="w-50"
+          >
+            <PiSealQuestionFill
+              size={20}
+              className={twMerge(
+                "opacity-50 cursor-pointer",
+                settings?.font === FontFamily.HANDWRITTEN ? "mt-2.5" : ""
+              )}
+            />
+          </SimpleTooltip>
+        </div>
+        {!!formik.values.data.length && (
+          <ListSettings
+            locations={locations}
+            selectedLocations={selectedFilterLocations}
+            handleLocationSelect={setSelectedFilterLocations}
+            maxPrice={Math.max(...prices) < 0 ? 0 : Math.max(...prices)}
+            selectedPrices={selectedFilterPrices}
+            handlePriceChange={setSelectedFilterPrices}
+            userCurrencySymbol={userCurrencySymbol}
           />
-        </SimpleTooltip>
+        )}
       </div>
       {error ? (
         <ErrorBox />
@@ -263,37 +276,20 @@ const Accommodation: React.FC<AccommodationProps> = ({
                   <div>
                     <div className="flex items-center justify-between">
                       <div className="mb-4">
-                        <div className="flex items-center space-x-2">
-                          <LocationSearch
-                            userCurrency={userCurrencyCode}
-                            placeholder="e.g. hotel in Tokyo, ibis Osaka"
-                            onSelectLocation={(
-                              location: LocationSearchResult
-                            ) => {
-                              if (!location) return;
-                              const newRow: AccommodationRow =
-                                getLocationCardDetails(location);
+                        <LocationSearch
+                          userCurrency={userCurrencyCode}
+                          placeholder="e.g. hotel in Tokyo, ibis Osaka"
+                          onSelectLocation={(
+                            location: LocationSearchResult
+                          ) => {
+                            if (!location) return;
+                            const newRow: AccommodationRow =
+                              getLocationCardDetails(location);
 
-                              arrayHelpers.push(newRow);
-                              formik.submitForm();
-                            }}
-                          />
-                          {!!formik.values.data.length && (
-                            <ListSettings
-                              locations={locations}
-                              selectedLocations={selectedFilterLocations}
-                              handleLocationSelect={setSelectedFilterLocations}
-                              maxPrice={
-                                Math.max(...prices) < 0
-                                  ? 0
-                                  : Math.max(...prices)
-                              }
-                              selectedPrices={selectedFilterPrices}
-                              handlePriceChange={setSelectedFilterPrices}
-                              userCurrencySymbol={userCurrencySymbol}
-                            />
-                          )}
-                        </div>
+                            arrayHelpers.push(newRow);
+                            formik.submitForm();
+                          }}
+                        />
                       </div>
                       <EstimatedCostContainer
                         estimatedTotalCost={estimatedTotalCost}

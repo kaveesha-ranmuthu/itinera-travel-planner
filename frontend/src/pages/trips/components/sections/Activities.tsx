@@ -138,22 +138,35 @@ const Activities: React.FC<ActivitiesProps> = ({
 
   return (
     <div className="text-secondary">
-      <div className="flex items-center space-x-3">
-        <h1 className="text-3xl">activities</h1>
-        <SimpleTooltip
-          content="Find things to do by searching for a specific place or a general term like 'Sydney activities'."
-          theme="dark"
-          side="top"
-          width="w-50"
-        >
-          <PiSealQuestionFill
-            size={20}
-            className={twMerge(
-              "opacity-50 cursor-pointer",
-              settings?.font === FontFamily.HANDWRITTEN ? "mt-2.5" : ""
-            )}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <h1 className="text-3xl">activities</h1>
+          <SimpleTooltip
+            content="Find things to do by searching for a specific place or a general term like 'Sydney activities'."
+            theme="dark"
+            side="top"
+            width="w-50"
+          >
+            <PiSealQuestionFill
+              size={20}
+              className={twMerge(
+                "opacity-50 cursor-pointer",
+                settings?.font === FontFamily.HANDWRITTEN ? "mt-2.5" : ""
+              )}
+            />
+          </SimpleTooltip>
+        </div>
+        {!!formik.values.data.length && (
+          <ListSettings
+            locations={locations}
+            selectedLocations={selectedFilterLocations}
+            handleLocationSelect={setSelectedFilterLocations}
+            maxPrice={prices.length ? Math.max(...prices) : undefined}
+            selectedPrices={selectedFilterPrices}
+            handlePriceChange={setSelectedFilterPrices}
+            userCurrencySymbol={userCurrencySymbol}
           />
-        </SimpleTooltip>
+        )}
       </div>
       {error ? (
         <ErrorBox />
@@ -167,33 +180,19 @@ const Activities: React.FC<ActivitiesProps> = ({
                   <div>
                     <div className="mb-4">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <LocationSearch
-                            userCurrency={userCurrencyCode}
-                            placeholder="e.g. Sydney activities, Disneyland"
-                            onSelectLocation={(
-                              location: LocationSearchResult
-                            ) => {
-                              if (!location) return;
-                              const newItem = getLocationCardDetails(location);
-                              arrayHelpers.push(newItem);
-                              formik.submitForm();
-                            }}
-                          />
-                          {!!formik.values.data.length && (
-                            <ListSettings
-                              locations={locations}
-                              selectedLocations={selectedFilterLocations}
-                              handleLocationSelect={setSelectedFilterLocations}
-                              maxPrice={
-                                prices.length ? Math.max(...prices) : undefined
-                              }
-                              selectedPrices={selectedFilterPrices}
-                              handlePriceChange={setSelectedFilterPrices}
-                              userCurrencySymbol={userCurrencySymbol}
-                            />
-                          )}
-                        </div>
+                        <LocationSearch
+                          userCurrency={userCurrencyCode}
+                          placeholder="e.g. Sydney activities, Disneyland"
+                          onSelectLocation={(
+                            location: LocationSearchResult
+                          ) => {
+                            if (!location) return;
+                            const newItem = getLocationCardDetails(location);
+                            arrayHelpers.push(newItem);
+                            formik.submitForm();
+                          }}
+                        />
+
                         <EstimatedCostContainer
                           estimatedTotalCost={estimatedTotalCost}
                           userCurrencySymbol={userCurrencySymbol}
