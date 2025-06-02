@@ -5,7 +5,7 @@ import { twMerge } from "tailwind-merge";
 import SmallButton from "./SmallButton";
 import { useAuth } from "../../../hooks/useAuth";
 import { HiOutlineCog6Tooth } from "react-icons/hi2";
-import ViewSelector from "./ViewSelector";
+import ViewSelector, { GalleryView } from "./ViewSelector";
 import Checkbox from "./Checkbox";
 
 interface ListSettingsProps {
@@ -16,7 +16,8 @@ interface ListSettingsProps {
   userCurrencySymbol?: string;
   selectedPrices?: number[];
   handlePriceChange: (prices: number[] | undefined) => void;
-  selectedGalleryView?: "gallery" | "list";
+  selectedListView?: GalleryView;
+  onSelectView?: (view: GalleryView) => void;
 }
 
 const ListSettings: React.FC<ListSettingsProps> = ({
@@ -27,7 +28,8 @@ const ListSettings: React.FC<ListSettingsProps> = ({
   userCurrencySymbol,
   selectedPrices,
   handlePriceChange,
-  selectedGalleryView,
+  onSelectView,
+  selectedListView,
 }) => {
   const { settings } = useAuth();
 
@@ -52,10 +54,13 @@ const ListSettings: React.FC<ListSettingsProps> = ({
     >
       <h1 className="text-lg mb-1">List settings</h1>
       <div className="divide-y divide-secondary/20 space-y-3">
-        {!!selectedGalleryView && (
+        {!!selectedListView && !!onSelectView && (
           <div className="pb-4">
             <h1 className="text-md mb-1">View</h1>
-            <ViewSelector selectedView={selectedGalleryView} />
+            <ViewSelector
+              selectedView={selectedListView}
+              onSelectView={onSelectView}
+            />
           </div>
         )}
         <div>
