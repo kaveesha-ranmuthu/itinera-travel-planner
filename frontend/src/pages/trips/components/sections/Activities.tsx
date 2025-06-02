@@ -25,7 +25,7 @@ import {
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
-import LocationFilter from "../LocationFilter";
+import ListSettings from "../ListSettings";
 
 interface ActivitiesProps {
   userCurrencySymbol?: string;
@@ -181,7 +181,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                             }}
                           />
                           {!!formik.values.data.length && (
-                            <LocationFilter
+                            <ListSettings
                               locations={locations}
                               selectedLocations={selectedFilterLocations}
                               handleLocationSelect={setSelectedFilterLocations}

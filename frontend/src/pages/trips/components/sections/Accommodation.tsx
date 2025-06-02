@@ -25,7 +25,7 @@ import {
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
-import LocationFilter from "../LocationFilter";
+import ListSettings from "../ListSettings";
 
 export interface AccommodationRow {
   id: string;
@@ -279,7 +279,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
                             }}
                           />
                           {!!formik.values.data.length && (
-                            <LocationFilter
+                            <ListSettings
                               locations={locations}
                               selectedLocations={selectedFilterLocations}
                               handleLocationSelect={setSelectedFilterLocations}

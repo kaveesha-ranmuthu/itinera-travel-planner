@@ -9,7 +9,7 @@ import { FontFamily } from "../../../../types";
 import { useSaveFood } from "../../hooks/setters/useSaveFood";
 import EstimatedCostContainer from "../EstimatedCostContainer";
 import { ErrorBox, NoDataBox } from "../InfoBox";
-import LocationFilter from "../LocationFilter";
+import ListSettings from "../ListSettings";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
 import LocationWithPhotoCard, {
   LocationCardDetails,
@@ -134,22 +134,35 @@ const Food: React.FC<FoodProps> = ({
 
   return (
     <div className="text-secondary">
-      <div className="flex items-center space-x-3">
-        <h1 className="text-3xl">food</h1>
-        <SimpleTooltip
-          content="Find places to eat by searching for a specific place or a general term like 'breakfast in Paris'."
-          theme="dark"
-          side="top"
-          width="w-50"
-        >
-          <PiSealQuestionFill
-            size={20}
-            className={twMerge(
-              "opacity-50 cursor-pointer",
-              settings?.font === FontFamily.HANDWRITTEN ? "mt-2.5" : ""
-            )}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <h1 className="text-3xl">food</h1>
+          <SimpleTooltip
+            content="Find places to eat by searching for a specific place or a general term like 'breakfast in Paris'."
+            theme="dark"
+            side="top"
+            width="w-50"
+          >
+            <PiSealQuestionFill
+              size={20}
+              className={twMerge(
+                "opacity-50 cursor-pointer",
+                settings?.font === FontFamily.HANDWRITTEN ? "mt-2.5" : ""
+              )}
+            />
+          </SimpleTooltip>
+        </div>
+        {!!formik.values.data.length && (
+          <ListSettings
+            locations={locations}
+            selectedLocations={selectedFilterLocations}
+            handleLocationSelect={setSelectedFilterLocations}
+            maxPrice={Math.max(...prices)}
+            selectedPrices={selectedFilterPrices}
+            handlePriceChange={setSelectedFilterPrices}
+            userCurrencySymbol={userCurrencySymbol}
           />
-        </SimpleTooltip>
+        )}
       </div>
       {error ? (
         <ErrorBox />
@@ -176,19 +189,7 @@ const Food: React.FC<FoodProps> = ({
                               formik.submitForm();
                             }}
                           />
-                          {!!formik.values.data.length && (
-                            <LocationFilter
-                              locations={locations}
-                              selectedLocations={selectedFilterLocations}
-                              handleLocationSelect={setSelectedFilterLocations}
-                              maxPrice={Math.max(...prices)}
-                              selectedPrices={selectedFilterPrices}
-                              handlePriceChange={setSelectedFilterPrices}
-                              userCurrencySymbol={userCurrencySymbol}
-                            />
-                          )}
                         </div>
-
                         <EstimatedCostContainer
                           estimatedTotalCost={estimatedTotalCost}
                           userCurrencySymbol={userCurrencySymbol}
