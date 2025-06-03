@@ -137,6 +137,21 @@ body {
   background-color: var(--color-primary);
 }
 
+h2 {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+h3 {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+h4 {
+  font-size: 18px;
+  font-weight: 800;
+}
+
 @keyframes scaleIn {
   from {
     opacity: 0;
@@ -160,6 +175,7 @@ body {
   ol {
     padding: 0 1rem;
     margin: 1.25rem 1rem 1.25rem 0.4rem;
+    margin-top: 4px;
 
     li p {
       margin-top: 0.25em;
@@ -178,6 +194,7 @@ body {
     list-style: none;
     margin-left: 0;
     padding: 0;
+    margin-top: 4px;
 
     li {
       align-items: flex-start;

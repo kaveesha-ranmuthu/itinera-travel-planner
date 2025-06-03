@@ -9,6 +9,7 @@ export interface TripData extends Trip {
   subCollections: string[];
   currentSavings: number;
   taskList: string;
+  packingList?: string;
 }
 
 export function useGetTrips() {

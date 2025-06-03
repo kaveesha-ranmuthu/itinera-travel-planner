@@ -6,32 +6,26 @@ import {
 import Bold from "@tiptap/extension-bold";
 import BulletList from "@tiptap/extension-bullet-list";
 import Document from "@tiptap/extension-document";
-import Highlight from "@tiptap/extension-highlight";
 import Italic from "@tiptap/extension-italic";
 import ListItem from "@tiptap/extension-list-item";
 import OrderedList from "@tiptap/extension-ordered-list";
 import Paragraph from "@tiptap/extension-paragraph";
 import Strike from "@tiptap/extension-strike";
 import Text from "@tiptap/extension-text";
-import { BubbleMenu, EditorContent, useEditor } from "@tiptap/react";
+import { EditorContent, useEditor } from "@tiptap/react";
 import { FieldArray, Form, Formik } from "formik";
 import { sortBy } from "lodash";
 import moment from "moment";
 import React, { useEffect, useMemo } from "react";
-import {
-  BsListOl,
-  BsListUl,
-  BsTypeBold,
-  BsTypeItalic,
-  BsTypeStrikethrough,
-} from "react-icons/bs";
 import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { FontFamily } from "../../../../types";
+import EditorBubbleMenu from "../EditorBubbleMenu";
 import { ErrorBox } from "../InfoBox";
 import SimpleTooltip from "../SimpleTooltip";
 import { addTripToLocalStorage, getItineraryLocalStorageKey } from "./helpers";
+import Heading from "@tiptap/extension-heading";
 export interface ItineraryDetails {
   id: string;
   dayNumber: number;
@@ -197,7 +191,9 @@ const ItineraryBox: React.FC<ItineraryBoxProps> = ({
           class: "list-decimal",
         },
       }),
-      Highlight.configure({ multicolor: true }),
+      Heading.configure({
+        levels: [2, 3, 4],
+      }),
     ],
     content: plans,
   });
@@ -213,7 +209,7 @@ const ItineraryBox: React.FC<ItineraryBoxProps> = ({
   return (
     <Disclosure
       as="div"
-      className="border border-secondary w-full rounded-2xl py-3 pl-4 pr-7 space-x-4 drop-shadow-(--drop-shadow-default)"
+      className="border border-secondary w-full rounded-2xl py-3 pl-4 pr-7 space-x-4"
       defaultOpen={defaultOpen}
     >
       <DisclosureButton className="flex items-center space-x-4 cursor-pointer hover:opacity-70 transition ease-in-out duration-200">
@@ -229,72 +225,29 @@ const ItineraryBox: React.FC<ItineraryBoxProps> = ({
           </span>
         </div>
       </DisclosureButton>
-      <DisclosurePanel className="text-secondary/80">
+      <DisclosurePanel>
         {editor && (
           <>
-            <BubbleMenu
+            <EditorBubbleMenu
               editor={editor}
-              tippyOptions={{ duration: 100 }}
-              className="bg-primary"
-            >
-              <div className="bubble-menu flex items-center">
-                <button
-                  onClick={() => editor.chain().focus().toggleBold().run()}
-                  disabled={settings?.font === FontFamily.HANDWRITTEN}
-                  className={twMerge(
-                    "p-2 cursor-pointer hover:bg-primary-hover transition ease-in-out duration-200 disabled:cursor-default disabled:opacity-50 disabled:hover:bg-primary",
-                    editor.isActive("bold") ? "is-active" : ""
-                  )}
-                >
-                  <BsTypeBold size={20} />
-                </button>
-                <button
-                  onClick={() => editor.chain().focus().toggleItalic().run()}
-                  className={twMerge(
-                    "p-2 cursor-pointer hover:bg-primary-hover transition ease-in-out duration-200",
-                    editor.isActive("italic") ? "is-active" : ""
-                  )}
-                >
-                  <BsTypeItalic size={20} />
-                </button>
-                <button
-                  onClick={() => editor.chain().focus().toggleStrike().run()}
-                  className={twMerge(
-                    "p-2 cursor-pointer hover:bg-primary-hover transition ease-in-out duration-200",
-                    editor.isActive("strike") ? "is-active" : ""
-                  )}
-                >
-                  <BsTypeStrikethrough size={20} />
-                </button>
-                <button
-                  onClick={() =>
-                    editor.chain().focus().toggleBulletList().run()
-                  }
-                  className={twMerge(
-                    "p-2 cursor-pointer hover:bg-primary-hover transition ease-in-out duration-200",
-                    editor.isActive("bulletList") ? "is-active" : ""
-                  )}
-                >
-                  <BsListUl size={20} />
-                </button>
-                <button
-                  onClick={() =>
-                    editor.chain().focus().toggleOrderedList().run()
-                  }
-                  className={twMerge(
-                    "p-2 cursor-pointer hover:bg-primary-hover transition ease-in-out duration-200",
-                    editor.isActive("orderedList") ? "is-active" : ""
-                  )}
-                >
-                  <BsListOl size={20} />
-                </button>
-              </div>
-            </BubbleMenu>
-            <EditorContent
-              editor={editor}
-              className="ml-5 mt-2 mb-3"
-              onBlur={() => onPlansChange(editor.getHTML())}
+              actionsToShow={{
+                bold: true,
+                italic: true,
+                strike: true,
+                heading1: true,
+                heading2: true,
+                heading3: true,
+                bulletList: true,
+                orderedList: true,
+              }}
             />
+            <div className="text-secondary/80">
+              <EditorContent
+                editor={editor}
+                className="ml-5 mt-2 mb-3"
+                onBlur={() => onPlansChange(editor.getHTML())}
+              />
+            </div>
           </>
         )}
       </DisclosurePanel>
