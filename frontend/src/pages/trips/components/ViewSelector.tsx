@@ -1,11 +1,11 @@
 import React from "react";
 import { twMerge } from "tailwind-merge";
 
-export type GalleryView = "gallery" | "list";
+export type DataView = "gallery" | "list";
 
 interface ViewSelectorProps {
-  selectedView: GalleryView;
-  onSelectView: (view: GalleryView) => void;
+  selectedView: DataView;
+  onSelectView: (view: DataView) => void;
 }
 
 const ViewSelector: React.FC<ViewSelectorProps> = ({

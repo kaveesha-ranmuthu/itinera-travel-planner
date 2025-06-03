@@ -5,7 +5,7 @@ import { twMerge } from "tailwind-merge";
 import SmallButton from "./SmallButton";
 import { useAuth } from "../../../hooks/useAuth";
 import { HiOutlineCog6Tooth } from "react-icons/hi2";
-import ViewSelector, { GalleryView } from "./ViewSelector";
+import ViewSelector, { DataView } from "./ViewSelector";
 import Checkbox from "./Checkbox";
 
 interface ListSettingsProps {
@@ -16,8 +16,8 @@ interface ListSettingsProps {
   userCurrencySymbol?: string;
   selectedPrices?: number[];
   handlePriceChange: (prices: number[] | undefined) => void;
-  selectedListView?: GalleryView;
-  onSelectView?: (view: GalleryView) => void;
+  selectedListView?: DataView;
+  onSelectView?: (view: DataView) => void;
 }
 
 const ListSettings: React.FC<ListSettingsProps> = ({

@@ -1,7 +1,7 @@
 import { Grid } from "@mui/material";
 import { FieldArray, Form, FormikProvider, useFormik } from "formik";
 import { round, sortBy } from "lodash";
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
@@ -13,6 +13,7 @@ import LocationSearch, { LocationSearchResult } from "../LocationSearch";
 import {
   LocationWithPhotoCard,
   LocationCardDetails,
+  LocationListItem,
 } from "../LocationWithPhotoCard";
 import SimpleTooltip from "../SimpleTooltip";
 import WarningConfirmationModal from "../WarningConfirmationModal";
@@ -27,6 +28,7 @@ import {
   isPriceIncluded,
 } from "./helpers";
 import ListSettings from "../ListSettings";
+import { DataView } from "../ViewSelector";
 
 interface ActivitiesProps {
   userCurrencySymbol?: string;
@@ -56,6 +58,8 @@ const Activities: React.FC<ActivitiesProps> = ({
     string[]
   >([]);
   const [selectedFilterPrices, setSelectedFilterPrices] = useState<number[]>();
+
+  const [view, setView] = useState<DataView>("gallery");
 
   const allRows: LocationCardDetails[] = useMemo(
     () => (finalSaveData ? JSON.parse(finalSaveData).data : activities),
@@ -166,6 +170,8 @@ const Activities: React.FC<ActivitiesProps> = ({
             selectedPrices={selectedFilterPrices}
             handlePriceChange={setSelectedFilterPrices}
             userCurrencySymbol={userCurrencySymbol}
+            onSelectView={setView}
+            selectedListView={view}
           />
         )}
       </div>
@@ -204,7 +210,10 @@ const Activities: React.FC<ActivitiesProps> = ({
                         <NoDataBox />
                       ) : (
                         <div className="mt-4">
-                          <Grid container spacing={2.8}>
+                          <Grid
+                            container
+                            spacing={view === "gallery" ? 2.8 : 2}
+                          >
                             {formik.values.data.map((activity, index) => {
                               const isIncluded =
                                 isLocationIncluded(
@@ -220,18 +229,32 @@ const Activities: React.FC<ActivitiesProps> = ({
                                 return null;
                               }
                               return (
-                                <div key={`${activity.id}-${index}`}>
-                                  <Grid>
-                                    <LocationWithPhotoCard
-                                      location={activity}
-                                      currencySymbol={userCurrencySymbol}
-                                      onDelete={() => {
-                                        setItemToDelete(activity);
-                                      }}
-                                      locationFieldName={`data.${index}.location.name`}
-                                      priceFieldName={`data.${index}.averagePrice`}
-                                    />
-                                  </Grid>
+                                <Fragment key={`${activity.id}-${index}`}>
+                                  {view === "gallery" ? (
+                                    <Grid>
+                                      <LocationWithPhotoCard
+                                        location={activity}
+                                        currencySymbol={userCurrencySymbol}
+                                        onDelete={() => {
+                                          setItemToDelete(activity);
+                                        }}
+                                        locationFieldName={`data.${index}.location.name`}
+                                        priceFieldName={`data.${index}.averagePrice`}
+                                      />
+                                    </Grid>
+                                  ) : (
+                                    <Grid size={6}>
+                                      <LocationListItem
+                                        location={activity}
+                                        currencySymbol={userCurrencySymbol}
+                                        onDelete={() => {
+                                          setItemToDelete(activity);
+                                        }}
+                                        locationFieldName={`data.${index}.location.name`}
+                                        priceFieldName={`data.${index}.averagePrice`}
+                                      />
+                                    </Grid>
+                                  )}
                                   <WarningConfirmationModal
                                     description="Once deleted, this is gone forever. Are you sure you want to continue?"
                                     title={`Are you sure you want to delete "${activity.name}"?`}
@@ -246,7 +269,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                                     }}
                                     lightOpacity={true}
                                   />
-                                </div>
+                                </Fragment>
                               );
                             })}
                           </Grid>
