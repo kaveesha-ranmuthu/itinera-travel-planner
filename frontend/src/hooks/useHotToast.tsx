@@ -46,8 +46,8 @@ export const useHotToast = () => {
         return toast(message, {
           ...defaultStyles,
           style: {
-            backgroundColor: primaryColor,
-            color: secondaryColor,
+            backgroundColor: secondaryColor,
+            color: primaryColor,
             ...defaultStyles.style,
           },
         });

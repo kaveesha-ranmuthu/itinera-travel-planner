@@ -4,6 +4,7 @@ import { TransportRow } from "./Transport";
 import { AccommodationRow } from "./Accommodation";
 import { round, uniqBy } from "lodash";
 import { LocationCardDetails } from "../LocationWithPhotoCard";
+import { LocationSearchResult } from "../LocationSearch";
 
 export const getAccommodationLocalStorageKey = (tripId: string) =>
   `unsaved-accommodation-${tripId}`;
@@ -197,4 +198,35 @@ export const saveTripData = async (
       localStorage.removeItem(getUnsavedTripsStorageKey());
     }
   }
+};
+
+export const getLocationCardDetails = (
+  location: LocationSearchResult
+): LocationCardDetails => {
+  const startPrice = location?.priceRange?.startPrice?.units
+    ? parseFloat(location?.priceRange?.startPrice?.units)
+    : undefined;
+  const endPrice = location?.priceRange?.endPrice?.units
+    ? parseFloat(location?.priceRange?.endPrice?.units)
+    : undefined;
+
+  return {
+    id: location.id || crypto.randomUUID(),
+    name: location?.displayName?.text || "",
+    formattedAddress: location?.formattedAddress || "",
+    location: {
+      latitude: location?.location?.latitude,
+      longitude: location?.location?.longitude,
+      name:
+        location?.addressComponents?.find((address) =>
+          address.types?.includes("locality")
+        )?.shortText || "",
+    },
+    startPrice,
+    endPrice,
+    averagePrice: getAveragePrice(startPrice, endPrice),
+    mainPhotoName: location?.photos?.[0]?.name || "",
+    websiteUri: location?.websiteUri,
+    createdAt: new Date().toISOString(),
+  };
 };
