@@ -1,7 +1,7 @@
-import { Grid2 } from "@mui/material";
+import Grid from "@mui/material/Grid";
 import { FieldArray, Form, FormikProvider, useFormik } from "formik";
 import { round, sortBy } from "lodash";
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
@@ -11,8 +11,10 @@ import EstimatedCostContainer from "../EstimatedCostContainer";
 import { ErrorBox, NoDataBox } from "../InfoBox";
 import ListSettings from "../ListSettings";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
-import LocationWithPhotoCard, {
+import {
+  LocationWithPhotoCard,
   LocationCardDetails,
+  LocationListItem,
 } from "../LocationWithPhotoCard";
 import SimpleTooltip from "../SimpleTooltip";
 import WarningConfirmationModal from "../WarningConfirmationModal";
@@ -205,7 +207,10 @@ const Food: React.FC<FoodProps> = ({
                         <NoDataBox />
                       ) : (
                         <div className="mt-4">
-                          <Grid2 container spacing={2.8}>
+                          <Grid
+                            container
+                            spacing={view === "gallery" ? 2.8 : 2}
+                          >
                             {formik.values.data.map((foodPlace, index) => {
                               const isIncluded =
                                 isLocationIncluded(
@@ -221,18 +226,32 @@ const Food: React.FC<FoodProps> = ({
                                 return null;
                               }
                               return (
-                                <div key={`${foodPlace.id}-${index}`}>
-                                  <Grid2>
-                                    <LocationWithPhotoCard
-                                      location={foodPlace}
-                                      currencySymbol={userCurrencySymbol}
-                                      onDelete={() => {
-                                        setItemToDelete(foodPlace);
-                                      }}
-                                      locationFieldName={`data.${index}.location.name`}
-                                      priceFieldName={`data.${index}.averagePrice`}
-                                    />
-                                  </Grid2>
+                                <Fragment key={`${foodPlace.id}-${index}`}>
+                                  {view === "gallery" ? (
+                                    <Grid>
+                                      <LocationWithPhotoCard
+                                        location={foodPlace}
+                                        currencySymbol={userCurrencySymbol}
+                                        onDelete={() => {
+                                          setItemToDelete(foodPlace);
+                                        }}
+                                        locationFieldName={`data.${index}.location.name`}
+                                        priceFieldName={`data.${index}.averagePrice`}
+                                      />
+                                    </Grid>
+                                  ) : (
+                                    <Grid size={6}>
+                                      <LocationListItem
+                                        location={foodPlace}
+                                        currencySymbol={userCurrencySymbol}
+                                        onDelete={() => {
+                                          setItemToDelete(foodPlace);
+                                        }}
+                                        locationFieldName={`data.${index}.location.name`}
+                                        priceFieldName={`data.${index}.averagePrice`}
+                                      />
+                                    </Grid>
+                                  )}
                                   <WarningConfirmationModal
                                     description="Once deleted, this is gone forever. Are you sure you want to continue?"
                                     title={`Are you sure you want to delete "${foodPlace.name}"?`}
@@ -247,10 +266,10 @@ const Food: React.FC<FoodProps> = ({
                                     }}
                                     lightOpacity={true}
                                   />
-                                </div>
+                                </Fragment>
                               );
                             })}
-                          </Grid2>
+                          </Grid>
                         </div>
                       )}
                     </div>

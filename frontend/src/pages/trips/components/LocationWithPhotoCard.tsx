@@ -21,7 +21,7 @@ export interface LocationCardDetails {
   formattedAddress: string;
 }
 
-interface LocationWithPhotoCardProps {
+interface LocationItemProps {
   location: LocationCardDetails;
   currencySymbol?: string;
   onDelete?: () => void;
@@ -31,7 +31,7 @@ interface LocationWithPhotoCardProps {
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
-const LocationWithPhotoCard: React.FC<LocationWithPhotoCardProps> = ({
+export const LocationWithPhotoCard: React.FC<LocationItemProps> = ({
   location,
   currencySymbol,
   onDelete,
@@ -121,4 +121,41 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
   );
 };
 
-export default LocationWithPhotoCard;
+export const LocationListItem: React.FC<LocationItemProps> = ({
+  location,
+  locationFieldName,
+  currencySymbol,
+  priceFieldName,
+}) => {
+  const { name, websiteUri } = location;
+
+  return (
+    <div className="flex pb-4 border-b border-secondary/20 justify-between text-secondary">
+      <a
+        target="_blank"
+        href={websiteUri}
+        className={twMerge(
+          "truncate transition ease-in-out duration-300 peer",
+          websiteUri && "hover:opacity-70"
+        )}
+      >
+        {name}
+      </a>
+      <div className="flex space-x-4 peer-hover:opacity-70 transition ease-in-out duration-300">
+        <Field
+          type="text"
+          className="focus:outline-0"
+          name={locationFieldName}
+        />
+        <div className="flex items-center justify-start">
+          <span>{currencySymbol}</span>
+          <Field
+            type="number"
+            className="focus:outline-0"
+            name={priceFieldName}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};

@@ -1,4 +1,4 @@
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import { httpsCallable } from "firebase/functions";
 import { sortBy } from "lodash";
 import moment from "moment";

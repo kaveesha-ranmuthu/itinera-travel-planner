@@ -1,4 +1,4 @@
-import { Grid2 } from "@mui/material";
+import { Grid } from "@mui/material";
 import { FieldArray, Form, FormikProvider, useFormik } from "formik";
 import { round, sortBy } from "lodash";
 import { useEffect, useMemo, useState } from "react";
@@ -10,7 +10,8 @@ import { useSaveActivities } from "../../hooks/setters/useSaveActivities";
 import EstimatedCostContainer from "../EstimatedCostContainer";
 import { ErrorBox, NoDataBox } from "../InfoBox";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
-import LocationWithPhotoCard, {
+import {
+  LocationWithPhotoCard,
   LocationCardDetails,
 } from "../LocationWithPhotoCard";
 import SimpleTooltip from "../SimpleTooltip";
@@ -203,7 +204,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                         <NoDataBox />
                       ) : (
                         <div className="mt-4">
-                          <Grid2 container spacing={2.8}>
+                          <Grid container spacing={2.8}>
                             {formik.values.data.map((activity, index) => {
                               const isIncluded =
                                 isLocationIncluded(
@@ -220,7 +221,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                               }
                               return (
                                 <div key={`${activity.id}-${index}`}>
-                                  <Grid2>
+                                  <Grid>
                                     <LocationWithPhotoCard
                                       location={activity}
                                       currencySymbol={userCurrencySymbol}
@@ -230,7 +231,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                                       locationFieldName={`data.${index}.location.name`}
                                       priceFieldName={`data.${index}.averagePrice`}
                                     />
-                                  </Grid2>
+                                  </Grid>
                                   <WarningConfirmationModal
                                     description="Once deleted, this is gone forever. Are you sure you want to continue?"
                                     title={`Are you sure you want to delete "${activity.name}"?`}
@@ -248,7 +249,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                                 </div>
                               );
                             })}
-                          </Grid2>
+                          </Grid>
                         </div>
                       )}
                     </div>
