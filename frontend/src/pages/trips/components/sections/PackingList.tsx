@@ -1,9 +1,9 @@
-import React from "react";
-import SimpleTooltip from "../SimpleTooltip";
 import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
+import Button from "../../../../components/Button";
 import { useAuth } from "../../../../hooks/useAuth";
 import { FontFamily } from "../../../../types";
+import SimpleTooltip from "../SimpleTooltip";
 
 const PackingList = () => {
   const { settings } = useAuth();
@@ -26,6 +26,32 @@ const PackingList = () => {
             )}
           />
         </SimpleTooltip>
+      </div>
+      <div className="border border-secondary rounded-2xl p-4 space-y-4 text-center py-10">
+        <div>
+          <Button.Secondary
+            className={twMerge("normal-case not-italic w-2/3", settings?.font)}
+          >
+            <span>Copy over default packing list</span>
+          </Button.Secondary>
+        </div>
+        <div className="flex justify-center w-full">
+          <div className="flex items-center space-x-4">
+            <hr className="border-0 border-b border-secondary w-32" />
+            <p className="font-brand italic">OR</p>
+            <hr className="border-0 border-b border-secondary w-32" />
+          </div>
+        </div>
+        <div>
+          <Button.Primary
+            className={twMerge(
+              "border border-secondary w-2/3 normal-case not-italic",
+              settings?.font
+            )}
+          >
+            <span>Make a new list</span>
+          </Button.Primary>
+        </div>
       </div>
     </div>
   );
