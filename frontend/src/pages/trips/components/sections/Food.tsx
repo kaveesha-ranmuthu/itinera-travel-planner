@@ -1,7 +1,7 @@
-import { Grid2 } from "@mui/material";
+import Grid from "@mui/material/Grid";
 import { FieldArray, Form, FormikProvider, useFormik } from "formik";
 import { round, sortBy } from "lodash";
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
@@ -9,10 +9,12 @@ import { FontFamily } from "../../../../types";
 import { useSaveFood } from "../../hooks/setters/useSaveFood";
 import EstimatedCostContainer from "../EstimatedCostContainer";
 import { ErrorBox, NoDataBox } from "../InfoBox";
-import LocationFilter from "../LocationFilter";
+import ListSettings from "../ListSettings";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
-import LocationWithPhotoCard, {
+import {
+  LocationWithPhotoCard,
   LocationCardDetails,
+  LocationListItem,
 } from "../LocationWithPhotoCard";
 import SimpleTooltip from "../SimpleTooltip";
 import WarningConfirmationModal from "../WarningConfirmationModal";
@@ -26,6 +28,7 @@ import {
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
+import { GalleryView } from "../ViewSelector";
 
 interface FoodProps {
   userCurrencySymbol?: string;
@@ -53,6 +56,8 @@ const Food: React.FC<FoodProps> = ({
     string[]
   >([]);
   const [selectedFilterPrices, setSelectedFilterPrices] = useState<number[]>();
+
+  const [view, setView] = useState<GalleryView>("gallery");
 
   const allRows: LocationCardDetails[] = useMemo(
     () => (finalSaveData ? JSON.parse(finalSaveData).data : foodItems),
@@ -134,22 +139,37 @@ const Food: React.FC<FoodProps> = ({
 
   return (
     <div className="text-secondary">
-      <div className="flex items-center space-x-3">
-        <h1 className="text-3xl">food</h1>
-        <SimpleTooltip
-          content="Find places to eat by searching for a specific place or a general term like 'breakfast in Paris'."
-          theme="dark"
-          side="top"
-          width="w-50"
-        >
-          <PiSealQuestionFill
-            size={20}
-            className={twMerge(
-              "opacity-50 cursor-pointer",
-              settings?.font === FontFamily.HANDWRITTEN ? "mt-2.5" : ""
-            )}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <h1 className="text-3xl">food</h1>
+          <SimpleTooltip
+            content="Find places to eat by searching for a specific place or a general term like 'breakfast in Paris'."
+            theme="dark"
+            side="top"
+            width="w-50"
+          >
+            <PiSealQuestionFill
+              size={20}
+              className={twMerge(
+                "opacity-50 cursor-pointer",
+                settings?.font === FontFamily.HANDWRITTEN ? "mt-2.5" : ""
+              )}
+            />
+          </SimpleTooltip>
+        </div>
+        {!!formik.values.data.length && (
+          <ListSettings
+            locations={locations}
+            selectedLocations={selectedFilterLocations}
+            handleLocationSelect={setSelectedFilterLocations}
+            maxPrice={Math.max(...prices)}
+            selectedPrices={selectedFilterPrices}
+            handlePriceChange={setSelectedFilterPrices}
+            userCurrencySymbol={userCurrencySymbol}
+            selectedListView={view}
+            onSelectView={setView}
           />
-        </SimpleTooltip>
+        )}
       </div>
       {error ? (
         <ErrorBox />
@@ -176,19 +196,7 @@ const Food: React.FC<FoodProps> = ({
                               formik.submitForm();
                             }}
                           />
-                          {!!formik.values.data.length && (
-                            <LocationFilter
-                              locations={locations}
-                              selectedLocations={selectedFilterLocations}
-                              handleLocationSelect={setSelectedFilterLocations}
-                              maxPrice={Math.max(...prices)}
-                              selectedPrices={selectedFilterPrices}
-                              handlePriceChange={setSelectedFilterPrices}
-                              userCurrencySymbol={userCurrencySymbol}
-                            />
-                          )}
                         </div>
-
                         <EstimatedCostContainer
                           estimatedTotalCost={estimatedTotalCost}
                           userCurrencySymbol={userCurrencySymbol}
@@ -199,7 +207,10 @@ const Food: React.FC<FoodProps> = ({
                         <NoDataBox />
                       ) : (
                         <div className="mt-4">
-                          <Grid2 container spacing={2.8}>
+                          <Grid
+                            container
+                            spacing={view === "gallery" ? 2.8 : 2}
+                          >
                             {formik.values.data.map((foodPlace, index) => {
                               const isIncluded =
                                 isLocationIncluded(
@@ -215,18 +226,32 @@ const Food: React.FC<FoodProps> = ({
                                 return null;
                               }
                               return (
-                                <div key={`${foodPlace.id}-${index}`}>
-                                  <Grid2>
-                                    <LocationWithPhotoCard
-                                      location={foodPlace}
-                                      currencySymbol={userCurrencySymbol}
-                                      onDelete={() => {
-                                        setItemToDelete(foodPlace);
-                                      }}
-                                      locationFieldName={`data.${index}.location.name`}
-                                      priceFieldName={`data.${index}.averagePrice`}
-                                    />
-                                  </Grid2>
+                                <Fragment key={`${foodPlace.id}-${index}`}>
+                                  {view === "gallery" ? (
+                                    <Grid>
+                                      <LocationWithPhotoCard
+                                        location={foodPlace}
+                                        currencySymbol={userCurrencySymbol}
+                                        onDelete={() => {
+                                          setItemToDelete(foodPlace);
+                                        }}
+                                        locationFieldName={`data.${index}.location.name`}
+                                        priceFieldName={`data.${index}.averagePrice`}
+                                      />
+                                    </Grid>
+                                  ) : (
+                                    <Grid size={6}>
+                                      <LocationListItem
+                                        location={foodPlace}
+                                        currencySymbol={userCurrencySymbol}
+                                        onDelete={() => {
+                                          setItemToDelete(foodPlace);
+                                        }}
+                                        locationFieldName={`data.${index}.location.name`}
+                                        priceFieldName={`data.${index}.averagePrice`}
+                                      />
+                                    </Grid>
+                                  )}
                                   <WarningConfirmationModal
                                     description="Once deleted, this is gone forever. Are you sure you want to continue?"
                                     title={`Are you sure you want to delete "${foodPlace.name}"?`}
@@ -241,10 +266,10 @@ const Food: React.FC<FoodProps> = ({
                                     }}
                                     lightOpacity={true}
                                   />
-                                </div>
+                                </Fragment>
                               );
                             })}
-                          </Grid2>
+                          </Grid>
                         </div>
                       )}
                     </div>

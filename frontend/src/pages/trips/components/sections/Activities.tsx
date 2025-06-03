@@ -1,4 +1,4 @@
-import { Grid2 } from "@mui/material";
+import { Grid } from "@mui/material";
 import { FieldArray, Form, FormikProvider, useFormik } from "formik";
 import { round, sortBy } from "lodash";
 import { useEffect, useMemo, useState } from "react";
@@ -10,7 +10,8 @@ import { useSaveActivities } from "../../hooks/setters/useSaveActivities";
 import EstimatedCostContainer from "../EstimatedCostContainer";
 import { ErrorBox, NoDataBox } from "../InfoBox";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
-import LocationWithPhotoCard, {
+import {
+  LocationWithPhotoCard,
   LocationCardDetails,
 } from "../LocationWithPhotoCard";
 import SimpleTooltip from "../SimpleTooltip";
@@ -25,7 +26,7 @@ import {
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
-import LocationFilter from "../LocationFilter";
+import ListSettings from "../ListSettings";
 
 interface ActivitiesProps {
   userCurrencySymbol?: string;
@@ -138,22 +139,35 @@ const Activities: React.FC<ActivitiesProps> = ({
 
   return (
     <div className="text-secondary">
-      <div className="flex items-center space-x-3">
-        <h1 className="text-3xl">activities</h1>
-        <SimpleTooltip
-          content="Find things to do by searching for a specific place or a general term like 'Sydney activities'."
-          theme="dark"
-          side="top"
-          width="w-50"
-        >
-          <PiSealQuestionFill
-            size={20}
-            className={twMerge(
-              "opacity-50 cursor-pointer",
-              settings?.font === FontFamily.HANDWRITTEN ? "mt-2.5" : ""
-            )}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <h1 className="text-3xl">activities</h1>
+          <SimpleTooltip
+            content="Find things to do by searching for a specific place or a general term like 'Sydney activities'."
+            theme="dark"
+            side="top"
+            width="w-50"
+          >
+            <PiSealQuestionFill
+              size={20}
+              className={twMerge(
+                "opacity-50 cursor-pointer",
+                settings?.font === FontFamily.HANDWRITTEN ? "mt-2.5" : ""
+              )}
+            />
+          </SimpleTooltip>
+        </div>
+        {!!formik.values.data.length && (
+          <ListSettings
+            locations={locations}
+            selectedLocations={selectedFilterLocations}
+            handleLocationSelect={setSelectedFilterLocations}
+            maxPrice={prices.length ? Math.max(...prices) : undefined}
+            selectedPrices={selectedFilterPrices}
+            handlePriceChange={setSelectedFilterPrices}
+            userCurrencySymbol={userCurrencySymbol}
           />
-        </SimpleTooltip>
+        )}
       </div>
       {error ? (
         <ErrorBox />
@@ -167,33 +181,19 @@ const Activities: React.FC<ActivitiesProps> = ({
                   <div>
                     <div className="mb-4">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <LocationSearch
-                            userCurrency={userCurrencyCode}
-                            placeholder="e.g. Sydney activities, Disneyland"
-                            onSelectLocation={(
-                              location: LocationSearchResult
-                            ) => {
-                              if (!location) return;
-                              const newItem = getLocationCardDetails(location);
-                              arrayHelpers.push(newItem);
-                              formik.submitForm();
-                            }}
-                          />
-                          {!!formik.values.data.length && (
-                            <LocationFilter
-                              locations={locations}
-                              selectedLocations={selectedFilterLocations}
-                              handleLocationSelect={setSelectedFilterLocations}
-                              maxPrice={
-                                prices.length ? Math.max(...prices) : undefined
-                              }
-                              selectedPrices={selectedFilterPrices}
-                              handlePriceChange={setSelectedFilterPrices}
-                              userCurrencySymbol={userCurrencySymbol}
-                            />
-                          )}
-                        </div>
+                        <LocationSearch
+                          userCurrency={userCurrencyCode}
+                          placeholder="e.g. Sydney activities, Disneyland"
+                          onSelectLocation={(
+                            location: LocationSearchResult
+                          ) => {
+                            if (!location) return;
+                            const newItem = getLocationCardDetails(location);
+                            arrayHelpers.push(newItem);
+                            formik.submitForm();
+                          }}
+                        />
+
                         <EstimatedCostContainer
                           estimatedTotalCost={estimatedTotalCost}
                           userCurrencySymbol={userCurrencySymbol}
@@ -204,7 +204,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                         <NoDataBox />
                       ) : (
                         <div className="mt-4">
-                          <Grid2 container spacing={2.8}>
+                          <Grid container spacing={2.8}>
                             {formik.values.data.map((activity, index) => {
                               const isIncluded =
                                 isLocationIncluded(
@@ -221,7 +221,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                               }
                               return (
                                 <div key={`${activity.id}-${index}`}>
-                                  <Grid2>
+                                  <Grid>
                                     <LocationWithPhotoCard
                                       location={activity}
                                       currencySymbol={userCurrencySymbol}
@@ -231,7 +231,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                                       locationFieldName={`data.${index}.location.name`}
                                       priceFieldName={`data.${index}.averagePrice`}
                                     />
-                                  </Grid2>
+                                  </Grid>
                                   <WarningConfirmationModal
                                     description="Once deleted, this is gone forever. Are you sure you want to continue?"
                                     title={`Are you sure you want to delete "${activity.name}"?`}
@@ -249,7 +249,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                                 </div>
                               );
                             })}
-                          </Grid2>
+                          </Grid>
                         </div>
                       )}
                     </div>

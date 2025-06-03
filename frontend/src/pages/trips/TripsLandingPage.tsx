@@ -1,10 +1,10 @@
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import { httpsCallable } from "firebase/functions";
 import { sortBy } from "lodash";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { GoCopy } from "react-icons/go";
-import { IoTrashBinOutline } from "react-icons/io5";
+import { PiTrashSimple } from "react-icons/pi";
 import { Link } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 import Button from "../../components/Button";
@@ -181,7 +181,7 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
             onClick={() => setShowDeleteWarning(true)}
             className="cursor-pointer bg-primary rounded-full p-1.5 hover:opacity-85 transition ease-in-out duration-400"
           >
-            <IoTrashBinOutline stroke="var(--color-secondary)" size={17} />
+            <PiTrashSimple stroke="var(--color-secondary)" size={17} />
           </button>
         </div>
       </div>
