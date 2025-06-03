@@ -62,8 +62,8 @@ const LoginPage = () => {
         <Logo scale="scale-70" />
         <FormWrapper>
           <form className="text-secondary" onSubmit={formik.handleSubmit}>
-            <h1 className="font-brand uppercase italic text-3xl font-light text-center">
-              Log in
+            <h1 className="font-brand italic text-2xl font-light text-center">
+              Log In
             </h1>
             <AuthenticationInput
               label="email"
@@ -74,7 +74,7 @@ const LoginPage = () => {
                 formik.touched.email ? formik.errors.email : undefined
               }
             />
-            <div className="mt-6">
+            <div className="mt-3">
               <AuthenticationInput
                 label="password"
                 inputId="password"
@@ -87,19 +87,19 @@ const LoginPage = () => {
               />
             </div>
             <div className="text-center mt-8">
-              <Button.Secondary type="submit">Log in</Button.Secondary>
+              <Button.Secondary type="submit">Log In</Button.Secondary>
             </div>
           </form>
-          <div className="flex flex-col items-center mt-6 space-y-6">
+          <div className="flex flex-col items-center mt-4 space-y-4">
             <div className="flex items-center space-x-4">
               <hr className="border-0 border-b border-secondary w-28" />
-              <p className="font-brand italic">OR</p>
+              <p className="font-brand italic text-sm">OR</p>
               <hr className="border-0 border-b border-secondary w-28" />
             </div>
             <ContinueWithGoogle />
           </div>
         </FormWrapper>
-        <div className="text-center mt-3 space-y-1">
+        <div className="text-center mt-9 space-y-1">
           <Link
             to="/reset-password"
             className="cursor-pointer text-primary font-brand italic underline text-lg font-light tracking-wide"

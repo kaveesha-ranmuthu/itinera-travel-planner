@@ -55,8 +55,8 @@ const ResetPassword = () => {
         <Logo scale="scale-70" />
         <FormWrapper>
           <form className="text-secondary" onSubmit={formik.handleSubmit}>
-            <h1 className="font-brand uppercase italic text-3xl font-light text-center">
-              Reset password
+            <h1 className="font-brand italic text-2xl font-light text-center">
+              Reset Password
             </h1>
             <AuthenticationInput
               label="email"
@@ -72,7 +72,7 @@ const ResetPassword = () => {
                 type="submit"
                 className="hover:bg-secondary-hover transition ease-in-out duration-300"
               >
-                send recovery email
+                Send recovery email
               </Button.Secondary>
             </div>
           </form>

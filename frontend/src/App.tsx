@@ -12,6 +12,7 @@ import MapViewPage from "./pages/trips/MapView";
 import { useEffect, useState } from "react";
 import { saveTripData } from "./pages/trips/components/sections/helpers";
 import useSaveAllData from "./pages/trips/hooks/setters/useSaveAllData";
+import AdvancedSettings from "./pages/authentication/AdvancedSettings";
 
 function App() {
   const { user, loading } = useAuth();
@@ -90,7 +91,7 @@ function App() {
               ) : !user ? (
                 <Navigate to="/login" />
               ) : (
-                <ResetPassword />
+                <AdvancedSettings />
               )
             }
           />

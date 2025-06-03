@@ -79,13 +79,6 @@ const Header = () => {
             })}
           </div>
           <div className="flex items-center space-x-2 mt-9">
-            <Button.Secondary
-              onClick={handleLogout}
-              className={twMerge("normal-case text-sm px-3", settings?.font)}
-              loading={logoutLoading}
-            >
-              Log Out
-            </Button.Secondary>
             <Button.Primary
               onClick={() => navigate("/advanced-settings")}
               className={twMerge(
@@ -95,6 +88,13 @@ const Header = () => {
             >
               Advanced Settings
             </Button.Primary>
+            <Button.Secondary
+              onClick={handleLogout}
+              className={twMerge("normal-case text-sm px-3", settings?.font)}
+              loading={logoutLoading}
+            >
+              Log Out
+            </Button.Secondary>
           </div>
         </div>
       </PopoverMenu>

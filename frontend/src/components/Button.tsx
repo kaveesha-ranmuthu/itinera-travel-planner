@@ -45,7 +45,7 @@ const Primary: React.FC<PropsWithChildren<ButtonProps>> = ({
       type={type}
       onClick={onClick}
       className={twMerge(
-        "hover:opacity-70 transition ease-in-out duration-300 disabled:bg-primary/70 disabled:cursor-default font-brand cursor-pointer italic uppercase px-7 py-1.5 rounded-lg bg-primary text-secondary",
+        "hover:opacity-70 transition ease-in-out duration-300 disabled:bg-primary/70 disabled:cursor-default font-brand cursor-pointer italic px-7 py-1.5 rounded-lg bg-primary text-secondary",
         className
       )}
     >
@@ -68,7 +68,7 @@ const Secondary: React.FC<PropsWithChildren<ButtonProps>> = ({
       type={type}
       onClick={onClick}
       className={twMerge(
-        "hover:opacity-90 disabled:opacity-100 transition ease-in-out duration-300 disabled:bg-secondary/70 disabled:cursor-default font-brand cursor-pointer italic uppercase px-7 py-1.5 rounded-lg text-primary bg-secondary",
+        "hover:opacity-90 disabled:opacity-100 transition ease-in-out duration-300 disabled:bg-secondary/70 disabled:cursor-default font-brand cursor-pointer italic px-7 py-1.5 rounded-lg text-primary bg-secondary",
         className
       )}
     >

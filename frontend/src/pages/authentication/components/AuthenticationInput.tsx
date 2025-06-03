@@ -29,7 +29,7 @@ export const AuthenticationInput: React.FC<InputProps> = ({
   return (
     <Field
       className={twMerge(
-        "text-secondary text-xl tracking-wide font-brand italic relative",
+        "text-secondary text-lg tracking-wide font-brand italic relative",
         inputWidth
       )}
     >
@@ -46,7 +46,7 @@ export const AuthenticationInput: React.FC<InputProps> = ({
       </Label>
       <Input
         className={twMerge(
-          "w-full h-11 rounded-md border pl-2 mt-2",
+          "text-base w-full h-11 rounded-md border pl-2",
           errorMessage
             ? "border-red-sienna focus:outline-red-sienna"
             : "border-secondary focus:outline-blue-munsell"
@@ -60,7 +60,7 @@ export const AuthenticationInput: React.FC<InputProps> = ({
         <button
           type="button"
           onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-          className="absolute top-12 right-3 cursor-pointer "
+          className="absolute top-10 right-3 cursor-pointer "
         >
           {isPasswordVisible ? <IoEyeOffOutline /> : <IoEyeOutline />}
         </button>
