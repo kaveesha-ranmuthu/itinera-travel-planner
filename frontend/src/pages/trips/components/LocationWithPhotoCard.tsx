@@ -136,7 +136,7 @@ export const LocationListItem: React.FC<LocationItemProps> = ({
         target="_blank"
         href={websiteUri}
         className={twMerge(
-          "truncate transition ease-in-out duration-300 peer",
+          "text-secondary truncate transition ease-in-out duration-300 peer",
           websiteUri && "hover:opacity-70"
         )}
       >

@@ -28,7 +28,7 @@ import {
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
-import { GalleryView } from "../ViewSelector";
+import { DataView } from "../ViewSelector";
 
 interface FoodProps {
   userCurrencySymbol?: string;
@@ -57,7 +57,7 @@ const Food: React.FC<FoodProps> = ({
   >([]);
   const [selectedFilterPrices, setSelectedFilterPrices] = useState<number[]>();
 
-  const [view, setView] = useState<GalleryView>("gallery");
+  const [view, setView] = useState<DataView>("gallery");
 
   const allRows: LocationCardDetails[] = useMemo(
     () => (finalSaveData ? JSON.parse(finalSaveData).data : foodItems),
