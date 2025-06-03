@@ -150,7 +150,10 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
                   />
                 </div>
                 <div className="w-1/3">
-                  <PackingList />
+                  <PackingList
+                    tripId={trip.id}
+                    savedPackingList={trip.packingList}
+                  />
                 </div>
               </div>
             </FadeInSection>
