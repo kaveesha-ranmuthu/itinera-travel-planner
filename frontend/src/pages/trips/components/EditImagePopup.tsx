@@ -78,7 +78,7 @@ const ImageSection: React.FC<ImageSectionProps> = ({
 }) => {
   return (
     <div>
-      <h3 className="font-brand italic tracking-wider mb-2">{artist}</h3>
+      <h1 className="font-brand italic tracking-wider mb-2">{artist}</h1>
       <div className="grid grid-cols-4 gap-2 gap-y-5">
         {images.map((image) => {
           return (

@@ -35,6 +35,7 @@ export function useCreateNewTrip() {
           "accommodation",
           "activities",
           "itinerary",
+          "packing list",
         ],
         taskList: `
           <ul data-type="taskList">

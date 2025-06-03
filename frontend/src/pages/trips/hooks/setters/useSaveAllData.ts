@@ -3,6 +3,7 @@ import {
   getActivitiesLocalStorageKey,
   getFoodLocalStorageKey,
   getItineraryLocalStorageKey,
+  getPackingListLocalStorageKey,
   getTasklistLocalStorageKey,
   getTransportLocalStorageKey,
 } from "../../components/sections/helpers";
@@ -10,6 +11,7 @@ import { useSaveAccommodation } from "./useSaveAccommodation";
 import { useSaveActivities } from "./useSaveActivities";
 import { useSaveFood } from "./useSaveFood";
 import { useSaveItinerary } from "./useSaveItinerary";
+import useSavePackingList from "./useSavePackingList";
 import useSaveTasklist from "./useSaveTasklist";
 import { useSaveTransport } from "./useSaveTransport";
 
@@ -20,6 +22,7 @@ const useSaveAllData = () => {
   const { saveActivities } = useSaveActivities();
   const { saveItinerary } = useSaveItinerary();
   const { saveTasklist } = useSaveTasklist();
+  const { savePackingList } = useSavePackingList();
 
   const saveAllData = async (tripId: string) => {
     let success = true;
@@ -49,6 +52,10 @@ const useSaveAllData = () => {
         key: getTasklistLocalStorageKey(tripId),
         saver: saveTasklist,
       },
+      {
+        key: getPackingListLocalStorageKey(tripId),
+        saver: savePackingList,
+      },
     ];
 
     for (const { key, saver } of keysAndSavers) {
@@ -56,7 +63,10 @@ const useSaveAllData = () => {
       if (cached) {
         try {
           let data;
-          if (key === getTasklistLocalStorageKey(tripId)) {
+          if (
+            key === getTasklistLocalStorageKey(tripId) ||
+            key === getPackingListLocalStorageKey(tripId)
+          ) {
             data = cached;
           } else if (key === getItineraryLocalStorageKey(tripId)) {
             const parsed = JSON.parse(cached);
