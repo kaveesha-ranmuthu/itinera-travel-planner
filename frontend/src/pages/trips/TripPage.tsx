@@ -17,6 +17,7 @@ import TripHeader from "./components/sections/TripHeader";
 import useGetTrip from "./hooks/getters/useGetTrip";
 import useGetTripData from "./hooks/setters/useGetTripData";
 import FadeInSection from "./components/FadeInSection";
+import PackingList from "./components/sections/PackingList";
 
 const TripPage = () => {
   const { tripId } = useParams();
@@ -138,13 +139,20 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
           </Element>
           <Element name="itinerary">
             <FadeInSection>
-              <Itinerary
-                startDate={trip.startDate}
-                endDate={trip.endDate}
-                tripId={trip.id}
-                error={itineraryError}
-                itinerary={itinerary}
-              />
+              <div className="flex space-x-10 items-start">
+                <div className="w-2/3">
+                  <Itinerary
+                    startDate={trip.startDate}
+                    endDate={trip.endDate}
+                    tripId={trip.id}
+                    error={itineraryError}
+                    itinerary={itinerary}
+                  />
+                </div>
+                <div className="w-1/3">
+                  <PackingList />
+                </div>
+              </div>
             </FadeInSection>
           </Element>
         </div>
