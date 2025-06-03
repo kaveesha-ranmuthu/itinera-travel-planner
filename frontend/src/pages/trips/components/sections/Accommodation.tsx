@@ -2,7 +2,7 @@ import { Field, FieldArray, Form, FormikProvider, useFormik } from "formik";
 import { orderBy, round } from "lodash";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
-import { IoTrashBinOutline } from "react-icons/io5";
+import { PiTrashSimple } from "react-icons/pi";
 import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
@@ -534,7 +534,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                       }}
                                       className="cursor-pointer hover:opacity-60 transition ease-in-out duration-300 disabled:cursor-default disabled:opacity-50"
                                     >
-                                      <IoTrashBinOutline
+                                      <PiTrashSimple
                                         stroke="var(--color-secondary)"
                                         size={20}
                                       />

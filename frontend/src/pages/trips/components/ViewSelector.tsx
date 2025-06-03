@@ -13,10 +13,10 @@ const ViewSelector: React.FC<ViewSelectorProps> = ({
   onSelectView,
 }) => {
   return (
-    <div className="cursor-pointer border border-secondary w-fit rounded-lg divide-x divide-secondary py-1 text-sm text-secondary">
+    <div className="border border-secondary w-fit rounded-lg divide-x divide-secondary py-1 text-sm text-secondary">
       <span
         className={twMerge(
-          "px-2",
+          "px-2 cursor-pointer hover:opacity-100 transition ease-in-out duration-300",
           selectedView === "gallery" ? "opacity-100" : "opacity-60"
         )}
         onClick={() => onSelectView("gallery")}
@@ -25,7 +25,7 @@ const ViewSelector: React.FC<ViewSelectorProps> = ({
       </span>
       <span
         className={twMerge(
-          "px-2",
+          "px-2 cursor-pointer hover:opacity-100 transition ease-in-out duration-300",
           selectedView === "list" ? "opacity-100" : "opacity-60"
         )}
         onClick={() => onSelectView("list")}

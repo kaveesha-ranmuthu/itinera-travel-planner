@@ -1,6 +1,6 @@
 import { Field } from "formik";
 import React, { useState } from "react";
-import { IoTrashBinOutline } from "react-icons/io5";
+import { PiTrashSimple } from "react-icons/pi";
 import { MdPhoto } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
 
@@ -49,7 +49,7 @@ export const LocationWithPhotoCard: React.FC<LocationItemProps> = ({
           onClick={onDelete}
           className="bg-primary absolute top-0 left-0 p-1 rounded-br cursor-pointer opacity-0 group-hover:opacity-100 transition ease-in-out duration-300"
         >
-          <IoTrashBinOutline
+          <PiTrashSimple
             className=" hover:opacity-70 transition ease-in-out duration-300"
             stroke="var(--color-secondary)"
             size={17}
@@ -126,6 +126,7 @@ export const LocationListItem: React.FC<LocationItemProps> = ({
   locationFieldName,
   currencySymbol,
   priceFieldName,
+  onDelete,
 }) => {
   const { name, websiteUri } = location;
 
@@ -141,7 +142,7 @@ export const LocationListItem: React.FC<LocationItemProps> = ({
       >
         {name}
       </a>
-      <div className="flex space-x-4 peer-hover:opacity-70 transition ease-in-out duration-300">
+      <div className="flex items-center space-x-4 peer-hover:opacity-70 transition ease-in-out duration-300">
         <Field
           type="text"
           className="focus:outline-0"
@@ -155,6 +156,13 @@ export const LocationListItem: React.FC<LocationItemProps> = ({
             name={priceFieldName}
           />
         </div>
+        <button type="button" onClick={onDelete}>
+          <PiTrashSimple
+            className="mt-1 cursor-pointer hover:opacity-70 transition ease-in-out duration-300"
+            stroke="var(--color-secondary)"
+            size={17}
+          />
+        </button>
       </div>
     </div>
   );
