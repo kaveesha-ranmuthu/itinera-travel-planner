@@ -54,7 +54,7 @@ const Header = () => {
         </h1>
       </Link>
       <PopoverMenu
-        popoverWidth="w-58 h-fit pb-7"
+        popoverWidth="w-62 h-fit pb-7"
         popoverTrigger={
           <div className="cursor-pointer hover:opacity-80 transition mt-1 ease-in-out">
             <HiOutlineCog6Tooth stroke="#3b4043" size={25} />
@@ -87,13 +87,13 @@ const Header = () => {
               Log Out
             </Button.Secondary>
             <Button.Primary
-              onClick={handleLogout}
+              onClick={() => navigate("/advanced-settings")}
               className={twMerge(
                 "normal-case border text-sm px-3 border-secondary",
                 settings?.font
               )}
             >
-              Update Profile
+              Advanced Settings
             </Button.Primary>
           </div>
         </div>

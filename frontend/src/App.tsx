@@ -82,6 +82,18 @@ function App() {
               )
             }
           />
+          <Route
+            path="/advanced-settings"
+            element={
+              showLoading ? (
+                <LoadingState />
+              ) : !user ? (
+                <Navigate to="/login" />
+              ) : (
+                <ResetPassword />
+              )
+            }
+          />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/trip/:tripId" element={<TripPage />} />
           <Route path="/trip/:tripId/map" element={<MapViewPage />} />
