@@ -1,41 +1,66 @@
-import { FaArrowLeft } from "react-icons/fa";
-import BackgroundWrapper from "../../components/BackgroundWrapper";
-import Logo from "../../components/Logo";
-import FormWrapper from "./components/FormWrapper";
-import { IoIosArrowRoundBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
-import { AuthenticationInput } from "./components/AuthenticationInput";
+import BackgroundWrapper from "../../components/BackgroundWrapper";
+import Button from "../../components/Button";
+import Logo from "../../components/Logo";
+import { useAuth } from "../../hooks/useAuth";
+import BackArrow from "./components/BackArrow";
+import FormWrapper from "./components/FormWrapper";
 
 const AdvancedSettings = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
     <BackgroundWrapper>
-      <button
-        onClick={() => {
-          navigate(-1);
-        }}
-        className="z-10 absolute cursor-pointer hover:opacity-80 transition ease-in-out duration-300 text-primary left-3 top-5 flex items-center"
-      >
-        <IoIosArrowRoundBack className="text-primary" size={30} />
-        <span className="font-brand italic text-lg">Go back</span>
-      </button>
+      <BackArrow />
       <div className="font-brand italic absolute left-0 top-0 flex flex-col items-center justify-center w-full animate-fade-in-top">
         <Logo scale="scale-70" />
         <FormWrapper>
-          <h1 className="text-2xl">Settings</h1>
+          <h1 className="text-2xl mb-3 text-center">Settings</h1>
           <div>
-            <h1 className="text-lg">Update profile</h1>
-            <AuthenticationInput
-              label="email"
-              inputId="email"
-              onChange={() => null}
-              onBlur={() => null}
-            />
+            <Heading title="Account" />
+            <div className="space-y-2">
+              <div>
+                <p className="text-lg">email</p>
+                <p className="opacity-50">{user?.email}</p>
+              </div>
+              <div>
+                <p className="text-lg">password</p>
+                <p className="opacity-50 text-xs">●●●●●●●●●●●●</p>
+              </div>
+            </div>
+            <div className="space-x-2">
+              <Button.Primary
+                onClick={() => navigate("/reset-password")}
+                type="submit"
+                className="mt-4 border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
+              >
+                Reset password
+              </Button.Primary>
+              <Button.Danger
+                type="submit"
+                className="mt-4 px-4 py-1 text-base transition ease-in-out duration-300"
+              >
+                Delete account
+              </Button.Danger>
+            </div>
           </div>
         </FormWrapper>
       </div>
     </BackgroundWrapper>
+  );
+};
+
+interface HeadingProps {
+  title: string;
+}
+
+const Heading: React.FC<HeadingProps> = ({ title }) => {
+  return (
+    <>
+      <h1 className="text-xl">{title}</h1>
+      <hr className="opacity-20 mb-2 mt-1" />
+    </>
   );
 };
 

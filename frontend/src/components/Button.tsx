@@ -77,13 +77,38 @@ const Secondary: React.FC<PropsWithChildren<ButtonProps>> = ({
   );
 };
 
+const Danger: React.FC<PropsWithChildren<ButtonProps>> = ({
+  children,
+  onClick,
+  className,
+  disabled,
+  type = "button",
+  loading,
+}) => {
+  return (
+    <button
+      disabled={disabled || loading}
+      type={type}
+      onClick={onClick}
+      className={twMerge(
+        "hover:opacity-90 disabled:opacity-100 transition ease-in-out duration-300 disabled:bg-secondary/70 disabled:cursor-default font-brand cursor-pointer italic px-7 py-1.5 rounded-lg text-primary bg-red-sienna",
+        className
+      )}
+    >
+      {children}
+    </button>
+  );
+};
+
 interface ButtonComponent extends React.FC<PropsWithChildren<ButtonProps>> {
   Primary: React.FC<PropsWithChildren<ButtonProps>>;
   Secondary: React.FC<PropsWithChildren<ButtonProps>>;
+  Danger: React.FC<PropsWithChildren<ButtonProps>>;
 }
 
 const Button = DefaultButton as ButtonComponent;
 Button.Primary = Primary;
 Button.Secondary = Secondary;
+Button.Danger = Danger;
 
 export default Button;
