@@ -20,8 +20,8 @@ import WarningConfirmationModal from "../WarningConfirmationModal";
 import {
   addTripToLocalStorage,
   getActivitiesLocalStorageKey,
-  getAveragePrice,
   getEstimatedFoodAndActivitiesCost,
+  getLocationCardDetails,
   getPricesList,
   getUniqueLocations,
   isLocationIncluded,
@@ -29,6 +29,7 @@ import {
 } from "./helpers";
 import ListSettings from "../ListSettings";
 import { DataView } from "../ViewSelector";
+import { useHotToast } from "../../../../hooks/useHotToast";
 
 interface ActivitiesProps {
   userCurrencySymbol?: string;
@@ -47,6 +48,7 @@ const Activities: React.FC<ActivitiesProps> = ({
 }) => {
   const { settings } = useAuth();
   const { deleteActivity } = useSaveActivities();
+  const { notify } = useHotToast();
   const [itemToDelete, setItemToDelete] = useState<LocationCardDetails | null>(
     null
   );
@@ -84,37 +86,6 @@ const Activities: React.FC<ActivitiesProps> = ({
       JSON.stringify(values)
     );
     addTripToLocalStorage(tripId);
-  };
-
-  const getLocationCardDetails = (
-    location: LocationSearchResult
-  ): LocationCardDetails => {
-    const startPrice = location?.priceRange?.startPrice?.units
-      ? parseFloat(location?.priceRange?.startPrice?.units)
-      : undefined;
-    const endPrice = location?.priceRange?.endPrice?.units
-      ? parseFloat(location?.priceRange?.endPrice?.units)
-      : undefined;
-
-    return {
-      id: crypto.randomUUID(),
-      name: location?.displayName?.text || "",
-      formattedAddress: location?.formattedAddress || "",
-      location: {
-        name:
-          location?.addressComponents?.find((address) =>
-            address.types?.includes("locality")
-          )?.shortText || "",
-        latitude: location?.location?.latitude,
-        longitude: location?.location?.longitude,
-      },
-      startPrice,
-      endPrice,
-      averagePrice: getAveragePrice(startPrice, endPrice),
-      mainPhotoName: location?.photos?.[0]?.name || "",
-      websiteUri: location?.websiteUri,
-      createdAt: new Date().toISOString(),
-    };
   };
 
   const estimatedTotalCost = round(
@@ -193,6 +164,16 @@ const Activities: React.FC<ActivitiesProps> = ({
                           onSelectLocation={(
                             location: LocationSearchResult
                           ) => {
+                            const locationIds = formik.values.data.map(
+                              (location) => location.id
+                            );
+                            if (locationIds.includes(location.id)) {
+                              notify(
+                                "This location has already been added.",
+                                "info"
+                              );
+                              return;
+                            }
                             if (!location) return;
                             const newItem = getLocationCardDetails(location);
                             arrayHelpers.push(newItem);

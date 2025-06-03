@@ -26,6 +26,7 @@ import {
   isPriceIncluded,
 } from "./helpers";
 import ListSettings from "../ListSettings";
+import { useHotToast } from "../../../../hooks/useHotToast";
 
 export interface AccommodationRow {
   id: string;
@@ -79,6 +80,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
 }) => {
   const { settings } = useAuth();
   const { deleteAccommodationRow } = useSaveAccommodation();
+  const { notify } = useHotToast();
   const [deleteRow, setDeleteRow] = useState<AccommodationRow | null>(null);
   const finalSaveData = localStorage.getItem(
     getAccommodationLocalStorageKey(tripId)
@@ -216,7 +218,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
   ): AccommodationRow => {
     return {
       ...defaultRow,
-      id: crypto.randomUUID(),
+      id: location.id || crypto.randomUUID(),
       name: location?.displayName?.text || "",
       formattedAddress: location?.formattedAddress || "",
       location: {
@@ -282,6 +284,16 @@ const Accommodation: React.FC<AccommodationProps> = ({
                           onSelectLocation={(
                             location: LocationSearchResult
                           ) => {
+                            const locationIds = formik.values.data.map(
+                              (location) => location.id
+                            );
+                            if (locationIds.includes(location.id)) {
+                              notify(
+                                "This location has already been added.",
+                                "info"
+                              );
+                              return;
+                            }
                             if (!location) return;
                             const newRow: AccommodationRow =
                               getLocationCardDetails(location);

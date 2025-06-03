@@ -20,15 +20,16 @@ import SimpleTooltip from "../SimpleTooltip";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 import {
   addTripToLocalStorage,
-  getAveragePrice,
   getEstimatedFoodAndActivitiesCost,
   getFoodLocalStorageKey,
+  getLocationCardDetails,
   getPricesList,
   getUniqueLocations,
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
 import { DataView } from "../ViewSelector";
+import { useHotToast } from "../../../../hooks/useHotToast";
 
 interface FoodProps {
   userCurrencySymbol?: string;
@@ -47,6 +48,7 @@ const Food: React.FC<FoodProps> = ({
 }) => {
   const { settings } = useAuth();
   const { deleteFoodItem } = useSaveFood();
+  const { notify } = useHotToast();
 
   const [itemToDelete, setItemToDelete] = useState<LocationCardDetails | null>(
     null
@@ -106,37 +108,6 @@ const Food: React.FC<FoodProps> = ({
     }
   }, [locations, prices, selectedFilterLocations, selectedFilterPrices]);
 
-  const getLocationCardDetails = (
-    location: LocationSearchResult
-  ): LocationCardDetails => {
-    const startPrice = location?.priceRange?.startPrice?.units
-      ? parseFloat(location?.priceRange?.startPrice?.units)
-      : undefined;
-    const endPrice = location?.priceRange?.endPrice?.units
-      ? parseFloat(location?.priceRange?.endPrice?.units)
-      : undefined;
-
-    return {
-      id: crypto.randomUUID(),
-      name: location?.displayName?.text || "",
-      formattedAddress: location?.formattedAddress || "",
-      location: {
-        latitude: location?.location?.latitude,
-        longitude: location?.location?.longitude,
-        name:
-          location?.addressComponents?.find((address) =>
-            address.types?.includes("locality")
-          )?.shortText || "",
-      },
-      startPrice,
-      endPrice,
-      averagePrice: getAveragePrice(startPrice, endPrice),
-      mainPhotoName: location?.photos?.[0]?.name || "",
-      websiteUri: location?.websiteUri,
-      createdAt: new Date().toISOString(),
-    };
-  };
-
   return (
     <div className="text-secondary">
       <div className="flex items-center justify-between">
@@ -190,6 +161,16 @@ const Food: React.FC<FoodProps> = ({
                             onSelectLocation={(
                               location: LocationSearchResult
                             ) => {
+                              const locationIds = formik.values.data.map(
+                                (location) => location.id
+                              );
+                              if (locationIds.includes(location.id)) {
+                                notify(
+                                  "This location has already been added.",
+                                  "info"
+                                );
+                                return;
+                              }
                               if (!location) return;
                               const newItem = getLocationCardDetails(location);
                               arrayHelpers.push(newItem);
