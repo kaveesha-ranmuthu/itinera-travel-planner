@@ -7,6 +7,7 @@ export interface PopupModalProps {
   isOpen: boolean;
   onClose: () => void;
   modalWidth?: string;
+  className?: string;
   lightOpacity?: boolean;
 }
 
@@ -15,6 +16,7 @@ const PopupModal: React.FC<PropsWithChildren<PopupModalProps>> = ({
   onClose,
   children,
   modalWidth,
+  className,
   lightOpacity = false,
 }) => {
   const { settings } = useAuth();
@@ -39,7 +41,8 @@ const PopupModal: React.FC<PropsWithChildren<PopupModalProps>> = ({
         <DialogPanel
           className={twMerge(
             "absolute border border-secondary bg-primary w-xl rounded-2xl p-5",
-            modalWidth
+            modalWidth,
+            className
           )}
         >
           {children}
