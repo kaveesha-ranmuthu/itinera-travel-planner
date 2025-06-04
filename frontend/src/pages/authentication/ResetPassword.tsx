@@ -1,15 +1,15 @@
-import { Link } from "react-router-dom";
+import { FirebaseError } from "firebase/app";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { useFormik } from "formik";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
 import Button from "../../components/Button";
 import Logo from "../../components/Logo";
-import FormWrapper from "./components/FormWrapper";
-import { AuthenticationInput } from "./components/AuthenticationInput";
-import { useFormik } from "formik";
-import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../../firebase-config";
-import { FirebaseError } from "firebase/app";
-import { getFirebaseErrorMessage } from "./helpers";
 import { useHotToast } from "../../hooks/useHotToast";
+import { AuthenticationInput } from "./components/AuthenticationInput";
+import BackArrow from "./components/BackArrow";
+import FormWrapper from "./components/FormWrapper";
+import { getFirebaseErrorMessage } from "./helpers";
 
 export interface ResetPasswordFormInput {
   email: string;
@@ -51,12 +51,13 @@ const ResetPassword = () => {
 
   return (
     <BackgroundWrapper>
+      <BackArrow />
       <div className="absolute left-0 top-0 flex flex-col items-center justify-center w-full animate-fade-in-top">
         <Logo scale="scale-70" />
         <FormWrapper>
           <form className="text-secondary" onSubmit={formik.handleSubmit}>
-            <h1 className="font-brand uppercase italic text-3xl font-light text-center">
-              Reset password
+            <h1 className="font-brand tracking-wide italic text-2xl font-light text-center">
+              Reset Password
             </h1>
             <AuthenticationInput
               label="email"
@@ -72,16 +73,11 @@ const ResetPassword = () => {
                 type="submit"
                 className="hover:bg-secondary-hover transition ease-in-out duration-300"
               >
-                send recovery email
+                Send reset link
               </Button.Secondary>
             </div>
           </form>
         </FormWrapper>
-        <div className="text-center mt-10 text-primary cursor-pointer font-brand italic text-lg font-light tracking-wide">
-          <Link to="/login" className="underline">
-            Back to log in
-          </Link>
-        </div>
       </div>
     </BackgroundWrapper>
   );

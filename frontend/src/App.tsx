@@ -12,6 +12,7 @@ import MapViewPage from "./pages/trips/MapView";
 import { useEffect, useState } from "react";
 import { saveTripData } from "./pages/trips/components/sections/helpers";
 import useSaveAllData from "./pages/trips/hooks/setters/useSaveAllData";
+import AdvancedSettings from "./pages/authentication/AdvancedSettings";
 
 function App() {
   const { user, loading } = useAuth();
@@ -79,6 +80,18 @@ function App() {
                 <Navigate to="/" />
               ) : (
                 <SignupPage />
+              )
+            }
+          />
+          <Route
+            path="/advanced-settings"
+            element={
+              showLoading ? (
+                <LoadingState />
+              ) : !user ? (
+                <Navigate to="/login" />
+              ) : (
+                <AdvancedSettings />
               )
             }
           />

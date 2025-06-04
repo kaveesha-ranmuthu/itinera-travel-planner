@@ -82,8 +82,8 @@ const SignupPage = () => {
         <Logo scale="scale-70" />
         <FormWrapper>
           <form className="text-secondary" onSubmit={formik.handleSubmit}>
-            <h1 className="font-brand uppercase italic text-3xl font-light text-center">
-              sign up
+            <h1 className="font-brand tracking-wide italic text-2xl font-light text-center">
+              Sign Up
             </h1>
             <AuthenticationInput
               label="email"
@@ -94,7 +94,7 @@ const SignupPage = () => {
                 formik.touched.email ? formik.errors.email : undefined
               }
             />
-            <div className="mt-6 flex space-x-5">
+            <div className="mt-3 flex space-x-5">
               <div className="w-1/2">
                 <AuthenticationInput
                   label="password"
@@ -124,20 +124,20 @@ const SignupPage = () => {
             </div>
             <div className="text-center mt-8">
               <Button.Secondary type="submit" disabled={!formik.isValid}>
-                Sign up
+                Sign Up
               </Button.Secondary>
             </div>
           </form>
-          <div className="flex flex-col items-center mt-6 space-y-6">
+          <div className="flex flex-col items-center mt-4 space-y-4">
             <div className="flex items-center space-x-4">
               <hr className="border-0 border-b border-secondary w-28" />
-              <p className="font-brand italic">OR</p>
+              <p className="font-brand tracking-wide italic text-sm">OR</p>
               <hr className="border-0 border-b border-secondary w-28" />
             </div>
             <ContinueWithGoogle />
           </div>
         </FormWrapper>
-        <div className="text-center mt-10 text-primary font-brand italic text-lg font-light tracking-wide">
+        <div className="text-center mt-10 text-primary font-brand tracking-wide italic text-lg font-light tracking-wide">
           Already have an account?{" "}
           <Link to="/login" className="underline">
             Log in

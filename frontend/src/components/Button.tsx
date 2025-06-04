@@ -45,7 +45,7 @@ const Primary: React.FC<PropsWithChildren<ButtonProps>> = ({
       type={type}
       onClick={onClick}
       className={twMerge(
-        "hover:opacity-70 transition ease-in-out duration-300 disabled:bg-primary/70 disabled:cursor-default font-brand cursor-pointer italic uppercase px-7 py-1.5 rounded-lg bg-primary text-secondary",
+        "hover:opacity-70 transition ease-in-out duration-300 disabled:bg-primary/70 disabled:cursor-default font-brand cursor-pointer italic px-7 py-1.5 rounded-lg bg-primary text-secondary",
         className
       )}
     >
@@ -68,7 +68,30 @@ const Secondary: React.FC<PropsWithChildren<ButtonProps>> = ({
       type={type}
       onClick={onClick}
       className={twMerge(
-        "hover:opacity-90 disabled:opacity-100 transition ease-in-out duration-300 disabled:bg-secondary/70 disabled:cursor-default font-brand cursor-pointer italic uppercase px-7 py-1.5 rounded-lg text-primary bg-secondary",
+        "hover:opacity-90 disabled:opacity-100 transition ease-in-out duration-300 disabled:bg-secondary/70 disabled:cursor-default font-brand cursor-pointer italic px-7 py-1.5 rounded-lg text-primary bg-secondary",
+        className
+      )}
+    >
+      {children}
+    </button>
+  );
+};
+
+const Danger: React.FC<PropsWithChildren<ButtonProps>> = ({
+  children,
+  onClick,
+  className,
+  disabled,
+  type = "button",
+  loading,
+}) => {
+  return (
+    <button
+      disabled={disabled || loading}
+      type={type}
+      onClick={onClick}
+      className={twMerge(
+        "hover:opacity-90 disabled:opacity-100 transition ease-in-out duration-300 disabled:bg-secondary/70 disabled:cursor-default font-brand cursor-pointer italic px-7 py-1.5 rounded-lg text-primary bg-red-sienna",
         className
       )}
     >
@@ -80,10 +103,12 @@ const Secondary: React.FC<PropsWithChildren<ButtonProps>> = ({
 interface ButtonComponent extends React.FC<PropsWithChildren<ButtonProps>> {
   Primary: React.FC<PropsWithChildren<ButtonProps>>;
   Secondary: React.FC<PropsWithChildren<ButtonProps>>;
+  Danger: React.FC<PropsWithChildren<ButtonProps>>;
 }
 
 const Button = DefaultButton as ButtonComponent;
 Button.Primary = Primary;
 Button.Secondary = Secondary;
+Button.Danger = Danger;
 
 export default Button;
