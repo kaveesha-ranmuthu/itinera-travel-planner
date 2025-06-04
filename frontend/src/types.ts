@@ -1,3 +1,5 @@
+import { ViewDisplayOptions } from "./pages/trips/components/ViewSelector";
+
 export enum FontFamily {
   HANDWRITTEN = "font-family-handwritten",
   SANS_SERIF = "font-family-sans",
@@ -7,6 +9,8 @@ export enum FontFamily {
 
 export type UserSettings = {
   font: FontFamily;
+  preferredDisplay: ViewDisplayOptions | null;
+  packingList: string | null;
 };
 
 export type UserType = {

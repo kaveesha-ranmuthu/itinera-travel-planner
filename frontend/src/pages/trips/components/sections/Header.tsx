@@ -37,9 +37,10 @@ const Header = () => {
     if (auth.currentUser) {
       try {
         await updateSettings({
+          ...settings!,
           font: newFont,
         });
-        setSettings({ font: newFont });
+        setSettings({ ...settings!, font: newFont });
       } catch {
         notify("Something went wrong. Please try again.", "error");
       }

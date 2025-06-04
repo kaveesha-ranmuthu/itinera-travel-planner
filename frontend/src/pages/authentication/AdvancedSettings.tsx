@@ -12,10 +12,11 @@ import DefaultPackingListEditor from "./components/DefaultPackingListEditor";
 
 const AdvancedSettings = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, settings } = useAuth();
 
   const [currentView] = useState<ViewDisplayOptions>("gallery");
   const [isPackingListEditorOpen, setIsPackingListEditorOpen] = useState(false);
+  const currentPackingList = settings?.packingList;
 
   return (
     <BackgroundWrapper>
@@ -39,7 +40,9 @@ const AdvancedSettings = () => {
                     type="submit"
                     className="mt-1 border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
                   >
-                    Create default packing list
+                    {currentPackingList
+                      ? "Edit default packing list"
+                      : "Create default packing list"}
                   </Button.Primary>
                 </div>
                 <div>

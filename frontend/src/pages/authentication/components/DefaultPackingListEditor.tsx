@@ -11,6 +11,10 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import EditorBubbleMenu from "../../trips/components/EditorBubbleMenu";
 import PopupModal from "../../trips/components/PopupModal";
 import Button from "../../../components/Button";
+import { auth } from "../../../firebase-config";
+import { useUpdateUserSettings } from "../../trips/hooks/setters/useUpdateUserSettings";
+import { useAuth } from "../../../hooks/useAuth";
+import { useHotToast } from "../../../hooks/useHotToast";
 
 interface DefaultPackingListEditorProps {
   open: boolean;
@@ -21,6 +25,11 @@ const DefaultPackingListEditor: React.FC<DefaultPackingListEditorProps> = ({
   onClose,
   open,
 }) => {
+  const { updateSettings } = useUpdateUserSettings();
+  const { settings, setSettings } = useAuth();
+  const { notify } = useHotToast();
+  const currentPackingList = settings?.packingList;
+
   const editor = useEditor({
     extensions: [
       Document,
@@ -35,11 +44,29 @@ const DefaultPackingListEditor: React.FC<DefaultPackingListEditorProps> = ({
         levels: [2, 3, 4],
       }),
     ],
-    content: defaultPackingListContent,
-    onUpdate: ({ editor }) => null,
+    content: currentPackingList || defaultPackingListContent,
   });
 
   if (!editor) return null;
+
+  const handleSave = async () => {
+    const content = editor.getHTML();
+    if (auth.currentUser) {
+      try {
+        await updateSettings({
+          ...settings!,
+          packingList: content,
+        });
+        setSettings({ ...settings!, packingList: content });
+      } catch {
+        notify("Something went wrong. Please try again.", "error");
+      }
+    }
+  };
+
+  const resetContent = () => {
+    editor.commands.setContent(currentPackingList || defaultPackingListContent);
+  };
 
   return (
     <PopupModal
@@ -54,15 +81,21 @@ const DefaultPackingListEditor: React.FC<DefaultPackingListEditorProps> = ({
         </h1>
         <div className="space-x-2">
           <Button.Secondary
-            onClick={() => null}
+            onClick={() => {
+              handleSave();
+              onClose();
+            }}
             type="submit"
             className="border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
           >
             Save
           </Button.Secondary>
           <Button.Primary
-            onClick={onClose}
-            type="submit"
+            onClick={() => {
+              onClose();
+              resetContent();
+            }}
+            type="button"
             className="border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
           >
             Cancel
@@ -81,7 +114,7 @@ const DefaultPackingListEditor: React.FC<DefaultPackingListEditorProps> = ({
       />
       <EditorContent
         editor={editor}
-        className="mt-2 mb-3 font-brand italic tracking-wide"
+        className={"mt-2 mb-3 font-brand italic tracking-wide"}
       />
     </PopupModal>
   );
