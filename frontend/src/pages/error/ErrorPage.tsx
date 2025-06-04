@@ -8,7 +8,7 @@ const ErrorPage = () => {
     <div
       className={twMerge(
         "w-full flex flex-col items-center justify-center h-screen",
-        settings?.font ?? "font-brand"
+        settings?.font ?? "font-brand tracking-wide"
       )}
     >
       <img

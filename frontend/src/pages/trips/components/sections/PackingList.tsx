@@ -162,7 +162,7 @@ const PackingList: React.FC<PackingListProps> = ({
             <div className="flex justify-center w-full">
               <div className="flex items-center space-x-4">
                 <hr className="border-0 border-b border-secondary w-32" />
-                <p className="font-brand italic">OR</p>
+                <p className="font-brand tracking-wide italic">OR</p>
                 <hr className="border-0 border-b border-secondary w-32" />
               </div>
             </div>

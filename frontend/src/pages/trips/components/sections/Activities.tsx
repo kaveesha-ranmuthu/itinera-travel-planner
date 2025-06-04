@@ -28,7 +28,7 @@ import {
   isPriceIncluded,
 } from "./helpers";
 import ListSettings from "../ListSettings";
-import { DataView } from "../ViewSelector";
+import { ViewDisplayOptions } from "../ViewSelector";
 import { useHotToast } from "../../../../hooks/useHotToast";
 
 interface ActivitiesProps {
@@ -61,7 +61,7 @@ const Activities: React.FC<ActivitiesProps> = ({
   >([]);
   const [selectedFilterPrices, setSelectedFilterPrices] = useState<number[]>();
 
-  const [view, setView] = useState<DataView>("gallery");
+  const [view, setView] = useState<ViewDisplayOptions>("gallery");
 
   const allRows: LocationCardDetails[] = useMemo(
     () => (finalSaveData ? JSON.parse(finalSaveData).data : activities),

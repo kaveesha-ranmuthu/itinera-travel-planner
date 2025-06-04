@@ -56,7 +56,7 @@ const ResetPassword = () => {
         <Logo scale="scale-70" />
         <FormWrapper>
           <form className="text-secondary" onSubmit={formik.handleSubmit}>
-            <h1 className="font-brand italic text-2xl font-light text-center">
+            <h1 className="font-brand tracking-wide italic text-2xl font-light text-center">
               Reset Password
             </h1>
             <AuthenticationInput

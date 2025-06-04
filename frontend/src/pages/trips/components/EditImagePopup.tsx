@@ -37,7 +37,7 @@ const EditImagePopup: React.FC<EditImagePopupProps> = ({
       }
     >
       <div className="flex items-center mb-2 justify-between">
-        <h1 className="text-2xl font-brand italic tracking-wider">
+        <h1 className="text-2xl font-brand tracking-wide italic tracking-wider">
           Edit Image
         </h1>
         <Button.Primary
@@ -78,7 +78,9 @@ const ImageSection: React.FC<ImageSectionProps> = ({
 }) => {
   return (
     <div>
-      <h1 className="font-brand italic tracking-wider mb-2">{artist}</h1>
+      <h1 className="font-brand tracking-wide italic tracking-wider mb-2">
+        {artist}
+      </h1>
       <div className="grid grid-cols-4 gap-2 gap-y-5">
         {images.map((image) => {
           return (

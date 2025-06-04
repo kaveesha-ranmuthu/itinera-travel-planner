@@ -82,7 +82,7 @@ const SignupPage = () => {
         <Logo scale="scale-70" />
         <FormWrapper>
           <form className="text-secondary" onSubmit={formik.handleSubmit}>
-            <h1 className="font-brand italic text-2xl font-light text-center">
+            <h1 className="font-brand tracking-wide italic text-2xl font-light text-center">
               Sign Up
             </h1>
             <AuthenticationInput
@@ -131,13 +131,13 @@ const SignupPage = () => {
           <div className="flex flex-col items-center mt-4 space-y-4">
             <div className="flex items-center space-x-4">
               <hr className="border-0 border-b border-secondary w-28" />
-              <p className="font-brand italic text-sm">OR</p>
+              <p className="font-brand tracking-wide italic text-sm">OR</p>
               <hr className="border-0 border-b border-secondary w-28" />
             </div>
             <ContinueWithGoogle />
           </div>
         </FormWrapper>
-        <div className="text-center mt-10 text-primary font-brand italic text-lg font-light tracking-wide">
+        <div className="text-center mt-10 text-primary font-brand tracking-wide italic text-lg font-light tracking-wide">
           Already have an account?{" "}
           <Link to="/login" className="underline">
             Log in
