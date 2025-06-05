@@ -3,13 +3,14 @@ import { isEqual, orderBy, round } from "lodash";
 import { useEffect, useMemo, useState } from "react";
 import { GoCopy } from "react-icons/go";
 import { PiTrashSimple } from "react-icons/pi";
-import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { FontFamily } from "../../../../types";
 import { useSaveTransport } from "../../hooks/setters/useSaveTransport";
 import Checkbox from "../Checkbox";
-import SimpleTooltip from "../SimpleTooltip";
+import EstimatedCostContainer from "../EstimatedCostContainer";
+import { ErrorBox, NoDataBox } from "../InfoBox";
+import InfoTooltip from "../InfoTooltip";
 import SmallButton from "../SmallButton";
 import Table from "../Table";
 import WarningConfirmationModal from "../WarningConfirmationModal";
@@ -19,8 +20,6 @@ import {
   getSortArrowComponent,
   getTransportLocalStorageKey,
 } from "./helpers";
-import { ErrorBox, NoDataBox } from "../InfoBox";
-import EstimatedCostContainer from "../EstimatedCostContainer";
 
 export interface TransportRow {
   id: string;
@@ -148,20 +147,7 @@ const Transport: React.FC<TransportProps> = ({
     <div className="text-secondary">
       <div className="flex items-center space-x-3">
         <h1 className="text-3xl">transport</h1>
-        <SimpleTooltip
-          content="Add your transport options and tick the checkboxes to see your estimated total cost."
-          theme="dark"
-          side="top"
-          width="w-50"
-        >
-          <PiSealQuestionFill
-            size={20}
-            className={twMerge(
-              "opacity-50 cursor-pointer",
-              settings?.font === FontFamily.HANDWRITTEN ? "mt-2.5" : ""
-            )}
-          />
-        </SimpleTooltip>
+        <InfoTooltip content="Add your transport options and tick the checkboxes to see your estimated total cost." />
       </div>
       {error ? (
         <ErrorBox />

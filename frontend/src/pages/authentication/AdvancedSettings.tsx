@@ -8,13 +8,14 @@ import { ViewDisplayOptions } from "../trips/components/ViewSelector";
 import BackArrow from "./components/BackArrow";
 import FormWrapper from "./components/FormWrapper";
 import { twMerge } from "tailwind-merge";
-import DefaultPackingListEditor from "./components/DefaultPackingListEditor";
+import PackingListTemplateEditor from "./components/PackingListTemplateEditor";
 import { useUpdateUserSettings } from "../trips/hooks/setters/useUpdateUserSettings";
 import { useHotToast } from "../../hooks/useHotToast";
 import { auth, functions } from "../../firebase-config";
 import WarningConfirmationModal from "../trips/components/WarningConfirmationModal";
 import { httpsCallable } from "firebase/functions";
 import { signOut } from "firebase/auth";
+import InfoTooltip from "../trips/components/InfoTooltip";
 
 const AdvancedSettings = () => {
   const navigate = useNavigate();
@@ -61,7 +62,7 @@ const AdvancedSettings = () => {
       <BackArrow />
       <div className="font-brand tracking-wide italic absolute left-0 top-0 flex flex-col items-center justify-center w-full animate-fade-in-top">
         <Logo scale="scale-70" />
-        <DefaultPackingListEditor
+        <PackingListTemplateEditor
           open={isPackingListEditorOpen}
           onClose={() => setIsPackingListEditorOpen(false)}
         />
@@ -79,21 +80,27 @@ const AdvancedSettings = () => {
           <div className="space-y-6">
             <div className="space-y-2">
               <Heading title="Preferences" />
-              <div className="space-y-3 ">
+              <div className="space-y-3">
                 <div>
-                  <p className="text-lg">default packing list</p>
+                  <div className="flex items-center space-x-2">
+                    <p className="text-lg">packing list template</p>
+                    <InfoTooltip content="Create a reusable packing list you can quickly copy into any trip." />
+                  </div>
                   <Button.Primary
                     onClick={() => setIsPackingListEditorOpen(true)}
                     type="submit"
                     className="mt-1 border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
                   >
                     {currentPackingList
-                      ? "Edit default packing list"
-                      : "Create default packing list"}
+                      ? "Edit packing list template"
+                      : "Create packing list template"}
                   </Button.Primary>
                 </div>
                 <div>
-                  <p className="text-lg">default food & activity view</p>
+                  <div className="flex items-center space-x-2">
+                    <p className="text-lg">preferred content view</p>
+                    <InfoTooltip content="Choose how you'd like to view food and activity content by default. You can switch between gallery and list view anytime." />
+                  </div>
                   <div className="space-x-2">
                     <Button.Primary
                       onClick={() => updateDefaultView("gallery")}

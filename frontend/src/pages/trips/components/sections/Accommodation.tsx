@@ -3,16 +3,17 @@ import { orderBy, round } from "lodash";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { PiTrashSimple } from "react-icons/pi";
-import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
+import { useHotToast } from "../../../../hooks/useHotToast";
 import { FontFamily } from "../../../../types";
 import { useSaveAccommodation } from "../../hooks/setters/useSaveAccommodation";
 import Checkbox from "../Checkbox";
 import EstimatedCostContainer from "../EstimatedCostContainer";
 import { ErrorBox, NoDataBox } from "../InfoBox";
+import InfoTooltip from "../InfoTooltip";
+import ListSettings from "../ListSettings";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
-import SimpleTooltip from "../SimpleTooltip";
 import Table from "../Table";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 import {
@@ -25,8 +26,6 @@ import {
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
-import ListSettings from "../ListSettings";
-import { useHotToast } from "../../../../hooks/useHotToast";
 
 export interface AccommodationRow {
   id: string;
@@ -239,20 +238,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <h1 className="text-3xl">accommodation</h1>
-          <SimpleTooltip
-            content="Find your accommodation by searching for a specific place or a general term like 'hotel in Tokyo'. Tick the checkboxes to include them in your estimated total cost."
-            theme="dark"
-            side="top"
-            width="w-50"
-          >
-            <PiSealQuestionFill
-              size={20}
-              className={twMerge(
-                "opacity-50 cursor-pointer",
-                settings?.font === FontFamily.HANDWRITTEN ? "mt-2.5" : ""
-              )}
-            />
-          </SimpleTooltip>
+          <InfoTooltip content="Find your accommodation by searching for a specific place or a general term like 'hotel in Tokyo'. Tick the checkboxes to include them in your estimated total cost." />
         </div>
         {!!formik.values.data.length && (
           <ListSettings

@@ -6,6 +6,7 @@ import {
 import Bold from "@tiptap/extension-bold";
 import BulletList from "@tiptap/extension-bullet-list";
 import Document from "@tiptap/extension-document";
+import Heading from "@tiptap/extension-heading";
 import Italic from "@tiptap/extension-italic";
 import ListItem from "@tiptap/extension-list-item";
 import OrderedList from "@tiptap/extension-ordered-list";
@@ -17,15 +18,13 @@ import { FieldArray, Form, Formik } from "formik";
 import { sortBy } from "lodash";
 import moment from "moment";
 import React, { useEffect, useMemo } from "react";
-import { PiSealQuestionFill } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { FontFamily } from "../../../../types";
 import EditorBubbleMenu from "../EditorBubbleMenu";
 import { ErrorBox } from "../InfoBox";
-import SimpleTooltip from "../SimpleTooltip";
+import InfoTooltip from "../InfoTooltip";
 import { addTripToLocalStorage, getItineraryLocalStorageKey } from "./helpers";
-import Heading from "@tiptap/extension-heading";
 export interface ItineraryDetails {
   id: string;
   dayNumber: number;
@@ -50,7 +49,6 @@ const Itinerary: React.FC<ItineraryProps> = ({
   error,
   itinerary,
 }) => {
-  const { settings } = useAuth();
   const finalSaveData = localStorage.getItem(
     getItineraryLocalStorageKey(tripId)
   );
@@ -91,20 +89,7 @@ const Itinerary: React.FC<ItineraryProps> = ({
       {showHeader && (
         <div className="flex items-center space-x-3 mb-5">
           <h1 className="text-3xl">itinerary</h1>
-          <SimpleTooltip
-            content="Select any day of your trip to customise your plan."
-            theme="dark"
-            side="top"
-            width="w-50"
-          >
-            <PiSealQuestionFill
-              size={20}
-              className={twMerge(
-                "opacity-50 cursor-pointer",
-                settings?.font === FontFamily.HANDWRITTEN ? "mt-2.5" : ""
-              )}
-            />
-          </SimpleTooltip>
+          <InfoTooltip content="Select any day of your trip to customise your plan." />
         </div>
       )}
       {error ? (

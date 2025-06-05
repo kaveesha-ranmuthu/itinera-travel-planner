@@ -2,20 +2,20 @@ import { Grid } from "@mui/material";
 import { FieldArray, Form, FormikProvider, useFormik } from "formik";
 import { round, sortBy } from "lodash";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { PiSealQuestionFill } from "react-icons/pi";
-import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
-import { FontFamily } from "../../../../types";
+import { useHotToast } from "../../../../hooks/useHotToast";
 import { useSaveActivities } from "../../hooks/setters/useSaveActivities";
 import EstimatedCostContainer from "../EstimatedCostContainer";
 import { ErrorBox, NoDataBox } from "../InfoBox";
+import InfoTooltip from "../InfoTooltip";
+import ListSettings from "../ListSettings";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
 import {
-  LocationWithPhotoCard,
   LocationCardDetails,
   LocationListItem,
+  LocationWithPhotoCard,
 } from "../LocationWithPhotoCard";
-import SimpleTooltip from "../SimpleTooltip";
+import { ViewDisplayOptions } from "../ViewSelector";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 import {
   addTripToLocalStorage,
@@ -27,9 +27,6 @@ import {
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
-import ListSettings from "../ListSettings";
-import { ViewDisplayOptions } from "../ViewSelector";
-import { useHotToast } from "../../../../hooks/useHotToast";
 
 interface ActivitiesProps {
   userCurrencySymbol?: string;
@@ -119,20 +116,7 @@ const Activities: React.FC<ActivitiesProps> = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <h1 className="text-3xl">activities</h1>
-          <SimpleTooltip
-            content="Find things to do by searching for a specific place or a general term like 'Sydney activities'."
-            theme="dark"
-            side="top"
-            width="w-50"
-          >
-            <PiSealQuestionFill
-              size={20}
-              className={twMerge(
-                "opacity-50 cursor-pointer",
-                settings?.font === FontFamily.HANDWRITTEN ? "mt-2.5" : ""
-              )}
-            />
-          </SimpleTooltip>
+          <InfoTooltip content="Find things to do by searching for a specific place or a general term like 'Sydney activities'." />
         </div>
         {!!formik.values.data.length && (
           <ListSettings
