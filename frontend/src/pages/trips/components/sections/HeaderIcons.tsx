@@ -166,7 +166,7 @@ const HeaderIconButton: React.FC<PropsWithChildren<HeaderIconButtonProps>> = ({
 }) => {
   if (!popoverComponent) {
     return (
-      <SimpleTooltip content={tooltipText} marginTop="mt-2" theme="dark">
+      <SimpleTooltip content={tooltipText} margin="mt-2" theme="dark">
         <button
           onClick={onClick}
           type="button"
@@ -187,7 +187,7 @@ const HeaderIconButton: React.FC<PropsWithChildren<HeaderIconButtonProps>> = ({
         popoverWidth ? popoverWidth : ""
       )}
       popoverTrigger={
-        <SimpleTooltip content={tooltipText} marginTop="mt-2" theme="dark">
+        <SimpleTooltip content={tooltipText} margin="mt-2" theme="dark">
           <div
             onClick={onClick}
             className="bg-secondary rounded-full p-2 hover:scale-105 cursor-pointer hover:opacity-95"

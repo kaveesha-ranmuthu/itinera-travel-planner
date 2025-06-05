@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
 import Button from "../../components/Button";
@@ -14,8 +14,9 @@ import { useHotToast } from "../../hooks/useHotToast";
 import { auth, functions } from "../../firebase-config";
 import WarningConfirmationModal from "../trips/components/WarningConfirmationModal";
 import { httpsCallable } from "firebase/functions";
-import { signOut } from "firebase/auth";
+import { fetchSignInMethodsForEmail, signOut } from "firebase/auth";
 import InfoTooltip from "../trips/components/InfoTooltip";
+import SimpleTooltip from "../trips/components/SimpleTooltip";
 
 const AdvancedSettings = () => {
   const navigate = useNavigate();
@@ -24,11 +25,14 @@ const AdvancedSettings = () => {
   const { notify } = useHotToast();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isPasswordResetAllowed, setIsPasswordResetAllowed] = useState(false);
 
   const currentView = settings?.preferredDisplay || "gallery";
 
   const [isPackingListEditorOpen, setIsPackingListEditorOpen] = useState(false);
   const currentPackingList = settings?.packingList;
+
+  if (!user) navigate("/");
 
   const updateDefaultView = async (view: ViewDisplayOptions) => {
     if (auth.currentUser) {
@@ -57,6 +61,26 @@ const AdvancedSettings = () => {
     }
   };
 
+  useEffect(() => {
+    const checkIfPasswordResetAllowed = async () => {
+      if (user?.email) {
+        const methods = await fetchSignInMethodsForEmail(auth, user.email);
+        console.log(methods);
+
+        if (methods.includes("password")) {
+          setIsPasswordResetAllowed(true);
+        } else {
+          setIsPasswordResetAllowed(false);
+        }
+      } else {
+        setIsPasswordResetAllowed(false);
+        console.warn("No email associated with this user.");
+      }
+    };
+
+    checkIfPasswordResetAllowed();
+  }, [user]);
+
   return (
     <BackgroundWrapper>
       <BackArrow />
@@ -84,7 +108,12 @@ const AdvancedSettings = () => {
                 <div>
                   <div className="flex items-center space-x-2">
                     <p className="text-lg">packing list template</p>
-                    <InfoTooltip content="Create a reusable packing list you can quickly copy into any trip." />
+                    <InfoTooltip
+                      className="font-brand italic tracking-wide text-sm"
+                      theme="dark"
+                      width="w-60"
+                      content="Create a reusable packing list you can quickly copy into any trip."
+                    />
                   </div>
                   <Button.Primary
                     onClick={() => setIsPackingListEditorOpen(true)}
@@ -99,7 +128,12 @@ const AdvancedSettings = () => {
                 <div>
                   <div className="flex items-center space-x-2">
                     <p className="text-lg">preferred content view</p>
-                    <InfoTooltip content="Choose how you'd like to view food and activity content by default. You can switch between gallery and list view anytime." />
+                    <InfoTooltip
+                      className="font-brand italic tracking-wide text-sm"
+                      theme="dark"
+                      width="w-60"
+                      content="Choose how you'd like to view food and activity content by default. You can switch between gallery and list view anytime."
+                    />
                   </div>
                   <div className="space-x-2">
                     <Button.Primary
@@ -143,13 +177,33 @@ const AdvancedSettings = () => {
                 </div>
               </div>
               <div className="space-x-2">
-                <Button.Primary
-                  onClick={() => navigate("/reset-password")}
-                  type="button"
-                  className="mt-4 border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
-                >
-                  Reset password
-                </Button.Primary>
+                {!isPasswordResetAllowed ? (
+                  <SimpleTooltip
+                    content="Password reset is not available for Google sign-in. Please manage your password through your Google account settings."
+                    side="top"
+                    theme="dark"
+                    margin="mb-3 font-brand italic tracking-wide text-sm"
+                    width="w-60"
+                  >
+                    <Button.Primary
+                      onClick={() => navigate("/reset-password")}
+                      disabled={true}
+                      type="button"
+                      className="disabled:opacity-40 mt-4 border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
+                    >
+                      Reset password
+                    </Button.Primary>
+                  </SimpleTooltip>
+                ) : (
+                  <Button.Primary
+                    onClick={() => navigate("/reset-password")}
+                    disabled={true}
+                    type="button"
+                    className="disabled:opacity-40 mt-4 border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
+                  >
+                    Reset password
+                  </Button.Primary>
+                )}
                 <Button.Danger
                   type="button"
                   className="mt-4 px-4 py-1 text-base transition ease-in-out duration-300"

@@ -8,17 +8,25 @@ import { FontFamily } from "../../../types";
 interface InfoTooltipProps {
   content: string;
   width?: string;
+  className?: string;
+  theme?: "light" | "dark";
 }
 
-const InfoTooltip: React.FC<InfoTooltipProps> = ({ content, width }) => {
+const InfoTooltip: React.FC<InfoTooltipProps> = ({
+  content,
+  width,
+  className,
+  theme = "dark",
+}) => {
   const { settings } = useAuth();
 
   return (
     <SimpleTooltip
       content={content}
-      theme="dark"
+      theme={theme}
       side="top"
       width={width ?? "w-50"}
+      className={className}
     >
       <PiSealQuestionFill
         size={20}
