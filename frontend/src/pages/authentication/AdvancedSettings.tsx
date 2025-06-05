@@ -12,12 +12,15 @@ import DefaultPackingListEditor from "./components/DefaultPackingListEditor";
 import { useUpdateUserSettings } from "../trips/hooks/setters/useUpdateUserSettings";
 import { useHotToast } from "../../hooks/useHotToast";
 import { auth } from "../../firebase-config";
+import WarningConfirmationModal from "../trips/components/WarningConfirmationModal";
 
 const AdvancedSettings = () => {
   const navigate = useNavigate();
   const { user, settings, setSettings } = useAuth();
   const { updateSettings } = useUpdateUserSettings();
   const { notify } = useHotToast();
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const currentView = settings?.preferredDisplay || "gallery";
 
@@ -46,6 +49,15 @@ const AdvancedSettings = () => {
         <DefaultPackingListEditor
           open={isPackingListEditorOpen}
           onClose={() => setIsPackingListEditorOpen(false)}
+        />
+        <WarningConfirmationModal
+          font="font-brand italic tracking-wide"
+          hideIcon={true}
+          isOpen={isDeleteModalOpen}
+          onConfirm={() => null}
+          onClose={() => setIsDeleteModalOpen(false)}
+          title="Are you sure you want to delete your account?"
+          description="This action is permanent and cannot be undone. All of your saved trips and data will be permanently deleted."
         />
         <FormWrapper className="py-9">
           <h1 className="text-2xl mb-3 text-center">Settings</h1>
@@ -111,14 +123,15 @@ const AdvancedSettings = () => {
               <div className="space-x-2">
                 <Button.Primary
                   onClick={() => navigate("/reset-password")}
-                  type="submit"
+                  type="button"
                   className="mt-4 border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
                 >
                   Reset password
                 </Button.Primary>
                 <Button.Danger
-                  type="submit"
+                  type="button"
                   className="mt-4 px-4 py-1 text-base transition ease-in-out duration-300"
+                  onClick={() => setIsDeleteModalOpen(true)}
                 >
                   Delete account
                 </Button.Danger>
