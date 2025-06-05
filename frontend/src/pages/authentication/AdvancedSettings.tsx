@@ -1,22 +1,22 @@
-import { useEffect, useState } from "react";
+import { signOut } from "firebase/auth";
+import { httpsCallable } from "firebase/functions";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { twMerge } from "tailwind-merge";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
 import Button from "../../components/Button";
 import Logo from "../../components/Logo";
-import { useAuth } from "../../hooks/useAuth";
-import { ViewDisplayOptions } from "../trips/components/ViewSelector";
-import BackArrow from "./components/BackArrow";
-import FormWrapper from "./components/FormWrapper";
-import { twMerge } from "tailwind-merge";
-import PackingListTemplateEditor from "./components/PackingListTemplateEditor";
-import { useUpdateUserSettings } from "../trips/hooks/setters/useUpdateUserSettings";
-import { useHotToast } from "../../hooks/useHotToast";
 import { auth, functions } from "../../firebase-config";
-import WarningConfirmationModal from "../trips/components/WarningConfirmationModal";
-import { httpsCallable } from "firebase/functions";
-import { fetchSignInMethodsForEmail, signOut } from "firebase/auth";
+import { useAuth } from "../../hooks/useAuth";
+import { useHotToast } from "../../hooks/useHotToast";
 import InfoTooltip from "../trips/components/InfoTooltip";
 import SimpleTooltip from "../trips/components/SimpleTooltip";
+import { ViewDisplayOptions } from "../trips/components/ViewSelector";
+import WarningConfirmationModal from "../trips/components/WarningConfirmationModal";
+import { useUpdateUserSettings } from "../trips/hooks/setters/useUpdateUserSettings";
+import BackArrow from "./components/BackArrow";
+import FormWrapper from "./components/FormWrapper";
+import PackingListTemplateEditor from "./components/PackingListTemplateEditor";
 
 const AdvancedSettings = () => {
   const navigate = useNavigate();
@@ -25,7 +25,6 @@ const AdvancedSettings = () => {
   const { notify } = useHotToast();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isPasswordResetAllowed, setIsPasswordResetAllowed] = useState(false);
 
   const currentView = settings?.preferredDisplay || "gallery";
 
@@ -33,6 +32,10 @@ const AdvancedSettings = () => {
   const currentPackingList = settings?.packingList;
 
   if (!user) navigate("/");
+
+  const isPasswordResetAllowed = user?.providerData
+    .map((provider) => provider.providerId)
+    .includes("password");
 
   const updateDefaultView = async (view: ViewDisplayOptions) => {
     if (auth.currentUser) {
@@ -60,26 +63,6 @@ const AdvancedSettings = () => {
       notify("Something went wrong. Please try again.", "error");
     }
   };
-
-  useEffect(() => {
-    const checkIfPasswordResetAllowed = async () => {
-      if (user?.email) {
-        const methods = await fetchSignInMethodsForEmail(auth, user.email);
-        console.log(methods);
-
-        if (methods.includes("password")) {
-          setIsPasswordResetAllowed(true);
-        } else {
-          setIsPasswordResetAllowed(false);
-        }
-      } else {
-        setIsPasswordResetAllowed(false);
-        console.warn("No email associated with this user.");
-      }
-    };
-
-    checkIfPasswordResetAllowed();
-  }, [user]);
 
   return (
     <BackgroundWrapper>
@@ -197,9 +180,8 @@ const AdvancedSettings = () => {
                 ) : (
                   <Button.Primary
                     onClick={() => navigate("/reset-password")}
-                    disabled={true}
                     type="button"
-                    className="disabled:opacity-40 mt-4 border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
+                    className="mt-4 border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
                   >
                     Reset password
                   </Button.Primary>
