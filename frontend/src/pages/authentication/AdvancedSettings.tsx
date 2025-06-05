@@ -8,18 +8,25 @@ import { ViewDisplayOptions } from "../trips/components/ViewSelector";
 import BackArrow from "./components/BackArrow";
 import FormWrapper from "./components/FormWrapper";
 import { twMerge } from "tailwind-merge";
+import DefaultPackingListEditor from "./components/DefaultPackingListEditor";
 
 const AdvancedSettings = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, settings } = useAuth();
 
   const [currentView] = useState<ViewDisplayOptions>("gallery");
+  const [isPackingListEditorOpen, setIsPackingListEditorOpen] = useState(false);
+  const currentPackingList = settings?.packingList;
 
   return (
     <BackgroundWrapper>
       <BackArrow />
       <div className="font-brand tracking-wide italic absolute left-0 top-0 flex flex-col items-center justify-center w-full animate-fade-in-top">
         <Logo scale="scale-70" />
+        <DefaultPackingListEditor
+          open={isPackingListEditorOpen}
+          onClose={() => setIsPackingListEditorOpen(false)}
+        />
         <FormWrapper className="py-9">
           <h1 className="text-2xl mb-3 text-center">Settings</h1>
           <div className="space-y-6">
@@ -29,11 +36,13 @@ const AdvancedSettings = () => {
                 <div>
                   <p className="text-lg">default packing list</p>
                   <Button.Primary
-                    onClick={() => navigate("/reset-password")}
+                    onClick={() => setIsPackingListEditorOpen(true)}
                     type="submit"
                     className="mt-1 border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
                   >
-                    Create default packing list
+                    {currentPackingList
+                      ? "Edit default packing list"
+                      : "Create default packing list"}
                   </Button.Primary>
                 </div>
                 <div>

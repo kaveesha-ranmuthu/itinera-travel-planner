@@ -35,7 +35,11 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
           if (docSnap.exists()) {
             setSettings(docSnap.data() as UserSettings);
           } else {
-            setSettings({ font: FontFamily.HANDWRITTEN });
+            setSettings({
+              font: FontFamily.HANDWRITTEN,
+              packingList: "",
+              preferredDisplay: "gallery",
+            });
           }
           setLoading(false);
         });
