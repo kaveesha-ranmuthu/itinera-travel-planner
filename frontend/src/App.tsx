@@ -95,7 +95,18 @@ function App() {
               )
             }
           />
-          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route
+            path="/reset-password"
+            element={
+              showLoading ? (
+                <LoadingState />
+              ) : user ? (
+                <Navigate to="/" />
+              ) : (
+                <ResetPassword />
+              )
+            }
+          />
           <Route path="/trip/:tripId" element={<TripPage />} />
           <Route path="/trip/:tripId/map" element={<MapViewPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
