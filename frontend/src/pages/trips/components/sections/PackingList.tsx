@@ -49,56 +49,9 @@ const PackingList: React.FC<PackingListProps> = ({
         levels: [2, 3, 4],
       }),
     ],
-    content:
-      lastChanges ||
-      savedPackingList ||
-      `
-      <h3>🧼 TOILETRIES</h3>
-         <ul data-type="taskList">
-        <li data-checked="false">
-          <label contenteditable="false">
-            <input type="checkbox" />
-            <span></span>
-          </label>
-          <div>
-            <p>toothbrush</p>
-          </div>
-        </li>
-        <li data-checked="true">
-          <label contenteditable="false">
-            <input type="checkbox" />
-            <span></span>
-          </label>
-          <div>
-            <p>toothpaste</p>
-          </div>
-        </li>
-        <li data-checked="false">
-          <label contenteditable="false">
-            <input type="checkbox" />
-            <span></span>
-          </label>
-          <div>
-            <p>shampoo</p>
-          </div>
-        </li>
-        <li data-checked="false">
-          <label contenteditable="false">
-            <input type="checkbox" />
-            <span></span>
-          </label>
-          <div>
-            <p>conditioner</p>
-          </div>
-        </li>
-      </ul>
-        `,
+    content: lastChanges || savedPackingList,
     onUpdate: ({ editor }) => {
-      localStorage.setItem(
-        getPackingListLocalStorageKey(tripId),
-        editor.getHTML()
-      );
-      addTripToLocalStorage(tripId);
+      savePackingListToLocalStorage(editor.getHTML());
     },
   });
 
@@ -106,12 +59,19 @@ const PackingList: React.FC<PackingListProps> = ({
     !!lastChanges || !!savedPackingList
   );
 
+  const savePackingListToLocalStorage = (content: string) => {
+    localStorage.setItem(getPackingListLocalStorageKey(tripId), content);
+    addTripToLocalStorage(tripId);
+  };
+
+  if (!editor) return null;
+
   return (
     <div>
       <div className="flex items-center space-x-3 mb-5">
         <h1 className="text-3xl">packing list</h1>
         <SimpleTooltip
-          content="Create a packing list from scratch or quickly copy over your default list. You can set up your default list in settings."
+          content="Create a packing list from scratch or quickly copy over your default list. You can set up your default list in advanced settings."
           theme="dark"
           side="top"
           width="w-50"
@@ -131,7 +91,7 @@ const PackingList: React.FC<PackingListProps> = ({
           !showEditor ? "text-center py-10" : "py-6"
         )}
       >
-        {showEditor && editor ? (
+        {showEditor ? (
           <>
             <EditorBubbleMenu
               editor={editor}
@@ -155,8 +115,14 @@ const PackingList: React.FC<PackingListProps> = ({
                   "normal-case not-italic w-2/3",
                   settings?.font
                 )}
+                disabled={!settings?.packingList}
+                onClick={() => {
+                  savePackingListToLocalStorage(settings?.packingList || "");
+                  editor.commands.setContent(settings?.packingList || "");
+                  setShowEditor(true);
+                }}
               >
-                <span>Copy over default packing list</span>
+                <span>Use default packing list</span>
               </Button.Secondary>
             </div>
             <div className="flex justify-center w-full">
