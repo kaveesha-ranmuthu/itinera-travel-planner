@@ -1,4 +1,4 @@
-import { signOut } from "firebase/auth";
+import { sendPasswordResetEmail, signOut } from "firebase/auth";
 import { httpsCallable } from "firebase/functions";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +17,8 @@ import { useUpdateUserSettings } from "../trips/hooks/setters/useUpdateUserSetti
 import BackArrow from "./components/BackArrow";
 import FormWrapper from "./components/FormWrapper";
 import PackingListTemplateEditor from "./components/PackingListTemplateEditor";
+import { FirebaseError } from "firebase/app";
+import { getFirebaseErrorMessage } from "./helpers";
 
 const AdvancedSettings = () => {
   const navigate = useNavigate();
@@ -61,6 +63,21 @@ const AdvancedSettings = () => {
     } catch (error) {
       console.error("Failed to delete user:", error);
       notify("Something went wrong. Please try again.", "error");
+    }
+  };
+
+  const sendResetLink = async () => {
+    if (!user?.email) return;
+    try {
+      await sendPasswordResetEmail(auth, user.email);
+      notify("Reset link sent! Check your email.", "info");
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        const errorMessage = getFirebaseErrorMessage(error);
+        notify(errorMessage, "error");
+      } else {
+        notify("Something went wrong. Please try again.", "error");
+      }
     }
   };
 
@@ -169,7 +186,6 @@ const AdvancedSettings = () => {
                     width="w-60"
                   >
                     <Button.Primary
-                      onClick={() => navigate("/reset-password")}
                       disabled={true}
                       type="button"
                       className="disabled:opacity-40 mt-4 border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
@@ -179,7 +195,7 @@ const AdvancedSettings = () => {
                   </SimpleTooltip>
                 ) : (
                   <Button.Primary
-                    onClick={() => navigate("/reset-password")}
+                    onClick={sendResetLink}
                     type="button"
                     className="mt-4 border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
                   >
