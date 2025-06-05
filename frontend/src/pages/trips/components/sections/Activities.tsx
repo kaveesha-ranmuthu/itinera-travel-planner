@@ -61,7 +61,9 @@ const Activities: React.FC<ActivitiesProps> = ({
   >([]);
   const [selectedFilterPrices, setSelectedFilterPrices] = useState<number[]>();
 
-  const [view, setView] = useState<ViewDisplayOptions>("gallery");
+  const [view, setView] = useState<ViewDisplayOptions>(
+    settings?.preferredDisplay || "gallery"
+  );
 
   const allRows: LocationCardDetails[] = useMemo(
     () => (finalSaveData ? JSON.parse(finalSaveData).data : activities),

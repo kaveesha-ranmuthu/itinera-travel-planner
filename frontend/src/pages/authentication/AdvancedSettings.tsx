@@ -9,14 +9,34 @@ import BackArrow from "./components/BackArrow";
 import FormWrapper from "./components/FormWrapper";
 import { twMerge } from "tailwind-merge";
 import DefaultPackingListEditor from "./components/DefaultPackingListEditor";
+import { useUpdateUserSettings } from "../trips/hooks/setters/useUpdateUserSettings";
+import { useHotToast } from "../../hooks/useHotToast";
+import { auth } from "../../firebase-config";
 
 const AdvancedSettings = () => {
   const navigate = useNavigate();
-  const { user, settings } = useAuth();
+  const { user, settings, setSettings } = useAuth();
+  const { updateSettings } = useUpdateUserSettings();
+  const { notify } = useHotToast();
 
-  const [currentView] = useState<ViewDisplayOptions>("gallery");
+  const currentView = settings?.preferredDisplay || "gallery";
+
   const [isPackingListEditorOpen, setIsPackingListEditorOpen] = useState(false);
   const currentPackingList = settings?.packingList;
+
+  const updateDefaultView = async (view: ViewDisplayOptions) => {
+    if (auth.currentUser) {
+      try {
+        await updateSettings({
+          ...settings!,
+          preferredDisplay: view,
+        });
+        setSettings({ ...settings!, preferredDisplay: view });
+      } catch {
+        notify("Something went wrong. Please try again.", "error");
+      }
+    }
+  };
 
   return (
     <BackgroundWrapper>
@@ -49,7 +69,7 @@ const AdvancedSettings = () => {
                   <p className="text-lg">default food & activity view</p>
                   <div className="space-x-2">
                     <Button.Primary
-                      onClick={() => navigate("/reset-password")}
+                      onClick={() => updateDefaultView("gallery")}
                       type="submit"
                       className={twMerge(
                         "mt-1 border border-secondary hover:opacity-100 px-4 py-1 w-20 text-base transition ease-in-out duration-300",
@@ -57,16 +77,18 @@ const AdvancedSettings = () => {
                           ? "opacity-100"
                           : "opacity-60 "
                       )}
+                      disabled={currentView === "gallery"}
                     >
                       Gallery
                     </Button.Primary>
                     <Button.Primary
-                      onClick={() => navigate("/reset-password")}
+                      onClick={() => updateDefaultView("list")}
                       type="submit"
                       className={twMerge(
                         "mt-1 border border-secondary hover:opacity-100 px-4 py-1 w-20 text-base transition ease-in-out duration-300",
                         currentView === "list" ? "opacity-100" : "opacity-60"
                       )}
+                      disabled={currentView === "list"}
                     >
                       List
                     </Button.Primary>

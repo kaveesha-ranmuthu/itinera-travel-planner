@@ -44,7 +44,7 @@ const DefaultPackingListEditor: React.FC<DefaultPackingListEditorProps> = ({
         levels: [2, 3, 4],
       }),
     ],
-    content: currentPackingList || defaultPackingListContent,
+    content: currentPackingList || `<p>Start typing...</p>`,
   });
 
   if (!editor) return null;
@@ -65,7 +65,7 @@ const DefaultPackingListEditor: React.FC<DefaultPackingListEditorProps> = ({
   };
 
   const resetContent = () => {
-    editor.commands.setContent(currentPackingList || defaultPackingListContent);
+    editor.commands.setContent(currentPackingList || `<p>Start typing...</p>`);
   };
 
   return (
@@ -119,46 +119,5 @@ const DefaultPackingListEditor: React.FC<DefaultPackingListEditorProps> = ({
     </PopupModal>
   );
 };
-
-const defaultPackingListContent = `
-        <h3>🧼 Toiletries</h3>
-         <ul data-type="taskList">
-        <li data-checked="false">
-          <label contenteditable="false">
-            <input type="checkbox" />
-            <span></span>
-          </label>
-          <div>
-            <p>toothbrush</p>
-          </div>
-        </li>
-        <li data-checked="true">
-          <label contenteditable="false">
-            <input type="checkbox" />
-            <span></span>
-          </label>
-          <div>
-            <p>toothpaste</p>
-          </div>
-        </li>
-        <li data-checked="false">
-          <label contenteditable="false">
-            <input type="checkbox" />
-            <span></span>
-          </label>
-          <div>
-            <p>shampoo</p>
-          </div>
-        </li>
-        <li data-checked="false">
-          <label contenteditable="false">
-            <input type="checkbox" />
-            <span></span>
-          </label>
-          <div>
-            <p>conditioner</p>
-          </div>
-        </li>
-      </ul>`;
 
 export default DefaultPackingListEditor;
