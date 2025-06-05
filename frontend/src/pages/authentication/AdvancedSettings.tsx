@@ -11,8 +11,10 @@ import { twMerge } from "tailwind-merge";
 import DefaultPackingListEditor from "./components/DefaultPackingListEditor";
 import { useUpdateUserSettings } from "../trips/hooks/setters/useUpdateUserSettings";
 import { useHotToast } from "../../hooks/useHotToast";
-import { auth } from "../../firebase-config";
+import { auth, functions } from "../../firebase-config";
 import WarningConfirmationModal from "../trips/components/WarningConfirmationModal";
+import { httpsCallable } from "firebase/functions";
+import { signOut } from "firebase/auth";
 
 const AdvancedSettings = () => {
   const navigate = useNavigate();
@@ -41,6 +43,19 @@ const AdvancedSettings = () => {
     }
   };
 
+  const deleteUser = async () => {
+    const deleteUserFn = httpsCallable(functions, "deleteUser");
+    try {
+      await deleteUserFn();
+      localStorage.clear();
+      await signOut(auth);
+      navigate("/login");
+    } catch (error) {
+      console.error("Failed to delete user:", error);
+      notify("Something went wrong. Please try again.", "error");
+    }
+  };
+
   return (
     <BackgroundWrapper>
       <BackArrow />
@@ -54,7 +69,7 @@ const AdvancedSettings = () => {
           font="font-brand italic tracking-wide"
           hideIcon={true}
           isOpen={isDeleteModalOpen}
-          onConfirm={() => null}
+          onConfirm={deleteUser}
           onClose={() => setIsDeleteModalOpen(false)}
           title="Are you sure you want to delete your account?"
           description="This action is permanent and cannot be undone. All of your saved trips and data will be permanently deleted."

@@ -6,6 +6,7 @@ export const deleteUser = onCall(async (request) => {
   const uid = request.auth?.uid;
 
   if (!uid) {
+    logger.error("Unauthenticated request to deleteUser.");
     throw new Error("User must be authenticated to delete their account.");
   }
 

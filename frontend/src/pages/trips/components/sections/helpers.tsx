@@ -61,6 +61,7 @@ export const deleteTripFromLocalStorage = (tripId: string) => {
       localStorage.removeItem(getTransportLocalStorageKey(tripId));
       localStorage.removeItem(getItineraryLocalStorageKey(tripId));
       localStorage.removeItem(getTasklistLocalStorageKey(tripId));
+      localStorage.removeItem(getPackingListLocalStorageKey(tripId));
     }
   }
 };
