@@ -15,6 +15,7 @@ import { auth, functions } from "../../firebase-config";
 import WarningConfirmationModal from "../trips/components/WarningConfirmationModal";
 import { httpsCallable } from "firebase/functions";
 import { signOut } from "firebase/auth";
+import InfoTooltip from "../trips/components/InfoTooltip";
 
 const AdvancedSettings = () => {
   const navigate = useNavigate();
@@ -79,9 +80,12 @@ const AdvancedSettings = () => {
           <div className="space-y-6">
             <div className="space-y-2">
               <Heading title="Preferences" />
-              <div className="space-y-3 ">
+              <div className="space-y-3">
                 <div>
-                  <p className="text-lg">packing list template</p>
+                  <div className="flex items-center space-x-2">
+                    <p className="text-lg">packing list template</p>
+                    <InfoTooltip content="Create a reusable packing list you can quickly copy into any trip." />
+                  </div>
                   <Button.Primary
                     onClick={() => setIsPackingListEditorOpen(true)}
                     type="submit"
@@ -93,7 +97,10 @@ const AdvancedSettings = () => {
                   </Button.Primary>
                 </div>
                 <div>
-                  <p className="text-lg">preferred content view</p>
+                  <div className="flex items-center space-x-2">
+                    <p className="text-lg">preferred content view</p>
+                    <InfoTooltip content="Choose how you'd like to view food and activity content by default. You can switch between gallery and list view anytime." />
+                  </div>
                   <div className="space-x-2">
                     <Button.Primary
                       onClick={() => updateDefaultView("gallery")}

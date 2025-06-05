@@ -1,25 +1,23 @@
-import { PiSealQuestionFill } from "react-icons/pi";
+import Bold from "@tiptap/extension-bold";
+import Document from "@tiptap/extension-document";
+import Heading from "@tiptap/extension-heading";
+import Italic from "@tiptap/extension-italic";
+import Paragraph from "@tiptap/extension-paragraph";
+import Strike from "@tiptap/extension-strike";
+import TaskItem from "@tiptap/extension-task-item";
+import TaskList from "@tiptap/extension-task-list";
+import Text from "@tiptap/extension-text";
+import { EditorContent, useEditor } from "@tiptap/react";
+import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import Button from "../../../../components/Button";
 import { useAuth } from "../../../../hooks/useAuth";
-import { FontFamily } from "../../../../types";
-import SimpleTooltip from "../SimpleTooltip";
+import EditorBubbleMenu from "../EditorBubbleMenu";
+import InfoTooltip from "../InfoTooltip";
 import {
   addTripToLocalStorage,
   getPackingListLocalStorageKey,
 } from "./helpers";
-import { EditorContent, useEditor } from "@tiptap/react";
-import TaskList from "@tiptap/extension-task-list";
-import TaskItem from "@tiptap/extension-task-item";
-import { useState } from "react";
-import Document from "@tiptap/extension-document";
-import Text from "@tiptap/extension-text";
-import Bold from "@tiptap/extension-bold";
-import Italic from "@tiptap/extension-italic";
-import Paragraph from "@tiptap/extension-paragraph";
-import Strike from "@tiptap/extension-strike";
-import EditorBubbleMenu from "../EditorBubbleMenu";
-import Heading from "@tiptap/extension-heading";
 
 interface PackingListProps {
   tripId: string;
@@ -70,20 +68,7 @@ const PackingList: React.FC<PackingListProps> = ({
     <div>
       <div className="flex items-center space-x-3 mb-5">
         <h1 className="text-3xl">packing list</h1>
-        <SimpleTooltip
-          content="Create a packing list from scratch or quickly copy over your packing list template. You can set up your template in advanced settings."
-          theme="dark"
-          side="top"
-          width="w-50"
-        >
-          <PiSealQuestionFill
-            size={20}
-            className={twMerge(
-              "opacity-50 cursor-pointer",
-              settings?.font === FontFamily.HANDWRITTEN ? "mt-2.5" : ""
-            )}
-          />
-        </SimpleTooltip>
+        <InfoTooltip content="Create a packing list from scratch or quickly copy over your packing list template. You can set up your template in advanced settings." />
       </div>
       <div
         className={twMerge(

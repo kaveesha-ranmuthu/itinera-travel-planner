@@ -2,21 +2,20 @@ import Grid from "@mui/material/Grid";
 import { FieldArray, Form, FormikProvider, useFormik } from "formik";
 import { round, sortBy } from "lodash";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { PiSealQuestionFill } from "react-icons/pi";
-import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
-import { FontFamily } from "../../../../types";
+import { useHotToast } from "../../../../hooks/useHotToast";
 import { useSaveFood } from "../../hooks/setters/useSaveFood";
 import EstimatedCostContainer from "../EstimatedCostContainer";
 import { ErrorBox, NoDataBox } from "../InfoBox";
+import InfoTooltip from "../InfoTooltip";
 import ListSettings from "../ListSettings";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
 import {
-  LocationWithPhotoCard,
   LocationCardDetails,
   LocationListItem,
+  LocationWithPhotoCard,
 } from "../LocationWithPhotoCard";
-import SimpleTooltip from "../SimpleTooltip";
+import { ViewDisplayOptions } from "../ViewSelector";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 import {
   addTripToLocalStorage,
@@ -28,8 +27,6 @@ import {
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
-import { ViewDisplayOptions } from "../ViewSelector";
-import { useHotToast } from "../../../../hooks/useHotToast";
 
 interface FoodProps {
   userCurrencySymbol?: string;
@@ -115,20 +112,7 @@ const Food: React.FC<FoodProps> = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <h1 className="text-3xl">food</h1>
-          <SimpleTooltip
-            content="Find places to eat by searching for a specific place or a general term like 'breakfast in Paris'."
-            theme="dark"
-            side="top"
-            width="w-50"
-          >
-            <PiSealQuestionFill
-              size={20}
-              className={twMerge(
-                "opacity-50 cursor-pointer",
-                settings?.font === FontFamily.HANDWRITTEN ? "mt-2.5" : ""
-              )}
-            />
-          </SimpleTooltip>
+          <InfoTooltip content="Find places to eat by searching for a specific place or a general term like 'breakfast in Paris'." />
         </div>
         {!!formik.values.data.length && (
           <ListSettings
