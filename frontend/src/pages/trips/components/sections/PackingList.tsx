@@ -71,7 +71,7 @@ const PackingList: React.FC<PackingListProps> = ({
       <div className="flex items-center space-x-3 mb-5">
         <h1 className="text-3xl">packing list</h1>
         <SimpleTooltip
-          content="Create a packing list from scratch or quickly copy over your default list. You can set up your default list in advanced settings."
+          content="Create a packing list from scratch or quickly copy over your packing list template. You can set up your template in advanced settings."
           theme="dark"
           side="top"
           width="w-50"
@@ -122,7 +122,7 @@ const PackingList: React.FC<PackingListProps> = ({
                   setShowEditor(true);
                 }}
               >
-                <span>Use default packing list</span>
+                <span>Use packing list template</span>
               </Button.Secondary>
             </div>
             <div className="flex justify-center w-full">

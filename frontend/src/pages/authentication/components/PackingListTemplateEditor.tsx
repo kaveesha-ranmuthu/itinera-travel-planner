@@ -16,12 +16,12 @@ import { useUpdateUserSettings } from "../../trips/hooks/setters/useUpdateUserSe
 import { useAuth } from "../../../hooks/useAuth";
 import { useHotToast } from "../../../hooks/useHotToast";
 
-interface DefaultPackingListEditorProps {
+interface PackingListTemplateEditorProps {
   open: boolean;
   onClose: () => void;
 }
 
-const DefaultPackingListEditor: React.FC<DefaultPackingListEditorProps> = ({
+const PackingListTemplateEditor: React.FC<PackingListTemplateEditorProps> = ({
   onClose,
   open,
 }) => {
@@ -120,4 +120,4 @@ const DefaultPackingListEditor: React.FC<DefaultPackingListEditorProps> = ({
   );
 };
 
-export default DefaultPackingListEditor;
+export default PackingListTemplateEditor;

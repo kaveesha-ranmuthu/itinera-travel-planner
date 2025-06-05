@@ -8,7 +8,7 @@ import { ViewDisplayOptions } from "../trips/components/ViewSelector";
 import BackArrow from "./components/BackArrow";
 import FormWrapper from "./components/FormWrapper";
 import { twMerge } from "tailwind-merge";
-import DefaultPackingListEditor from "./components/DefaultPackingListEditor";
+import PackingListTemplateEditor from "./components/PackingListTemplateEditor";
 import { useUpdateUserSettings } from "../trips/hooks/setters/useUpdateUserSettings";
 import { useHotToast } from "../../hooks/useHotToast";
 import { auth, functions } from "../../firebase-config";
@@ -61,7 +61,7 @@ const AdvancedSettings = () => {
       <BackArrow />
       <div className="font-brand tracking-wide italic absolute left-0 top-0 flex flex-col items-center justify-center w-full animate-fade-in-top">
         <Logo scale="scale-70" />
-        <DefaultPackingListEditor
+        <PackingListTemplateEditor
           open={isPackingListEditorOpen}
           onClose={() => setIsPackingListEditorOpen(false)}
         />
@@ -81,19 +81,19 @@ const AdvancedSettings = () => {
               <Heading title="Preferences" />
               <div className="space-y-3 ">
                 <div>
-                  <p className="text-lg">default packing list</p>
+                  <p className="text-lg">packing list template</p>
                   <Button.Primary
                     onClick={() => setIsPackingListEditorOpen(true)}
                     type="submit"
                     className="mt-1 border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
                   >
                     {currentPackingList
-                      ? "Edit default packing list"
-                      : "Create default packing list"}
+                      ? "Edit packing list template"
+                      : "Create packing list template"}
                   </Button.Primary>
                 </div>
                 <div>
-                  <p className="text-lg">default food & activity view</p>
+                  <p className="text-lg">preferred content view</p>
                   <div className="space-x-2">
                     <Button.Primary
                       onClick={() => updateDefaultView("gallery")}
