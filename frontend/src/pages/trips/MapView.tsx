@@ -24,6 +24,9 @@ import { LoadingState } from "../landing-page/LandingPage";
 import { useHotToast } from "../../hooks/useHotToast";
 import { useGetItinerary } from "./hooks/getters/useGetItinerary";
 import { AccommodationDetails, LocationDetails } from "./types";
+import MapViewSidebarSelector, {
+  MapViewSidebarSelectorOptions,
+} from "./components/MapViewSidebarSelector";
 
 const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -101,6 +104,9 @@ const MapView: React.FC<MapViewProps> = ({ tripId }) => {
     itineraryLoading,
   ]);
 
+  const [selectedView, setSelectedView] =
+    useState<MapViewSidebarSelectorOptions>("itinerary");
+
   if (showLoading) {
     return <LoadingState />;
   }
@@ -142,14 +148,22 @@ const MapView: React.FC<MapViewProps> = ({ tripId }) => {
         <Header />
         <div className="px-6 space-y-5">
           <CondensedTripHeader trip={trip} />
-          <Itinerary
-            tripId={tripId}
-            endDate={trip.endDate}
-            startDate={trip.startDate}
-            showHeader={false}
-            itinerary={itinerary}
-            error={itineraryError}
+          <MapViewSidebarSelector
+            selectedView={selectedView}
+            onSelectView={setSelectedView}
           />
+          {selectedView === "itinerary" ? (
+            <Itinerary
+              tripId={tripId}
+              endDate={trip.endDate}
+              startDate={trip.startDate}
+              showHeader={false}
+              itinerary={itinerary}
+              error={itineraryError}
+            />
+          ) : (
+            <></>
+          )}
         </div>
       </div>
       <CustomMap
