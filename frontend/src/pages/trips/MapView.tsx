@@ -27,6 +27,7 @@ import { AccommodationDetails, LocationDetails } from "./types";
 import MapViewSidebarSelector, {
   MapViewSidebarSelectorOptions,
 } from "./components/MapViewSidebarSelector";
+import SidebarLocationSection from "./components/SidebarLocationSection";
 
 const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -142,6 +143,21 @@ const MapView: React.FC<MapViewProps> = ({ tripId }) => {
     ? JSON.parse(activitiesLocalStorage).data
     : activitiesData;
 
+  const sidebarLocationSections = [
+    {
+      locations: accommodation,
+      title: "accommodation",
+    },
+    {
+      locations: food,
+      title: "food",
+    },
+    {
+      locations: activities,
+      title: "activities",
+    },
+  ];
+
   return (
     <div className={twMerge("flex relative animate-fade", settings?.font)}>
       <div className="w-1/3 bg-primary absolute z-10 top-0 left-0 h-full overflow-y-scroll pb-4">
@@ -162,7 +178,17 @@ const MapView: React.FC<MapViewProps> = ({ tripId }) => {
               error={itineraryError}
             />
           ) : (
-            <></>
+            <div className="space-y-5">
+              {sidebarLocationSections.map((location) => {
+                return (
+                  <SidebarLocationSection
+                    locations={location.locations}
+                    title={location.title}
+                    userCurrencySymbol={trip.currency?.otherInfo?.symbol}
+                  />
+                );
+              })}
+            </div>
           )}
         </div>
       </div>
