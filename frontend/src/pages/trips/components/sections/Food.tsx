@@ -18,7 +18,7 @@ import { ViewDisplayOptions } from "../ViewSelector";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 import {
   addTripToLocalStorage,
-  getEstimatedFoodAndActivitiesCost,
+  getEstimatedCost,
   getFoodLocalStorageKey,
   getLocationDetails,
   getPricesList,
@@ -85,10 +85,7 @@ const Food: React.FC<FoodProps> = ({
     },
   });
 
-  const estimatedTotalCost = round(
-    getEstimatedFoodAndActivitiesCost(formik.values.data),
-    2
-  );
+  const estimatedTotalCost = round(getEstimatedCost(formik.values.data), 2);
 
   const locations = getUniqueLocations(formik.values.data);
   const prices = getPricesList(formik.values.data);

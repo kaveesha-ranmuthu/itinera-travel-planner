@@ -16,7 +16,7 @@ import Table from "../Table";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 import {
   addTripToLocalStorage,
-  getEstimatedTransportAndAccommodationCost,
+  getEstimatedCost,
   getSortArrowComponent,
   getTransportLocalStorageKey,
 } from "./helpers";
@@ -152,10 +152,7 @@ const Transport: React.FC<TransportProps> = ({
             handleFormSubmit(values);
           }}
           component={({ values, setFieldValue, submitForm }) => {
-            const estimatedTotalCost = round(
-              getEstimatedTransportAndAccommodationCost(values.data),
-              2
-            );
+            const estimatedTotalCost = round(getEstimatedCost(values.data), 2);
 
             return (
               <Form className="mt-2" onChange={submitForm}>

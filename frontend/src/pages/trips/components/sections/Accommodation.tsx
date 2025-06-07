@@ -8,6 +8,7 @@ import { useAuth } from "../../../../hooks/useAuth";
 import { useHotToast } from "../../../../hooks/useHotToast";
 import { FontFamily } from "../../../../types";
 import { useSaveAccommodation } from "../../hooks/setters/useSaveAccommodation";
+import { AccommodationDetails } from "../../types";
 import Checkbox from "../Checkbox";
 import EstimatedCostContainer from "../EstimatedCostContainer";
 import { ErrorBox, NoDataBox } from "../InfoBox";
@@ -19,14 +20,14 @@ import WarningConfirmationModal from "../WarningConfirmationModal";
 import {
   addTripToLocalStorage,
   getAccommodationLocalStorageKey,
-  getAccommodationPricesList,
-  getEstimatedTransportAndAccommodationCost,
+  getEstimatedCost,
+  getLocationDetails,
+  getPricesList,
   getSortArrowComponent,
   getUniqueLocations,
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
-import { AccommodationDetails } from "../../types";
 
 enum SortOptions {
   ID = "id",
@@ -173,13 +174,12 @@ const Accommodation: React.FC<AccommodationProps> = ({
   });
 
   const estimatedTotalCost = round(
-    getEstimatedTransportAndAccommodationCost(formik.values.data) /
-      numberOfPeople,
+    getEstimatedCost(formik.values.data) / numberOfPeople,
     2
   );
 
   const locations = getUniqueLocations(formik.values.data);
-  const prices = getAccommodationPricesList(formik.values.data);
+  const prices = getPricesList(formik.values.data);
 
   useEffect(() => {
     if (
@@ -194,27 +194,6 @@ const Accommodation: React.FC<AccommodationProps> = ({
       setSelectedFilterPrices([0, Math.max(...prices)]);
     }
   }, [locations, prices, selectedFilterLocations, selectedFilterPrices]);
-
-  const getLocationCardDetails = (
-    location: LocationSearchResult
-  ): AccommodationDetails => {
-    return {
-      ...defaultRow,
-      id: location.id || crypto.randomUUID(),
-      name: location?.displayName?.text || "",
-      formattedAddress: location?.formattedAddress || "",
-      location: {
-        name:
-          location?.addressComponents?.find((address) =>
-            address.types?.includes("locality")
-          )?.shortText || "",
-        latitude: location?.location?.latitude,
-        longitude: location?.location?.longitude,
-      },
-      mainPhotoName: location?.photos?.[0]?.name || "",
-      createdAt: new Date().toISOString(),
-    };
-  };
 
   return (
     <div className="text-secondary">
@@ -264,10 +243,8 @@ const Accommodation: React.FC<AccommodationProps> = ({
                               return;
                             }
                             if (!location) return;
-                            const newRow: AccommodationDetails =
-                              getLocationCardDetails(location);
-
-                            arrayHelpers.push(newRow);
+                            const newRow = getLocationDetails(location);
+                            arrayHelpers.push({ ...defaultRow, ...newRow });
                             formik.submitForm();
                           }}
                         />

@@ -19,7 +19,7 @@ import WarningConfirmationModal from "../WarningConfirmationModal";
 import {
   addTripToLocalStorage,
   getActivitiesLocalStorageKey,
-  getEstimatedFoodAndActivitiesCost,
+  getEstimatedCost,
   getLocationDetails,
   getPricesList,
   getUniqueLocations,
@@ -87,10 +87,7 @@ const Activities: React.FC<ActivitiesProps> = ({
     addTripToLocalStorage(tripId);
   };
 
-  const estimatedTotalCost = round(
-    getEstimatedFoodAndActivitiesCost(formik.values.data),
-    2
-  );
+  const estimatedTotalCost = round(getEstimatedCost(formik.values.data), 2);
 
   const locations = getUniqueLocations(formik.values.data);
   const prices = getPricesList(formik.values.data);

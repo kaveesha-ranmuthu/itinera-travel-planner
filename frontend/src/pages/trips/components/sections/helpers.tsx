@@ -1,12 +1,8 @@
 import axios from "axios";
 import { round, uniqBy } from "lodash";
 import { IoIosArrowRoundDown, IoIosArrowRoundUp } from "react-icons/io";
+import { LocationDetails } from "../../types";
 import { LocationSearchResult } from "../LocationSearch";
-import {
-  AccommodationDetails,
-  LocationDetails,
-  TransportationDetails,
-} from "../../types";
 
 export const getAccommodationLocalStorageKey = (tripId: string) =>
   `unsaved-accommodation-${tripId}`;
@@ -103,24 +99,19 @@ export const convertCurrency = async (
   }
 };
 
-export const getEstimatedTransportAndAccommodationCost = (
-  rows: TransportationDetails[] | AccommodationDetails[]
-) => {
+export const getEstimatedCost = (rows: Pick<LocationDetails, "price">[]) => {
   return rows.reduce((acc, row) => {
-    if (row.checked) {
-      return acc + row.price;
-    } else {
-      return acc;
+    // If row is Transportation or Accommodation
+    if ("checked" in row) {
+      if (row.checked) {
+        return acc + row.price;
+      } else {
+        return acc;
+      }
     }
-  }, 0);
-};
-
-export const getEstimatedFoodAndActivitiesCost = (rows: LocationDetails[]) => {
-  return rows.reduce((acc, row) => {
-    if (row.price) {
+    // If row is Food or Activities
+    else {
       return acc + row.price;
-    } else {
-      return acc;
     }
   }, 0);
 };
@@ -136,15 +127,12 @@ export const getUniqueLocations = (locations: LocationDetails[]) => {
 
 export const getPricesList = (locations: LocationDetails[]) => {
   return locations
-    .map((location) => location.price)
-    .filter(Boolean) as number[];
-};
-
-export const getAccommodationPricesList = (
-  locations: AccommodationDetails[]
-) => {
-  return locations
-    .map((location) => location.pricePerNightPerPerson)
+    .map((location) => {
+      if ("pricePerNightPerPerson" in location) {
+        return location.pricePerNightPerPerson;
+      }
+      return location.price;
+    })
     .filter(Boolean) as number[];
 };
 
