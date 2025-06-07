@@ -1,10 +1,10 @@
 import React from "react";
-import { AccommodationRow } from "./sections/Accommodation";
-import { LocationCardDetails } from "./LocationWithPhotoCard";
+
 import { sortBy } from "lodash";
+import { AccommodationDetails, LocationDetails } from "../types";
 
 interface SidebarLocationSectionProps {
-  locations: AccommodationRow[] | LocationCardDetails[];
+  locations: LocationDetails[];
   title: string;
   userCurrencySymbol?: string;
 }
@@ -14,9 +14,7 @@ const SidebarLocationSection: React.FC<SidebarLocationSectionProps> = ({
   title,
   userCurrencySymbol,
 }) => {
-  const sortedLocations = sortBy(locations, ["name"]) as
-    | AccommodationRow[]
-    | LocationCardDetails[];
+  const sortedLocations = sortBy(locations, ["name"]);
 
   return (
     <div>
@@ -26,10 +24,10 @@ const SidebarLocationSection: React.FC<SidebarLocationSectionProps> = ({
           return (
             <div className="text-secondary/70 flex justify-between items-center">
               <p className="truncate max-w-[85%]">{l.name}</p>
-              {isLocationCardDetails(l) && !!l.averagePrice && (
+              {!isAccommodationDetails(l) && !!l.price && (
                 <div>
                   <span>{userCurrencySymbol}</span>
-                  <span>{l.averagePrice}</span>
+                  <span>{l.price}</span>
                 </div>
               )}
             </div>
@@ -40,10 +38,10 @@ const SidebarLocationSection: React.FC<SidebarLocationSectionProps> = ({
   );
 };
 
-const isLocationCardDetails = (
-  location: AccommodationRow | LocationCardDetails
-): location is LocationCardDetails => {
-  return "averagePrice" in location;
+const isAccommodationDetails = (
+  location: LocationDetails
+): location is AccommodationDetails => {
+  return "pricePerNightPerPerson" in location;
 };
 
 export default SidebarLocationSection;
