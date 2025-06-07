@@ -6,7 +6,13 @@ import Map from "react-map-gl/mapbox";
 import { useParams } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../hooks/useAuth";
+import { useHotToast } from "../../hooks/useHotToast";
 import ErrorPage from "../error/ErrorPage";
+import { LoadingState } from "../landing-page/LandingPage";
+import LocationSearch from "./components/LocationSearch";
+import MapViewSidebarSelector, {
+  MapViewSidebarSelectorOptions,
+} from "./components/MapViewSidebarSelector";
 import CondensedTripHeader from "./components/sections/CondensedTripHeader";
 import Header from "./components/sections/Header";
 import {
@@ -15,19 +21,14 @@ import {
   getFoodLocalStorageKey,
 } from "./components/sections/helpers";
 import Itinerary from "./components/sections/Itinerary";
+import SidebarLocationSection from "./components/SidebarLocationSection";
 import { getMapMarker } from "./helpers";
 import { useGetAccommodation } from "./hooks/getters/useGetAccommodation";
 import { useGetActivities } from "./hooks/getters/useGetActivities";
 import { useGetFood } from "./hooks/getters/useGetFood";
-import useGetTrip from "./hooks/getters/useGetTrip";
-import { LoadingState } from "../landing-page/LandingPage";
-import { useHotToast } from "../../hooks/useHotToast";
 import { useGetItinerary } from "./hooks/getters/useGetItinerary";
+import useGetTrip from "./hooks/getters/useGetTrip";
 import { AccommodationDetails, LocationDetails } from "./types";
-import MapViewSidebarSelector, {
-  MapViewSidebarSelectorOptions,
-} from "./components/MapViewSidebarSelector";
-import SidebarLocationSection from "./components/SidebarLocationSection";
 
 const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -46,6 +47,12 @@ const MapViewPage = () => {
 
 interface MapViewProps {
   tripId: string;
+}
+
+enum LocationCategories {
+  ACCOMMODATION = "accommodation",
+  FOOD = "food",
+  ACTIVITIES = "activities",
 }
 
 const MapView: React.FC<MapViewProps> = ({ tripId }) => {
@@ -108,6 +115,10 @@ const MapView: React.FC<MapViewProps> = ({ tripId }) => {
   const [selectedView, setSelectedView] =
     useState<MapViewSidebarSelectorOptions>("itinerary");
 
+  const [selectedLocationSection, setSelectedLocationSection] = useState(
+    LocationCategories.ACCOMMODATION
+  );
+
   if (showLoading) {
     return <LoadingState />;
   }
@@ -146,15 +157,15 @@ const MapView: React.FC<MapViewProps> = ({ tripId }) => {
   const sidebarLocationSections = [
     {
       locations: accommodation,
-      title: "accommodation",
+      title: LocationCategories.ACCOMMODATION,
     },
     {
       locations: food,
-      title: "food",
+      title: LocationCategories.FOOD,
     },
     {
       locations: activities,
-      title: "activities",
+      title: LocationCategories.ACTIVITIES,
     },
   ];
 
@@ -178,16 +189,23 @@ const MapView: React.FC<MapViewProps> = ({ tripId }) => {
               error={itineraryError}
             />
           ) : (
-            <div className="space-y-5">
-              {sidebarLocationSections.map((location) => {
-                return (
-                  <SidebarLocationSection
-                    locations={location.locations}
-                    title={location.title}
-                    userCurrencySymbol={trip.currency?.otherInfo?.symbol}
-                  />
-                );
-              })}
+            <div className="space-y-3">
+              <LocationSearch inputBoxClassname="w-full" />
+              <div className="space-y-5 px-2">
+                {sidebarLocationSections.map((location) => {
+                  return (
+                    <SidebarLocationSection
+                      locations={location.locations}
+                      title={location.title}
+                      userCurrencySymbol={trip.currency?.otherInfo?.symbol}
+                      selected={selectedLocationSection === location.title}
+                      onSelect={() =>
+                        setSelectedLocationSection(location.title)
+                      }
+                    />
+                  );
+                })}
+              </div>
             </div>
           )}
         </div>
