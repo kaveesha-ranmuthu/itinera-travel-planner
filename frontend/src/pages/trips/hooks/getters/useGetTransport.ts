@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db, auth } from "../../../../firebase-config";
-import { TransportRow } from "../../components/sections/Transport";
 import { onAuthStateChanged } from "firebase/auth";
+import { TransportationDetails } from "../../types";
 
 export const useGetTransport = (tripId: string) => {
-  const [transportRows, setTransportRows] = useState<TransportRow[]>([]);
+  const [transportRows, setTransportRows] = useState<TransportationDetails[]>(
+    []
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,8 +30,8 @@ export const useGetTransport = (tripId: string) => {
       unsubscribeFirestore = onSnapshot(
         q,
         (snapshot) => {
-          const rows: TransportRow[] = snapshot.docs.map((doc) => ({
-            ...(doc.data() as TransportRow),
+          const rows: TransportationDetails[] = snapshot.docs.map((doc) => ({
+            ...(doc.data() as TransportationDetails),
           }));
           setTransportRows(rows);
           setLoading(false);

@@ -26,24 +26,7 @@ import {
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
-
-export interface AccommodationRow {
-  id: string;
-  name: string;
-  totalPrice: number;
-  checkIn: string;
-  checkOut: string;
-  pricePerNightPerPerson: number;
-  mainPhotoName: string;
-  formattedAddress: string;
-  location: {
-    name: string;
-    latitude?: number;
-    longitude?: number;
-  };
-  checked: boolean;
-  createdAt: string;
-}
+import { AccommodationDetails } from "../../types";
 
 enum SortOptions {
   ID = "id",
@@ -63,7 +46,7 @@ interface AccommodationProps {
   startDate: string;
   endDate: string;
   tripId: string;
-  accommodationRows: AccommodationRow[];
+  accommodationRows: AccommodationDetails[];
   error: string | null;
 }
 
@@ -80,12 +63,12 @@ const Accommodation: React.FC<AccommodationProps> = ({
   const { settings } = useAuth();
   const { deleteAccommodationRow } = useSaveAccommodation();
   const { notify } = useHotToast();
-  const [deleteRow, setDeleteRow] = useState<AccommodationRow | null>(null);
+  const [deleteRow, setDeleteRow] = useState<AccommodationDetails | null>(null);
   const finalSaveData = localStorage.getItem(
     getAccommodationLocalStorageKey(tripId)
   );
 
-  const allRows: AccommodationRow[] = useMemo(
+  const allRows: AccommodationDetails[] = useMemo(
     () => (finalSaveData ? JSON.parse(finalSaveData).data : accommodationRows),
     [finalSaveData, accommodationRows]
   );
@@ -103,12 +86,12 @@ const Accommodation: React.FC<AccommodationProps> = ({
   >([]);
   const [selectedFilterPrices, setSelectedFilterPrices] = useState<number[]>();
 
-  const defaultRow: AccommodationRow = {
+  const defaultRow: AccommodationDetails = {
     id: crypto.randomUUID(),
     name: "",
-    totalPrice: 0,
-    checkIn: `${startDate}T00:00`,
-    checkOut: `${endDate}T00:00`,
+    price: 0,
+    startTime: `${startDate}T00:00`,
+    endTime: `${endDate}T00:00`,
     pricePerNightPerPerson: 0,
     mainPhotoName: "",
     formattedAddress: "",
@@ -119,13 +102,13 @@ const Accommodation: React.FC<AccommodationProps> = ({
     createdAt: new Date().toISOString(),
   };
 
-  const handleFormSubmit = (values: { data: AccommodationRow[] }) => {
+  const handleFormSubmit = (values: { data: AccommodationDetails[] }) => {
     values.data.forEach((row) => {
-      const { checkIn, checkOut } = row;
-      const checkInDate = moment(checkIn);
-      const checkOutDate = moment(checkOut);
+      const { startTime, endTime } = row;
+      const checkInDate = moment(startTime);
+      const checkOutDate = moment(endTime);
       const nights = checkOutDate.diff(checkInDate, "days");
-      const pricePerNightPerPerson = row.totalPrice / nights / numberOfPeople;
+      const pricePerNightPerPerson = (row.price ?? 0) / nights / numberOfPeople;
       row.pricePerNightPerPerson = round(pricePerNightPerPerson, 2);
     });
     localStorage.setItem(
@@ -177,11 +160,11 @@ const Accommodation: React.FC<AccommodationProps> = ({
     );
   };
 
-  const formik = useFormik<{ data: AccommodationRow[] }>({
+  const formik = useFormik<{ data: AccommodationDetails[] }>({
     initialValues: {
       data: sortedAccommodationRows.length
         ? sortedAccommodationRows
-        : ([] as AccommodationRow[]),
+        : ([] as AccommodationDetails[]),
     },
     enableReinitialize: true,
     onSubmit: async (values) => {
@@ -214,7 +197,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
 
   const getLocationCardDetails = (
     location: LocationSearchResult
-  ): AccommodationRow => {
+  ): AccommodationDetails => {
     return {
       ...defaultRow,
       id: location.id || crypto.randomUUID(),
@@ -281,7 +264,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
                               return;
                             }
                             if (!location) return;
-                            const newRow: AccommodationRow =
+                            const newRow: AccommodationDetails =
                               getLocationCardDetails(location);
 
                             arrayHelpers.push(newRow);
@@ -448,7 +431,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                     <Field
                                       type="number"
                                       className="focus:outline-0 ml-2 w-full"
-                                      name={`data.${index}.totalPrice`}
+                                      name={`data.${index}.price`}
                                     />
                                   </div>
                                 </Table.Cell>
@@ -463,7 +446,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                   <Field
                                     type="datetime-local"
                                     className="focus:outline-0 w-full"
-                                    name={`data.${index}.checkIn`}
+                                    name={`data.${index}.startTime`}
                                   />
                                 </Table.Cell>
                                 <Table.Cell
@@ -477,7 +460,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                   <Field
                                     type="datetime-local"
                                     className="focus:outline-0 w-full"
-                                    name={`data.${index}.checkOut`}
+                                    name={`data.${index}.endTime`}
                                   />
                                 </Table.Cell>
                                 <Table.Cell

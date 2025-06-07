@@ -7,8 +7,6 @@ import { useParams } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../hooks/useAuth";
 import ErrorPage from "../error/ErrorPage";
-import { LocationCardDetails } from "./components/LocationWithPhotoCard";
-import { AccommodationRow } from "./components/sections/Accommodation";
 import CondensedTripHeader from "./components/sections/CondensedTripHeader";
 import Header from "./components/sections/Header";
 import {
@@ -25,6 +23,7 @@ import useGetTrip from "./hooks/getters/useGetTrip";
 import { LoadingState } from "../landing-page/LandingPage";
 import { useHotToast } from "../../hooks/useHotToast";
 import { useGetItinerary } from "./hooks/getters/useGetItinerary";
+import { AccommodationDetails, LocationDetails } from "./types";
 
 const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -125,15 +124,15 @@ const MapView: React.FC<MapViewProps> = ({ tripId }) => {
     getActivitiesLocalStorageKey(tripId)
   );
 
-  const accommodation: AccommodationRow[] = accommodationLocalStorage
+  const accommodation: AccommodationDetails[] = accommodationLocalStorage
     ? JSON.parse(accommodationLocalStorage).data
     : accommodationRows;
 
-  const food: LocationCardDetails[] = foodLocalStorage
+  const food: LocationDetails[] = foodLocalStorage
     ? JSON.parse(foodLocalStorage).data
     : foodItems;
 
-  const activities: LocationCardDetails[] = activitiesLocalStorage
+  const activities: LocationDetails[] = activitiesLocalStorage
     ? JSON.parse(activitiesLocalStorage).data
     : activitiesData;
 
@@ -163,9 +162,9 @@ const MapView: React.FC<MapViewProps> = ({ tripId }) => {
 };
 
 interface MapProps {
-  accommodation: AccommodationRow[];
-  food: LocationCardDetails[];
-  activities: LocationCardDetails[];
+  accommodation: AccommodationDetails[];
+  food: LocationDetails[];
+  activities: LocationDetails[];
 }
 
 const CustomMap: React.FC<MapProps> = ({ accommodation, activities, food }) => {

@@ -1,10 +1,12 @@
 import axios from "axios";
-import { IoIosArrowRoundDown, IoIosArrowRoundUp } from "react-icons/io";
-import { TransportRow } from "./Transport";
-import { AccommodationRow } from "./Accommodation";
 import { round, uniqBy } from "lodash";
-import { LocationCardDetails } from "../LocationWithPhotoCard";
+import { IoIosArrowRoundDown, IoIosArrowRoundUp } from "react-icons/io";
 import { LocationSearchResult } from "../LocationSearch";
+import {
+  AccommodationDetails,
+  LocationDetails,
+  TransportationDetails,
+} from "../../types";
 
 export const getAccommodationLocalStorageKey = (tripId: string) =>
   `unsaved-accommodation-${tripId}`;
@@ -102,32 +104,28 @@ export const convertCurrency = async (
 };
 
 export const getEstimatedTransportAndAccommodationCost = (
-  rows: TransportRow[] | AccommodationRow[]
+  rows: TransportationDetails[] | AccommodationDetails[]
 ) => {
   return rows.reduce((acc, row) => {
     if (row.checked) {
-      return acc + row.totalPrice;
+      return acc + row.price;
     } else {
       return acc;
     }
   }, 0);
 };
 
-export const getEstimatedFoodAndActivitiesCost = (
-  rows: LocationCardDetails[]
-) => {
+export const getEstimatedFoodAndActivitiesCost = (rows: LocationDetails[]) => {
   return rows.reduce((acc, row) => {
-    if (row.averagePrice) {
-      return acc + row.averagePrice;
+    if (row.price) {
+      return acc + row.price;
     } else {
       return acc;
     }
   }, 0);
 };
 
-export const getUniqueLocations = (
-  locations: LocationCardDetails[] | AccommodationRow[]
-) => {
+export const getUniqueLocations = (locations: LocationDetails[]) => {
   return uniqBy(
     locations.map((location) => location.location),
     "name"
@@ -136,13 +134,15 @@ export const getUniqueLocations = (
     .filter(Boolean);
 };
 
-export const getPricesList = (locations: LocationCardDetails[]) => {
+export const getPricesList = (locations: LocationDetails[]) => {
   return locations
-    .map((location) => location.averagePrice)
+    .map((location) => location.price)
     .filter(Boolean) as number[];
 };
 
-export const getAccommodationPricesList = (locations: AccommodationRow[]) => {
+export const getAccommodationPricesList = (
+  locations: AccommodationDetails[]
+) => {
   return locations
     .map((location) => location.pricePerNightPerPerson)
     .filter(Boolean) as number[];
@@ -204,9 +204,9 @@ export const saveTripData = async (
   }
 };
 
-export const getLocationCardDetails = (
+export const getLocationDetails = (
   location: LocationSearchResult
-): LocationCardDetails => {
+): LocationDetails => {
   const startPrice = location?.priceRange?.startPrice?.units
     ? parseFloat(location?.priceRange?.startPrice?.units)
     : undefined;
@@ -228,7 +228,7 @@ export const getLocationCardDetails = (
     },
     startPrice,
     endPrice,
-    averagePrice: getAveragePrice(startPrice, endPrice),
+    price: getAveragePrice(startPrice, endPrice) ?? 0,
     mainPhotoName: location?.photos?.[0]?.name || "",
     websiteUri: location?.websiteUri,
     createdAt: new Date().toISOString(),
