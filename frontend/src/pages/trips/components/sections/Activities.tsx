@@ -11,7 +11,6 @@ import InfoTooltip from "../InfoTooltip";
 import ListSettings from "../ListSettings";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
 import {
-  LocationCardDetails,
   LocationListItem,
   LocationWithPhotoCard,
 } from "../LocationWithPhotoCard";
@@ -20,20 +19,21 @@ import WarningConfirmationModal from "../WarningConfirmationModal";
 import {
   addTripToLocalStorage,
   getActivitiesLocalStorageKey,
-  getEstimatedFoodAndActivitiesCost,
-  getLocationCardDetails,
+  getEstimatedCost,
+  getLocationDetails,
   getPricesList,
   getUniqueLocations,
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
+import { LocationDetails } from "../../types";
 
 interface ActivitiesProps {
   userCurrencySymbol?: string;
   userCurrencyCode?: string;
   tripId: string;
   error: string | null;
-  activities: LocationCardDetails[];
+  activities: LocationDetails[];
 }
 
 const Activities: React.FC<ActivitiesProps> = ({
@@ -46,7 +46,7 @@ const Activities: React.FC<ActivitiesProps> = ({
   const { settings } = useAuth();
   const { deleteActivity } = useSaveActivities();
   const { notify } = useHotToast();
-  const [itemToDelete, setItemToDelete] = useState<LocationCardDetails | null>(
+  const [itemToDelete, setItemToDelete] = useState<LocationDetails | null>(
     null
   );
   const finalSaveData = localStorage.getItem(
@@ -62,16 +62,16 @@ const Activities: React.FC<ActivitiesProps> = ({
     settings?.preferredDisplay || "gallery"
   );
 
-  const allRows: LocationCardDetails[] = useMemo(
+  const allRows: LocationDetails[] = useMemo(
     () => (finalSaveData ? JSON.parse(finalSaveData).data : activities),
     [finalSaveData, activities]
   );
 
   const sortedRows = sortBy(allRows, "createdAt");
 
-  const formik = useFormik<{ data: LocationCardDetails[] }>({
+  const formik = useFormik<{ data: LocationDetails[] }>({
     initialValues: {
-      data: sortedRows.length ? sortedRows : ([] as LocationCardDetails[]),
+      data: sortedRows.length ? sortedRows : ([] as LocationDetails[]),
     },
     enableReinitialize: true,
     onSubmit: async (values) => {
@@ -79,7 +79,7 @@ const Activities: React.FC<ActivitiesProps> = ({
     },
   });
 
-  const handleFormSubmit = (values: { data: LocationCardDetails[] }) => {
+  const handleFormSubmit = (values: { data: LocationDetails[] }) => {
     localStorage.setItem(
       getActivitiesLocalStorageKey(tripId),
       JSON.stringify(values)
@@ -87,10 +87,7 @@ const Activities: React.FC<ActivitiesProps> = ({
     addTripToLocalStorage(tripId);
   };
 
-  const estimatedTotalCost = round(
-    getEstimatedFoodAndActivitiesCost(formik.values.data),
-    2
-  );
+  const estimatedTotalCost = round(getEstimatedCost(formik.values.data), 2);
 
   const locations = getUniqueLocations(formik.values.data);
   const prices = getPricesList(formik.values.data);
@@ -161,7 +158,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                               return;
                             }
                             if (!location) return;
-                            const newItem = getLocationCardDetails(location);
+                            const newItem = getLocationDetails(location);
                             arrayHelpers.push(newItem);
                             formik.submitForm();
                           }}
@@ -189,7 +186,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                                 ) &&
                                 isPriceIncluded(
                                   selectedFilterPrices,
-                                  activity.averagePrice
+                                  activity.price
                                 );
 
                               if (!isIncluded) {
@@ -206,7 +203,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                                           setItemToDelete(activity);
                                         }}
                                         locationFieldName={`data.${index}.location.name`}
-                                        priceFieldName={`data.${index}.averagePrice`}
+                                        priceFieldName={`data.${index}.price`}
                                       />
                                     </Grid>
                                   ) : (
@@ -218,7 +215,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                                           setItemToDelete(activity);
                                         }}
                                         locationFieldName={`data.${index}.location.name`}
-                                        priceFieldName={`data.${index}.averagePrice`}
+                                        priceFieldName={`data.${index}.price`}
                                       />
                                     </Grid>
                                   )}

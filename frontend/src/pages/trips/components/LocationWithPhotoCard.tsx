@@ -3,26 +3,10 @@ import React, { useState } from "react";
 import { PiTrashSimple } from "react-icons/pi";
 import { MdPhoto } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
-
-export interface LocationCardDetails {
-  id: string;
-  name: string;
-  location: {
-    name: string;
-    latitude?: number;
-    longitude?: number;
-  };
-  startPrice?: number;
-  endPrice?: number;
-  averagePrice?: number;
-  mainPhotoName: string;
-  createdAt: string;
-  websiteUri?: string;
-  formattedAddress: string;
-}
+import { LocationDetails } from "../types";
 
 interface LocationItemProps {
-  location: LocationCardDetails;
+  location: LocationDetails;
   currencySymbol?: string;
   onDelete?: () => void;
   locationFieldName: string;

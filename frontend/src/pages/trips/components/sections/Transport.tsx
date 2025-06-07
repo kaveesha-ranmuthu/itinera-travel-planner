@@ -16,22 +16,11 @@ import Table from "../Table";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 import {
   addTripToLocalStorage,
-  getEstimatedTransportAndAccommodationCost,
+  getEstimatedCost,
   getSortArrowComponent,
   getTransportLocalStorageKey,
 } from "./helpers";
-
-export interface TransportRow {
-  id: string;
-  name: string;
-  totalPrice: number;
-  departureTime: string;
-  arrivalTime: string;
-  from: string;
-  to: string;
-  checked: boolean;
-  createdAt: string;
-}
+import { TransportationDetails } from "../../types";
 
 enum SortOptions {
   ID = "id",
@@ -49,7 +38,7 @@ interface TransportProps {
   startDate: string;
   endDate: string;
   tripId: string;
-  transportRows: TransportRow[];
+  transportRows: TransportationDetails[];
   error: string | null;
 }
 
@@ -63,12 +52,14 @@ const Transport: React.FC<TransportProps> = ({
 }) => {
   const { settings } = useAuth();
   const { deleteTransportRow } = useSaveTransport();
-  const [deleteRow, setDeleteRow] = useState<TransportRow | null>(null);
+  const [deleteRow, setDeleteRow] = useState<TransportationDetails | null>(
+    null
+  );
   const finalSaveData = localStorage.getItem(
     getTransportLocalStorageKey(tripId)
   );
 
-  const allRows: TransportRow[] = useMemo(
+  const allRows: TransportationDetails[] = useMemo(
     () => (finalSaveData ? JSON.parse(finalSaveData).data : transportRows),
     [finalSaveData, transportRows]
   );
@@ -81,19 +72,19 @@ const Transport: React.FC<TransportProps> = ({
     orderBy(allRows, sortOption, sortDirection)
   );
 
-  const defaultRow: TransportRow = {
+  const defaultRow: TransportationDetails = {
     id: crypto.randomUUID(),
     name: "",
-    totalPrice: 0,
-    departureTime: `${startDate}T00:00`,
-    arrivalTime: `${endDate}T00:00`,
-    from: "",
-    to: "",
+    price: 0,
+    startTime: `${startDate}T00:00`,
+    endTime: `${endDate}T00:00`,
+    originCity: "",
+    destinationCity: "",
     checked: false,
     createdAt: new Date().toISOString(),
   };
 
-  const handleFormSubmit = (values: { data: TransportRow[] }) => {
+  const handleFormSubmit = (values: { data: TransportationDetails[] }) => {
     localStorage.setItem(
       getTransportLocalStorageKey(tripId),
       JSON.stringify(values)
@@ -161,10 +152,7 @@ const Transport: React.FC<TransportProps> = ({
             handleFormSubmit(values);
           }}
           component={({ values, setFieldValue, submitForm }) => {
-            const estimatedTotalCost = round(
-              getEstimatedTransportAndAccommodationCost(values.data),
-              2
-            );
+            const estimatedTotalCost = round(getEstimatedCost(values.data), 2);
 
             return (
               <Form className="mt-2" onChange={submitForm}>
@@ -298,7 +286,7 @@ const Transport: React.FC<TransportProps> = ({
                                       <Field
                                         type="number"
                                         className="focus:outline-0 ml-2 w-full"
-                                        name={`data.${index}.totalPrice`}
+                                        name={`data.${index}.price`}
                                       />
                                     </div>
                                   </Table.Cell>
@@ -313,7 +301,7 @@ const Transport: React.FC<TransportProps> = ({
                                     <Field
                                       type="datetime-local"
                                       className="focus:outline-0 w-full"
-                                      name={`data.${index}.departureTime`}
+                                      name={`data.${index}.startTime`}
                                     />
                                   </Table.Cell>
                                   <Table.Cell
@@ -327,7 +315,7 @@ const Transport: React.FC<TransportProps> = ({
                                     <Field
                                       type="datetime-local"
                                       className="focus:outline-0 w-full"
-                                      name={`data.${index}.arrivalTime`}
+                                      name={`data.${index}.endTime`}
                                     />
                                   </Table.Cell>
                                   <Table.Cell
@@ -341,7 +329,7 @@ const Transport: React.FC<TransportProps> = ({
                                     <Field
                                       type="text"
                                       className="focus:outline-0 w-full"
-                                      name={`data.${index}.from`}
+                                      name={`data.${index}.originCity`}
                                     />
                                   </Table.Cell>
                                   <Table.Cell
@@ -355,7 +343,7 @@ const Transport: React.FC<TransportProps> = ({
                                     <Field
                                       type="text"
                                       className="focus:outline-0 w-full"
-                                      name={`data.${index}.to`}
+                                      name={`data.${index}.destinationCity`}
                                     />
                                   </Table.Cell>
                                   <Table.Cell

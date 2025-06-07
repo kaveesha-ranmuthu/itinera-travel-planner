@@ -1,12 +1,12 @@
 import { collection, deleteDoc, doc, writeBatch } from "firebase/firestore";
 import { useCallback } from "react";
 import { auth, db } from "../../../../firebase-config";
-import { LocationCardDetails } from "../../components/LocationWithPhotoCard";
 import { getActivitiesLocalStorageKey } from "../../components/sections/helpers";
+import { LocationDetails } from "../../types";
 
 export const useSaveActivities = () => {
   const saveActivities = useCallback(
-    async (tripId: string, rows: LocationCardDetails[]) => {
+    async (tripId: string, rows: LocationDetails[]) => {
       const user = auth.currentUser;
       if (!user) throw new Error("User not authenticated.");
 

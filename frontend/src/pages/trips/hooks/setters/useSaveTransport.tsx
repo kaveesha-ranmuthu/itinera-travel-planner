@@ -1,11 +1,11 @@
 import { collection, deleteDoc, doc, writeBatch } from "firebase/firestore";
 import { useCallback } from "react";
 import { auth, db } from "../../../../firebase-config";
-import { TransportRow } from "../../components/sections/Transport";
+import { TransportationDetails } from "../../types";
 
 export const useSaveTransport = () => {
   const saveTransport = useCallback(
-    async (tripId: string, transportRows: TransportRow[]) => {
+    async (tripId: string, transportRows: TransportationDetails[]) => {
       const user = auth.currentUser;
       if (!user) throw new Error("User not authenticated.");
 

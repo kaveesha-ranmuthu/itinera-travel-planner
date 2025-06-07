@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db, auth } from "../../../../firebase-config";
-import { LocationCardDetails } from "../../components/LocationWithPhotoCard";
 import { onAuthStateChanged } from "firebase/auth";
+import { LocationDetails } from "../../types";
 
 export const useGetActivities = (tripId: string) => {
-  const [activities, setActivities] = useState<LocationCardDetails[]>([]);
+  const [activities, setActivities] = useState<LocationDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,8 +28,8 @@ export const useGetActivities = (tripId: string) => {
       unsubscribeFirestore = onSnapshot(
         q,
         (snapshot) => {
-          const rows: LocationCardDetails[] = snapshot.docs.map((doc) => ({
-            ...(doc.data() as LocationCardDetails),
+          const rows: LocationDetails[] = snapshot.docs.map((doc) => ({
+            ...(doc.data() as LocationDetails),
           }));
           setActivities(rows);
           setLoading(false);

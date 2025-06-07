@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db, auth } from "../../../../firebase-config";
-import { LocationCardDetails } from "../../components/LocationWithPhotoCard";
 import { onAuthStateChanged } from "firebase/auth";
+import { LocationDetails } from "../../types";
 
 export const useGetFood = (tripId: string) => {
-  const [foodItems, setFoodItems] = useState<LocationCardDetails[]>([]);
+  const [foodItems, setFoodItems] = useState<LocationDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,8 +25,8 @@ export const useGetFood = (tripId: string) => {
       unsubscribe = onSnapshot(
         q,
         (snapshot) => {
-          const rows: LocationCardDetails[] = snapshot.docs.map((doc) => ({
-            ...(doc.data() as LocationCardDetails),
+          const rows: LocationDetails[] = snapshot.docs.map((doc) => ({
+            ...(doc.data() as LocationDetails),
           }));
           setFoodItems(rows);
           setLoading(false);

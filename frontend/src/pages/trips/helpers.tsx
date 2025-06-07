@@ -1,11 +1,8 @@
 import { Marker } from "react-map-gl/mapbox";
-import {
-  LocationCardDetails,
-  PhotoCard,
-} from "./components/LocationWithPhotoCard";
-import { AccommodationRow } from "./components/sections/Accommodation";
-import SimpleTooltip from "./components/SimpleTooltip";
 import { twMerge } from "tailwind-merge";
+import { PhotoCard } from "./components/LocationWithPhotoCard";
+import SimpleTooltip from "./components/SimpleTooltip";
+import { LocationDetails } from "./types";
 
 export const compressAndConvertToBase64 = (
   file: File,
@@ -55,7 +52,7 @@ export const compressAndConvertToBase64 = (
 };
 
 export const getMapMarker = (
-  location: AccommodationRow | LocationCardDetails,
+  location: LocationDetails,
   markerColour: string,
   icon: React.ReactNode
 ) => {

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db, auth } from "../../../../firebase-config"; // Update path as needed
-import { AccommodationRow } from "../../components/sections/Accommodation";
 import { onAuthStateChanged } from "firebase/auth";
+import { AccommodationDetails } from "../../types";
 
 export const useGetAccommodation = (tripId: string) => {
   const [accommodationRows, setAccommodationRows] = useState<
-    AccommodationRow[]
+    AccommodationDetails[]
   >([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,8 +30,8 @@ export const useGetAccommodation = (tripId: string) => {
       unsubscribe = onSnapshot(
         q,
         (snapshot) => {
-          const rows: AccommodationRow[] = snapshot.docs.map((doc) => ({
-            ...(doc.data() as AccommodationRow),
+          const rows: AccommodationDetails[] = snapshot.docs.map((doc) => ({
+            ...(doc.data() as AccommodationDetails),
           }));
           setAccommodationRows(rows);
           setLoading(false);
