@@ -26,6 +26,8 @@ import {
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
+import { useSaving } from "../../../../saving-provider/useSaving";
+import { twMerge } from "tailwind-merge";
 
 interface FoodProps {
   userCurrencySymbol?: string;
@@ -44,6 +46,7 @@ const Food: React.FC<FoodProps> = ({
 }) => {
   const { settings } = useAuth();
   const { notify } = useHotToast();
+  const { isSaving } = useSaving();
 
   const [itemToDelete, setItemToDelete] = useState<LocationDetails | null>(
     null
@@ -110,7 +113,12 @@ const Food: React.FC<FoodProps> = ({
   }, [locations, prices, selectedFilterLocations, selectedFilterPrices]);
 
   return (
-    <div className="text-secondary">
+    <div
+      className={twMerge(
+        "text-secondary",
+        isSaving && "pointer-events-none opacity-50"
+      )}
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <h1 className="text-3xl">food</h1>

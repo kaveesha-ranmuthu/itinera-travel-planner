@@ -27,6 +27,7 @@ import {
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
+import { useSaving } from "../../../../saving-provider/useSaving";
 
 enum SortOptions {
   ID = "id",
@@ -66,6 +67,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
   const finalSaveData = localStorage.getItem(
     getAccommodationLocalStorageKey(tripId)
   );
+  const { isSaving } = useSaving();
 
   const allRows: AccommodationDetails[] = useMemo(
     () => (finalSaveData ? JSON.parse(finalSaveData).data : accommodationRows),
@@ -199,7 +201,12 @@ const Accommodation: React.FC<AccommodationProps> = ({
   }, [locations, prices, selectedFilterLocations, selectedFilterPrices]);
 
   return (
-    <div className="text-secondary">
+    <div
+      className={twMerge(
+        "text-secondary",
+        isSaving && "pointer-events-none opacity-50"
+      )}
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <h1 className="text-3xl">accommodation</h1>
