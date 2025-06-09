@@ -203,7 +203,8 @@ export const getLocationDetails = (
     : undefined;
 
   return {
-    id: location.id || crypto.randomUUID(),
+    id: crypto.randomUUID(),
+    googleId: location?.id,
     name: location?.displayName?.text || "",
     formattedAddress: location?.formattedAddress || "",
     location: {

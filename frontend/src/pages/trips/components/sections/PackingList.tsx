@@ -18,6 +18,7 @@ import {
   addTripToLocalStorage,
   getPackingListLocalStorageKey,
 } from "./helpers";
+import { useSaving } from "../../../../saving-provider/useSaving";
 
 interface PackingListProps {
   tripId: string;
@@ -29,6 +30,7 @@ const PackingList: React.FC<PackingListProps> = ({
   savedPackingList,
 }) => {
   const { settings } = useAuth();
+  const { isSaving } = useSaving();
   const lastChanges = localStorage.getItem(
     getPackingListLocalStorageKey(tripId)
   );
@@ -65,7 +67,12 @@ const PackingList: React.FC<PackingListProps> = ({
   if (!editor) return null;
 
   return (
-    <div>
+    <div
+      className={twMerge(
+        "text-secondary",
+        isSaving && "pointer-events-none opacity-50"
+      )}
+    >
       <div className="flex items-center space-x-3 mb-5">
         <h1 className="text-3xl">packing list</h1>
         <InfoTooltip content="Create a packing list from scratch or quickly copy over your packing list template. You can set up your template in advanced settings." />

@@ -16,6 +16,7 @@ import { SelectOption } from "../Select";
 import SimpleTooltip from "../SimpleTooltip";
 import Tasklist from "../Tasklist";
 import FadeInSection from "../FadeInSection";
+import { useSaving } from "../../../../saving-provider/useSaving";
 
 type HeaderIcon = {
   icon: React.ReactNode;
@@ -46,6 +47,7 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
     error: currencyFetchError,
     loading: currencyFetchLoading,
   } = useGetCurrencies();
+  const { isSaving } = useSaving();
 
   const userCurrency = trip.currency?.name;
   const countriesVisiting = trip.countries.map((country) => country.id);
@@ -131,7 +133,12 @@ const HeaderIcons: React.FC<HeaderIconsProps> = ({
     },
   ];
   return (
-    <FadeInSection className="space-x-2 mt-4 w-full flex items-center justify-end sticky top-2 z-10">
+    <FadeInSection
+      className={twMerge(
+        "space-x-2 mt-4 w-full flex items-center justify-end sticky top-2 z-10",
+        isSaving && "pointer-events-none opacity-50"
+      )}
+    >
       {headerIcons.map((icon, index) => (
         <HeaderIconButton
           key={index}

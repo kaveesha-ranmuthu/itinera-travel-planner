@@ -4,7 +4,7 @@ import { round, sortBy } from "lodash";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useHotToast } from "../../../../hooks/useHotToast";
-import { useSaveActivities } from "../../hooks/setters/useSaveActivities";
+import { LocationDetails } from "../../types";
 import EstimatedCostContainer from "../EstimatedCostContainer";
 import { ErrorBox, NoDataBox } from "../InfoBox";
 import InfoTooltip from "../InfoTooltip";
@@ -26,7 +26,8 @@ import {
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
-import { LocationDetails } from "../../types";
+import { useSaving } from "../../../../saving-provider/useSaving";
+import { twMerge } from "tailwind-merge";
 
 interface ActivitiesProps {
   userCurrencySymbol?: string;
@@ -44,8 +45,8 @@ const Activities: React.FC<ActivitiesProps> = ({
   activities,
 }) => {
   const { settings } = useAuth();
-  const { deleteActivity } = useSaveActivities();
   const { notify } = useHotToast();
+  const { isSaving } = useSaving();
   const [itemToDelete, setItemToDelete] = useState<LocationDetails | null>(
     null
   );
@@ -87,10 +88,17 @@ const Activities: React.FC<ActivitiesProps> = ({
     addTripToLocalStorage(tripId);
   };
 
-  const estimatedTotalCost = round(getEstimatedCost(formik.values.data), 2);
+  const estimatedTotalCost = round(
+    getEstimatedCost(formik.values.data.filter((row) => !row._deleted)),
+    2
+  );
 
-  const locations = getUniqueLocations(formik.values.data);
-  const prices = getPricesList(formik.values.data);
+  const locations = getUniqueLocations(
+    formik.values.data.filter((row) => !row._deleted)
+  );
+  const prices = getPricesList(
+    formik.values.data.filter((row) => !row._deleted)
+  );
 
   useEffect(() => {
     if (
@@ -109,13 +117,18 @@ const Activities: React.FC<ActivitiesProps> = ({
   }, [locations, prices, selectedFilterLocations, selectedFilterPrices]);
 
   return (
-    <div className="text-secondary">
+    <div
+      className={twMerge(
+        "text-secondary",
+        isSaving && "pointer-events-none opacity-50"
+      )}
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <h1 className="text-3xl">activities</h1>
           <InfoTooltip content="Find things to do by searching for a specific place or a general term like 'Sydney activities'." />
         </div>
-        {!!formik.values.data.length && (
+        {!!formik.values.data.filter((row) => !row._deleted).length && (
           <ListSettings
             locations={locations}
             selectedLocations={selectedFilterLocations}
@@ -147,9 +160,9 @@ const Activities: React.FC<ActivitiesProps> = ({
                           onSelectLocation={(
                             location: LocationSearchResult
                           ) => {
-                            const locationIds = formik.values.data.map(
-                              (location) => location.id
-                            );
+                            const locationIds = formik.values.data
+                              .filter((row) => !row._deleted)
+                              .map((location) => location.googleId);
                             if (locationIds.includes(location.id)) {
                               notify(
                                 "This location has already been added.",
@@ -170,7 +183,8 @@ const Activities: React.FC<ActivitiesProps> = ({
                           backgroundColor="bg-secondary/20"
                         />
                       </div>
-                      {!formik.values.data.length ? (
+                      {!formik.values.data.filter((row) => !row._deleted)
+                        .length ? (
                         <NoDataBox />
                       ) : (
                         <div className="mt-4">
@@ -180,6 +194,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                           >
                             {formik.values.data.map((activity, index) => {
                               const isIncluded =
+                                !activity._deleted &&
                                 isLocationIncluded(
                                   selectedFilterLocations,
                                   activity.location.name
@@ -225,11 +240,11 @@ const Activities: React.FC<ActivitiesProps> = ({
                                     isOpen={itemToDelete?.id === activity.id}
                                     onClose={() => setItemToDelete(null)}
                                     onConfirm={() => {
-                                      if (!itemToDelete) return;
-                                      arrayHelpers.remove(index);
+                                      formik.setFieldValue(
+                                        `data.${index}._deleted`,
+                                        true
+                                      );
                                       formik.submitForm();
-                                      deleteActivity(tripId, itemToDelete.id);
-                                      setItemToDelete(null);
                                     }}
                                     lightOpacity={true}
                                   />

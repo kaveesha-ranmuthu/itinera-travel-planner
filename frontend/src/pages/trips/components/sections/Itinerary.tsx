@@ -25,6 +25,7 @@ import EditorBubbleMenu from "../EditorBubbleMenu";
 import { ErrorBox } from "../InfoBox";
 import InfoTooltip from "../InfoTooltip";
 import { addTripToLocalStorage, getItineraryLocalStorageKey } from "./helpers";
+import { useSaving } from "../../../../saving-provider/useSaving";
 export interface ItineraryDetails {
   id: string;
   dayNumber: number;
@@ -52,6 +53,8 @@ const Itinerary: React.FC<ItineraryProps> = ({
   const finalSaveData = localStorage.getItem(
     getItineraryLocalStorageKey(tripId)
   );
+
+  const { isSaving } = useSaving();
 
   const savedItinerary: ItineraryDetails[] = useMemo(
     () => (finalSaveData ? JSON.parse(finalSaveData).itinerary : itinerary),
@@ -85,7 +88,12 @@ const Itinerary: React.FC<ItineraryProps> = ({
   };
 
   return (
-    <div className="text-secondary">
+    <div
+      className={twMerge(
+        "text-secondary",
+        isSaving && "pointer-events-none opacity-50"
+      )}
+    >
       {showHeader && (
         <div className="flex items-center space-x-3 mb-5">
           <h1 className="text-3xl">itinerary</h1>

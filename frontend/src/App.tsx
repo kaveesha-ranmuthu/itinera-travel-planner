@@ -13,20 +13,28 @@ import { useEffect, useState } from "react";
 import { saveTripData } from "./pages/trips/components/sections/helpers";
 import useSaveAllData from "./pages/trips/hooks/setters/useSaveAllData";
 import AdvancedSettings from "./pages/authentication/AdvancedSettings";
+import { useSaving } from "./saving-provider/useSaving";
 
 function App() {
   const { user, loading } = useAuth();
+  const { setIsSaving } = useSaving();
   const { saveAllData } = useSaveAllData();
   const [showLoading, setShowLoading] = useState(true);
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      await saveTripData(saveAllData);
+      try {
+        setIsSaving(true);
+        await saveTripData(saveAllData);
+      } finally {
+        setIsSaving(false);
+      }
     }, 5 * 60 * 1000);
 
     return () => {
       clearInterval(interval);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [saveAllData]);
 
   useEffect(() => {
