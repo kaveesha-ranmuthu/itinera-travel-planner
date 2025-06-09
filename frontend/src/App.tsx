@@ -22,7 +22,7 @@ function App() {
   useEffect(() => {
     const interval = setInterval(async () => {
       await saveTripData(saveAllData);
-    }, 5 * 60 * 1000);
+    }, 0.5 * 60 * 1000);
 
     return () => {
       clearInterval(interval);

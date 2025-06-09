@@ -7,7 +7,6 @@ import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useHotToast } from "../../../../hooks/useHotToast";
 import { FontFamily } from "../../../../types";
-import { useSaveAccommodation } from "../../hooks/setters/useSaveAccommodation";
 import { AccommodationDetails } from "../../types";
 import Checkbox from "../Checkbox";
 import EstimatedCostContainer from "../EstimatedCostContainer";
@@ -62,7 +61,6 @@ const Accommodation: React.FC<AccommodationProps> = ({
   error,
 }) => {
   const { settings } = useAuth();
-  const { deleteAccommodationRow } = useSaveAccommodation();
   const { notify } = useHotToast();
   const [deleteRow, setDeleteRow] = useState<AccommodationDetails | null>(null);
   const finalSaveData = localStorage.getItem(
@@ -174,12 +172,17 @@ const Accommodation: React.FC<AccommodationProps> = ({
   });
 
   const estimatedTotalCost = round(
-    getEstimatedCost(formik.values.data) / numberOfPeople,
+    getEstimatedCost(formik.values.data.filter((row) => !row._deleted)) /
+      numberOfPeople,
     2
   );
 
-  const locations = getUniqueLocations(formik.values.data);
-  const prices = getPricesList(formik.values.data);
+  const locations = getUniqueLocations(
+    formik.values.data.filter((row) => !row._deleted)
+  );
+  const prices = getPricesList(
+    formik.values.data.filter((row) => !row._deleted)
+  );
 
   useEffect(() => {
     if (
@@ -202,7 +205,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
           <h1 className="text-3xl">accommodation</h1>
           <InfoTooltip content="Find your accommodation by searching for a specific place or a general term like 'hotel in Tokyo'. Tick the checkboxes to include them in your estimated total cost." />
         </div>
-        {!!formik.values.data.length && (
+        {!!formik.values.data.filter((row) => !row._deleted).length && (
           <ListSettings
             locations={locations}
             selectedLocations={selectedFilterLocations}
@@ -232,9 +235,9 @@ const Accommodation: React.FC<AccommodationProps> = ({
                           onSelectLocation={(
                             location: LocationSearchResult
                           ) => {
-                            const locationIds = formik.values.data.map(
-                              (location) => location.id
-                            );
+                            const locationIds = formik.values.data
+                              .filter((row) => !row._deleted)
+                              .map((location) => location.googleId);
                             if (locationIds.includes(location.id)) {
                               notify(
                                 "This location has already been added.",
@@ -255,7 +258,8 @@ const Accommodation: React.FC<AccommodationProps> = ({
                         backgroundColor="bg-blue-munsell/20"
                       />
                     </div>
-                    {!formik.values.data.length ? (
+                    {!formik.values.data.filter((row) => !row._deleted)
+                      .length ? (
                       <NoDataBox />
                     ) : (
                       <Table>
@@ -263,18 +267,22 @@ const Accommodation: React.FC<AccommodationProps> = ({
                           <Table.Row>
                             <Table.HeaderCell
                               className={
-                                formik.values.data.length ? "" : "border-b-0"
+                                formik.values.data.filter(
+                                  (row) => !row._deleted
+                                ).length
+                                  ? ""
+                                  : "border-b-0"
                               }
                             >
                               <div className="flex items-center space-x-4 w-72">
                                 <Checkbox
-                                  checked={formik.values.data.every(
-                                    (row) => row.checked
-                                  )}
+                                  checked={formik.values.data
+                                    .filter((row) => !row._deleted)
+                                    .every((row) => row.checked)}
                                   onClick={() => {
-                                    const allChecked = formik.values.data.every(
-                                      (row) => row.checked
-                                    );
+                                    const allChecked = formik.values.data
+                                      .filter((row) => !row._deleted)
+                                      .every((row) => row.checked);
                                     formik.values.data.forEach((_, index) => {
                                       formik.setFieldValue(
                                         `data.${index}.checked`,
@@ -290,7 +298,11 @@ const Accommodation: React.FC<AccommodationProps> = ({
                             <Table.HeaderCell
                               className={twMerge(
                                 "w-40",
-                                formik.values.data.length ? "" : "border-b-0"
+                                formik.values.data.filter(
+                                  (row) => !row._deleted
+                                ).length
+                                  ? ""
+                                  : "border-b-0"
                               )}
                             >
                               {getTableHeader(
@@ -301,7 +313,11 @@ const Accommodation: React.FC<AccommodationProps> = ({
                             <Table.HeaderCell
                               className={twMerge(
                                 "w-60",
-                                formik.values.data.length ? "" : "border-b-0"
+                                formik.values.data.filter(
+                                  (row) => !row._deleted
+                                ).length
+                                  ? ""
+                                  : "border-b-0"
                               )}
                             >
                               {getTableHeader(SortOptions.CHECK_IN, "check-in")}
@@ -309,7 +325,11 @@ const Accommodation: React.FC<AccommodationProps> = ({
                             <Table.HeaderCell
                               className={twMerge(
                                 "w-60",
-                                formik.values.data.length ? "" : "border-b-0"
+                                formik.values.data.filter(
+                                  (row) => !row._deleted
+                                ).length
+                                  ? ""
+                                  : "border-b-0"
                               )}
                             >
                               {getTableHeader(
@@ -320,7 +340,11 @@ const Accommodation: React.FC<AccommodationProps> = ({
                             <Table.HeaderCell
                               className={twMerge(
                                 "w-50",
-                                formik.values.data.length ? "" : "border-b-0"
+                                formik.values.data.filter(
+                                  (row) => !row._deleted
+                                ).length
+                                  ? ""
+                                  : "border-b-0"
                               )}
                             >
                               {getTableHeader(
@@ -331,7 +355,11 @@ const Accommodation: React.FC<AccommodationProps> = ({
                             <Table.HeaderCell
                               className={twMerge(
                                 "w-40",
-                                formik.values.data.length ? "" : "border-b-0"
+                                formik.values.data.filter(
+                                  (row) => !row._deleted
+                                ).length
+                                  ? ""
+                                  : "border-b-0"
                               )}
                             >
                               {getTableHeader(SortOptions.LOCATION, "location")}
@@ -339,7 +367,11 @@ const Accommodation: React.FC<AccommodationProps> = ({
                             <Table.HeaderCell
                               className={twMerge(
                                 "w-20",
-                                formik.values.data.length ? "" : "border-b-0"
+                                formik.values.data.filter(
+                                  (row) => !row._deleted
+                                ).length
+                                  ? ""
+                                  : "border-b-0"
                               )}
                             />
                           </Table.Row>
@@ -347,6 +379,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
                         <Table.Body>
                           {formik.values.data.map((row, index) => {
                             const isIncluded =
+                              !row._deleted &&
                               isLocationIncluded(
                                 selectedFilterLocations,
                                 row.location.name
@@ -507,14 +540,11 @@ const Accommodation: React.FC<AccommodationProps> = ({
                                       isOpen={deleteRow?.id === row.id}
                                       onClose={() => setDeleteRow(null)}
                                       onConfirm={() => {
-                                        if (!deleteRow) return;
-                                        arrayHelpers.remove(index);
-                                        formik.submitForm();
-                                        deleteAccommodationRow(
-                                          tripId,
-                                          deleteRow.id
+                                        formik.setFieldValue(
+                                          `data.${index}._deleted`,
+                                          true
                                         );
-                                        setDeleteRow(null);
+                                        formik.submitForm();
                                       }}
                                       lightOpacity={true}
                                     />

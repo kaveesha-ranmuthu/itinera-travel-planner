@@ -4,7 +4,7 @@ import { round, sortBy } from "lodash";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useHotToast } from "../../../../hooks/useHotToast";
-import { useSaveFood } from "../../hooks/setters/useSaveFood";
+import { LocationDetails } from "../../types";
 import EstimatedCostContainer from "../EstimatedCostContainer";
 import { ErrorBox, NoDataBox } from "../InfoBox";
 import InfoTooltip from "../InfoTooltip";
@@ -26,7 +26,6 @@ import {
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
-import { LocationDetails } from "../../types";
 
 interface FoodProps {
   userCurrencySymbol?: string;
@@ -44,7 +43,6 @@ const Food: React.FC<FoodProps> = ({
   foodItems,
 }) => {
   const { settings } = useAuth();
-  const { deleteFoodItem } = useSaveFood();
   const { notify } = useHotToast();
 
   const [itemToDelete, setItemToDelete] = useState<LocationDetails | null>(
@@ -85,10 +83,17 @@ const Food: React.FC<FoodProps> = ({
     },
   });
 
-  const estimatedTotalCost = round(getEstimatedCost(formik.values.data), 2);
+  const estimatedTotalCost = round(
+    getEstimatedCost(formik.values.data.filter((row) => !row._deleted)),
+    2
+  );
 
-  const locations = getUniqueLocations(formik.values.data);
-  const prices = getPricesList(formik.values.data);
+  const locations = getUniqueLocations(
+    formik.values.data.filter((row) => !row._deleted)
+  );
+  const prices = getPricesList(
+    formik.values.data.filter((row) => !row._deleted)
+  );
 
   useEffect(() => {
     if (
@@ -144,9 +149,9 @@ const Food: React.FC<FoodProps> = ({
                             onSelectLocation={(
                               location: LocationSearchResult
                             ) => {
-                              const locationIds = formik.values.data.map(
-                                (location) => location.id
-                              );
+                              const locationIds = formik.values.data
+                                .filter((row) => !row._deleted)
+                                .map((location) => location.googleId);
                               if (locationIds.includes(location.id)) {
                                 notify(
                                   "This location has already been added.",
@@ -167,7 +172,8 @@ const Food: React.FC<FoodProps> = ({
                           backgroundColor="bg-secondary/20"
                         />
                       </div>
-                      {!formik.values.data.length ? (
+                      {!formik.values.data.filter((row) => !row._deleted)
+                        .length ? (
                         <NoDataBox />
                       ) : (
                         <div className="mt-4">
@@ -177,6 +183,7 @@ const Food: React.FC<FoodProps> = ({
                           >
                             {formik.values.data.map((foodPlace, index) => {
                               const isIncluded =
+                                !foodPlace._deleted &&
                                 isLocationIncluded(
                                   selectedFilterLocations,
                                   foodPlace.location.name
@@ -222,11 +229,11 @@ const Food: React.FC<FoodProps> = ({
                                     isOpen={itemToDelete?.id === foodPlace.id}
                                     onClose={() => setItemToDelete(null)}
                                     onConfirm={() => {
-                                      if (!itemToDelete) return;
-                                      arrayHelpers.remove(index);
+                                      formik.setFieldValue(
+                                        `data.${index}._deleted`,
+                                        true
+                                      );
                                       formik.submitForm();
-                                      deleteFoodItem(tripId, itemToDelete.id);
-                                      setItemToDelete(null);
                                     }}
                                     lightOpacity={true}
                                   />
