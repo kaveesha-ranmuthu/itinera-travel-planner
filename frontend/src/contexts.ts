@@ -10,3 +10,13 @@ interface AuthContextType {
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
+
+interface SavingContextType {
+  isSaving: boolean;
+  setIsSaving: (val: boolean) => void;
+}
+
+export const SavingContext = createContext<SavingContextType>({
+  isSaving: false,
+  setIsSaving: () => {},
+});
