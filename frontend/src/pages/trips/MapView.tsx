@@ -18,6 +18,7 @@ import MapViewSidebarSelector, {
 import CondensedTripHeader from "./components/sections/CondensedTripHeader";
 import Header from "./components/sections/Header";
 import {
+  addTripToLocalStorage,
   getAccommodationLocalStorageKey,
   getActivitiesLocalStorageKey,
   getFoodLocalStorageKey,
@@ -33,12 +34,14 @@ import { useGetItinerary } from "./hooks/getters/useGetItinerary";
 import useGetTrip from "./hooks/getters/useGetTrip";
 import { TripData } from "./hooks/getters/useGetTrips";
 import { AccommodationDetails, LocationDetails } from "./types";
+import { useSaving } from "../../saving-provider/useSaving";
 
 const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
 
 const MapViewPage = () => {
   const { tripId } = useParams();
   const { error, loading, trip } = useGetTrip(tripId ?? "");
+
   const { notify } = useHotToast();
 
   const {
@@ -143,7 +146,7 @@ const MapView: React.FC<MapViewProps> = ({
   itineraryError,
 }) => {
   const { settings } = useAuth();
-
+  const { isSaving } = useSaving();
   const { notify } = useHotToast();
 
   const [selectedView, setSelectedView] =
@@ -183,15 +186,15 @@ const MapView: React.FC<MapViewProps> = ({
 
   const sidebarLocationSections = [
     {
-      locations: accommodation,
+      locations: accommodation.filter((item) => !item._deleted),
       title: LocationCategories.ACCOMMODATION,
     },
     {
-      locations: food,
+      locations: food.filter((item) => !item._deleted),
       title: LocationCategories.FOOD,
     },
     {
-      locations: activities,
+      locations: activities.filter((item) => !item._deleted),
       title: LocationCategories.ACTIVITIES,
     },
   ];
@@ -263,8 +266,75 @@ const MapView: React.FC<MapViewProps> = ({
     setActivities(dataToSave);
   };
 
+  const deleteLocalStorage = async (deleteId: string) => {
+    switch (selectedLocationSection) {
+      case LocationCategories.ACCOMMODATION: {
+        const localStorageKey = getAccommodationLocalStorageKey(trip.id);
+        const currentData = accommodation;
+        const dataToSave = currentData.map((d) => {
+          if (d.id === deleteId) {
+            return { ...d, _deleted: true };
+          }
+          return d;
+        });
+        localStorage.setItem(
+          localStorageKey,
+          JSON.stringify({
+            data: dataToSave,
+          })
+        );
+
+        setAccommodation(dataToSave);
+        break;
+      }
+      case LocationCategories.FOOD: {
+        const localStorageKey = getFoodLocalStorageKey(trip.id);
+        const currentData = food;
+        const dataToSave = currentData.map((d) => {
+          if (d.id === deleteId) {
+            return { ...d, _deleted: true };
+          }
+          return d;
+        });
+        localStorage.setItem(
+          localStorageKey,
+          JSON.stringify({
+            data: dataToSave,
+          })
+        );
+        setFood(dataToSave);
+        break;
+      }
+      case LocationCategories.ACTIVITIES: {
+        const localStorageKey = getActivitiesLocalStorageKey(trip.id);
+        const currentData = activities;
+        const dataToSave = currentData.map((d) => {
+          if (d.id === deleteId) {
+            return { ...d, _deleted: true };
+          }
+          return d;
+        });
+        localStorage.setItem(
+          localStorageKey,
+          JSON.stringify({
+            data: dataToSave,
+          })
+        );
+        setActivities(dataToSave);
+        break;
+      }
+    }
+    addTripToLocalStorage(trip.id);
+  };
+
   return (
-    <div className={twMerge("flex relative animate-fade", settings?.font)}>
+    <div
+      className={twMerge(
+        "flex relative animate-fade",
+        settings?.font,
+        isSaving && "opacity-50 cursor-events-none"
+      )}
+    >
       <div className="w-1/3 bg-primary absolute z-10 top-0 left-0 h-full overflow-y-scroll pb-4">
         <Header />
         <div className="px-6 space-y-5">
@@ -302,9 +372,10 @@ const MapView: React.FC<MapViewProps> = ({
                       break;
                     }
                   }
+                  addTripToLocalStorage(trip.id);
                 }}
               />
-              <div className="space-y-5 px-2">
+              <div className="space-y-5 pl-2 pr-1">
                 {sidebarLocationSections.map((location) => {
                   return (
                     <SidebarLocationSection
@@ -316,6 +387,9 @@ const MapView: React.FC<MapViewProps> = ({
                       onSelect={() =>
                         setSelectedLocationSection(location.title)
                       }
+                      onDelete={(locationId) => {
+                        deleteLocalStorage(locationId);
+                      }}
                     />
                   );
                 })}
@@ -325,9 +399,9 @@ const MapView: React.FC<MapViewProps> = ({
         </div>
       </div>
       <CustomMap
-        accommodation={accommodation}
-        food={food}
-        activities={activities}
+        accommodation={accommodation.filter((item) => !item._deleted)}
+        food={food.filter((item) => !item._deleted)}
+        activities={activities.filter((item) => !item._deleted)}
       />
     </div>
   );
