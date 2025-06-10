@@ -35,3 +35,9 @@ export interface TransportationDetails
   originCity: string;
   destinationCity: string;
 }
+
+export enum LocationCategories {
+  ACCOMMODATION = "accommodation",
+  FOOD = "food",
+  ACTIVITIES = "activities",
+}

@@ -1,16 +1,26 @@
 import React from "react";
 
 import { sortBy } from "lodash";
-import { AccommodationDetails, LocationDetails } from "../types";
-import { twMerge } from "tailwind-merge";
 import { IoCloseOutline } from "react-icons/io5";
+import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../hooks/useAuth";
 import { FontFamily } from "../../../types";
+import {
+  AccommodationDetails,
+  LocationCategories,
+  LocationDetails,
+} from "../types";
+import Checkbox from "./Checkbox";
 import WarningConfirmationModal from "./WarningConfirmationModal";
 
-interface SidebarLocationSectionProps {
+export interface SidebarLocationDetails {
   locations: LocationDetails[];
-  title: string;
+  title: LocationCategories;
+  toggleVisibility: (show: boolean) => void;
+  isHidden: boolean;
+}
+
+interface SidebarLocationSectionProps extends SidebarLocationDetails {
   userCurrencySymbol?: string;
   selected: boolean;
   onSelect: () => void;
@@ -24,6 +34,8 @@ const SidebarLocationSection: React.FC<SidebarLocationSectionProps> = ({
   selected,
   onSelect,
   onDelete,
+  toggleVisibility,
+  isHidden,
 }) => {
   const sortedLocations = sortBy(locations, ["name"]);
   const { settings } = useAuth();
@@ -34,15 +46,25 @@ const SidebarLocationSection: React.FC<SidebarLocationSectionProps> = ({
   return (
     <div
       className={twMerge(
-        "cursor-pointer",
         selected
           ? "opacity-100"
-          : "opacity-40 hover:opacity-100 transition ease-in-out duration-300"
+          : "opacity-40 hover:opacity-100 transition ease-in-out duration-500 cursor-pointer"
       )}
       onClick={onSelect}
     >
-      <h1 className="text-2xl mb-1">{title}</h1>
-      <div className="border-l-2 pl-1 border-secondary text-secondary/70">
+      <div className="flex items-center space-x-2">
+        <Checkbox
+          checked={!isHidden}
+          onClick={() => toggleVisibility(!isHidden)}
+          className={twMerge(
+            "w-4 h-4 rounded",
+            settings?.font === FontFamily.HANDWRITTEN && "mt-1",
+            !selected && "pointer-events-none"
+          )}
+        />
+        <h1 className="text-2xl mb-1">{title}</h1>
+      </div>
+      <div className="border-l-2 pl-1 ml-2 border-secondary text-secondary/70">
         {sortedLocations.map((l) => {
           return (
             <div
@@ -54,7 +76,12 @@ const SidebarLocationSection: React.FC<SidebarLocationSectionProps> = ({
             >
               <p className="truncate max-w-[85%]">{l.name}</p>
               {!isAccommodationDetails(l) && !!l.price && (
-                <div className="group-hover:opacity-0 opacity-100 absolute right-3 transition ease-in-out duration-300">
+                <div
+                  className={twMerge(
+                    "opacity-100 absolute right-3 transition ease-in-out duration-300",
+                    selected && "group-hover:opacity-0 "
+                  )}
+                >
                   <span>{userCurrencySymbol}</span>
                   <span>{l.price}</span>
                 </div>
@@ -67,7 +94,7 @@ const SidebarLocationSection: React.FC<SidebarLocationSectionProps> = ({
                   }}
                   size={20}
                   className={twMerge(
-                    "absolute right-3 hover:opacity-80 hover:scale-95 group-hover:opacity-100 opacity-0 text-secondary transition duration-300 ease-in-out",
+                    "absolute cursor-pointer right-3 hover:opacity-80 hover:scale-95 group-hover:opacity-100 opacity-0 text-secondary transition duration-300 ease-in-out",
                     settings?.font === FontFamily.HANDWRITTEN ? "mt-1" : ""
                   )}
                 />

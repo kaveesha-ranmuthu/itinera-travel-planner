@@ -29,7 +29,7 @@ export const AuthenticationInput: React.FC<InputProps> = ({
   return (
     <Field
       className={twMerge(
-        "text-secondary text-lg tracking-wide font-brand tracking-wide italic relative",
+        "text-secondary text-lg tracking-wide font-brand italic relative",
         inputWidth
       )}
     >

@@ -25,7 +25,9 @@ import {
   getLocationDetails,
 } from "./components/sections/helpers";
 import Itinerary, { ItineraryDetails } from "./components/sections/Itinerary";
-import SidebarLocationSection from "./components/SidebarLocationSection";
+import SidebarLocationSection, {
+  SidebarLocationDetails,
+} from "./components/SidebarLocationSection";
 import { getMapMarker } from "./helpers";
 import { useGetAccommodation } from "./hooks/getters/useGetAccommodation";
 import { useGetActivities } from "./hooks/getters/useGetActivities";
@@ -33,7 +35,11 @@ import { useGetFood } from "./hooks/getters/useGetFood";
 import { useGetItinerary } from "./hooks/getters/useGetItinerary";
 import useGetTrip from "./hooks/getters/useGetTrip";
 import { TripData } from "./hooks/getters/useGetTrips";
-import { AccommodationDetails, LocationDetails } from "./types";
+import {
+  AccommodationDetails,
+  LocationCategories,
+  LocationDetails,
+} from "./types";
 import { useSaving } from "../../saving-provider/useSaving";
 
 const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
@@ -131,12 +137,6 @@ interface MapViewProps {
   itineraryError: string | null;
 }
 
-enum LocationCategories {
-  ACCOMMODATION = "accommodation",
-  FOOD = "food",
-  ACTIVITIES = "activities",
-}
-
 const MapView: React.FC<MapViewProps> = ({
   trip,
   accommodationRows,
@@ -184,18 +184,28 @@ const MapView: React.FC<MapViewProps> = ({
       : activitiesData
   );
 
-  const sidebarLocationSections = [
+  const [hideAccommodation, setHideAccommodation] = useState(false);
+  const [hideFood, setHideFood] = useState(false);
+  const [hideActivities, setHideActivities] = useState(false);
+
+  const sidebarLocationSections: SidebarLocationDetails[] = [
     {
       locations: accommodation.filter((item) => !item._deleted),
       title: LocationCategories.ACCOMMODATION,
+      isHidden: hideAccommodation,
+      toggleVisibility: (show: boolean) => setHideAccommodation(show),
     },
     {
       locations: food.filter((item) => !item._deleted),
       title: LocationCategories.FOOD,
+      isHidden: hideFood,
+      toggleVisibility: (show: boolean) => setHideFood(show),
     },
     {
       locations: activities.filter((item) => !item._deleted),
       title: LocationCategories.ACTIVITIES,
+      isHidden: hideActivities,
+      toggleVisibility: (show: boolean) => setHideActivities(show),
     },
   ];
 
@@ -332,7 +342,7 @@ const MapView: React.FC<MapViewProps> = ({
       className={twMerge(
         "flex relative animate-fade",
         settings?.font,
-        isSaving && "opacity-50 cursor-events-none"
+        isSaving && "opacity-50 pointer-events-none"
       )}
     >
       <div className="w-1/3 bg-primary absolute z-10 top-0 left-0 h-full overflow-y-scroll pb-4">
@@ -375,7 +385,7 @@ const MapView: React.FC<MapViewProps> = ({
                   addTripToLocalStorage(trip.id);
                 }}
               />
-              <div className="space-y-5 pl-2 pr-1">
+              <div className="space-y-5 px-1">
                 {sidebarLocationSections.map((location) => {
                   return (
                     <SidebarLocationSection
@@ -390,6 +400,8 @@ const MapView: React.FC<MapViewProps> = ({
                       onDelete={(locationId) => {
                         deleteLocalStorage(locationId);
                       }}
+                      toggleVisibility={location.toggleVisibility}
+                      isHidden={location.isHidden}
                     />
                   );
                 })}
@@ -399,9 +411,15 @@ const MapView: React.FC<MapViewProps> = ({
         </div>
       </div>
       <CustomMap
-        accommodation={accommodation.filter((item) => !item._deleted)}
-        food={food.filter((item) => !item._deleted)}
-        activities={activities.filter((item) => !item._deleted)}
+        accommodation={
+          hideAccommodation
+            ? []
+            : accommodation.filter((item) => !item._deleted)
+        }
+        food={hideFood ? [] : food.filter((item) => !item._deleted)}
+        activities={
+          hideActivities ? [] : activities.filter((item) => !item._deleted)
+        }
       />
     </div>
   );
