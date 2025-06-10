@@ -29,7 +29,7 @@ function App() {
       } finally {
         setIsSaving(false);
       }
-    }, 0.5 * 60 * 1000);
+    }, 5 * 60 * 1000);
 
     return () => {
       clearInterval(interval);
