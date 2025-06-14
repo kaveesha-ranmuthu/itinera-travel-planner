@@ -94,8 +94,8 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
           }}
         />
       ) : showPlaceholder ? (
-        <div className="w-full h-32 bg-secondary rounded-2xl flex items-center justify-center">
-          <MdPhoto size={80} className="text-primary" />
+        <div className="w-full h-32 bg-secondary/10 rounded-2xl flex items-center justify-center">
+          <MdPhoto size={40} className="text-secondary/20" />
         </div>
       ) : null}
     </>
