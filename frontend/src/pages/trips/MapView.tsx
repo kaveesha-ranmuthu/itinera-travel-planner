@@ -41,6 +41,7 @@ import {
   LocationDetails,
   MapViewSidebarSelectorOptions,
 } from "./types";
+import CustomiseMap from "./components/CustomiseMap";
 
 const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -403,6 +404,8 @@ const MapView: React.FC<MapViewProps> = ({
           </div>
         </div>
       );
+    } else if (selectedView === MapViewSidebarSelectorOptions.CUSTOMISE_MAP) {
+      return <CustomiseMap />;
     }
   };
 
