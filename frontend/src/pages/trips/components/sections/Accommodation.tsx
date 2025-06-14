@@ -21,6 +21,7 @@ import {
   getAccommodationLocalStorageKey,
   getEstimatedCost,
   getLocationDetails,
+  getPhotoDownloadUrl,
   getPricesList,
   getSortArrowComponent,
   getUniqueLocations,
@@ -94,7 +95,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
     startTime: `${startDate}T00:00`,
     endTime: `${endDate}T00:00`,
     pricePerNightPerPerson: 0,
-    mainPhotoName: "",
+    photoUrl: null,
     formattedAddress: "",
     location: {
       name: "",
@@ -239,7 +240,7 @@ const Accommodation: React.FC<AccommodationProps> = ({
                         <LocationSearch
                           userCurrency={userCurrencyCode}
                           placeholder="e.g. hotel in Tokyo, ibis Osaka"
-                          onSelectLocation={(
+                          onSelectLocation={async (
                             location: LocationSearchResult
                           ) => {
                             const locationIds = formik.values.data
@@ -253,9 +254,17 @@ const Accommodation: React.FC<AccommodationProps> = ({
                               return;
                             }
                             if (!location) return;
-                            const newRow = getLocationDetails(location);
-                            arrayHelpers.push({ ...defaultRow, ...newRow });
-                            formik.submitForm();
+                            const newItem = getLocationDetails(location, null);
+                            const index = formik.values.data.length;
+                            arrayHelpers.push({ ...defaultRow, ...newItem });
+                            const photoUrl = await getPhotoDownloadUrl(
+                              location
+                            );
+                            await formik.setFieldValue(
+                              `data.${index}.photoUrl`,
+                              photoUrl
+                            );
+                            setTimeout(() => formik.submitForm(), 0);
                           }}
                         />
                       </div>

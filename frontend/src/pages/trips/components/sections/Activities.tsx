@@ -21,6 +21,7 @@ import {
   getActivitiesLocalStorageKey,
   getEstimatedCost,
   getLocationDetails,
+  getPhotoDownloadUrl,
   getPricesList,
   getUniqueLocations,
   isLocationIncluded,
@@ -157,7 +158,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                         <LocationSearch
                           userCurrency={userCurrencyCode}
                           placeholder="e.g. Sydney activities, Disneyland"
-                          onSelectLocation={(
+                          onSelectLocation={async (
                             location: LocationSearchResult
                           ) => {
                             const locationIds = formik.values.data
@@ -171,9 +172,17 @@ const Activities: React.FC<ActivitiesProps> = ({
                               return;
                             }
                             if (!location) return;
-                            const newItem = getLocationDetails(location);
+                            const newItem = getLocationDetails(location, null);
+                            const index = formik.values.data.length;
                             arrayHelpers.push(newItem);
-                            formik.submitForm();
+                            const photoUrl = await getPhotoDownloadUrl(
+                              location
+                            );
+                            await formik.setFieldValue(
+                              `data.${index}.photoUrl`,
+                              photoUrl
+                            );
+                            setTimeout(() => formik.submitForm(), 0);
                           }}
                         />
 

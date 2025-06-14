@@ -1,8 +1,11 @@
 import axios from "axios";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { round, uniqBy } from "lodash";
 import { IoIosArrowRoundDown, IoIosArrowRoundUp } from "react-icons/io";
 import { LocationDetails } from "../../types";
 import { LocationSearchResult } from "../LocationSearch";
+
+const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 export const getAccommodationLocalStorageKey = (tripId: string) =>
   `unsaved-accommodation-${tripId}`;
@@ -193,7 +196,8 @@ export const saveTripData = async (
 };
 
 export const getLocationDetails = (
-  location: LocationSearchResult
+  location: LocationSearchResult,
+  photoDownloadUrl: string | null
 ): LocationDetails => {
   const startPrice = location?.priceRange?.startPrice?.units
     ? parseFloat(location?.priceRange?.startPrice?.units)
@@ -218,8 +222,37 @@ export const getLocationDetails = (
     startPrice,
     endPrice,
     price: getAveragePrice(startPrice, endPrice) ?? 0,
-    mainPhotoName: location?.photos?.[0]?.name || "",
+    photoUrl: photoDownloadUrl,
     websiteUri: location?.websiteUri,
     createdAt: new Date().toISOString(),
   };
+};
+
+export const getPhotoDownloadUrl = async (location: LocationSearchResult) => {
+  const storage = getStorage();
+  const storageRef = ref(storage, `place-photos/${location?.id}.jpg`);
+
+  try {
+    const storagePhotoUrl = await getDownloadURL(storageRef);
+    return storagePhotoUrl;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    if (error.code === "storage/object-not-found") {
+      const photoName = location?.photos?.[0]?.name;
+
+      if (!photoName) {
+        throw new Error("No photo name found for this place");
+      }
+
+      const googlePhotoUrl = `https://places.googleapis.com/v1/${photoName}/media?maxWidthPx=400&key=${API_KEY}`;
+      const response = await fetch(googlePhotoUrl);
+      const blob = await response.blob();
+
+      await uploadBytes(storageRef, blob);
+      const uploadedPhotoUrl = await getDownloadURL(storageRef);
+      return uploadedPhotoUrl;
+    } else {
+      throw error;
+    }
+  }
 };

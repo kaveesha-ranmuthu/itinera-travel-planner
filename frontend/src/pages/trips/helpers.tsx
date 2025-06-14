@@ -62,7 +62,7 @@ export const getMapMarker = (
     <div className="max-w-50 rounded-3xl py-1">
       <PhotoCard
         className="rounded-lg mb-3"
-        photoName={location.mainPhotoName}
+        mainPhotoUrl={location.photoUrl ?? ""}
         altText={location.name}
         showPlaceholder={false}
       />

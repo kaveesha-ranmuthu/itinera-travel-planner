@@ -13,8 +13,6 @@ interface LocationItemProps {
   priceFieldName: string;
 }
 
-const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-
 export const LocationWithPhotoCard: React.FC<LocationItemProps> = ({
   location,
   currencySymbol,
@@ -22,12 +20,12 @@ export const LocationWithPhotoCard: React.FC<LocationItemProps> = ({
   locationFieldName,
   priceFieldName,
 }) => {
-  const { mainPhotoName, name, websiteUri } = location;
+  const { photoUrl, name, websiteUri } = location;
 
   return (
     <div className="border border-secondary w-50 rounded-2xl p-3 group">
       <div className="relative">
-        <PhotoCard photoName={mainPhotoName} altText={name} />
+        <PhotoCard mainPhotoUrl={photoUrl ?? ""} altText={name} />
         <button
           type="button"
           onClick={onDelete}
@@ -70,19 +68,18 @@ export const LocationWithPhotoCard: React.FC<LocationItemProps> = ({
 };
 
 interface PhotoCardProps {
-  photoName: string;
+  mainPhotoUrl: string;
   altText: string;
   className?: string;
   showPlaceholder?: boolean;
 }
 
 export const PhotoCard: React.FC<PhotoCardProps> = ({
-  photoName,
+  mainPhotoUrl,
   altText,
   className,
   showPlaceholder = true,
 }) => {
-  const mainPhotoUrl = `https://places.googleapis.com/v1/${photoName}/media?maxWidthPx=400&key=${API_KEY}`;
   const [hasError, setHasError] = useState(false);
 
   return (
