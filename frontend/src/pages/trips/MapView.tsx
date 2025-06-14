@@ -7,14 +7,13 @@ import { useParams } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
+import { useSaving } from "../../saving-provider/useSaving";
 import ErrorPage from "../error/ErrorPage";
 import { LoadingState } from "../landing-page/LandingPage";
 import LocationSearch, {
   LocationSearchResult,
 } from "./components/LocationSearch";
-import MapViewSidebarSelector, {
-  MapViewSidebarSelectorOptions,
-} from "./components/MapViewSidebarSelector";
+import MapViewSidebarSelector from "./components/MapViewSidebarSelector";
 import CondensedTripHeader from "./components/sections/CondensedTripHeader";
 import Header from "./components/sections/Header";
 import {
@@ -40,8 +39,8 @@ import {
   AccommodationDetails,
   LocationCategories,
   LocationDetails,
+  MapViewSidebarSelectorOptions,
 } from "./types";
-import { useSaving } from "../../saving-provider/useSaving";
 
 const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -150,8 +149,9 @@ const MapView: React.FC<MapViewProps> = ({
   const { isSaving } = useSaving();
   const { notify } = useHotToast();
 
-  const [selectedView, setSelectedView] =
-    useState<MapViewSidebarSelectorOptions>("itinerary");
+  const [selectedView, setSelectedView] = useState(
+    MapViewSidebarSelectorOptions.ITINERARY
+  );
 
   const [selectedLocationSection, setSelectedLocationSection] = useState(
     LocationCategories.ACCOMMODATION
@@ -346,6 +346,66 @@ const MapView: React.FC<MapViewProps> = ({
     addTripToLocalStorage(trip.id);
   };
 
+  const getSelectedViewDisplay = () => {
+    if (selectedView === MapViewSidebarSelectorOptions.ITINERARY) {
+      return (
+        <Itinerary
+          tripId={trip.id}
+          endDate={trip.endDate}
+          startDate={trip.startDate}
+          showHeader={false}
+          itinerary={itinerary}
+          error={itineraryError}
+        />
+      );
+    } else if (selectedView === MapViewSidebarSelectorOptions.LOCATIONS) {
+      return (
+        <div className="space-y-3">
+          <LocationSearch
+            inputBoxClassname="w-full"
+            optionsBoxClassname="z-50 w-[430px]"
+            onSelectLocation={(location) => {
+              switch (selectedLocationSection) {
+                case LocationCategories.ACCOMMODATION: {
+                  updateLocalStorageAccommodation(location);
+                  break;
+                }
+                case LocationCategories.FOOD: {
+                  updateLocalStorageFood(location);
+                  break;
+                }
+                case LocationCategories.ACTIVITIES: {
+                  updateLocalStorageActivities(location);
+                  break;
+                }
+              }
+              addTripToLocalStorage(trip.id);
+            }}
+          />
+          <div className="space-y-5 px-1">
+            {sidebarLocationSections.map((location) => {
+              return (
+                <SidebarLocationSection
+                  key={location.title}
+                  locations={location.locations}
+                  title={location.title}
+                  userCurrencySymbol={trip.currency?.otherInfo?.symbol}
+                  selected={selectedLocationSection === location.title}
+                  onSelect={() => setSelectedLocationSection(location.title)}
+                  onDelete={(locationId) => {
+                    deleteLocalStorage(locationId);
+                  }}
+                  toggleVisibility={location.toggleVisibility}
+                  isHidden={location.isHidden}
+                />
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
+  };
+
   return (
     <div
       className={twMerge(
@@ -362,61 +422,7 @@ const MapView: React.FC<MapViewProps> = ({
             selectedView={selectedView}
             onSelectView={setSelectedView}
           />
-          {selectedView === "itinerary" ? (
-            <Itinerary
-              tripId={trip.id}
-              endDate={trip.endDate}
-              startDate={trip.startDate}
-              showHeader={false}
-              itinerary={itinerary}
-              error={itineraryError}
-            />
-          ) : (
-            <div className="space-y-3">
-              <LocationSearch
-                inputBoxClassname="w-full"
-                optionsBoxClassname="z-50 w-[430px]"
-                onSelectLocation={(location) => {
-                  switch (selectedLocationSection) {
-                    case LocationCategories.ACCOMMODATION: {
-                      updateLocalStorageAccommodation(location);
-                      break;
-                    }
-                    case LocationCategories.FOOD: {
-                      updateLocalStorageFood(location);
-                      break;
-                    }
-                    case LocationCategories.ACTIVITIES: {
-                      updateLocalStorageActivities(location);
-                      break;
-                    }
-                  }
-                  addTripToLocalStorage(trip.id);
-                }}
-              />
-              <div className="space-y-5 px-1">
-                {sidebarLocationSections.map((location) => {
-                  return (
-                    <SidebarLocationSection
-                      key={location.title}
-                      locations={location.locations}
-                      title={location.title}
-                      userCurrencySymbol={trip.currency?.otherInfo?.symbol}
-                      selected={selectedLocationSection === location.title}
-                      onSelect={() =>
-                        setSelectedLocationSection(location.title)
-                      }
-                      onDelete={(locationId) => {
-                        deleteLocalStorage(locationId);
-                      }}
-                      toggleVisibility={location.toggleVisibility}
-                      isHidden={location.isHidden}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-          )}
+          {getSelectedViewDisplay()}
         </div>
       </div>
       <CustomMap

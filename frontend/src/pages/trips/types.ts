@@ -38,3 +38,9 @@ export enum LocationCategories {
   FOOD = "food",
   ACTIVITIES = "activities",
 }
+
+export enum MapViewSidebarSelectorOptions {
+  ITINERARY = "itinerary",
+  LOCATIONS = "locations",
+  CUSTOMISE_MAP = "customise",
+}
