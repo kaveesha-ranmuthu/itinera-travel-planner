@@ -49,8 +49,6 @@ const Header = () => {
     }
   };
 
-  console.log(isSaving);
-
   return (
     <nav className="px-6 py-2 flex items-center justify-between sticky top-0 z-10 h-16 bg-primary animate-fade">
       <Link to="/">

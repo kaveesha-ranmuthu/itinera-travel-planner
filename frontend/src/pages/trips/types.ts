@@ -10,7 +10,7 @@ export interface LocationDetails {
   startPrice?: number;
   endPrice?: number;
   price: number;
-  mainPhotoName: string;
+  photoUrl: string | null;
   websiteUri?: string;
   formattedAddress: string;
   createdAt: string;
@@ -28,10 +28,7 @@ export interface AccommodationDetails extends LogisticsDetails {
 }
 
 export interface TransportationDetails
-  extends Omit<
-    LogisticsDetails,
-    "location" | "formattedAddress" | "mainPhotoName"
-  > {
+  extends Omit<LogisticsDetails, "location" | "formattedAddress" | "photoUrl"> {
   originCity: string;
   destinationCity: string;
 }

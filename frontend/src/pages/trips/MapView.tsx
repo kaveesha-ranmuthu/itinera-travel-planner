@@ -23,6 +23,7 @@ import {
   getActivitiesLocalStorageKey,
   getFoodLocalStorageKey,
   getLocationDetails,
+  getPhotoDownloadUrl,
 } from "./components/sections/helpers";
 import Itinerary, { ItineraryDetails } from "./components/sections/Itinerary";
 import SidebarLocationSection, {
@@ -209,11 +210,13 @@ const MapView: React.FC<MapViewProps> = ({
     },
   ];
 
-  const updateLocalStorageAccommodation = (location: LocationSearchResult) => {
+  const updateLocalStorageAccommodation = async (
+    location: LocationSearchResult
+  ) => {
     const localStorageKey = getAccommodationLocalStorageKey(trip.id);
     const currentData = accommodation;
     const newLocationDetails = {
-      ...getLocationDetails(location),
+      ...getLocationDetails(location, null),
       checked: false,
       pricePerNightPerPerson: 0,
       startTime: `${trip.startDate}T00:00`,
@@ -224,56 +227,62 @@ const MapView: React.FC<MapViewProps> = ({
       notify("This location has already been added.", "info");
       return;
     }
-    const dataToSave = [...currentData, newLocationDetails];
+    setAccommodation([...currentData, newLocationDetails]);
 
+    const photoUrl = await getPhotoDownloadUrl(location);
+    const dataToSave = [...currentData, { ...newLocationDetails, photoUrl }];
     localStorage.setItem(
       localStorageKey,
       JSON.stringify({
         data: dataToSave,
       })
     );
-
-    setAccommodation(dataToSave);
   };
 
-  const updateLocalStorageFood = (location: LocationSearchResult) => {
+  const updateLocalStorageFood = async (location: LocationSearchResult) => {
     const localStorageKey = getFoodLocalStorageKey(trip.id);
     const currentData = food;
-    const newLocationDetails = getLocationDetails(location);
+    const newLocationDetails = getLocationDetails(location, null);
 
     const locationIds = currentData.map((d) => d.id) ?? [];
     if (locationIds.includes(location.id)) {
       notify("This location has already been added.", "info");
       return;
     }
-    const dataToSave = [...currentData, newLocationDetails];
+    setFood([...currentData, newLocationDetails]);
+
+    const photoUrl = await getPhotoDownloadUrl(location);
+    const dataToSave = [...currentData, { ...newLocationDetails, photoUrl }];
     localStorage.setItem(
       localStorageKey,
       JSON.stringify({
         data: dataToSave,
       })
     );
-    setFood(dataToSave);
   };
 
-  const updateLocalStorageActivities = (location: LocationSearchResult) => {
+  const updateLocalStorageActivities = async (
+    location: LocationSearchResult
+  ) => {
     const localStorageKey = getActivitiesLocalStorageKey(trip.id);
     const currentData = activities;
-    const newLocationDetails = getLocationDetails(location);
+    const newLocationDetails = getLocationDetails(location, null);
 
     const locationIds = currentData.map((d) => d.id) ?? [];
     if (locationIds.includes(location.id)) {
       notify("This location has already been added.", "info");
       return;
     }
-    const dataToSave = [...currentData, newLocationDetails];
+    setActivities([...currentData, newLocationDetails]);
+
+    const photoUrl = await getPhotoDownloadUrl(location);
+    const dataToSave = [...currentData, { ...newLocationDetails, photoUrl }];
     localStorage.setItem(
       localStorageKey,
       JSON.stringify({
         data: dataToSave,
       })
     );
-    setActivities(dataToSave);
   };
 
   const deleteLocalStorage = async (deleteId: string) => {

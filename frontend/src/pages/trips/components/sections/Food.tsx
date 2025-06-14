@@ -2,8 +2,10 @@ import Grid from "@mui/material/Grid";
 import { FieldArray, Form, FormikProvider, useFormik } from "formik";
 import { round, sortBy } from "lodash";
 import { Fragment, useEffect, useMemo, useState } from "react";
+import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useHotToast } from "../../../../hooks/useHotToast";
+import { useSaving } from "../../../../saving-provider/useSaving";
 import { LocationDetails } from "../../types";
 import EstimatedCostContainer from "../EstimatedCostContainer";
 import { ErrorBox, NoDataBox } from "../InfoBox";
@@ -21,13 +23,12 @@ import {
   getEstimatedCost,
   getFoodLocalStorageKey,
   getLocationDetails,
+  getPhotoDownloadUrl,
   getPricesList,
   getUniqueLocations,
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
-import { useSaving } from "../../../../saving-provider/useSaving";
-import { twMerge } from "tailwind-merge";
 
 interface FoodProps {
   userCurrencySymbol?: string;
@@ -154,7 +155,7 @@ const Food: React.FC<FoodProps> = ({
                           <LocationSearch
                             userCurrency={userCurrencyCode}
                             placeholder="e.g. breakfast in Paris, Nobu LA"
-                            onSelectLocation={(
+                            onSelectLocation={async (
                               location: LocationSearchResult
                             ) => {
                               const locationIds = formik.values.data
@@ -168,9 +169,20 @@ const Food: React.FC<FoodProps> = ({
                                 return;
                               }
                               if (!location) return;
-                              const newItem = getLocationDetails(location);
+                              const newItem = getLocationDetails(
+                                location,
+                                null
+                              );
+                              const index = formik.values.data.length;
                               arrayHelpers.push(newItem);
-                              formik.submitForm();
+                              const photoUrl = await getPhotoDownloadUrl(
+                                location
+                              );
+                              await formik.setFieldValue(
+                                `data.${index}.photoUrl`,
+                                photoUrl
+                              );
+                              setTimeout(() => formik.submitForm(), 0);
                             }}
                           />
                         </div>
