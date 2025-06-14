@@ -160,7 +160,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
         placeholder={placeholder ?? "Search for a location..."}
         onChange={debounce((event) => {
           setQuery(event.target.value);
-        }, 500)}
+        }, 1000)}
         className={twMerge(
           "focus:outline-secondary border border-secondary rounded-2xl py-1 w-70 h-10 px-3",
           inputBoxClassname
