@@ -40,6 +40,7 @@ import {
   LocationCategories,
   LocationDetails,
   MapViewSidebarSelectorOptions,
+  MapViewStyles,
 } from "./types";
 import CustomiseMap from "./components/CustomiseMap";
 
@@ -450,6 +451,9 @@ interface MapProps {
 }
 
 const CustomMap: React.FC<MapProps> = ({ accommodation, activities, food }) => {
+  const { settings } = useAuth();
+  const selectedStyle = settings?.mapStyle || MapViewStyles.STREETS;
+
   const activityMarkers = useMemo(
     () =>
       activities.map((activity) => (
@@ -502,7 +506,7 @@ const CustomMap: React.FC<MapProps> = ({ accommodation, activities, food }) => {
         padding: { left: 300 },
       }}
       style={{ width: "100%", height: "100vh" }}
-      mapStyle="mapbox://styles/mapbox/streets-v12"
+      mapStyle={`mapbox://styles/mapbox/${selectedStyle}`}
     >
       {activityMarkers}
       {foodMarkers}

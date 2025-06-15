@@ -4,6 +4,7 @@ import { PropsWithChildren, useEffect, useState } from "react";
 import { auth, db } from "./firebase-config";
 import { FontFamily, UserSettings } from "./types";
 import { AuthContext } from "./contexts";
+import { MapViewStyles } from "./pages/trips/types";
 
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -39,6 +40,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
               font: FontFamily.HANDWRITTEN,
               packingList: "",
               preferredDisplay: "gallery",
+              mapStyle: MapViewStyles.STREETS,
             });
           }
           setLoading(false);

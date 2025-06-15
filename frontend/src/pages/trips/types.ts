@@ -44,3 +44,14 @@ export enum MapViewSidebarSelectorOptions {
   LOCATIONS = "locations",
   CUSTOMISE_MAP = "customise",
 }
+
+export enum MapViewStyles {
+  STREETS = "streets-v12",
+  DARK = "dark-v11",
+  SATELLITE = "satellite-v9",
+  LIGHT = "light-v11",
+  NAVIGATION_DAY = "navigation-day-v1",
+  NAVIGATION_NIGHT = "navigation-night-v1",
+  OUTDOORS = "outdoors-v12",
+  SATELLITE_STREETS = "satellite-streets-v12",
+}
