@@ -28,7 +28,7 @@ const CustomiseMap = () => {
   };
 
   return (
-    <div>
+    <div className="space-y-8">
       <div className="space-y-2">
         <h1 className="text-xl">Map style</h1>
         <div className="flex flex-wrap gap-4">
@@ -48,6 +48,10 @@ const CustomiseMap = () => {
             );
           })}
         </div>
+      </div>
+      <div className="space-y-2">
+        <h1 className="text-xl">Icon styles</h1>
+        <div className="flex flex-wrap gap-4"></div>
       </div>
     </div>
   );
