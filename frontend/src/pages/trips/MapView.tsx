@@ -1,7 +1,5 @@
 import "mapbox-gl/dist/mapbox-gl.css";
 import React, { useEffect, useMemo, useState } from "react";
-import { FaTheaterMasks } from "react-icons/fa";
-import { RiHotelBedFill, RiRestaurantFill } from "react-icons/ri";
 import Map from "react-map-gl/mapbox";
 import { useParams } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
@@ -10,6 +8,7 @@ import { useHotToast } from "../../hooks/useHotToast";
 import { useSaving } from "../../saving-provider/useSaving";
 import ErrorPage from "../error/ErrorPage";
 import { LoadingState } from "../landing-page/LandingPage";
+import CustomiseMap from "./components/CustomiseMap";
 import LocationSearch, {
   LocationSearchResult,
 } from "./components/LocationSearch";
@@ -35,6 +34,7 @@ import { useGetFood } from "./hooks/getters/useGetFood";
 import { useGetItinerary } from "./hooks/getters/useGetItinerary";
 import useGetTrip from "./hooks/getters/useGetTrip";
 import { TripData } from "./hooks/getters/useGetTrips";
+import { allIcons } from "./icon-map";
 import {
   AccommodationDetails,
   LocationCategories,
@@ -42,7 +42,6 @@ import {
   MapViewSidebarSelectorOptions,
   MapViewStyles,
 } from "./types";
-import CustomiseMap from "./components/CustomiseMap";
 
 const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -452,48 +451,45 @@ interface MapProps {
 
 const CustomMap: React.FC<MapProps> = ({ accommodation, activities, food }) => {
   const { settings } = useAuth();
-  const selectedStyle = settings?.mapStyle || MapViewStyles.STREETS;
+  const selectedMapStyle = settings?.mapStyle || MapViewStyles.STREETS;
+  const {
+    accommodation: accommodationIcon,
+    activity: activityIcon,
+    food: foodIcon,
+  } = settings?.iconStyle || {
+    accommodation: "hotel",
+    activity: "pinwheel",
+    food: "pizza",
+  };
 
   const activityMarkers = useMemo(
     () =>
       activities.map((activity) => (
         <div key={activity.id}>
-          {getMapMarker(
-            activity,
-            "bg-[#D6E5BD]",
-            <FaTheaterMasks size={20} className="text-secondary" />
-          )}
+          {getMapMarker(activity, "bg-[#D6E5BD]", allIcons[activityIcon])}
         </div>
       )),
-    [activities]
+    [activities, activityIcon]
   );
 
   const foodMarkers = useMemo(
     () =>
       food.map((f) => (
         <div key={f.id}>
-          {getMapMarker(
-            f,
-            "bg-[#f9e1a8]",
-            <RiRestaurantFill size={20} className="text-secondary" />
-          )}
+          {getMapMarker(f, "bg-[#f9e1a8]", allIcons[foodIcon])}
         </div>
       )),
-    [food]
+    [food, foodIcon]
   );
 
   const accommodationMarkers = useMemo(
     () =>
       accommodation.map((acc) => (
         <div key={acc.id}>
-          {getMapMarker(
-            acc,
-            "bg-[#BCD8EC]",
-            <RiHotelBedFill size={20} className="text-secondary" />
-          )}
+          {getMapMarker(acc, "bg-[#BCD8EC]", allIcons[accommodationIcon])}
         </div>
       )),
-    [accommodation]
+    [accommodation, accommodationIcon]
   );
 
   return (
@@ -506,7 +502,7 @@ const CustomMap: React.FC<MapProps> = ({ accommodation, activities, food }) => {
         padding: { left: 300 },
       }}
       style={{ width: "100%", height: "100vh" }}
-      mapStyle={`mapbox://styles/mapbox/${selectedStyle}`}
+      mapStyle={`mapbox://styles/mapbox/${selectedMapStyle}`}
     >
       {activityMarkers}
       {foodMarkers}
