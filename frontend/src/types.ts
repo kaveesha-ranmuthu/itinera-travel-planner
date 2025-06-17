@@ -9,7 +9,7 @@ export enum FontFamily {
   SERIF = "font-family-serif",
 }
 
-type IconInfo = { id: IconId; colour: string };
+type IconInfo = { id: IconId; backgroundColour: string; colour: string };
 
 export type IconStyles = {
   accommodation: IconInfo;

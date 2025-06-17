@@ -54,6 +54,7 @@ export const compressAndConvertToBase64 = (
 export const getMapMarker = (
   location: LocationDetails,
   markerColour: string,
+  iconColour: string,
   icon: React.ReactNode
 ) => {
   if (!location.location.latitude || !location.location.longitude) return;
@@ -82,6 +83,7 @@ export const getMapMarker = (
         <div
           className={twMerge(
             markerColour,
+            iconColour,
             "p-2 rounded-full border border-secondary"
           )}
         >

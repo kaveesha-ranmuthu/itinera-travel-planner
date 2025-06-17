@@ -465,6 +465,7 @@ const CustomMap: React.FC<MapProps> = ({ accommodation, activities, food }) => {
         <div key={activity.id}>
           {getMapMarker(
             activity,
+            activityIcon.backgroundColour,
             activityIcon.colour,
             allIcons[activityIcon.id]
           )}
@@ -477,7 +478,12 @@ const CustomMap: React.FC<MapProps> = ({ accommodation, activities, food }) => {
     () =>
       food.map((f) => (
         <div key={f.id}>
-          {getMapMarker(f, foodIcon.colour, allIcons[foodIcon.id])}
+          {getMapMarker(
+            f,
+            foodIcon.backgroundColour,
+            foodIcon.colour,
+            allIcons[foodIcon.id]
+          )}
         </div>
       )),
     [food, foodIcon]
@@ -489,6 +495,7 @@ const CustomMap: React.FC<MapProps> = ({ accommodation, activities, food }) => {
         <div key={acc.id}>
           {getMapMarker(
             acc,
+            accommodationIcon.backgroundColour,
             accommodationIcon.colour,
             allIcons[accommodationIcon.id]
           )}
