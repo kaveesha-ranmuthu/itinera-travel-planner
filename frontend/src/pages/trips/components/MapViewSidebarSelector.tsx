@@ -1,7 +1,6 @@
 import React from "react";
 import { twMerge } from "tailwind-merge";
-
-export type MapViewSidebarSelectorOptions = "itinerary" | "locations";
+import { MapViewSidebarSelectorOptions } from "../types";
 
 interface MapViewSidebarSelectorProps {
   selectedView: MapViewSidebarSelectorOptions;
@@ -13,25 +12,46 @@ const MapViewSidebarSelector: React.FC<MapViewSidebarSelectorProps> = ({
   onSelectView,
 }) => {
   return (
-    <div className="border border-secondary w-fit rounded-lg divide-x divide-secondary py-1 text-base text-secondary">
-      <span
-        className={twMerge(
-          "px-2 cursor-pointer hover:opacity-100 transition ease-in-out duration-300",
-          selectedView === "itinerary" ? "opacity-100" : "opacity-60"
-        )}
-        onClick={() => onSelectView("itinerary")}
-      >
-        Itinerary
-      </span>
-      <span
-        className={twMerge(
-          "px-2 cursor-pointer hover:opacity-100 transition ease-in-out duration-300",
-          selectedView === "locations" ? "opacity-100" : "opacity-60"
-        )}
-        onClick={() => onSelectView("locations")}
-      >
-        Locations
-      </span>
+    <div className="flex items-center justify-between">
+      <div className="border border-secondary w-fit rounded-lg divide-x divide-secondary py-1 text-base text-secondary">
+        <span
+          className={twMerge(
+            "px-2 cursor-pointer hover:opacity-100 transition ease-in-out duration-300",
+            selectedView === MapViewSidebarSelectorOptions.ITINERARY
+              ? "opacity-100"
+              : "opacity-60"
+          )}
+          onClick={() => onSelectView(MapViewSidebarSelectorOptions.ITINERARY)}
+        >
+          Itinerary
+        </span>
+        <span
+          className={twMerge(
+            "px-2 cursor-pointer hover:opacity-100 transition ease-in-out duration-300",
+            selectedView === MapViewSidebarSelectorOptions.LOCATIONS
+              ? "opacity-100"
+              : "opacity-60"
+          )}
+          onClick={() => onSelectView(MapViewSidebarSelectorOptions.LOCATIONS)}
+        >
+          Locations
+        </span>
+      </div>
+      <div className="border border-secondary w-fit rounded-lg divide-x divide-secondary py-1 text-base text-secondary">
+        <span
+          className={twMerge(
+            "px-2 cursor-pointer hover:opacity-100 transition ease-in-out duration-300",
+            selectedView === MapViewSidebarSelectorOptions.CUSTOMISE_MAP
+              ? "opacity-100"
+              : "opacity-60"
+          )}
+          onClick={() =>
+            onSelectView(MapViewSidebarSelectorOptions.CUSTOMISE_MAP)
+          }
+        >
+          Customise map
+        </span>
+      </div>
     </div>
   );
 };

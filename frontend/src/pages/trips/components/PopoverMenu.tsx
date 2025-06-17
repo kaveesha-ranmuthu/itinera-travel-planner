@@ -21,7 +21,9 @@ const PopoverMenu: React.FC<PropsWithChildren<PopoverProps>> = ({
 }) => {
   return (
     <Popover className={twMerge("relative", className)}>
-      <PopoverButton>{popoverTrigger}</PopoverButton>
+      <PopoverButton className="focus:outline-0">
+        {popoverTrigger}
+      </PopoverButton>
       <PopoverPanel
         anchor={anchor ?? "bottom end"}
         transition

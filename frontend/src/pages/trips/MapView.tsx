@@ -1,20 +1,18 @@
 import "mapbox-gl/dist/mapbox-gl.css";
 import React, { useEffect, useMemo, useState } from "react";
-import { FaTheaterMasks } from "react-icons/fa";
-import { RiHotelBedFill, RiRestaurantFill } from "react-icons/ri";
 import Map from "react-map-gl/mapbox";
 import { useParams } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
+import { useSaving } from "../../saving-provider/useSaving";
 import ErrorPage from "../error/ErrorPage";
 import { LoadingState } from "../landing-page/LandingPage";
+import CustomiseMap from "./components/CustomiseMap";
 import LocationSearch, {
   LocationSearchResult,
 } from "./components/LocationSearch";
-import MapViewSidebarSelector, {
-  MapViewSidebarSelectorOptions,
-} from "./components/MapViewSidebarSelector";
+import MapViewSidebarSelector from "./components/MapViewSidebarSelector";
 import CondensedTripHeader from "./components/sections/CondensedTripHeader";
 import Header from "./components/sections/Header";
 import {
@@ -34,14 +32,17 @@ import { useGetAccommodation } from "./hooks/getters/useGetAccommodation";
 import { useGetActivities } from "./hooks/getters/useGetActivities";
 import { useGetFood } from "./hooks/getters/useGetFood";
 import { useGetItinerary } from "./hooks/getters/useGetItinerary";
+import { useGetMapSettings } from "./hooks/getters/useGetMapSettings";
 import useGetTrip from "./hooks/getters/useGetTrip";
 import { TripData } from "./hooks/getters/useGetTrips";
+import { allIcons } from "./icon-map";
 import {
   AccommodationDetails,
   LocationCategories,
   LocationDetails,
+  MapViewSidebarSelectorOptions,
 } from "./types";
-import { useSaving } from "../../saving-provider/useSaving";
+import { DEFAULT_ICON_STYLES } from "./constants";
 
 const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -150,8 +151,9 @@ const MapView: React.FC<MapViewProps> = ({
   const { isSaving } = useSaving();
   const { notify } = useHotToast();
 
-  const [selectedView, setSelectedView] =
-    useState<MapViewSidebarSelectorOptions>("itinerary");
+  const [selectedView, setSelectedView] = useState(
+    MapViewSidebarSelectorOptions.ITINERARY
+  );
 
   const [selectedLocationSection, setSelectedLocationSection] = useState(
     LocationCategories.ACCOMMODATION
@@ -346,6 +348,68 @@ const MapView: React.FC<MapViewProps> = ({
     addTripToLocalStorage(trip.id);
   };
 
+  const getSelectedViewDisplay = () => {
+    if (selectedView === MapViewSidebarSelectorOptions.ITINERARY) {
+      return (
+        <Itinerary
+          tripId={trip.id}
+          endDate={trip.endDate}
+          startDate={trip.startDate}
+          showHeader={false}
+          itinerary={itinerary}
+          error={itineraryError}
+        />
+      );
+    } else if (selectedView === MapViewSidebarSelectorOptions.LOCATIONS) {
+      return (
+        <div className="space-y-3">
+          <LocationSearch
+            inputBoxClassname="w-full"
+            optionsBoxClassname="z-50 w-[430px]"
+            onSelectLocation={(location) => {
+              switch (selectedLocationSection) {
+                case LocationCategories.ACCOMMODATION: {
+                  updateLocalStorageAccommodation(location);
+                  break;
+                }
+                case LocationCategories.FOOD: {
+                  updateLocalStorageFood(location);
+                  break;
+                }
+                case LocationCategories.ACTIVITIES: {
+                  updateLocalStorageActivities(location);
+                  break;
+                }
+              }
+              addTripToLocalStorage(trip.id);
+            }}
+          />
+          <div className="space-y-5 px-1">
+            {sidebarLocationSections.map((location) => {
+              return (
+                <SidebarLocationSection
+                  key={location.title}
+                  locations={location.locations}
+                  title={location.title}
+                  userCurrencySymbol={trip.currency?.otherInfo?.symbol}
+                  selected={selectedLocationSection === location.title}
+                  onSelect={() => setSelectedLocationSection(location.title)}
+                  onDelete={(locationId) => {
+                    deleteLocalStorage(locationId);
+                  }}
+                  toggleVisibility={location.toggleVisibility}
+                  isHidden={location.isHidden}
+                />
+              );
+            })}
+          </div>
+        </div>
+      );
+    } else if (selectedView === MapViewSidebarSelectorOptions.CUSTOMISE_MAP) {
+      return <CustomiseMap tripId={trip.id} />;
+    }
+  };
+
   return (
     <div
       className={twMerge(
@@ -362,64 +426,11 @@ const MapView: React.FC<MapViewProps> = ({
             selectedView={selectedView}
             onSelectView={setSelectedView}
           />
-          {selectedView === "itinerary" ? (
-            <Itinerary
-              tripId={trip.id}
-              endDate={trip.endDate}
-              startDate={trip.startDate}
-              showHeader={false}
-              itinerary={itinerary}
-              error={itineraryError}
-            />
-          ) : (
-            <div className="space-y-3">
-              <LocationSearch
-                inputBoxClassname="w-full"
-                optionsBoxClassname="z-50 w-[430px]"
-                onSelectLocation={(location) => {
-                  switch (selectedLocationSection) {
-                    case LocationCategories.ACCOMMODATION: {
-                      updateLocalStorageAccommodation(location);
-                      break;
-                    }
-                    case LocationCategories.FOOD: {
-                      updateLocalStorageFood(location);
-                      break;
-                    }
-                    case LocationCategories.ACTIVITIES: {
-                      updateLocalStorageActivities(location);
-                      break;
-                    }
-                  }
-                  addTripToLocalStorage(trip.id);
-                }}
-              />
-              <div className="space-y-5 px-1">
-                {sidebarLocationSections.map((location) => {
-                  return (
-                    <SidebarLocationSection
-                      key={location.title}
-                      locations={location.locations}
-                      title={location.title}
-                      userCurrencySymbol={trip.currency?.otherInfo?.symbol}
-                      selected={selectedLocationSection === location.title}
-                      onSelect={() =>
-                        setSelectedLocationSection(location.title)
-                      }
-                      onDelete={(locationId) => {
-                        deleteLocalStorage(locationId);
-                      }}
-                      toggleVisibility={location.toggleVisibility}
-                      isHidden={location.isHidden}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-          )}
+          {getSelectedViewDisplay()}
         </div>
       </div>
       <CustomMap
+        tripId={trip.id}
         accommodation={
           hideAccommodation
             ? []
@@ -438,21 +449,55 @@ interface MapProps {
   accommodation: AccommodationDetails[];
   food: LocationDetails[];
   activities: LocationDetails[];
+  tripId: string;
 }
 
-const CustomMap: React.FC<MapProps> = ({ accommodation, activities, food }) => {
+const CustomMap: React.FC<MapProps> = ({
+  accommodation,
+  activities,
+  food,
+  tripId,
+}) => {
+  const { mapSettings, error } = useGetMapSettings(tripId);
+  const { notify } = useHotToast();
+
+  if (error) {
+    notify("Something went wrong. Please try again.", "error");
+  }
+
+  const selectedMapStyle = mapSettings.mapStyle;
+  const {
+    accommodation: accommodationIcon,
+    activity: activityIcon,
+    food: foodIcon,
+  } = {
+    accommodation: {
+      ...DEFAULT_ICON_STYLES.accommodation,
+      ...mapSettings.iconStyles.accommodation,
+    },
+    activity: {
+      ...DEFAULT_ICON_STYLES.activity,
+      ...mapSettings.iconStyles.activity,
+    },
+    food: {
+      ...DEFAULT_ICON_STYLES.food,
+      ...mapSettings.iconStyles.food,
+    },
+  };
+
   const activityMarkers = useMemo(
     () =>
       activities.map((activity) => (
         <div key={activity.id}>
           {getMapMarker(
             activity,
-            "bg-[#D6E5BD]",
-            <FaTheaterMasks size={20} className="text-secondary" />
+            activityIcon.backgroundColour,
+            activityIcon.colour,
+            allIcons[activityIcon.id]
           )}
         </div>
       )),
-    [activities]
+    [activities, activityIcon]
   );
 
   const foodMarkers = useMemo(
@@ -461,12 +506,13 @@ const CustomMap: React.FC<MapProps> = ({ accommodation, activities, food }) => {
         <div key={f.id}>
           {getMapMarker(
             f,
-            "bg-[#f9e1a8]",
-            <RiRestaurantFill size={20} className="text-secondary" />
+            foodIcon.backgroundColour,
+            foodIcon.colour,
+            allIcons[foodIcon.id]
           )}
         </div>
       )),
-    [food]
+    [food, foodIcon]
   );
 
   const accommodationMarkers = useMemo(
@@ -475,12 +521,13 @@ const CustomMap: React.FC<MapProps> = ({ accommodation, activities, food }) => {
         <div key={acc.id}>
           {getMapMarker(
             acc,
-            "bg-[#BCD8EC]",
-            <RiHotelBedFill size={20} className="text-secondary" />
+            accommodationIcon.backgroundColour,
+            accommodationIcon.colour,
+            allIcons[accommodationIcon.id]
           )}
         </div>
       )),
-    [accommodation]
+    [accommodation, accommodationIcon]
   );
 
   return (
@@ -493,7 +540,7 @@ const CustomMap: React.FC<MapProps> = ({ accommodation, activities, food }) => {
         padding: { left: 300 },
       }}
       style={{ width: "100%", height: "100vh" }}
-      mapStyle="mapbox://styles/mapbox/streets-v12"
+      mapStyle={`mapbox://styles/mapbox/${selectedMapStyle}`}
     >
       {activityMarkers}
       {foodMarkers}

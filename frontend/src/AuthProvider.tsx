@@ -1,9 +1,9 @@
 import { onAuthStateChanged, User } from "firebase/auth";
 import { doc, onSnapshot } from "firebase/firestore";
 import { PropsWithChildren, useEffect, useState } from "react";
+import { AuthContext } from "./contexts";
 import { auth, db } from "./firebase-config";
 import { FontFamily, UserSettings } from "./types";
-import { AuthContext } from "./contexts";
 
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);

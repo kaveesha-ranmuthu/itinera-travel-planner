@@ -75,7 +75,7 @@ const SidebarLocationSection: React.FC<SidebarLocationSectionProps> = ({
               )}
             >
               <p className="truncate max-w-[85%]">{l.name}</p>
-              {!isAccommodationDetails(l) && !!l.price && (
+              {!isAccommodationDetails(l) && l.price !== undefined && (
                 <div
                   className={twMerge(
                     "opacity-100 absolute right-3 transition ease-in-out duration-300",
