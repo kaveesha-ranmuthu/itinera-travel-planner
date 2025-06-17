@@ -1,10 +1,9 @@
 import { onAuthStateChanged, User } from "firebase/auth";
 import { doc, onSnapshot } from "firebase/firestore";
 import { PropsWithChildren, useEffect, useState } from "react";
+import { AuthContext } from "./contexts";
 import { auth, db } from "./firebase-config";
 import { FontFamily, UserSettings } from "./types";
-import { AuthContext } from "./contexts";
-import { MapViewStyles } from "./pages/trips/types";
 
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -40,24 +39,6 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
               font: FontFamily.HANDWRITTEN,
               packingList: "",
               preferredDisplay: "gallery",
-              mapStyle: MapViewStyles.STREETS,
-              iconStyle: {
-                accommodation: {
-                  id: "hotel",
-                  backgroundColour: "bg-[#BCD8EC]",
-                  colour: "text-secondary",
-                },
-                activity: {
-                  id: "pinwheel",
-                  backgroundColour: "bg-[#D6E5BD]",
-                  colour: "text-secondary",
-                },
-                food: {
-                  id: "pizza",
-                  backgroundColour: "bg-[#f9e1a8]",
-                  colour: "text-secondary",
-                },
-              },
             });
           }
           setLoading(false);

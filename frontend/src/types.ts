@@ -1,5 +1,4 @@
 import { ViewDisplayOptions } from "./pages/trips/components/ViewSelector";
-import { MapViewStyles } from "./pages/trips/types";
 
 export enum FontFamily {
   HANDWRITTEN = "font-family-handwritten",
@@ -12,7 +11,6 @@ export type UserSettings = {
   font: FontFamily;
   preferredDisplay: ViewDisplayOptions | null;
   packingList: string | null;
-  mapStyle: MapViewStyles | null;
 };
 
 export type UserType = {

@@ -101,23 +101,67 @@ type IconColour = {
 
 export const iconColours: IconColour[] = [
   {
-    backgroundColour: "bg-[#BCD8EC]",
-    colour: "text-[#BCD8EC]",
+    backgroundColour: "bg-[#f9e242]",
+    colour: "text-[#f9e242]",
   },
   {
-    backgroundColour: "bg-[#D6E5BD]",
-    colour: "text-[#D6E5BD]",
+    backgroundColour: "bg-[#f8b120]",
+    colour: "text-[#f8b120]",
   },
   {
-    backgroundColour: "bg-[#f9e1a8]",
-    colour: "text-[#f9e1a8]",
+    backgroundColour: "bg-[#ee7235]",
+    colour: "text-[#ee7235]",
   },
   {
-    backgroundColour: "bg-secondary",
-    colour: "text-secondary",
+    backgroundColour: "bg-[#f48fb1]",
+    colour: "text-[#f48fb1]",
   },
   {
-    backgroundColour: "bg-primary",
-    colour: "text-primary",
+    backgroundColour: "bg-[#f06293]",
+    colour: "text-[#f06293]",
+  },
+  {
+    backgroundColour: "bg-[#990000]",
+    colour: "text-[#990000]",
+  },
+  {
+    backgroundColour: "bg-[#7b1753]",
+    colour: "text-[#7b1753]",
+  },
+  {
+    backgroundColour: "bg-[#561c51]",
+    colour: "text-[#561c51]",
+  },
+  {
+    backgroundColour: "bg-[#c6da8c]",
+    colour: "text-[#c6da8c]",
+  },
+  {
+    backgroundColour: "bg-[#a7c365]",
+    colour: "text-[#a7c365]",
+  },
+  {
+    backgroundColour: "bg-[#02500e]",
+    colour: "text-[#02500e]",
+  },
+  {
+    backgroundColour: "bg-[#b2def6]",
+    colour: "text-[#b2def6]",
+  },
+  {
+    backgroundColour: "bg-[#59a7dd]",
+    colour: "text-[#59a7dd]",
+  },
+  {
+    backgroundColour: "bg-[#1c3d78]",
+    colour: "text-[#1c3d78]",
+  },
+  {
+    backgroundColour: "bg-[#3b4043]",
+    colour: "text-[#3b4043]",
+  },
+  {
+    backgroundColour: "bg-[#f4f1e8]",
+    colour: "text-[#f4f1e8]",
   },
 ];

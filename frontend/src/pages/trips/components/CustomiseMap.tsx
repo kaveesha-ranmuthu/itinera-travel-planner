@@ -132,7 +132,7 @@ const Icon: React.FC<IconProps> = ({
             className={twMerge(
               backgroundColour,
               iconColour,
-              "cursor-pointer hover:opacity-80 hover:scale-97 transition ease-in-out duration-300 p-2 rounded-full border border-secondary w-10 h-10 flex items-center justify-center"
+              "cursor-pointer hover:opacity-80 hover:scale-97 transition ease-in-out duration-300 p-2 rounded-full border border-secondary/30 w-10 h-10 flex items-center justify-center"
             )}
           >
             <span>{icon}</span>
@@ -166,7 +166,7 @@ const IconStylesPopover: React.FC<IconStylesPopoverProps> = ({
       <div className="space-y-3">
         <div className="space-y-2">
           <h1>Icon colour</h1>
-          <div className="flex space-x-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap">
             {iconColours.map((colour, index) => {
               return (
                 <div
@@ -183,7 +183,7 @@ const IconStylesPopover: React.FC<IconStylesPopoverProps> = ({
         </div>
         <div className="space-y-2">
           <h1>Icon background colour</h1>
-          <div className="flex space-x-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap">
             {iconColours.map((colour, index) => {
               return (
                 <div

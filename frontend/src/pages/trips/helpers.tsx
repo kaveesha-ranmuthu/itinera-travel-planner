@@ -84,7 +84,7 @@ export const getMapMarker = (
           className={twMerge(
             markerColour,
             iconColour,
-            "p-2 rounded-full border border-secondary"
+            "p-2 rounded-full border border-secondary/30"
           )}
         >
           {icon}
