@@ -13,8 +13,8 @@ export const ErrorBox = () => {
     <Box>
       <div className="flex flex-col items-center justify-center text-center">
         <h1 className="text-2xl mb-1">Oops! Something went wrong.</h1>
-        <p className="text-base">
-          Try refreshing the page or checking your internet connection.
+        <p className="text-base text-balance">
+          We're having trouble right now. Please try again in a moment.
         </p>
       </div>
     </Box>

@@ -1,4 +1,4 @@
-import { IconStyles } from "../../types";
+import { IconStyles } from "./types";
 
 export const DEFAULT_ICON_STYLES: IconStyles = {
   accommodation: {

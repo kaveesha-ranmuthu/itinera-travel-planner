@@ -32,6 +32,7 @@ import { useGetAccommodation } from "./hooks/getters/useGetAccommodation";
 import { useGetActivities } from "./hooks/getters/useGetActivities";
 import { useGetFood } from "./hooks/getters/useGetFood";
 import { useGetItinerary } from "./hooks/getters/useGetItinerary";
+import { useGetMapSettings } from "./hooks/getters/useGetMapSettings";
 import useGetTrip from "./hooks/getters/useGetTrip";
 import { TripData } from "./hooks/getters/useGetTrips";
 import { allIcons } from "./icon-map";
@@ -40,7 +41,6 @@ import {
   LocationCategories,
   LocationDetails,
   MapViewSidebarSelectorOptions,
-  MapViewStyles,
 } from "./types";
 import { DEFAULT_ICON_STYLES } from "./constants";
 
@@ -406,7 +406,7 @@ const MapView: React.FC<MapViewProps> = ({
         </div>
       );
     } else if (selectedView === MapViewSidebarSelectorOptions.CUSTOMISE_MAP) {
-      return <CustomiseMap />;
+      return <CustomiseMap tripId={trip.id} />;
     }
   };
 
@@ -430,6 +430,7 @@ const MapView: React.FC<MapViewProps> = ({
         </div>
       </div>
       <CustomMap
+        tripId={trip.id}
         accommodation={
           hideAccommodation
             ? []
@@ -448,16 +449,41 @@ interface MapProps {
   accommodation: AccommodationDetails[];
   food: LocationDetails[];
   activities: LocationDetails[];
+  tripId: string;
 }
 
-const CustomMap: React.FC<MapProps> = ({ accommodation, activities, food }) => {
-  const { settings } = useAuth();
-  const selectedMapStyle = settings?.mapStyle || MapViewStyles.STREETS;
+const CustomMap: React.FC<MapProps> = ({
+  accommodation,
+  activities,
+  food,
+  tripId,
+}) => {
+  const { mapSettings, error } = useGetMapSettings(tripId);
+  const { notify } = useHotToast();
+
+  if (error) {
+    notify("Something went wrong. Please try again.", "error");
+  }
+
+  const selectedMapStyle = mapSettings.mapStyle;
   const {
     accommodation: accommodationIcon,
     activity: activityIcon,
     food: foodIcon,
-  } = settings?.iconStyle || DEFAULT_ICON_STYLES;
+  } = {
+    accommodation: {
+      ...DEFAULT_ICON_STYLES.accommodation,
+      ...mapSettings.iconStyles.accommodation,
+    },
+    activity: {
+      ...DEFAULT_ICON_STYLES.activity,
+      ...mapSettings.iconStyles.activity,
+    },
+    food: {
+      ...DEFAULT_ICON_STYLES.food,
+      ...mapSettings.iconStyles.food,
+    },
+  };
 
   const activityMarkers = useMemo(
     () =>

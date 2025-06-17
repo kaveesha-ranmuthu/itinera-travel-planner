@@ -1,5 +1,4 @@
 import { ViewDisplayOptions } from "./pages/trips/components/ViewSelector";
-import { IconId } from "./pages/trips/icon-map";
 import { MapViewStyles } from "./pages/trips/types";
 
 export enum FontFamily {
@@ -9,21 +8,11 @@ export enum FontFamily {
   SERIF = "font-family-serif",
 }
 
-type IconInfo = { id: IconId; backgroundColour: string; colour: string };
-
-export type IconStyles = {
-  accommodation: IconInfo;
-  activity: IconInfo;
-  food: IconInfo;
-  [key: string]: IconInfo;
-};
-
 export type UserSettings = {
   font: FontFamily;
   preferredDisplay: ViewDisplayOptions | null;
   packingList: string | null;
   mapStyle: MapViewStyles | null;
-  iconStyle: IconStyles | null;
 };
 
 export type UserType = {

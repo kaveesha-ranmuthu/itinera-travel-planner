@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { db, auth } from "../../../../firebase-config";
-import { MapSettings, MapViewStyles } from "../../types";
-import { DEFAULT_ICON_STYLES } from "../../constants";
-import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import { doc, onSnapshot } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { auth, db } from "../../../../firebase-config";
+import { DEFAULT_ICON_STYLES } from "../../constants";
+import { MapSettings, MapViewStyles } from "../../types";
 
 const DEFAULT_MAP_SETTINGS: MapSettings = {
   iconStyles: DEFAULT_ICON_STYLES,
@@ -18,25 +18,7 @@ export const useGetMapSettings = (tripId: string) => {
 
   useEffect(() => {
     let unsubscribeAuth: (() => void) | null = null;
-
-    const fetchSettings = async (userId: string) => {
-      try {
-        const tripRef = doc(db, `users/${userId}/trips/${tripId}`);
-        const tripSnap = await getDoc(tripRef);
-        const data = tripSnap.data();
-
-        const iconStyles =
-          data?.settings?.iconStyles ?? DEFAULT_MAP_SETTINGS.iconStyles;
-        const mapStyle =
-          data?.settings?.mapStyle ?? DEFAULT_MAP_SETTINGS.mapStyle;
-
-        setMapSettings({ iconStyles, mapStyle });
-      } catch {
-        setError("Failed to fetch map settings.");
-      } finally {
-        setLoading(false);
-      }
-    };
+    let unsubscribeFirestore: (() => void) | null = null;
 
     unsubscribeAuth = onAuthStateChanged(auth, (user) => {
       if (!user) {
@@ -44,11 +26,32 @@ export const useGetMapSettings = (tripId: string) => {
         setLoading(false);
         return;
       }
-      fetchSettings(user.uid);
+
+      const tripRef = doc(db, `users/${user.uid}/trips/${tripId}`);
+
+      unsubscribeFirestore = onSnapshot(
+        tripRef,
+        (docSnap) => {
+          const data = docSnap.data();
+
+          const iconStyles =
+            data?.settings?.iconStyles ?? DEFAULT_MAP_SETTINGS.iconStyles;
+          const mapStyle =
+            data?.settings?.mapStyle ?? DEFAULT_MAP_SETTINGS.mapStyle;
+
+          setMapSettings({ iconStyles, mapStyle });
+          setLoading(false);
+        },
+        () => {
+          setError("Failed to fetch map settings.");
+          setLoading(false);
+        }
+      );
     });
 
     return () => {
       if (unsubscribeAuth) unsubscribeAuth();
+      if (unsubscribeFirestore) unsubscribeFirestore();
     };
   }, [tripId]);
 

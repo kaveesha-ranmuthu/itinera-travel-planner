@@ -1,3 +1,5 @@
+import { IconId } from "./icon-map";
+
 export interface LocationDetails {
   id: string;
   googleId?: string;
@@ -55,3 +57,17 @@ export enum MapViewStyles {
   OUTDOORS = "outdoors-v12",
   SATELLITE_STREETS = "satellite-streets-v12",
 }
+
+type IconInfo = { id: IconId; backgroundColour: string; colour: string };
+
+export type IconStyles = {
+  accommodation: IconInfo;
+  activity: IconInfo;
+  food: IconInfo;
+  [key: string]: IconInfo;
+};
+
+export type MapSettings = {
+  iconStyles: IconStyles;
+  mapStyle: MapViewStyles;
+};

@@ -1,39 +1,43 @@
 import React from "react";
 import { twMerge } from "tailwind-merge";
-import { auth } from "../../../firebase-config";
-import { useAuth } from "../../../hooks/useAuth";
-import { useHotToast } from "../../../hooks/useHotToast";
 import { mapPicturesToId } from "../assets/map-pictures";
-import { DEFAULT_ICON_STYLES } from "../constants";
-import { useUpdateUserSettings } from "../hooks/setters/useUpdateUserSettings";
+import { useGetMapSettings } from "../hooks/getters/useGetMapSettings";
+import { useSaveIconStyles } from "../hooks/setters/useSaveIconStyles";
+import { useSaveMapStyle } from "../hooks/setters/useSaveMapStyle";
 import { allIcons, iconColours, IconId } from "../icon-map";
-import { MapViewStyles } from "../types";
 import PopoverMenu from "./PopoverMenu";
+import { DEFAULT_ICON_STYLES } from "../constants";
+import { ErrorBox } from "./InfoBox";
+interface CustomiseMapProps {
+  tripId: string;
+}
 
-const CustomiseMap = () => {
-  const { settings, setSettings } = useAuth();
-  const { updateSettings } = useUpdateUserSettings();
-  const { notify } = useHotToast();
+const CustomiseMap: React.FC<CustomiseMapProps> = ({ tripId }) => {
+  const { mapSettings, error } = useGetMapSettings(tripId);
+  const { saveMapStyle } = useSaveMapStyle();
 
-  const selectedMapStyle = settings?.mapStyle || MapViewStyles.STREETS;
+  if (error) {
+    return <ErrorBox />;
+  }
+
+  const selectedMapStyle = mapSettings.mapStyle;
   const {
     accommodation: accommodationIcon,
     activity: activityIcon,
     food: foodIcon,
-  } = settings?.iconStyle || DEFAULT_ICON_STYLES;
-
-  const updateMapStyle = async (mapStyle: MapViewStyles) => {
-    if (auth.currentUser) {
-      try {
-        await updateSettings({
-          ...settings!,
-          mapStyle,
-        });
-        setSettings({ ...settings!, mapStyle });
-      } catch {
-        notify("Something went wrong. Please try again.", "error");
-      }
-    }
+  } = {
+    accommodation: {
+      ...DEFAULT_ICON_STYLES.accommodation,
+      ...mapSettings.iconStyles.accommodation,
+    },
+    activity: {
+      ...DEFAULT_ICON_STYLES.activity,
+      ...mapSettings.iconStyles.activity,
+    },
+    food: {
+      ...DEFAULT_ICON_STYLES.food,
+      ...mapSettings.iconStyles.food,
+    },
   };
 
   return (
@@ -44,9 +48,10 @@ const CustomiseMap = () => {
           {mapPicturesToId.map((mapPicture) => {
             return (
               <img
+                key={mapPicture.id}
                 width={130}
                 src={mapPicture.src}
-                onClick={() => updateMapStyle(mapPicture.id)}
+                onClick={() => saveMapStyle(tripId, mapPicture.id)}
                 className={twMerge(
                   "border rounded-sm",
                   selectedMapStyle === mapPicture.id
@@ -65,18 +70,21 @@ const CustomiseMap = () => {
           label="accommodation"
           backgroundColour={accommodationIcon.backgroundColour}
           iconColour={accommodationIcon.colour}
+          tripId={tripId}
         />
         <Icon
           icon={allIcons[foodIcon.id]}
           label="food"
           backgroundColour={foodIcon.backgroundColour}
           iconColour={foodIcon.colour}
+          tripId={tripId}
         />
         <Icon
           icon={allIcons[activityIcon.id]}
           label="activity"
           backgroundColour={activityIcon.backgroundColour}
           iconColour={activityIcon.colour}
+          tripId={tripId}
         />
       </div>
     </div>
@@ -88,6 +96,7 @@ interface IconProps {
   label: string;
   backgroundColour: string;
   iconColour: string;
+  tripId: string;
 }
 
 const Icon: React.FC<IconProps> = ({
@@ -95,86 +104,29 @@ const Icon: React.FC<IconProps> = ({
   label,
   backgroundColour,
   iconColour,
+  tripId,
 }) => {
-  const { settings, setSettings } = useAuth();
-  const { updateSettings } = useUpdateUserSettings();
-  const { notify } = useHotToast();
+  const { saveIcon, saveIconBackgroundColour, saveIconColour } =
+    useSaveIconStyles();
 
-  const updateIcon = async (iconId: IconId) => {
-    if (auth.currentUser) {
-      const currentIconStyle = settings?.iconStyle || DEFAULT_ICON_STYLES;
-      const newIconStyle = {
-        ...currentIconStyle,
-        [label]: {
-          ...currentIconStyle[label],
-          id: iconId,
-        },
-      };
-
-      try {
-        await updateSettings({
-          ...settings!,
-          iconStyle: newIconStyle,
-        });
-        setSettings({ ...settings!, iconStyle: newIconStyle });
-      } catch {
-        notify("Something went wrong. Please try again.", "error");
-      }
-    }
+  const handleUpdateIcon = (iconId: IconId) => {
+    saveIcon(tripId, iconId, label);
   };
 
-  const updateIconColour = async (colour: string) => {
-    if (auth.currentUser) {
-      const currentIconStyle = settings?.iconStyle || DEFAULT_ICON_STYLES;
-      const newIconStyle = {
-        ...currentIconStyle,
-        [label]: {
-          ...currentIconStyle[label],
-          colour,
-        },
-      };
-
-      try {
-        await updateSettings({
-          ...settings!,
-          iconStyle: newIconStyle,
-        });
-        setSettings({ ...settings!, iconStyle: newIconStyle });
-      } catch {
-        notify("Something went wrong. Please try again.", "error");
-      }
-    }
+  const handleUpdateIconColour = (colour: string) => {
+    saveIconColour(tripId, colour, label);
   };
 
-  const updateIconBackgroundColour = async (colour: string) => {
-    if (auth.currentUser) {
-      const currentIconStyle = settings?.iconStyle || DEFAULT_ICON_STYLES;
-      const newIconStyle = {
-        ...currentIconStyle,
-        [label]: {
-          ...currentIconStyle[label],
-          backgroundColour: colour,
-        },
-      };
-
-      try {
-        await updateSettings({
-          ...settings!,
-          iconStyle: newIconStyle,
-        });
-        setSettings({ ...settings!, iconStyle: newIconStyle });
-      } catch {
-        notify("Something went wrong. Please try again.", "error");
-      }
-    }
+  const handleUpdateIconBackgroundColour = (colour: string) => {
+    saveIconBackgroundColour(tripId, colour, label);
   };
 
   return (
     <div className="flex items-center space-x-3">
       <IconStylesPopover
-        onUpdateIcon={updateIcon}
-        onUpdateIconColour={updateIconColour}
-        onUpdateIconBackgroundColour={updateIconBackgroundColour}
+        onUpdateIcon={handleUpdateIcon}
+        onUpdateIconColour={handleUpdateIconColour}
+        onUpdateIconBackgroundColour={handleUpdateIconBackgroundColour}
         popoverTrigger={
           <div
             className={twMerge(
