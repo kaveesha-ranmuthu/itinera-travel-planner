@@ -132,7 +132,7 @@ const Icon: React.FC<IconProps> = ({
             className={twMerge(
               backgroundColour,
               iconColour,
-              "cursor-pointer hover:opacity-80 hover:scale-97 transition ease-in-out duration-300 p-2 rounded-full border border-secondary/30 w-10 h-10 flex items-center justify-center"
+              "cursor-pointer hover:opacity-80 hover:scale-97 transition ease-in-out duration-300 p-2 rounded-full border-2 border-primary/70 w-10 h-10 flex items-center justify-center"
             )}
           >
             <span>{icon}</span>
@@ -161,7 +161,7 @@ const IconStylesPopover: React.FC<IconStylesPopoverProps> = ({
     <PopoverMenu
       popoverTrigger={popoverTrigger}
       anchor="bottom start"
-      panelClassName="mt-1 h-40"
+      panelClassName="mt-1 h-36"
     >
       <div className="space-y-3">
         <div className="space-y-2">
