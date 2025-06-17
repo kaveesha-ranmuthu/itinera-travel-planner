@@ -2,24 +2,26 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Element } from "react-scroll";
 import { twMerge } from "tailwind-merge";
+import Button from "../../components/Button";
 import { useAuth } from "../../hooks/useAuth";
+import { useHotToast } from "../../hooks/useHotToast";
 import ErrorPage from "../error/ErrorPage";
 import { LoadingState } from "../landing-page/LandingPage";
+import { CreateCustomSectionPopup } from "./components/CreateCustomSectionPopup";
 import CreateTripPopup from "./components/CreateTripPopup";
+import FadeInSection from "./components/FadeInSection";
 import Accommodation from "./components/sections/Accommodation";
 import Activities from "./components/sections/Activities";
 import Food from "./components/sections/Food";
 import Header from "./components/sections/Header";
 import HeaderIcons from "./components/sections/HeaderIcons";
 import Itinerary from "./components/sections/Itinerary";
+import PackingList from "./components/sections/PackingList";
 import Transport from "./components/sections/Transport";
 import TripHeader from "./components/sections/TripHeader";
 import useGetTrip from "./hooks/getters/useGetTrip";
 import useGetTripData from "./hooks/setters/useGetTripData";
-import FadeInSection from "./components/FadeInSection";
-import PackingList from "./components/sections/PackingList";
-import Button from "../../components/Button";
-import { CreateCustomSectionPopup } from "./components/CreateCustomSectionPopup";
+import { useSaveCustomSection } from "./hooks/setters/useSaveCustomSection";
 
 const TripPage = () => {
   const { tripId } = useParams();
@@ -50,12 +52,15 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
     itinerary,
     loading: tripDataLoading,
   } = useGetTripData(tripId);
+  const { saveCustomSection } = useSaveCustomSection();
 
   const { settings } = useAuth();
   const [isEditTripModalOpen, setIsEditTripModalOpen] = useState(false);
   const [isCreateSectionModalOpen, setIsCreateSectionModalOpen] =
     useState(false);
   const [showLoading, setShowLoading] = useState(true);
+
+  const { notify } = useHotToast();
 
   useEffect(() => {
     const isLoading = loading || tripDataLoading;
@@ -78,6 +83,14 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
   if (error || !trip) {
     return <ErrorPage />;
   }
+
+  const handleCreateNewSection = (sectionName: string) => {
+    try {
+      saveCustomSection(trip.id, sectionName, []);
+    } catch {
+      notify("Something went wrong. Please try again.", "error");
+    }
+  };
 
   return (
     <div className={twMerge(settings?.font, "pb-16")}>
@@ -184,6 +197,8 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
       <CreateCustomSectionPopup
         isOpen={isCreateSectionModalOpen}
         onClose={() => setIsCreateSectionModalOpen(false)}
+        currentSubCollections={trip.subCollections}
+        onConfirm={handleCreateNewSection}
       />
     </div>
   );

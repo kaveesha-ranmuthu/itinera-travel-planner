@@ -21,14 +21,19 @@ export const useSaveCustomSection = () => {
           `users/${user.uid}/trips/${tripId}/${sectionTitle}`
         );
 
-        locations.forEach((row) => {
-          const rowRef = doc(ref, row.id);
-          batch.set(
-            rowRef,
-            { ...row, createdAt: row.createdAt },
-            { merge: true }
-          );
-        });
+        if (locations.length === 0) {
+          const rowRef = doc(ref, "placeholder");
+          batch.set(rowRef, {});
+        } else {
+          locations.forEach((l) => {
+            const rowRef = doc(ref, l.id);
+            batch.set(
+              rowRef,
+              { ...l, createdAt: l.createdAt },
+              { merge: true }
+            );
+          });
+        }
 
         await batch.commit();
 
@@ -41,6 +46,6 @@ export const useSaveCustomSection = () => {
   );
 
   return {
-    saveFood: saveCustomSection,
+    saveCustomSection,
   };
 };

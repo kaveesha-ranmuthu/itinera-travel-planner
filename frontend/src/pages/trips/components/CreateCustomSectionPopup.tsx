@@ -1,19 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import PopupModal from "./PopupModal";
 import TripsInput from "./TripsInput";
 import Button from "../../../components/Button";
 import { useAuth } from "../../../hooks/useAuth";
 import { twMerge } from "tailwind-merge";
+import { debounce } from "lodash";
+import { useHotToast } from "../../../hooks/useHotToast";
 
 interface CreateCustomSectionPopupProps {
   isOpen: boolean;
   onClose: () => void;
+  currentSubCollections: string[];
+  onConfirm: (sectionName: string) => void;
 }
 
 export const CreateCustomSectionPopup: React.FC<
   CreateCustomSectionPopupProps
-> = ({ isOpen, onClose }) => {
+> = ({ isOpen, onClose, currentSubCollections, onConfirm }) => {
   const { settings } = useAuth();
+  const { notify } = useHotToast();
+
+  const [sectionName, setSectionName] = useState("");
+
+  const handleChange = debounce(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSectionName(event.target.value);
+    },
+    300
+  );
+
   return (
     <PopupModal isOpen={isOpen} onClose={onClose} className="w-fit">
       <h1 className="text-xl">Create a new section</h1>
@@ -23,7 +38,7 @@ export const CreateCustomSectionPopup: React.FC<
       <TripsInput
         id="section-name"
         type="text"
-        onChange={() => null}
+        onChange={handleChange}
         className="w-full rounded-sm"
       />
       <div className="w-full flex items-center justify-end space-x-2 mt-3">
@@ -39,6 +54,23 @@ export const CreateCustomSectionPopup: React.FC<
         <Button.Secondary
           className={twMerge("normal-case text-sm not-italic", settings?.font)}
           type="submit"
+          onClick={() => {
+            const trimmedSectionName = sectionName.trim();
+            if (!trimmedSectionName) {
+              notify("Please enter a section name.", "info");
+              return;
+            }
+
+            if (currentSubCollections.includes(trimmedSectionName)) {
+              notify(
+                "Section already exists. Please choose a different name.",
+                "info"
+              );
+              return;
+            }
+            onConfirm(trimmedSectionName);
+            onClose();
+          }}
         >
           Confirm
         </Button.Secondary>
