@@ -123,10 +123,58 @@ const Icon: React.FC<IconProps> = ({
     }
   };
 
+  const updateIconColour = async (colour: string) => {
+    if (auth.currentUser) {
+      const currentIconStyle = settings?.iconStyle || DEFAULT_ICON_STYLES;
+      const newIconStyle = {
+        ...currentIconStyle,
+        [label]: {
+          ...currentIconStyle[label],
+          colour,
+        },
+      };
+
+      try {
+        await updateSettings({
+          ...settings!,
+          iconStyle: newIconStyle,
+        });
+        setSettings({ ...settings!, iconStyle: newIconStyle });
+      } catch {
+        notify("Something went wrong. Please try again.", "error");
+      }
+    }
+  };
+
+  const updateIconBackgroundColour = async (colour: string) => {
+    if (auth.currentUser) {
+      const currentIconStyle = settings?.iconStyle || DEFAULT_ICON_STYLES;
+      const newIconStyle = {
+        ...currentIconStyle,
+        [label]: {
+          ...currentIconStyle[label],
+          backgroundColour: colour,
+        },
+      };
+
+      try {
+        await updateSettings({
+          ...settings!,
+          iconStyle: newIconStyle,
+        });
+        setSettings({ ...settings!, iconStyle: newIconStyle });
+      } catch {
+        notify("Something went wrong. Please try again.", "error");
+      }
+    }
+  };
+
   return (
     <div className="flex items-center space-x-3">
       <IconStylesPopover
         onUpdateIcon={updateIcon}
+        onUpdateIconColour={updateIconColour}
+        onUpdateIconBackgroundColour={updateIconBackgroundColour}
         popoverTrigger={
           <div
             className={twMerge(
@@ -147,11 +195,15 @@ const Icon: React.FC<IconProps> = ({
 interface IconStylesPopoverProps {
   popoverTrigger: React.ReactNode;
   onUpdateIcon: (iconId: IconId) => void;
+  onUpdateIconColour: (colour: string) => void;
+  onUpdateIconBackgroundColour: (colour: string) => void;
 }
 
 const IconStylesPopover: React.FC<IconStylesPopoverProps> = ({
   popoverTrigger,
   onUpdateIcon,
+  onUpdateIconColour,
+  onUpdateIconBackgroundColour,
 }) => {
   return (
     <PopoverMenu
@@ -167,6 +219,7 @@ const IconStylesPopover: React.FC<IconStylesPopoverProps> = ({
               return (
                 <div
                   key={index}
+                  onClick={() => onUpdateIconColour(colour.colour)}
                   className={twMerge(
                     colour.backgroundColour,
                     "w-7 h-7 rounded cursor-pointer hover:scale-95 transition ease-in-out duration-300 border border-secondary/30"
@@ -183,6 +236,9 @@ const IconStylesPopover: React.FC<IconStylesPopoverProps> = ({
               return (
                 <div
                   key={index}
+                  onClick={() =>
+                    onUpdateIconBackgroundColour(colour.backgroundColour)
+                  }
                   className={twMerge(
                     colour.backgroundColour,
                     "w-7 h-7 rounded cursor-pointer hover:scale-95 transition ease-in-out duration-300 border border-secondary/30"
