@@ -18,6 +18,8 @@ import useGetTrip from "./hooks/getters/useGetTrip";
 import useGetTripData from "./hooks/setters/useGetTripData";
 import FadeInSection from "./components/FadeInSection";
 import PackingList from "./components/sections/PackingList";
+import Button from "../../components/Button";
+import { CreateCustomSectionPopup } from "./components/CreateCustomSectionPopup";
 
 const TripPage = () => {
   const { tripId } = useParams();
@@ -51,6 +53,8 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
 
   const { settings } = useAuth();
   const [isEditTripModalOpen, setIsEditTripModalOpen] = useState(false);
+  const [isCreateSectionModalOpen, setIsCreateSectionModalOpen] =
+    useState(false);
   const [showLoading, setShowLoading] = useState(true);
 
   useEffect(() => {
@@ -137,6 +141,17 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
               />
             </FadeInSection>
           </Element>
+          <FadeInSection>
+            <Button.Primary
+              className={twMerge(
+                "border border-secondary normal-case not-italic mt-5",
+                settings?.font
+              )}
+              onClick={() => setIsCreateSectionModalOpen(true)}
+            >
+              <span>+ Create custom section</span>
+            </Button.Primary>
+          </FadeInSection>
           <Element name="itinerary">
             <FadeInSection>
               <div className="flex space-x-10 items-start">
@@ -165,6 +180,10 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
         onClose={() => setIsEditTripModalOpen(false)}
         initialValues={trip}
         onSubmit={updateTripDetails}
+      />
+      <CreateCustomSectionPopup
+        isOpen={isCreateSectionModalOpen}
+        onClose={() => setIsCreateSectionModalOpen(false)}
       />
     </div>
   );
