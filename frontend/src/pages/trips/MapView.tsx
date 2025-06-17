@@ -42,6 +42,7 @@ import {
   MapViewSidebarSelectorOptions,
   MapViewStyles,
 } from "./types";
+import { DEFAULT_ICON_STYLES } from "./constants";
 
 const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -456,11 +457,7 @@ const CustomMap: React.FC<MapProps> = ({ accommodation, activities, food }) => {
     accommodation: accommodationIcon,
     activity: activityIcon,
     food: foodIcon,
-  } = settings?.iconStyle || {
-    accommodation: "hotel",
-    activity: "pinwheel",
-    food: "pizza",
-  };
+  } = settings?.iconStyle || DEFAULT_ICON_STYLES;
 
   const activityMarkers = useMemo(
     () =>
