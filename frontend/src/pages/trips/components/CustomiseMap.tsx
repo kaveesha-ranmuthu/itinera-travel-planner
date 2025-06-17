@@ -6,7 +6,7 @@ import { useHotToast } from "../../../hooks/useHotToast";
 import { mapPicturesToId } from "../assets/map-pictures";
 import { DEFAULT_ICON_STYLES } from "../constants";
 import { useUpdateUserSettings } from "../hooks/setters/useUpdateUserSettings";
-import { allIcons, iconColours } from "../icon-map";
+import { allIcons, iconColours, IconId } from "../icon-map";
 import { MapViewStyles } from "../types";
 import PopoverMenu from "./PopoverMenu";
 
@@ -96,9 +96,37 @@ const Icon: React.FC<IconProps> = ({
   backgroundColour,
   iconColour,
 }) => {
+  const { settings, setSettings } = useAuth();
+  const { updateSettings } = useUpdateUserSettings();
+  const { notify } = useHotToast();
+
+  const updateIcon = async (iconId: IconId) => {
+    if (auth.currentUser) {
+      const currentIconStyle = settings?.iconStyle || DEFAULT_ICON_STYLES;
+      const newIconStyle = {
+        ...currentIconStyle,
+        [label]: {
+          ...currentIconStyle[label],
+          id: iconId,
+        },
+      };
+
+      try {
+        await updateSettings({
+          ...settings!,
+          iconStyle: newIconStyle,
+        });
+        setSettings({ ...settings!, iconStyle: newIconStyle });
+      } catch {
+        notify("Something went wrong. Please try again.", "error");
+      }
+    }
+  };
+
   return (
     <div className="flex items-center space-x-3">
       <IconStylesPopover
+        onUpdateIcon={updateIcon}
         popoverTrigger={
           <div
             className={twMerge(
@@ -118,10 +146,12 @@ const Icon: React.FC<IconProps> = ({
 
 interface IconStylesPopoverProps {
   popoverTrigger: React.ReactNode;
+  onUpdateIcon: (iconId: IconId) => void;
 }
 
 const IconStylesPopover: React.FC<IconStylesPopoverProps> = ({
   popoverTrigger,
+  onUpdateIcon,
 }) => {
   return (
     <PopoverMenu
@@ -133,9 +163,10 @@ const IconStylesPopover: React.FC<IconStylesPopoverProps> = ({
         <div className="space-y-2">
           <h1>Icon colour</h1>
           <div className="flex space-x-2 flex-wrap">
-            {iconColours.map((colour) => {
+            {iconColours.map((colour, index) => {
               return (
                 <div
+                  key={index}
                   className={twMerge(
                     colour.backgroundColour,
                     "w-7 h-7 rounded cursor-pointer hover:scale-95 transition ease-in-out duration-300 border border-secondary/30"
@@ -148,9 +179,10 @@ const IconStylesPopover: React.FC<IconStylesPopoverProps> = ({
         <div className="space-y-2">
           <h1>Icon background colour</h1>
           <div className="flex space-x-2 flex-wrap">
-            {iconColours.map((colour) => {
+            {iconColours.map((colour, index) => {
               return (
                 <div
+                  key={index}
                   className={twMerge(
                     colour.backgroundColour,
                     "w-7 h-7 rounded cursor-pointer hover:scale-95 transition ease-in-out duration-300 border border-secondary/30"
@@ -166,9 +198,14 @@ const IconStylesPopover: React.FC<IconStylesPopoverProps> = ({
             <div className="flex gap-x-5 gap-y-4 flex-wrap">
               {Object.entries(allIcons).map(([id, icon]) => {
                 return (
-                  <span className="text-secondary cursor-pointer hover:scale-95 hover:opacity-80 transition ease-in-out duration-300">
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => onUpdateIcon(id as IconId)}
+                    className="text-secondary cursor-pointer hover:scale-95 hover:opacity-80 transition ease-in-out duration-300"
+                  >
                     {icon}
-                  </span>
+                  </button>
                 );
               })}
             </div>

@@ -88,7 +88,7 @@ export const accommodationIcons: Record<AccommodationIcons, React.ReactNode> = {
   suitcase: <FaSuitcase size={20} />,
 };
 
-export const allIcons = {
+export const allIcons: Record<IconId, React.ReactNode> = {
   ...foodIcons,
   ...activityIcons,
   ...accommodationIcons,
