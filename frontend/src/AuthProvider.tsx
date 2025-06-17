@@ -42,9 +42,18 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
               preferredDisplay: "gallery",
               mapStyle: MapViewStyles.STREETS,
               iconStyle: {
-                accommodation: "hotel",
-                activity: "pinwheel",
-                food: "pizza",
+                accommodation: {
+                  id: "hotel",
+                  colour: "bg-[#BCD8EC]",
+                },
+                activity: {
+                  id: "pinwheel",
+                  colour: "bg-[#D6E5BD]",
+                },
+                food: {
+                  id: "pizza",
+                  colour: "bg-[#f9e1a8]",
+                },
               },
             });
           }

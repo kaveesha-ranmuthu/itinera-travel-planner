@@ -59,9 +59,21 @@ const CustomiseMap = () => {
       </div>
       <div className="space-y-2">
         <h1 className="text-xl">Icon styles</h1>
-        <Icon icon={allIcons[accommodationIcon]} label="accommodation" />
-        <Icon icon={allIcons[foodIcon]} label="food" />
-        <Icon icon={allIcons[activityIcon]} label="activity" />
+        <Icon
+          icon={allIcons[accommodationIcon.id]}
+          label="accommodation"
+          backgroundColour={accommodationIcon.colour}
+        />
+        <Icon
+          icon={allIcons[foodIcon.id]}
+          label="food"
+          backgroundColour={foodIcon.colour}
+        />
+        <Icon
+          icon={allIcons[activityIcon.id]}
+          label="activity"
+          backgroundColour={activityIcon.colour}
+        />
       </div>
     </div>
   );
@@ -70,14 +82,16 @@ const CustomiseMap = () => {
 interface IconProps {
   icon: React.ReactNode;
   label: string;
+  backgroundColour: string;
 }
 
-const Icon: React.FC<IconProps> = ({ icon, label }) => {
+const Icon: React.FC<IconProps> = ({ icon, label, backgroundColour }) => {
   return (
     <div className="flex items-center space-x-3">
       <div
         className={twMerge(
-          "p-2 rounded-full border border-secondary w-10 h-10 flex items-center justify-center"
+          backgroundColour,
+          "cursor-pointer hover:opacity-80 hover:scale-97 transition ease-in-out duration-300 p-2 rounded-full border border-secondary w-10 h-10 flex items-center justify-center"
         )}
       >
         <span>{icon}</span>

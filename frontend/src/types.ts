@@ -9,11 +9,13 @@ export enum FontFamily {
   SERIF = "font-family-serif",
 }
 
-export type IconStyle = {
-  accommodation: IconId;
-  activity: IconId;
-  food: IconId;
-  [key: string]: IconId;
+type IconInfo = { id: IconId; colour: string };
+
+export type IconStyles = {
+  accommodation: IconInfo;
+  activity: IconInfo;
+  food: IconInfo;
+  [key: string]: IconInfo;
 };
 
 export type UserSettings = {
@@ -21,7 +23,7 @@ export type UserSettings = {
   preferredDisplay: ViewDisplayOptions | null;
   packingList: string | null;
   mapStyle: MapViewStyles | null;
-  iconStyle: IconStyle | null;
+  iconStyle: IconStyles | null;
 };
 
 export type UserType = {
