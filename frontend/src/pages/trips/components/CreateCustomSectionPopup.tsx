@@ -10,13 +10,13 @@ import { useHotToast } from "../../../hooks/useHotToast";
 interface CreateCustomSectionPopupProps {
   isOpen: boolean;
   onClose: () => void;
-  currentSubCollections: string[];
+  currentCollections: string[];
   onConfirm: (sectionName: string) => void;
 }
 
 export const CreateCustomSectionPopup: React.FC<
   CreateCustomSectionPopupProps
-> = ({ isOpen, onClose, currentSubCollections, onConfirm }) => {
+> = ({ isOpen, onClose, currentCollections, onConfirm }) => {
   const { settings } = useAuth();
   const { notify } = useHotToast();
 
@@ -61,7 +61,7 @@ export const CreateCustomSectionPopup: React.FC<
               return;
             }
 
-            if (currentSubCollections.includes(trimmedSectionName)) {
+            if (currentCollections.includes(trimmedSectionName)) {
               notify(
                 "Section already exists. Please choose a different name.",
                 "info"

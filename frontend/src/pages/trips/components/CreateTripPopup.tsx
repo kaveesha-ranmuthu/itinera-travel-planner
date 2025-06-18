@@ -37,6 +37,7 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
   const { countries, error: countryFetchError } = useGetCountries();
   const { currencies, error: currencyFetchError } = useGetCurrencies();
   const uniqueCurrencies = uniqBy(currencies, "currencyCode");
+
   const formattedCurrencies = uniqueCurrencies.map((currency) => ({
     id: currency.currencyCode,
     name: currency.currencyCode,

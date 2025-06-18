@@ -22,6 +22,7 @@ import TripHeader from "./components/sections/TripHeader";
 import useGetTrip from "./hooks/getters/useGetTrip";
 import useGetTripData from "./hooks/setters/useGetTripData";
 import { useSaveCustomSection } from "./hooks/setters/useSaveCustomSection";
+import CustomSection from "./components/sections/CustomSection";
 
 const TripPage = () => {
   const { tripId } = useParams();
@@ -87,6 +88,10 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
   const handleCreateNewSection = (sectionName: string) => {
     try {
       saveCustomSection(trip.id, sectionName, []);
+      updateTripDetails({
+        ...trip,
+        customCollections: [...trip.customCollections, sectionName],
+      });
     } catch {
       notify("Something went wrong. Please try again.", "error");
     }
@@ -154,6 +159,18 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
               />
             </FadeInSection>
           </Element>
+          {trip.customCollections.map((col) => {
+            return (
+              <FadeInSection key={col}>
+                <CustomSection
+                  userCurrencySymbol={trip.currency?.otherInfo?.symbol}
+                  userCurrencyCode={trip.currency?.name}
+                  tripId={trip.id}
+                  sectionName={col}
+                />
+              </FadeInSection>
+            );
+          })}
           <FadeInSection>
             <Button.Primary
               className={twMerge(
@@ -197,7 +214,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
       <CreateCustomSectionPopup
         isOpen={isCreateSectionModalOpen}
         onClose={() => setIsCreateSectionModalOpen(false)}
-        currentSubCollections={trip.subCollections}
+        currentCollections={[...trip.subCollections, ...trip.customCollections]}
         onConfirm={handleCreateNewSection}
       />
     </div>

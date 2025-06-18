@@ -45,8 +45,7 @@ export const useGetCurrencies = () => {
                 return null;
 
               const firstKey = Object.keys(country.currencies)[0];
-              const currencyCode =
-                country.currencies[firstKey].name.toUpperCase();
+              const currencyCode = firstKey.toUpperCase();
               const symbol = country.currencies[firstKey].symbol;
 
               return {

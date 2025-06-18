@@ -29,25 +29,25 @@ import {
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
+import { useGetCustomSection } from "../../hooks/getters/useGetCustomSection";
 
 interface CustomSectionProps {
   userCurrencySymbol?: string;
   userCurrencyCode?: string;
   tripId: string;
-  items: LocationDetails[];
-  error: string | null;
+  sectionName: string;
 }
 
 const CustomSection: React.FC<CustomSectionProps> = ({
   userCurrencySymbol,
   userCurrencyCode,
   tripId,
-  error,
-  items,
+  sectionName,
 }) => {
   const { settings } = useAuth();
   const { notify } = useHotToast();
   const { isSaving } = useSaving();
+  const { items, error } = useGetCustomSection(tripId, sectionName);
 
   const [itemToDelete, setItemToDelete] = useState<LocationDetails | null>(
     null
@@ -63,7 +63,10 @@ const CustomSection: React.FC<CustomSectionProps> = ({
   );
 
   const allRows: LocationDetails[] = useMemo(
-    () => (finalSaveData ? JSON.parse(finalSaveData).data : items),
+    () =>
+      finalSaveData
+        ? JSON.parse(finalSaveData).data
+        : items.filter((item) => Object.keys(item).length),
     [finalSaveData, items]
   );
 
@@ -122,7 +125,7 @@ const CustomSection: React.FC<CustomSectionProps> = ({
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <h1 className="text-3xl">food</h1>
+          <h1 className="text-3xl">{sectionName}</h1>
           <InfoTooltip content="Find places to eat by searching for a specific place or a general term like 'breakfast in Paris'." />
         </div>
         {!!formik.values.data.length && (
@@ -154,7 +157,6 @@ const CustomSection: React.FC<CustomSectionProps> = ({
                         <div className="flex items-center space-x-2">
                           <LocationSearch
                             userCurrency={userCurrencyCode}
-                            placeholder="e.g. breakfast in Paris, Nobu LA"
                             onSelectLocation={async (
                               location: LocationSearchResult
                             ) => {
