@@ -28,6 +28,14 @@ export const getTasklistLocalStorageKey = (tripId: string) =>
 export const getPackingListLocalStorageKey = (tripId: string) =>
   `unsaved-packing-list-${tripId}`;
 
+export const getCustomSectionLocalStorageKey = (
+  tripId: string,
+  sectionName: string
+) => {
+  const sectionNameHyphenated = sectionName.toLowerCase().replace(/\s+/g, "-");
+  return `unsaved-${sectionNameHyphenated}-${tripId}`;
+};
+
 export const getUnsavedTripsStorageKey = () => `unsaved-trips`;
 
 export const addTripToLocalStorage = (tripId: string) => {

@@ -6,6 +6,7 @@ import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useHotToast } from "../../../../hooks/useHotToast";
 import { useSaving } from "../../../../saving-provider/useSaving";
+import { useGetCustomSection } from "../../hooks/getters/useGetCustomSection";
 import { LocationDetails } from "../../types";
 import EstimatedCostContainer from "../EstimatedCostContainer";
 import { ErrorBox, NoDataBox } from "../InfoBox";
@@ -20,8 +21,8 @@ import { ViewDisplayOptions } from "../ViewSelector";
 import WarningConfirmationModal from "../WarningConfirmationModal";
 import {
   addTripToLocalStorage,
+  getCustomSectionLocalStorageKey,
   getEstimatedCost,
-  getFoodLocalStorageKey,
   getLocationDetails,
   getPhotoDownloadUrl,
   getPricesList,
@@ -29,7 +30,6 @@ import {
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
-import { useGetCustomSection } from "../../hooks/getters/useGetCustomSection";
 
 interface CustomSectionProps {
   userCurrencySymbol?: string;
@@ -52,7 +52,9 @@ const CustomSection: React.FC<CustomSectionProps> = ({
   const [itemToDelete, setItemToDelete] = useState<LocationDetails | null>(
     null
   );
-  const finalSaveData = localStorage.getItem(getFoodLocalStorageKey(tripId));
+  const finalSaveData = localStorage.getItem(
+    getCustomSectionLocalStorageKey(tripId, sectionName)
+  );
   const [selectedFilterLocations, setSelectedFilterLocations] = useState<
     string[]
   >([]);
@@ -74,7 +76,7 @@ const CustomSection: React.FC<CustomSectionProps> = ({
 
   const handleFormSubmit = (values: { data: LocationDetails[] }) => {
     localStorage.setItem(
-      getFoodLocalStorageKey(tripId),
+      getCustomSectionLocalStorageKey(tripId, sectionName),
       JSON.stringify(values)
     );
     addTripToLocalStorage(tripId);
@@ -203,30 +205,30 @@ const CustomSection: React.FC<CustomSectionProps> = ({
                             container
                             spacing={view === "gallery" ? 2.8 : 2}
                           >
-                            {formik.values.data.map((foodPlace, index) => {
+                            {formik.values.data.map((place, index) => {
                               const isIncluded =
-                                !foodPlace._deleted &&
+                                !place._deleted &&
                                 isLocationIncluded(
                                   selectedFilterLocations,
-                                  foodPlace.location.name
+                                  place.location.name
                                 ) &&
                                 isPriceIncluded(
                                   selectedFilterPrices,
-                                  foodPlace.price
+                                  place.price
                                 );
 
                               if (!isIncluded) {
                                 return null;
                               }
                               return (
-                                <Fragment key={`${foodPlace.id}-${index}`}>
+                                <Fragment key={`${place.id}-${index}`}>
                                   {view === "gallery" ? (
                                     <Grid>
                                       <LocationWithPhotoCard
-                                        location={foodPlace}
+                                        location={place}
                                         currencySymbol={userCurrencySymbol}
                                         onDelete={() => {
-                                          setItemToDelete(foodPlace);
+                                          setItemToDelete(place);
                                         }}
                                         locationFieldName={`data.${index}.location.name`}
                                         priceFieldName={`data.${index}.price`}
@@ -235,10 +237,10 @@ const CustomSection: React.FC<CustomSectionProps> = ({
                                   ) : (
                                     <Grid size={6}>
                                       <LocationListItem
-                                        location={foodPlace}
+                                        location={place}
                                         currencySymbol={userCurrencySymbol}
                                         onDelete={() => {
-                                          setItemToDelete(foodPlace);
+                                          setItemToDelete(place);
                                         }}
                                         locationFieldName={`data.${index}.location.name`}
                                         priceFieldName={`data.${index}.price`}
@@ -247,8 +249,8 @@ const CustomSection: React.FC<CustomSectionProps> = ({
                                   )}
                                   <WarningConfirmationModal
                                     description="Once deleted, this is gone forever. Are you sure you want to continue?"
-                                    title={`Are you sure you want to delete "${foodPlace.name}"?`}
-                                    isOpen={itemToDelete?.id === foodPlace.id}
+                                    title={`Are you sure you want to delete "${place.name}"?`}
+                                    isOpen={itemToDelete?.id === place.id}
                                     onClose={() => setItemToDelete(null)}
                                     onConfirm={() => {
                                       formik.setFieldValue(
