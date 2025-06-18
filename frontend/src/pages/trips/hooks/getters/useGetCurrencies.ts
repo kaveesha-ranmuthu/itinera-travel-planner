@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { sortBy } from "lodash";
-import { currencyCodeToSymbol } from "../currencyCodeToSymbol";
 
 export type Currency = {
   id: string;
@@ -10,7 +9,18 @@ export type Currency = {
   country: string;
 };
 
-export type Country = { iso3: string; name: string; currency: string };
+export type Country = {
+  cca3: string;
+  name: {
+    common: string;
+  };
+  currencies: {
+    [key: string]: {
+      name: string;
+      symbol: string;
+    };
+  };
+};
 
 export const useGetCurrencies = () => {
   const [currencies, setCurrencies] = useState<Currency[]>([]);
@@ -19,28 +29,31 @@ export const useGetCurrencies = () => {
 
   useEffect(() => {
     axios
-      .get("https://restfulcountries.com/api/v1/countries", {
+      .get("https://restcountries.com/v3.1/all?fields=name,currencies,cca3", {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${
-            import.meta.env.VITE_RESTFUL_COUNTRIES_API_KEY
-          }`,
         },
       })
       .then((response) => {
         const currencyData = sortBy(
-          response.data.data
+          response.data
             .map((country: Country) => {
-              if (!country.currency) return null;
+              if (
+                !country.currencies ||
+                !Object.keys(country.currencies).length
+              )
+                return null;
 
-              const currencyCode = country.currency.toUpperCase();
-              const symbol = currencyCodeToSymbol(currencyCode);
+              const firstKey = Object.keys(country.currencies)[0];
+              const currencyCode =
+                country.currencies[firstKey].name.toUpperCase();
+              const symbol = country.currencies[firstKey].symbol;
 
               return {
-                id: country.iso3,
+                id: country.cca3,
                 currencyCode,
                 symbol,
-                country: country.name,
+                country: country.name.common,
               };
             })
             .filter(Boolean),
@@ -49,7 +62,8 @@ export const useGetCurrencies = () => {
 
         setCurrencies(currencyData);
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error(error);
         setError(new Error("Failed to fetch currencies."));
       })
       .finally(() => setLoading(false));
