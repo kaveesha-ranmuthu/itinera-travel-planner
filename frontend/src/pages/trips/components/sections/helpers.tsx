@@ -28,9 +28,19 @@ export const getTasklistLocalStorageKey = (tripId: string) =>
 export const getPackingListLocalStorageKey = (tripId: string) =>
   `unsaved-packing-list-${tripId}`;
 
-export const getUnsavedTripsStorageKey = () => `unsaved-trips`;
+export const getCustomSectionLocalStorageKey = (
+  tripId: string,
+  sectionName: string
+) => {
+  const sectionNameHyphenated = sectionName.toLowerCase().replace(/\s+/g, "-");
+  return `unsaved-${sectionNameHyphenated}-${tripId}`;
+};
 
-export const addTripToLocalStorage = (tripId: string) => {
+export const getUnsavedTripsStorageKey = () => `unsaved-trips`;
+export const getUnsavedSectionsStorageKey = (tripId: string) =>
+  `unsaved-sections-${tripId}`;
+
+export const addTripToLocalStorage = (tripId: string, sectionName?: string) => {
   const unsavedTripsStorageKey = getUnsavedTripsStorageKey();
   const unsavedTrips = localStorage.getItem(unsavedTripsStorageKey);
   if (unsavedTrips) {
@@ -44,6 +54,22 @@ export const addTripToLocalStorage = (tripId: string) => {
   } else {
     localStorage.setItem(unsavedTripsStorageKey, JSON.stringify([tripId]));
   }
+
+  if (sectionName) {
+    const unsavedSectionKey = getUnsavedSectionsStorageKey(tripId);
+    const unsavedSections = localStorage.getItem(unsavedSectionKey);
+    if (unsavedSections) {
+      const unsavedSectionsArray = JSON.parse(unsavedSections);
+      if (!unsavedSectionsArray.includes(sectionName)) {
+        localStorage.setItem(
+          unsavedSectionKey,
+          JSON.stringify([...unsavedSectionsArray, sectionName])
+        );
+      }
+    } else {
+      localStorage.setItem(unsavedSectionKey, JSON.stringify([sectionName]));
+    }
+  }
 };
 
 export const deleteTripFromLocalStorage = (tripId: string) => {
@@ -51,6 +77,18 @@ export const deleteTripFromLocalStorage = (tripId: string) => {
   const unsavedTrips = localStorage.getItem(unsavedTripsStorageKey);
   if (unsavedTrips) {
     const unsavedTripsArray = JSON.parse(unsavedTrips);
+    const unsavedCustomSections = localStorage.getItem(
+      getUnsavedSectionsStorageKey(tripId)
+    );
+    if (unsavedCustomSections) {
+      const unsavedCustomSectionsArray = JSON.parse(unsavedCustomSections);
+      unsavedCustomSectionsArray.forEach((sectionName: string) => {
+        localStorage.removeItem(
+          getCustomSectionLocalStorageKey(tripId, sectionName)
+        );
+      });
+      localStorage.removeItem(getUnsavedSectionsStorageKey(tripId));
+    }
     if (unsavedTripsArray.includes(tripId)) {
       localStorage.setItem(
         unsavedTripsStorageKey,

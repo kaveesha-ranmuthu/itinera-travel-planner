@@ -11,25 +11,23 @@ export const useGetCountries = () => {
 
   useEffect(() => {
     axios
-      .get("https://restfulcountries.com/api/v1/countries", {
+      .get("https://restcountries.com/v3.1/all?fields=name,currencies,cca3", {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${
-            import.meta.env.VITE_RESTFUL_COUNTRIES_API_KEY
-          }`,
         },
       })
       .then((response) => {
         const sortedCountries = sortBy(
-          response.data.data.map((country: Country) => ({
-            id: country.iso3,
-            name: country.name,
+          response.data.map((country: Country) => ({
+            id: country.cca3,
+            name: country.name.common,
           })),
           "name"
         );
         setCountries(sortedCountries);
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error(error);
         setError("Failed to fetch countries.");
       })
       .finally(() => setLoading(false));

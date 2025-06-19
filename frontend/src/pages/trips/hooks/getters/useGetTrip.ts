@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { TripData } from "./useGetTrips";
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { auth, db } from "../../../../firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
+import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { auth, db } from "../../../../firebase-config";
+import { TripData } from "./useGetTrips";
 import { Trip } from "../../TripsLandingPage";
 
 const useGetTrip = (tripId: string) => {
@@ -54,7 +54,7 @@ const useGetTrip = (tripId: string) => {
   }, [tripId, userId]);
 
   const updateTripDetails = async (
-    updatedFields: Trip
+    updatedFields: TripData | Trip
   ): Promise<undefined | Error> => {
     if (!tripId) return new Error("Trip ID is missing.");
     if (!userId) return new Error("User not authenticated.");

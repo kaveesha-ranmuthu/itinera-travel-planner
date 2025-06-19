@@ -2,6 +2,7 @@ import { collection, doc, writeBatch } from "firebase/firestore";
 import { useCallback } from "react";
 import { auth, db } from "../../../../firebase-config";
 import { ItineraryDetails } from "../../components/sections/Itinerary";
+import { getItineraryLocalStorageKey } from "../../components/sections/helpers";
 
 export const useSaveItinerary = () => {
   const saveItinerary = useCallback(
@@ -23,7 +24,7 @@ export const useSaveItinerary = () => {
 
         await batch.commit();
 
-        localStorage.removeItem(`unsaved-itinerary-${tripId}`);
+        localStorage.removeItem(getItineraryLocalStorageKey(tripId));
       } catch (error) {
         throw new Error(`Error saving itinerary data: ${error}`);
       }

@@ -7,6 +7,7 @@ export interface TripData extends Trip {
   id: string;
   updatedAt: Date;
   subCollections: string[];
+  customCollections: string[];
   currentSavings: number;
   taskList: string;
   packingList?: string;

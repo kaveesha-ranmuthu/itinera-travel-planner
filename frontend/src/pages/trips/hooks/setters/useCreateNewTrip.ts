@@ -37,6 +37,7 @@ export function useCreateNewTrip() {
           "itinerary",
           "packing list",
         ],
+        customCollections: [],
         taskList: `
           <ul data-type="taskList">
             <li data-type="taskItem" data-checked="false">Start typing...</li>
