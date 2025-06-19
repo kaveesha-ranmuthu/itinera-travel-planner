@@ -27,15 +27,18 @@ import {
   getPhotoDownloadUrl,
   getPricesList,
   getUniqueLocations,
+  getUnsavedSectionsStorageKey,
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
+import { useSaveCustomSection } from "../../hooks/setters/useSaveCustomSection";
 
 interface CustomSectionProps {
   userCurrencySymbol?: string;
   userCurrencyCode?: string;
   tripId: string;
   sectionName: string;
+  onDelete: () => void;
 }
 
 const CustomSection: React.FC<CustomSectionProps> = ({
@@ -43,18 +46,23 @@ const CustomSection: React.FC<CustomSectionProps> = ({
   userCurrencyCode,
   tripId,
   sectionName,
+  onDelete,
 }) => {
   const { settings } = useAuth();
   const { notify } = useHotToast();
   const { isSaving } = useSaving();
   const { items, error } = useGetCustomSection(tripId, sectionName);
+  const { deleteCustomSection } = useSaveCustomSection();
 
   const [itemToDelete, setItemToDelete] = useState<LocationDetails | null>(
     null
   );
-  const finalSaveData = localStorage.getItem(
-    getCustomSectionLocalStorageKey(tripId, sectionName)
+
+  const customSectionStorageKey = getCustomSectionLocalStorageKey(
+    tripId,
+    sectionName
   );
+  const finalSaveData = localStorage.getItem(customSectionStorageKey);
   const [selectedFilterLocations, setSelectedFilterLocations] = useState<
     string[]
   >([]);
@@ -75,10 +83,7 @@ const CustomSection: React.FC<CustomSectionProps> = ({
   const sortedRows = sortBy(allRows, "createdAt");
 
   const handleFormSubmit = (values: { data: LocationDetails[] }) => {
-    localStorage.setItem(
-      getCustomSectionLocalStorageKey(tripId, sectionName),
-      JSON.stringify(values)
-    );
+    localStorage.setItem(customSectionStorageKey, JSON.stringify(values));
     addTripToLocalStorage(tripId, sectionName);
   };
 
@@ -118,6 +123,30 @@ const CustomSection: React.FC<CustomSectionProps> = ({
     }
   }, [locations, prices, selectedFilterLocations, selectedFilterPrices]);
 
+  const handleDelete = () => {
+    try {
+      onDelete();
+      deleteCustomSection(tripId, sectionName);
+      localStorage.removeItem(customSectionStorageKey);
+
+      const unsavedSections = localStorage.getItem(
+        getUnsavedSectionsStorageKey(tripId)
+      );
+      if (unsavedSections) {
+        const sections = JSON.parse(unsavedSections);
+        const updatedSections = sections.filter(
+          (section: string) => section !== sectionName
+        );
+        localStorage.setItem(
+          getUnsavedSectionsStorageKey(tripId),
+          JSON.stringify(updatedSections)
+        );
+      }
+    } catch {
+      notify(`Something went wrong. Please try again.`, "error");
+    }
+  };
+
   return (
     <div
       className={twMerge(
@@ -130,19 +159,18 @@ const CustomSection: React.FC<CustomSectionProps> = ({
           <h1 className="text-3xl">{sectionName}</h1>
           <InfoTooltip content="Find places to eat by searching for a specific place or a general term like 'breakfast in Paris'." />
         </div>
-        {!!formik.values.data.length && (
-          <ListSettings
-            locations={locations}
-            selectedLocations={selectedFilterLocations}
-            handleLocationSelect={setSelectedFilterLocations}
-            maxPrice={Math.max(...prices)}
-            selectedPrices={selectedFilterPrices}
-            handlePriceChange={setSelectedFilterPrices}
-            userCurrencySymbol={userCurrencySymbol}
-            selectedListView={view}
-            onSelectView={setView}
-          />
-        )}
+        <ListSettings
+          locations={locations}
+          selectedLocations={selectedFilterLocations}
+          handleLocationSelect={setSelectedFilterLocations}
+          maxPrice={Math.max(...prices)}
+          selectedPrices={selectedFilterPrices}
+          handlePriceChange={setSelectedFilterPrices}
+          userCurrencySymbol={userCurrencySymbol}
+          selectedListView={view}
+          onSelectView={setView}
+          onDelete={handleDelete}
+        />
       </div>
       {error ? (
         <ErrorBox />

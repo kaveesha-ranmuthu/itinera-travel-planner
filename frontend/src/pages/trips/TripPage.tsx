@@ -20,7 +20,7 @@ import PackingList from "./components/sections/PackingList";
 import Transport from "./components/sections/Transport";
 import TripHeader from "./components/sections/TripHeader";
 import useGetTrip from "./hooks/getters/useGetTrip";
-import useGetTripData from "./hooks/setters/useGetTripData";
+import useGetTripData from "./hooks/getters/useGetTripData";
 import { useSaveCustomSection } from "./hooks/setters/useSaveCustomSection";
 import CustomSection from "./components/sections/CustomSection";
 
@@ -167,6 +167,14 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
                   userCurrencyCode={trip.currency?.name}
                   tripId={trip.id}
                   sectionName={col}
+                  onDelete={() => {
+                    updateTripDetails({
+                      ...trip,
+                      customCollections: trip.customCollections.filter(
+                        (c) => c !== col
+                      ),
+                    });
+                  }}
                 />
               </FadeInSection>
             );
@@ -179,7 +187,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
               )}
               onClick={() => setIsCreateSectionModalOpen(true)}
             >
-              <span>+ Create custom section</span>
+              <span>+ Create custom list</span>
             </Button.Primary>
           </FadeInSection>
           <Element name="itinerary">
