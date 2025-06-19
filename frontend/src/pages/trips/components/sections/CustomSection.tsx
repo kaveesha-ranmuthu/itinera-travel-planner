@@ -79,7 +79,7 @@ const CustomSection: React.FC<CustomSectionProps> = ({
       getCustomSectionLocalStorageKey(tripId, sectionName),
       JSON.stringify(values)
     );
-    addTripToLocalStorage(tripId);
+    addTripToLocalStorage(tripId, sectionName);
   };
 
   const formik = useFormik<{ data: LocationDetails[] }>({

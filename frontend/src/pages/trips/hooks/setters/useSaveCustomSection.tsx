@@ -1,7 +1,7 @@
 import { collection, doc, writeBatch } from "firebase/firestore";
 import { useCallback } from "react";
 import { auth, db } from "../../../../firebase-config";
-import { getFoodLocalStorageKey } from "../../components/sections/helpers";
+import { getCustomSectionLocalStorageKey } from "../../components/sections/helpers";
 import { LocationDetails } from "../../types";
 
 export const useSaveCustomSection = () => {
@@ -37,9 +37,11 @@ export const useSaveCustomSection = () => {
 
         await batch.commit();
 
-        localStorage.removeItem(getFoodLocalStorageKey(tripId));
+        localStorage.removeItem(
+          getCustomSectionLocalStorageKey(tripId, sectionTitle)
+        );
       } catch (error) {
-        throw new Error(`Error saving food data: ${error}`);
+        throw new Error(`Error saving ${sectionTitle} data: ${error}`);
       }
     },
     []

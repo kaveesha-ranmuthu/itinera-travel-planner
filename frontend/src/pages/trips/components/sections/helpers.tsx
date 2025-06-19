@@ -37,8 +37,10 @@ export const getCustomSectionLocalStorageKey = (
 };
 
 export const getUnsavedTripsStorageKey = () => `unsaved-trips`;
+export const getUnsavedSectionsStorageKey = (tripId: string) =>
+  `unsaved-sections-${tripId}`;
 
-export const addTripToLocalStorage = (tripId: string) => {
+export const addTripToLocalStorage = (tripId: string, sectionName?: string) => {
   const unsavedTripsStorageKey = getUnsavedTripsStorageKey();
   const unsavedTrips = localStorage.getItem(unsavedTripsStorageKey);
   if (unsavedTrips) {
@@ -51,6 +53,22 @@ export const addTripToLocalStorage = (tripId: string) => {
     }
   } else {
     localStorage.setItem(unsavedTripsStorageKey, JSON.stringify([tripId]));
+  }
+
+  if (sectionName) {
+    const unsavedSectionKey = getUnsavedSectionsStorageKey(tripId);
+    const unsavedSections = localStorage.getItem(unsavedSectionKey);
+    if (unsavedSections) {
+      const unsavedSectionsArray = JSON.parse(unsavedSections);
+      if (!unsavedSectionsArray.includes(sectionName)) {
+        localStorage.setItem(
+          unsavedSectionKey,
+          JSON.stringify([...unsavedSectionsArray, sectionName])
+        );
+      }
+    } else {
+      localStorage.setItem(unsavedSectionKey, JSON.stringify([sectionName]));
+    }
   }
 };
 

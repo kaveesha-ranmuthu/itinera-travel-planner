@@ -2,6 +2,7 @@ import { collection, deleteDoc, doc, writeBatch } from "firebase/firestore";
 import { useCallback } from "react";
 import { auth, db } from "../../../../firebase-config";
 import { TransportationDetails } from "../../types";
+import { getTransportLocalStorageKey } from "../../components/sections/helpers";
 
 export const useSaveTransport = () => {
   const saveTransport = useCallback(
@@ -27,7 +28,7 @@ export const useSaveTransport = () => {
 
         await batch.commit();
 
-        localStorage.removeItem(`unsaved-transport-${tripId}`);
+        localStorage.removeItem(getTransportLocalStorageKey(tripId));
       } catch (error) {
         throw new Error(`Error saving transport data: ${error}`);
       }
