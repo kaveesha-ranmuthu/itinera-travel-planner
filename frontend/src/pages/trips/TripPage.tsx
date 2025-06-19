@@ -179,7 +179,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
               )}
               onClick={() => setIsCreateSectionModalOpen(true)}
             >
-              <span>+ Create custom section</span>
+              <span>+ Create custom list</span>
             </Button.Primary>
           </FadeInSection>
           <Element name="itinerary">

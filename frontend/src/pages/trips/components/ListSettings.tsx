@@ -4,9 +4,10 @@ import { Slider } from "radix-ui";
 import { twMerge } from "tailwind-merge";
 import SmallButton from "./SmallButton";
 import { useAuth } from "../../../hooks/useAuth";
-import { HiOutlineCog6Tooth } from "react-icons/hi2";
+import { HiEllipsisVertical } from "react-icons/hi2";
 import ViewSelector, { ViewDisplayOptions } from "./ViewSelector";
 import Checkbox from "./Checkbox";
+import Button from "../../../components/Button";
 
 interface ListSettingsProps {
   locations: string[];
@@ -18,6 +19,7 @@ interface ListSettingsProps {
   handlePriceChange: (prices: number[] | undefined) => void;
   selectedListView?: ViewDisplayOptions;
   onSelectView?: (view: ViewDisplayOptions) => void;
+  onDelete?: () => void;
 }
 
 const ListSettings: React.FC<ListSettingsProps> = ({
@@ -30,6 +32,7 @@ const ListSettings: React.FC<ListSettingsProps> = ({
   handlePriceChange,
   onSelectView,
   selectedListView,
+  onDelete,
 }) => {
   const { settings } = useAuth();
 
@@ -48,7 +51,7 @@ const ListSettings: React.FC<ListSettingsProps> = ({
       panelClassName={twMerge("h-fit pb-7 mt-3", settings?.font)}
       popoverTrigger={
         <div className="-mb-2 cursor-pointer hover:opacity-70 transition ease-in-out duration-300">
-          <HiOutlineCog6Tooth size={22} className="text-secondary" />
+          <HiEllipsisVertical size={22} className="text-secondary" />
         </div>
       }
     >
@@ -63,7 +66,7 @@ const ListSettings: React.FC<ListSettingsProps> = ({
             />
           </div>
         )}
-        <div>
+        <div className="not-last:pb-3">
           <div className="flex items-center justify-between">
             <h1 className="text-md">Filter by</h1>
             <div className="mt-1">
@@ -97,7 +100,7 @@ const ListSettings: React.FC<ListSettingsProps> = ({
               })}
             </div>
           </div>
-          {!!maxPrice && (
+          {!!maxPrice && maxPrice > 0 && (
             <div className="mt-4">
               <h1 className="text-base mb-1">price</h1>
               <Slider.Root
@@ -127,6 +130,16 @@ const ListSettings: React.FC<ListSettingsProps> = ({
             </div>
           )}
         </div>
+        {!!onDelete && (
+          <div className="mt-4">
+            <Button.Danger
+              className={twMerge("not-italic text-sm", settings?.font)}
+              onClick={onDelete}
+            >
+              Delete list
+            </Button.Danger>
+          </div>
+        )}
       </div>
     </PopoverMenu>
   );
