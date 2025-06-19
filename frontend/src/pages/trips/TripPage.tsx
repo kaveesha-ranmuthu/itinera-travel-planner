@@ -20,7 +20,7 @@ import PackingList from "./components/sections/PackingList";
 import Transport from "./components/sections/Transport";
 import TripHeader from "./components/sections/TripHeader";
 import useGetTrip from "./hooks/getters/useGetTrip";
-import useGetTripData from "./hooks/setters/useGetTripData";
+import useGetTripData from "./hooks/getters/useGetTripData";
 import { useSaveCustomSection } from "./hooks/setters/useSaveCustomSection";
 import CustomSection from "./components/sections/CustomSection";
 
