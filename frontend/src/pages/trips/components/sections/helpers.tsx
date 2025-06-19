@@ -77,6 +77,18 @@ export const deleteTripFromLocalStorage = (tripId: string) => {
   const unsavedTrips = localStorage.getItem(unsavedTripsStorageKey);
   if (unsavedTrips) {
     const unsavedTripsArray = JSON.parse(unsavedTrips);
+    const unsavedCustomSections = localStorage.getItem(
+      getUnsavedSectionsStorageKey(tripId)
+    );
+    if (unsavedCustomSections) {
+      const unsavedCustomSectionsArray = JSON.parse(unsavedCustomSections);
+      unsavedCustomSectionsArray.forEach((sectionName: string) => {
+        localStorage.removeItem(
+          getCustomSectionLocalStorageKey(tripId, sectionName)
+        );
+      });
+      localStorage.removeItem(getUnsavedSectionsStorageKey(tripId));
+    }
     if (unsavedTripsArray.includes(tripId)) {
       localStorage.setItem(
         unsavedTripsStorageKey,
