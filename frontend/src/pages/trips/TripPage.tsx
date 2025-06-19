@@ -167,6 +167,14 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
                   userCurrencyCode={trip.currency?.name}
                   tripId={trip.id}
                   sectionName={col}
+                  onDelete={() => {
+                    updateTripDetails({
+                      ...trip,
+                      customCollections: trip.customCollections.filter(
+                        (c) => c !== col
+                      ),
+                    });
+                  }}
                 />
               </FadeInSection>
             );
