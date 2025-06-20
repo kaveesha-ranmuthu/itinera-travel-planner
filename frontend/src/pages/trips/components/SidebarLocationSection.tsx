@@ -15,7 +15,7 @@ import WarningConfirmationModal from "./WarningConfirmationModal";
 
 export interface SidebarLocationDetails {
   locations: LocationDetails[];
-  title: LocationCategories;
+  title: LocationCategories | string;
   toggleVisibility: (show: boolean) => void;
   isHidden: boolean;
 }
@@ -68,6 +68,7 @@ const SidebarLocationSection: React.FC<SidebarLocationSectionProps> = ({
         {sortedLocations.map((l) => {
           return (
             <div
+              key={l.id}
               className={twMerge(
                 "relative text-secondary/70 flex justify-between items-center rounded-lg group px-3 py-1",
                 selected &&

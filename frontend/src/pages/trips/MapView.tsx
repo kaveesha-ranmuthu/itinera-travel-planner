@@ -1,3 +1,4 @@
+import { sampleSize } from "lodash";
 import "mapbox-gl/dist/mapbox-gl.css";
 import React, { useEffect, useMemo, useState } from "react";
 import Map from "react-map-gl/mapbox";
@@ -19,6 +20,7 @@ import {
   addTripToLocalStorage,
   getAccommodationLocalStorageKey,
   getActivitiesLocalStorageKey,
+  getCustomSectionLocalStorageKey,
   getFoodLocalStorageKey,
   getLocationDetails,
   getPhotoDownloadUrl,
@@ -27,22 +29,26 @@ import Itinerary, { ItineraryDetails } from "./components/sections/Itinerary";
 import SidebarLocationSection, {
   SidebarLocationDetails,
 } from "./components/SidebarLocationSection";
+import { DEFAULT_ICON_STYLES } from "./constants";
 import { getMapMarker } from "./helpers";
 import { useGetAccommodation } from "./hooks/getters/useGetAccommodation";
 import { useGetActivities } from "./hooks/getters/useGetActivities";
+import {
+  SectionData as CustomSectionData,
+  useGetAllCustomSections,
+} from "./hooks/getters/useGetAllCustomSections";
 import { useGetFood } from "./hooks/getters/useGetFood";
 import { useGetItinerary } from "./hooks/getters/useGetItinerary";
 import { useGetMapSettings } from "./hooks/getters/useGetMapSettings";
 import useGetTrip from "./hooks/getters/useGetTrip";
 import { TripData } from "./hooks/getters/useGetTrips";
-import { allIcons } from "./icon-map";
+import { allIcons, iconColours } from "./icon-map";
 import {
   AccommodationDetails,
   LocationCategories,
   LocationDetails,
   MapViewSidebarSelectorOptions,
 } from "./types";
-import { DEFAULT_ICON_STYLES } from "./constants";
 
 const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -76,6 +82,21 @@ const MapViewPage = () => {
     loading: itineraryLoading,
   } = useGetItinerary(tripId ?? "");
 
+  const {
+    data: customSections,
+    error: customSectionsError,
+    loading: customSectionsLoading,
+  } = useGetAllCustomSections(tripId ?? "", trip?.customCollections ?? []);
+
+  const filteredCustomSections: CustomSectionData = Object.fromEntries(
+    Object.entries(customSections)
+      .map(([name, data]) => [
+        name,
+        data.filter((item) => Object.keys(item).length > 0),
+      ])
+      .filter(([, data]) => data.length > 0) // remove section if all items were empty
+  );
+
   const [showLoading, setShowLoading] = useState(true);
 
   useEffect(() => {
@@ -84,7 +105,8 @@ const MapViewPage = () => {
       accommodationLoading ||
       foodLoading ||
       activitiesLoading ||
-      itineraryLoading;
+      itineraryLoading ||
+      customSectionsLoading;
 
     if (isLoading) {
       setShowLoading(true); // Ensure loading state stays while data is loading
@@ -101,6 +123,7 @@ const MapViewPage = () => {
     foodLoading,
     activitiesLoading,
     itineraryLoading,
+    customSectionsLoading,
   ]);
 
   if (showLoading) {
@@ -108,7 +131,12 @@ const MapViewPage = () => {
   }
 
   // TODO: make more specific to type of error
-  if (activitiesError || accommodationError || foodError) {
+  if (
+    activitiesError ||
+    accommodationError ||
+    foodError ||
+    customSectionsError
+  ) {
     notify("Something went wrong. Please try again.", "error");
   }
 
@@ -125,10 +153,18 @@ const MapViewPage = () => {
         foodItems={foodItems}
         itinerary={itinerary}
         itineraryError={itineraryError}
+        savedCustomSections={filteredCustomSections}
       />
     </div>
   );
 };
+
+interface CustomSectionColours {
+  [key: string]: {
+    backgroundColour: string;
+    colour: string;
+  };
+}
 
 interface MapViewProps {
   trip: TripData;
@@ -137,6 +173,7 @@ interface MapViewProps {
   activitiesData: LocationDetails[];
   itinerary: ItineraryDetails[];
   itineraryError: string | null;
+  savedCustomSections: CustomSectionData;
 }
 
 const MapView: React.FC<MapViewProps> = ({
@@ -146,6 +183,7 @@ const MapView: React.FC<MapViewProps> = ({
   activitiesData,
   itinerary,
   itineraryError,
+  savedCustomSections,
 }) => {
   const { settings } = useAuth();
   const { isSaving } = useSaving();
@@ -155,9 +193,9 @@ const MapView: React.FC<MapViewProps> = ({
     MapViewSidebarSelectorOptions.ITINERARY
   );
 
-  const [selectedLocationSection, setSelectedLocationSection] = useState(
-    LocationCategories.ACCOMMODATION
-  );
+  const [selectedLocationSection, setSelectedLocationSection] = useState<
+    LocationCategories | string
+  >(LocationCategories.ACCOMMODATION);
 
   const accommodationLocalStorage = localStorage.getItem(
     getAccommodationLocalStorageKey(trip.id)
@@ -170,6 +208,25 @@ const MapView: React.FC<MapViewProps> = ({
   const activitiesLocalStorage = localStorage.getItem(
     getActivitiesLocalStorageKey(trip.id)
   );
+
+  const [customSections, setCustomSections] =
+    useState<CustomSectionData>(savedCustomSections);
+
+  useEffect(() => {
+    Object.keys(savedCustomSections).forEach((sectionName) => {
+      const localStorageKey = getCustomSectionLocalStorageKey(
+        trip.id,
+        sectionName
+      );
+      const sectionData = localStorage.getItem(localStorageKey);
+      if (sectionData) {
+        setCustomSections((prev) => ({
+          ...prev,
+          [sectionName]: JSON.parse(sectionData).data,
+        }));
+      }
+    });
+  }, [savedCustomSections, trip.id]);
 
   const [accommodation, setAccommodation] = useState<AccommodationDetails[]>(
     accommodationLocalStorage
@@ -210,6 +267,14 @@ const MapView: React.FC<MapViewProps> = ({
       isHidden: hideActivities,
       toggleVisibility: (show: boolean) => setHideActivities(show),
     },
+    ...Object.entries(customSections).map(([name, data]) => {
+      return {
+        locations: data.filter((item) => !item._deleted),
+        title: name,
+        isHidden: false,
+        toggleVisibility: (show: boolean) => null,
+      };
+    }),
   ];
 
   const updateLocalStorageAccommodation = async (
@@ -410,6 +475,26 @@ const MapView: React.FC<MapViewProps> = ({
     }
   };
 
+  const customSectionColours: CustomSectionColours = {};
+  Object.keys(customSections).forEach((sectionName) => {
+    const backgroundColour = sampleSize(
+      iconColours.map((c) => c.backgroundColour),
+      1
+    );
+    const colourOptions = sampleSize(
+      iconColours.map((c) => c.colour),
+      2
+    );
+    const colour =
+      colourOptions[0] === backgroundColour[0]
+        ? colourOptions[1]
+        : colourOptions[0];
+    customSectionColours[sectionName] = {
+      backgroundColour: backgroundColour[0],
+      colour: colour[0],
+    };
+  });
+
   return (
     <div
       className={twMerge(
@@ -440,6 +525,8 @@ const MapView: React.FC<MapViewProps> = ({
         activities={
           hideActivities ? [] : activities.filter((item) => !item._deleted)
         }
+        customSections={customSections}
+        customSectionColours={customSectionColours}
       />
     </div>
   );
@@ -449,6 +536,8 @@ interface MapProps {
   accommodation: AccommodationDetails[];
   food: LocationDetails[];
   activities: LocationDetails[];
+  customSections: CustomSectionData;
+  customSectionColours: CustomSectionColours;
   tripId: string;
 }
 
@@ -457,6 +546,8 @@ const CustomMap: React.FC<MapProps> = ({
   activities,
   food,
   tripId,
+  customSections,
+  customSectionColours,
 }) => {
   const { mapSettings, error } = useGetMapSettings(tripId);
   const { notify } = useHotToast();
@@ -530,6 +621,25 @@ const CustomMap: React.FC<MapProps> = ({
     [accommodation, accommodationIcon]
   );
 
+  const customSectionMarkers = useMemo(() => {
+    return Object.entries(customSections).flatMap(
+      ([sectionName, sectionData]) => {
+        return sectionData.map((location) => {
+          return (
+            <div key={location.id}>
+              {getMapMarker(
+                location,
+                customSectionColours[sectionName].backgroundColour,
+                customSectionColours[sectionName].colour,
+                allIcons.star
+              )}
+            </div>
+          );
+        });
+      }
+    );
+  }, [customSectionColours, customSections]);
+
   return (
     <Map
       mapboxAccessToken={API_KEY}
@@ -545,6 +655,7 @@ const CustomMap: React.FC<MapProps> = ({
       {activityMarkers}
       {foodMarkers}
       {accommodationMarkers}
+      {customSectionMarkers}
     </Map>
   );
 };
