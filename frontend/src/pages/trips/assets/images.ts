@@ -43,4 +43,28 @@ export const images: ImageInfo[] = [
       "/images/felix-brard/art-8-new.jpg",
     ],
   },
+  {
+    artist: "Carl Lafite",
+    images: [
+      "/images/carl-lafite/art-1.jpg",
+      "/images/carl-lafite/art-2.jpg",
+      "/images/carl-lafite/art-3.jpg",
+      "/images/carl-lafite/art-4.jpg",
+      "/images/carl-lafite/art-5.jpg",
+      "/images/carl-lafite/art-6.jpg",
+    ],
+  },
+  {
+    artist: "Rudolf von Alt",
+    images: [
+      "/images/rudolf-von-alt/art-1.jpg",
+      "/images/rudolf-von-alt/art-2.jpg",
+      "/images/rudolf-von-alt/art-3.jpg",
+      "/images/rudolf-von-alt/art-4.jpg",
+      "/images/rudolf-von-alt/art-5.jpg",
+      "/images/rudolf-von-alt/art-6.jpg",
+      "/images/rudolf-von-alt/art-7.jpg",
+      "/images/rudolf-von-alt/art-8.jpg",
+    ],
+  },
 ];
