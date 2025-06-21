@@ -395,6 +395,37 @@ const MapView: React.FC<MapViewProps> = ({
     );
   };
 
+  const updateLocalStorageCustomSection = async (
+    sectionName: string,
+    location: LocationSearchResult
+  ) => {
+    const localStorageKey = getCustomSectionLocalStorageKey(
+      trip.id,
+      sectionName
+    );
+    const currentData = customSections[sectionName];
+    const newLocationDetails = getLocationDetails(location, null);
+
+    const locationIds = currentData.map((d) => d.id) ?? [];
+    if (locationIds.includes(location.id)) {
+      notify("This location has already been added.", "info");
+      return;
+    }
+    setCustomSections({
+      ...customSections,
+      [sectionName]: [...currentData, newLocationDetails],
+    });
+
+    const photoUrl = await getPhotoDownloadUrl(location);
+    const dataToSave = [...currentData, { ...newLocationDetails, photoUrl }];
+    localStorage.setItem(
+      localStorageKey,
+      JSON.stringify({
+        data: dataToSave,
+      })
+    );
+  };
+
   const deleteLocalStorage = async (deleteId: string) => {
     switch (selectedLocationSection) {
       case LocationCategories.ACCOMMODATION: {
@@ -486,6 +517,13 @@ const MapView: React.FC<MapViewProps> = ({
                 }
                 case LocationCategories.ACTIVITIES: {
                   updateLocalStorageActivities(location);
+                  break;
+                }
+                default: {
+                  updateLocalStorageCustomSection(
+                    selectedLocationSection,
+                    location
+                  );
                   break;
                 }
               }
