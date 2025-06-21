@@ -15,6 +15,8 @@ interface CustomMapProps {
   customSections: CustomSectionData;
   mapSettings: MapSettings;
   customSectionStyles: CustomSectionStyles;
+  longitude?: number;
+  latitude?: number;
 }
 
 export const CustomMap: React.FC<CustomMapProps> = ({
@@ -24,6 +26,8 @@ export const CustomMap: React.FC<CustomMapProps> = ({
   customSections,
   mapSettings,
   customSectionStyles,
+  longitude = -122.4,
+  latitude = 37.8,
 }) => {
   const getCustomSectionMarkers = useCallback(
     () =>
@@ -62,18 +66,31 @@ export const CustomMap: React.FC<CustomMapProps> = ({
   };
 
   const activityMarkers = getMapMarkers(activities, activityIcon);
-
   const foodMarkers = getMapMarkers(food, foodIcon);
-
   const accommodationMarkers = getMapMarkers(accommodation, accommodationIcon);
+
+  const [activityLong, activityLang] = [
+    activities[0]?.location.longitude,
+    activities[0]?.location.latitude,
+  ];
+  const [foodLong, foodLang] = [
+    food[0]?.location.longitude,
+    food[0]?.location.latitude,
+  ];
+  const [accommodationLong, accommodationLang] = [
+    accommodation[0]?.location.longitude,
+    accommodation[0]?.location.latitude,
+  ];
+
+  const zoom = !activityLong && !foodLong && !accommodationLong ? 5 : 14;
 
   return (
     <Map
       mapboxAccessToken={API_KEY}
       initialViewState={{
-        longitude: activities[0]?.location.longitude || -122.4,
-        latitude: activities[0]?.location.latitude || 37.7,
-        zoom: 10,
+        longitude: activityLong || foodLong || accommodationLong || longitude,
+        latitude: activityLang || foodLang || accommodationLang || latitude,
+        zoom,
         padding: { left: 300 },
       }}
       style={{ width: "100%", height: "100vh" }}
