@@ -274,6 +274,17 @@ const MapView: React.FC<MapViewProps> = ({
   const [hideAccommodation, setHideAccommodation] = useState(false);
   const [hideFood, setHideFood] = useState(false);
   const [hideActivities, setHideActivities] = useState(false);
+  const [hideCustomSections, setHideCustomSections] = useState<{
+    [key: string]: boolean;
+  }>({});
+
+  useEffect(() => {
+    const initialHideCustomSections: { [key: string]: boolean } = {};
+    Object.keys(customSections).forEach((sectionName) => {
+      initialHideCustomSections[sectionName] = false;
+    });
+    setHideCustomSections(initialHideCustomSections);
+  }, [customSections]);
 
   const sidebarLocationSections: SidebarLocationDetails[] = [
     {
@@ -298,8 +309,13 @@ const MapView: React.FC<MapViewProps> = ({
       return {
         locations: data.filter((item) => !item._deleted),
         title: name,
-        isHidden: false,
-        toggleVisibility: (show: boolean) => null,
+        isHidden: hideCustomSections[name],
+        toggleVisibility: (show: boolean) => {
+          setHideCustomSections((prev) => ({
+            ...prev,
+            [name]: show,
+          }));
+        },
       };
     }),
   ];
@@ -508,6 +524,10 @@ const MapView: React.FC<MapViewProps> = ({
     }
   };
 
+  const customSectionsToShow = Object.fromEntries(
+    Object.entries(customSections).filter(([name]) => !hideCustomSections[name])
+  );
+
   return (
     <div
       className={twMerge(
@@ -537,7 +557,7 @@ const MapView: React.FC<MapViewProps> = ({
         activities={
           hideActivities ? [] : activities.filter((item) => !item._deleted)
         }
-        customSections={customSections}
+        customSections={customSectionsToShow}
         mapSettings={mapSettings}
         customSectionStyles={customSectionStyles}
       />
