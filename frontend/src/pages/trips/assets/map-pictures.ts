@@ -1,11 +1,3 @@
-import streetsV12 from "./map-pictures/streets-v12.png";
-import darkV11 from "./map-pictures/dark-v11.png";
-import satelliteV9 from "./map-pictures/satellite-v9.png";
-import lightV11 from "./map-pictures/light-v11.png";
-import navigationDayV1 from "./map-pictures/navigation-day-v1.png";
-import navigationNightV1 from "./map-pictures/navigation-night-v1.png";
-import outdoorsV12 from "./map-pictures/outdoors-v12.png";
-import satelliteStreetsV12 from "./map-pictures/satellite-streets-v12.png";
 import { MapViewStyles } from "../types";
 
 type MapPicture = {
@@ -16,34 +8,34 @@ type MapPicture = {
 export const mapPicturesToId: MapPicture[] = [
   {
     id: MapViewStyles.STREETS,
-    src: streetsV12,
+    src: "/images/maps/streets-v12.png",
   },
   {
     id: MapViewStyles.DARK,
-    src: darkV11,
+    src: "/images/maps/dark-v11.png",
   },
   {
     id: MapViewStyles.SATELLITE,
-    src: satelliteV9,
+    src: "/images/maps/satellite-v9.png",
   },
   {
     id: MapViewStyles.LIGHT,
-    src: lightV11,
+    src: "/images/maps/light-v10.png",
   },
   {
     id: MapViewStyles.NAVIGATION_DAY,
-    src: navigationDayV1,
+    src: "/images/maps/navigation-day-v1.png",
   },
   {
     id: MapViewStyles.NAVIGATION_NIGHT,
-    src: navigationNightV1,
+    src: "/images/maps/navigation-night-v1.png",
   },
   {
     id: MapViewStyles.OUTDOORS,
-    src: outdoorsV12,
+    src: "/images/maps/outdoors-v11.png",
   },
   {
     id: MapViewStyles.SATELLITE_STREETS,
-    src: satelliteStreetsV12,
+    src: "/images/maps/satellite-streets-v12.png",
   },
 ];
