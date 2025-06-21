@@ -1,6 +1,5 @@
 import "mapbox-gl/dist/mapbox-gl.css";
-import React, { useEffect, useMemo, useState } from "react";
-import Map from "react-map-gl/mapbox";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../hooks/useAuth";
@@ -8,7 +7,7 @@ import { useHotToast } from "../../hooks/useHotToast";
 import { useSaving } from "../../saving-provider/useSaving";
 import ErrorPage from "../error/ErrorPage";
 import { LoadingState } from "../landing-page/LandingPage";
-import CustomiseMap from "./components/CustomiseMap";
+import { CustomMap } from "./components/CustomMap";
 import LocationSearch, {
   LocationSearchResult,
 } from "./components/LocationSearch";
@@ -19,6 +18,7 @@ import {
   addTripToLocalStorage,
   getAccommodationLocalStorageKey,
   getActivitiesLocalStorageKey,
+  getCustomSectionLocalStorageKey,
   getFoodLocalStorageKey,
   getLocationDetails,
   getPhotoDownloadUrl,
@@ -27,24 +27,29 @@ import Itinerary, { ItineraryDetails } from "./components/sections/Itinerary";
 import SidebarLocationSection, {
   SidebarLocationDetails,
 } from "./components/SidebarLocationSection";
-import { getMapMarker } from "./helpers";
 import { useGetAccommodation } from "./hooks/getters/useGetAccommodation";
 import { useGetActivities } from "./hooks/getters/useGetActivities";
+import {
+  CustomSectionData,
+  useGetAllCustomSections,
+} from "./hooks/getters/useGetAllCustomSections";
+import {
+  CustomSectionStyles,
+  useGetCustomSectionStyles,
+} from "./hooks/getters/useGetCustomSectionStyles";
 import { useGetFood } from "./hooks/getters/useGetFood";
 import { useGetItinerary } from "./hooks/getters/useGetItinerary";
 import { useGetMapSettings } from "./hooks/getters/useGetMapSettings";
 import useGetTrip from "./hooks/getters/useGetTrip";
 import { TripData } from "./hooks/getters/useGetTrips";
-import { allIcons } from "./icon-map";
 import {
   AccommodationDetails,
   LocationCategories,
   LocationDetails,
+  MapSettings,
   MapViewSidebarSelectorOptions,
 } from "./types";
-import { DEFAULT_ICON_STYLES } from "./constants";
-
-const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
+import CustomiseMap from "./components/CustomiseMap";
 
 const MapViewPage = () => {
   const { tripId } = useParams();
@@ -76,6 +81,27 @@ const MapViewPage = () => {
     loading: itineraryLoading,
   } = useGetItinerary(tripId ?? "");
 
+  const {
+    data: customSections,
+    error: customSectionsError,
+    loading: customSectionsLoading,
+  } = useGetAllCustomSections(tripId ?? "", trip?.customCollections ?? []);
+
+  const {
+    mapSettings,
+    error: mapSettingsError,
+    loading: mapSettingsLoading,
+  } = useGetMapSettings(tripId ?? "");
+
+  const filteredCustomSections: CustomSectionData = Object.fromEntries(
+    Object.entries(customSections).map(([name, data]) => [
+      name,
+      data.filter((item) => Object.keys(item).length > 0),
+    ])
+  );
+
+  const { getCustomSectionStyles } = useGetCustomSectionStyles();
+
   const [showLoading, setShowLoading] = useState(true);
 
   useEffect(() => {
@@ -84,7 +110,9 @@ const MapViewPage = () => {
       accommodationLoading ||
       foodLoading ||
       activitiesLoading ||
-      itineraryLoading;
+      itineraryLoading ||
+      customSectionsLoading ||
+      mapSettingsLoading;
 
     if (isLoading) {
       setShowLoading(true); // Ensure loading state stays while data is loading
@@ -101,6 +129,8 @@ const MapViewPage = () => {
     foodLoading,
     activitiesLoading,
     itineraryLoading,
+    customSectionsLoading,
+    mapSettingsLoading,
   ]);
 
   if (showLoading) {
@@ -108,11 +138,16 @@ const MapViewPage = () => {
   }
 
   // TODO: make more specific to type of error
-  if (activitiesError || accommodationError || foodError) {
+  if (
+    activitiesError ||
+    accommodationError ||
+    foodError ||
+    customSectionsError
+  ) {
     notify("Something went wrong. Please try again.", "error");
   }
 
-  if (!tripId || error || !trip) {
+  if (!tripId || error || !trip || mapSettingsError) {
     return <ErrorPage />;
   }
 
@@ -125,6 +160,11 @@ const MapViewPage = () => {
         foodItems={foodItems}
         itinerary={itinerary}
         itineraryError={itineraryError}
+        savedCustomSections={filteredCustomSections}
+        mapSettings={mapSettings}
+        defaultCustomSectionStyles={getCustomSectionStyles(
+          filteredCustomSections
+        )}
       />
     </div>
   );
@@ -137,6 +177,9 @@ interface MapViewProps {
   activitiesData: LocationDetails[];
   itinerary: ItineraryDetails[];
   itineraryError: string | null;
+  savedCustomSections: CustomSectionData;
+  mapSettings: MapSettings;
+  defaultCustomSectionStyles: CustomSectionStyles;
 }
 
 const MapView: React.FC<MapViewProps> = ({
@@ -146,6 +189,9 @@ const MapView: React.FC<MapViewProps> = ({
   activitiesData,
   itinerary,
   itineraryError,
+  savedCustomSections,
+  mapSettings,
+  defaultCustomSectionStyles,
 }) => {
   const { settings } = useAuth();
   const { isSaving } = useSaving();
@@ -155,9 +201,9 @@ const MapView: React.FC<MapViewProps> = ({
     MapViewSidebarSelectorOptions.ITINERARY
   );
 
-  const [selectedLocationSection, setSelectedLocationSection] = useState(
-    LocationCategories.ACCOMMODATION
-  );
+  const [selectedLocationSection, setSelectedLocationSection] = useState<
+    LocationCategories | string
+  >(LocationCategories.ACCOMMODATION);
 
   const accommodationLocalStorage = localStorage.getItem(
     getAccommodationLocalStorageKey(trip.id)
@@ -170,6 +216,44 @@ const MapView: React.FC<MapViewProps> = ({
   const activitiesLocalStorage = localStorage.getItem(
     getActivitiesLocalStorageKey(trip.id)
   );
+
+  const [customSections, setCustomSections] =
+    useState<CustomSectionData>(savedCustomSections);
+
+  const [customSectionStyles, setCustomSectionStyles] = useState(
+    defaultCustomSectionStyles
+  );
+
+  useEffect(() => {
+    Object.keys(savedCustomSections).forEach((sectionName) => {
+      const localStorageKey = getCustomSectionLocalStorageKey(
+        trip.id,
+        sectionName
+      );
+      const sectionData = localStorage.getItem(localStorageKey);
+      if (sectionData) {
+        setCustomSections((prev) => ({
+          ...prev,
+          [sectionName]: JSON.parse(sectionData).data,
+        }));
+      }
+    });
+  }, [savedCustomSections, trip.id]);
+
+  useEffect(() => {
+    Object.keys(defaultCustomSectionStyles).map((sectionName) => {
+      const savedStyle = mapSettings.iconStyles[sectionName];
+      if (savedStyle) {
+        setCustomSectionStyles((prevStyles) => ({
+          ...prevStyles,
+          [sectionName]: {
+            ...prevStyles[sectionName],
+            ...savedStyle,
+          },
+        }));
+      }
+    });
+  }, [defaultCustomSectionStyles, mapSettings]);
 
   const [accommodation, setAccommodation] = useState<AccommodationDetails[]>(
     accommodationLocalStorage
@@ -190,6 +274,17 @@ const MapView: React.FC<MapViewProps> = ({
   const [hideAccommodation, setHideAccommodation] = useState(false);
   const [hideFood, setHideFood] = useState(false);
   const [hideActivities, setHideActivities] = useState(false);
+  const [hideCustomSections, setHideCustomSections] = useState<{
+    [key: string]: boolean;
+  }>({});
+
+  useEffect(() => {
+    const initialHideCustomSections: { [key: string]: boolean } = {};
+    Object.keys(customSections).forEach((sectionName) => {
+      initialHideCustomSections[sectionName] = false;
+    });
+    setHideCustomSections(initialHideCustomSections);
+  }, [customSections]);
 
   const sidebarLocationSections: SidebarLocationDetails[] = [
     {
@@ -210,6 +305,19 @@ const MapView: React.FC<MapViewProps> = ({
       isHidden: hideActivities,
       toggleVisibility: (show: boolean) => setHideActivities(show),
     },
+    ...Object.entries(customSections).map(([name, data]) => {
+      return {
+        locations: data.filter((item) => !item._deleted),
+        title: name,
+        isHidden: hideCustomSections[name],
+        toggleVisibility: (show: boolean) => {
+          setHideCustomSections((prev) => ({
+            ...prev,
+            [name]: show,
+          }));
+        },
+      };
+    }),
   ];
 
   const updateLocalStorageAccommodation = async (
@@ -287,6 +395,37 @@ const MapView: React.FC<MapViewProps> = ({
     );
   };
 
+  const updateLocalStorageCustomSection = async (
+    sectionName: string,
+    location: LocationSearchResult
+  ) => {
+    const localStorageKey = getCustomSectionLocalStorageKey(
+      trip.id,
+      sectionName
+    );
+    const currentData = customSections[sectionName];
+    const newLocationDetails = getLocationDetails(location, null);
+
+    const locationIds = currentData.map((d) => d.id) ?? [];
+    if (locationIds.includes(location.id)) {
+      notify("This location has already been added.", "info");
+      return;
+    }
+    setCustomSections({
+      ...customSections,
+      [sectionName]: [...currentData, newLocationDetails],
+    });
+
+    const photoUrl = await getPhotoDownloadUrl(location);
+    const dataToSave = [...currentData, { ...newLocationDetails, photoUrl }];
+    localStorage.setItem(
+      localStorageKey,
+      JSON.stringify({
+        data: dataToSave,
+      })
+    );
+  };
+
   const deleteLocalStorage = async (deleteId: string) => {
     switch (selectedLocationSection) {
       case LocationCategories.ACCOMMODATION: {
@@ -344,6 +483,30 @@ const MapView: React.FC<MapViewProps> = ({
         setActivities(dataToSave);
         break;
       }
+      default: {
+        const localStorageKey = getCustomSectionLocalStorageKey(
+          trip.id,
+          selectedLocationSection
+        );
+        const currentData = customSections[selectedLocationSection];
+        const dataToSave = currentData.map((d) => {
+          if (d.id === deleteId) {
+            return { ...d, _deleted: true };
+          }
+          return d;
+        });
+        localStorage.setItem(
+          localStorageKey,
+          JSON.stringify({
+            data: dataToSave,
+          })
+        );
+        setCustomSections({
+          ...customSections,
+          [selectedLocationSection]: dataToSave,
+        });
+        break;
+      }
     }
     addTripToLocalStorage(trip.id);
   };
@@ -380,6 +543,13 @@ const MapView: React.FC<MapViewProps> = ({
                   updateLocalStorageActivities(location);
                   break;
                 }
+                default: {
+                  updateLocalStorageCustomSection(
+                    selectedLocationSection,
+                    location
+                  );
+                  break;
+                }
               }
               addTripToLocalStorage(trip.id);
             }}
@@ -406,9 +576,19 @@ const MapView: React.FC<MapViewProps> = ({
         </div>
       );
     } else if (selectedView === MapViewSidebarSelectorOptions.CUSTOMISE_MAP) {
-      return <CustomiseMap tripId={trip.id} />;
+      return (
+        <CustomiseMap
+          tripId={trip.id}
+          mapSettings={mapSettings}
+          customSectionStyles={customSectionStyles}
+        />
+      );
     }
   };
+
+  const customSectionsToShow = Object.fromEntries(
+    Object.entries(customSections).filter(([name]) => !hideCustomSections[name])
+  );
 
   return (
     <div
@@ -430,7 +610,6 @@ const MapView: React.FC<MapViewProps> = ({
         </div>
       </div>
       <CustomMap
-        tripId={trip.id}
         accommodation={
           hideAccommodation
             ? []
@@ -440,112 +619,11 @@ const MapView: React.FC<MapViewProps> = ({
         activities={
           hideActivities ? [] : activities.filter((item) => !item._deleted)
         }
+        customSections={customSectionsToShow}
+        mapSettings={mapSettings}
+        customSectionStyles={customSectionStyles}
       />
     </div>
-  );
-};
-
-interface MapProps {
-  accommodation: AccommodationDetails[];
-  food: LocationDetails[];
-  activities: LocationDetails[];
-  tripId: string;
-}
-
-const CustomMap: React.FC<MapProps> = ({
-  accommodation,
-  activities,
-  food,
-  tripId,
-}) => {
-  const { mapSettings, error } = useGetMapSettings(tripId);
-  const { notify } = useHotToast();
-
-  if (error) {
-    notify("Something went wrong. Please try again.", "error");
-  }
-
-  const selectedMapStyle = mapSettings.mapStyle;
-  const {
-    accommodation: accommodationIcon,
-    activity: activityIcon,
-    food: foodIcon,
-  } = {
-    accommodation: {
-      ...DEFAULT_ICON_STYLES.accommodation,
-      ...mapSettings.iconStyles.accommodation,
-    },
-    activity: {
-      ...DEFAULT_ICON_STYLES.activity,
-      ...mapSettings.iconStyles.activity,
-    },
-    food: {
-      ...DEFAULT_ICON_STYLES.food,
-      ...mapSettings.iconStyles.food,
-    },
-  };
-
-  const activityMarkers = useMemo(
-    () =>
-      activities.map((activity) => (
-        <div key={activity.id}>
-          {getMapMarker(
-            activity,
-            activityIcon.backgroundColour,
-            activityIcon.colour,
-            allIcons[activityIcon.id]
-          )}
-        </div>
-      )),
-    [activities, activityIcon]
-  );
-
-  const foodMarkers = useMemo(
-    () =>
-      food.map((f) => (
-        <div key={f.id}>
-          {getMapMarker(
-            f,
-            foodIcon.backgroundColour,
-            foodIcon.colour,
-            allIcons[foodIcon.id]
-          )}
-        </div>
-      )),
-    [food, foodIcon]
-  );
-
-  const accommodationMarkers = useMemo(
-    () =>
-      accommodation.map((acc) => (
-        <div key={acc.id}>
-          {getMapMarker(
-            acc,
-            accommodationIcon.backgroundColour,
-            accommodationIcon.colour,
-            allIcons[accommodationIcon.id]
-          )}
-        </div>
-      )),
-    [accommodation, accommodationIcon]
-  );
-
-  return (
-    <Map
-      mapboxAccessToken={API_KEY}
-      initialViewState={{
-        longitude: activities[0]?.location.longitude || -122.4,
-        latitude: activities[0]?.location.latitude || 37.7,
-        zoom: 10,
-        padding: { left: 300 },
-      }}
-      style={{ width: "100%", height: "100vh" }}
-      mapStyle={`mapbox://styles/mapbox/${selectedMapStyle}`}
-    >
-      {activityMarkers}
-      {foodMarkers}
-      {accommodationMarkers}
-    </Map>
   );
 };
 
