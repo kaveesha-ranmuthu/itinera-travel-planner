@@ -7,6 +7,7 @@ import { useHotToast } from "../../hooks/useHotToast";
 import { useSaving } from "../../saving-provider/useSaving";
 import ErrorPage from "../error/ErrorPage";
 import { LoadingState } from "../landing-page/LandingPage";
+import CustomiseMap from "./components/CustomiseMap";
 import { CustomMap } from "./components/CustomMap";
 import LocationSearch, {
   LocationSearchResult,
@@ -39,6 +40,7 @@ import {
 } from "./hooks/getters/useGetCustomSectionStyles";
 import { useGetFood } from "./hooks/getters/useGetFood";
 import { useGetItinerary } from "./hooks/getters/useGetItinerary";
+import { useGetLatLng } from "./hooks/getters/useGetLatLng";
 import { useGetMapSettings } from "./hooks/getters/useGetMapSettings";
 import useGetTrip from "./hooks/getters/useGetTrip";
 import { TripData } from "./hooks/getters/useGetTrips";
@@ -49,7 +51,6 @@ import {
   MapSettings,
   MapViewSidebarSelectorOptions,
 } from "./types";
-import CustomiseMap from "./components/CustomiseMap";
 
 const MapViewPage = () => {
   const { tripId } = useParams();
@@ -196,6 +197,8 @@ const MapView: React.FC<MapViewProps> = ({
   const { settings } = useAuth();
   const { isSaving } = useSaving();
   const { notify } = useHotToast();
+
+  const { latLng, loading } = useGetLatLng(trip.countries[0].name);
 
   const [selectedView, setSelectedView] = useState(
     MapViewSidebarSelectorOptions.ITINERARY
@@ -590,6 +593,10 @@ const MapView: React.FC<MapViewProps> = ({
     Object.entries(customSections).filter(([name]) => !hideCustomSections[name])
   );
 
+  if (loading) {
+    return <LoadingState />;
+  }
+
   return (
     <div
       className={twMerge(
@@ -622,6 +629,8 @@ const MapView: React.FC<MapViewProps> = ({
         customSections={customSectionsToShow}
         mapSettings={mapSettings}
         customSectionStyles={customSectionStyles}
+        latitude={latLng?.[0]}
+        longitude={latLng?.[1]}
       />
     </div>
   );
