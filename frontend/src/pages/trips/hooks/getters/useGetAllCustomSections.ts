@@ -19,6 +19,14 @@ export const useGetAllCustomSections = (
   useEffect(() => {
     const unsubscribes: Unsubscribe[] = [];
 
+    if (sectionNames.length === 0) {
+      setLoading(false);
+      return;
+    }
+
+    let loadedCount = 0;
+    let hasErrored = false;
+
     const authUnsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
         setError("User not authenticated.");
@@ -42,11 +50,18 @@ export const useGetAllCustomSections = (
                 ...(doc.data() as LocationDetails),
               })),
             }));
-            setLoading(false);
+
+            loadedCount++;
+            if (loadedCount === sectionNames.length && !hasErrored) {
+              setLoading(false);
+            }
           },
           (err) => {
-            setError(`Failed to load section ${sectionName}: ${err.message}`);
-            setLoading(false);
+            if (!hasErrored) {
+              setError(`Failed to load section ${sectionName}: ${err.message}`);
+              setLoading(false);
+              hasErrored = true;
+            }
           }
         );
 
