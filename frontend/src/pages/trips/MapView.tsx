@@ -483,6 +483,30 @@ const MapView: React.FC<MapViewProps> = ({
         setActivities(dataToSave);
         break;
       }
+      default: {
+        const localStorageKey = getCustomSectionLocalStorageKey(
+          trip.id,
+          selectedLocationSection
+        );
+        const currentData = customSections[selectedLocationSection];
+        const dataToSave = currentData.map((d) => {
+          if (d.id === deleteId) {
+            return { ...d, _deleted: true };
+          }
+          return d;
+        });
+        localStorage.setItem(
+          localStorageKey,
+          JSON.stringify({
+            data: dataToSave,
+          })
+        );
+        setCustomSections({
+          ...customSections,
+          [selectedLocationSection]: dataToSave,
+        });
+        break;
+      }
     }
     addTripToLocalStorage(trip.id);
   };
