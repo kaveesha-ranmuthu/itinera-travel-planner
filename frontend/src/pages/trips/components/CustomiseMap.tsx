@@ -1,24 +1,25 @@
 import React from "react";
 import { twMerge } from "tailwind-merge";
 import { mapPicturesToId } from "../assets/map-pictures";
-import { useGetMapSettings } from "../hooks/getters/useGetMapSettings";
+import { DEFAULT_ICON_STYLES } from "../constants";
+import { CustomSectionStyles } from "../hooks/getters/useGetCustomSectionStyles";
 import { useSaveIconStyles } from "../hooks/setters/useSaveIconStyles";
 import { useSaveMapStyle } from "../hooks/setters/useSaveMapStyle";
 import { allIcons, iconColours, IconId } from "../icon-map";
+import { MapSettings } from "../types";
 import PopoverMenu from "./PopoverMenu";
-import { DEFAULT_ICON_STYLES } from "../constants";
-import { ErrorBox } from "./InfoBox";
 interface CustomiseMapProps {
   tripId: string;
+  customSectionStyles: CustomSectionStyles;
+  mapSettings: MapSettings;
 }
 
-const CustomiseMap: React.FC<CustomiseMapProps> = ({ tripId }) => {
-  const { mapSettings, error } = useGetMapSettings(tripId);
+const CustomiseMap: React.FC<CustomiseMapProps> = ({
+  tripId,
+  mapSettings,
+  customSectionStyles,
+}) => {
   const { saveMapStyle } = useSaveMapStyle();
-
-  if (error) {
-    return <ErrorBox />;
-  }
 
   const selectedMapStyle = mapSettings.mapStyle;
   const {
@@ -86,6 +87,18 @@ const CustomiseMap: React.FC<CustomiseMapProps> = ({ tripId }) => {
           iconColour={activityIcon.colour}
           tripId={tripId}
         />
+        {Object.entries(customSectionStyles).map(([sectionName, styles]) => {
+          return (
+            <Icon
+              key={sectionName}
+              icon={allIcons[styles.id]}
+              label={sectionName}
+              backgroundColour={styles.backgroundColour}
+              iconColour={styles.colour}
+              tripId={tripId}
+            />
+          );
+        })}
       </div>
     </div>
   );

@@ -58,7 +58,7 @@ export enum MapViewStyles {
   SATELLITE_STREETS = "satellite-streets-v12",
 }
 
-type IconInfo = { id: IconId; backgroundColour: string; colour: string };
+export type IconInfo = { id: IconId; backgroundColour: string; colour: string };
 
 export type IconStyles = {
   accommodation: IconInfo;

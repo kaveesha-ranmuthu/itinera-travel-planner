@@ -1,7 +1,5 @@
-import { sampleSize } from "lodash";
 import "mapbox-gl/dist/mapbox-gl.css";
-import React, { useEffect, useMemo, useState } from "react";
-import Map from "react-map-gl/mapbox";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../hooks/useAuth";
@@ -9,7 +7,7 @@ import { useHotToast } from "../../hooks/useHotToast";
 import { useSaving } from "../../saving-provider/useSaving";
 import ErrorPage from "../error/ErrorPage";
 import { LoadingState } from "../landing-page/LandingPage";
-import CustomiseMap from "./components/CustomiseMap";
+import { CustomMap } from "./components/CustomMap";
 import LocationSearch, {
   LocationSearchResult,
 } from "./components/LocationSearch";
@@ -29,28 +27,29 @@ import Itinerary, { ItineraryDetails } from "./components/sections/Itinerary";
 import SidebarLocationSection, {
   SidebarLocationDetails,
 } from "./components/SidebarLocationSection";
-import { DEFAULT_ICON_STYLES } from "./constants";
-import { getMapMarker } from "./helpers";
 import { useGetAccommodation } from "./hooks/getters/useGetAccommodation";
 import { useGetActivities } from "./hooks/getters/useGetActivities";
 import {
-  SectionData as CustomSectionData,
+  CustomSectionData,
   useGetAllCustomSections,
 } from "./hooks/getters/useGetAllCustomSections";
+import {
+  CustomSectionStyles,
+  useGetCustomSectionStyles,
+} from "./hooks/getters/useGetCustomSectionStyles";
 import { useGetFood } from "./hooks/getters/useGetFood";
 import { useGetItinerary } from "./hooks/getters/useGetItinerary";
 import { useGetMapSettings } from "./hooks/getters/useGetMapSettings";
 import useGetTrip from "./hooks/getters/useGetTrip";
 import { TripData } from "./hooks/getters/useGetTrips";
-import { allIcons, iconColours } from "./icon-map";
 import {
   AccommodationDetails,
   LocationCategories,
   LocationDetails,
+  MapSettings,
   MapViewSidebarSelectorOptions,
 } from "./types";
-
-const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
+import CustomiseMap from "./components/CustomiseMap";
 
 const MapViewPage = () => {
   const { tripId } = useParams();
@@ -88,14 +87,20 @@ const MapViewPage = () => {
     loading: customSectionsLoading,
   } = useGetAllCustomSections(tripId ?? "", trip?.customCollections ?? []);
 
+  const {
+    mapSettings,
+    error: mapSettingsError,
+    loading: mapSettingsLoading,
+  } = useGetMapSettings(tripId ?? "");
+
   const filteredCustomSections: CustomSectionData = Object.fromEntries(
-    Object.entries(customSections)
-      .map(([name, data]) => [
-        name,
-        data.filter((item) => Object.keys(item).length > 0),
-      ])
-      .filter(([, data]) => data.length > 0) // remove section if all items were empty
+    Object.entries(customSections).map(([name, data]) => [
+      name,
+      data.filter((item) => Object.keys(item).length > 0),
+    ])
   );
+
+  const { getCustomSectionStyles } = useGetCustomSectionStyles();
 
   const [showLoading, setShowLoading] = useState(true);
 
@@ -106,7 +111,8 @@ const MapViewPage = () => {
       foodLoading ||
       activitiesLoading ||
       itineraryLoading ||
-      customSectionsLoading;
+      customSectionsLoading ||
+      mapSettingsLoading;
 
     if (isLoading) {
       setShowLoading(true); // Ensure loading state stays while data is loading
@@ -124,6 +130,7 @@ const MapViewPage = () => {
     activitiesLoading,
     itineraryLoading,
     customSectionsLoading,
+    mapSettingsLoading,
   ]);
 
   if (showLoading) {
@@ -140,7 +147,7 @@ const MapViewPage = () => {
     notify("Something went wrong. Please try again.", "error");
   }
 
-  if (!tripId || error || !trip) {
+  if (!tripId || error || !trip || mapSettingsError) {
     return <ErrorPage />;
   }
 
@@ -154,17 +161,14 @@ const MapViewPage = () => {
         itinerary={itinerary}
         itineraryError={itineraryError}
         savedCustomSections={filteredCustomSections}
+        mapSettings={mapSettings}
+        defaultCustomSectionStyles={getCustomSectionStyles(
+          filteredCustomSections
+        )}
       />
     </div>
   );
 };
-
-interface CustomSectionColours {
-  [key: string]: {
-    backgroundColour: string;
-    colour: string;
-  };
-}
 
 interface MapViewProps {
   trip: TripData;
@@ -174,6 +178,8 @@ interface MapViewProps {
   itinerary: ItineraryDetails[];
   itineraryError: string | null;
   savedCustomSections: CustomSectionData;
+  mapSettings: MapSettings;
+  defaultCustomSectionStyles: CustomSectionStyles;
 }
 
 const MapView: React.FC<MapViewProps> = ({
@@ -184,6 +190,8 @@ const MapView: React.FC<MapViewProps> = ({
   itinerary,
   itineraryError,
   savedCustomSections,
+  mapSettings,
+  defaultCustomSectionStyles,
 }) => {
   const { settings } = useAuth();
   const { isSaving } = useSaving();
@@ -212,6 +220,10 @@ const MapView: React.FC<MapViewProps> = ({
   const [customSections, setCustomSections] =
     useState<CustomSectionData>(savedCustomSections);
 
+  const [customSectionStyles, setCustomSectionStyles] = useState(
+    defaultCustomSectionStyles
+  );
+
   useEffect(() => {
     Object.keys(savedCustomSections).forEach((sectionName) => {
       const localStorageKey = getCustomSectionLocalStorageKey(
@@ -227,6 +239,21 @@ const MapView: React.FC<MapViewProps> = ({
       }
     });
   }, [savedCustomSections, trip.id]);
+
+  useEffect(() => {
+    Object.keys(defaultCustomSectionStyles).map((sectionName) => {
+      const savedStyle = mapSettings.iconStyles[sectionName];
+      if (savedStyle) {
+        setCustomSectionStyles((prevStyles) => ({
+          ...prevStyles,
+          [sectionName]: {
+            ...prevStyles[sectionName],
+            ...savedStyle,
+          },
+        }));
+      }
+    });
+  }, [defaultCustomSectionStyles, mapSettings]);
 
   const [accommodation, setAccommodation] = useState<AccommodationDetails[]>(
     accommodationLocalStorage
@@ -471,29 +498,15 @@ const MapView: React.FC<MapViewProps> = ({
         </div>
       );
     } else if (selectedView === MapViewSidebarSelectorOptions.CUSTOMISE_MAP) {
-      return <CustomiseMap tripId={trip.id} />;
+      return (
+        <CustomiseMap
+          tripId={trip.id}
+          mapSettings={mapSettings}
+          customSectionStyles={customSectionStyles}
+        />
+      );
     }
   };
-
-  const customSectionColours: CustomSectionColours = {};
-  Object.keys(customSections).forEach((sectionName) => {
-    const backgroundColour = sampleSize(
-      iconColours.map((c) => c.backgroundColour),
-      1
-    );
-    const colourOptions = sampleSize(
-      iconColours.map((c) => c.colour),
-      2
-    );
-    const colour =
-      colourOptions[0] === backgroundColour[0]
-        ? colourOptions[1]
-        : colourOptions[0];
-    customSectionColours[sectionName] = {
-      backgroundColour: backgroundColour[0],
-      colour: colour[0],
-    };
-  });
 
   return (
     <div
@@ -515,7 +528,6 @@ const MapView: React.FC<MapViewProps> = ({
         </div>
       </div>
       <CustomMap
-        tripId={trip.id}
         accommodation={
           hideAccommodation
             ? []
@@ -526,137 +538,10 @@ const MapView: React.FC<MapViewProps> = ({
           hideActivities ? [] : activities.filter((item) => !item._deleted)
         }
         customSections={customSections}
-        customSectionColours={customSectionColours}
+        mapSettings={mapSettings}
+        customSectionStyles={customSectionStyles}
       />
     </div>
-  );
-};
-
-interface MapProps {
-  accommodation: AccommodationDetails[];
-  food: LocationDetails[];
-  activities: LocationDetails[];
-  customSections: CustomSectionData;
-  customSectionColours: CustomSectionColours;
-  tripId: string;
-}
-
-const CustomMap: React.FC<MapProps> = ({
-  accommodation,
-  activities,
-  food,
-  tripId,
-  customSections,
-  customSectionColours,
-}) => {
-  const { mapSettings, error } = useGetMapSettings(tripId);
-  const { notify } = useHotToast();
-
-  if (error) {
-    notify("Something went wrong. Please try again.", "error");
-  }
-
-  const selectedMapStyle = mapSettings.mapStyle;
-  const {
-    accommodation: accommodationIcon,
-    activity: activityIcon,
-    food: foodIcon,
-  } = {
-    accommodation: {
-      ...DEFAULT_ICON_STYLES.accommodation,
-      ...mapSettings.iconStyles.accommodation,
-    },
-    activity: {
-      ...DEFAULT_ICON_STYLES.activity,
-      ...mapSettings.iconStyles.activity,
-    },
-    food: {
-      ...DEFAULT_ICON_STYLES.food,
-      ...mapSettings.iconStyles.food,
-    },
-  };
-
-  const activityMarkers = useMemo(
-    () =>
-      activities.map((activity) => (
-        <div key={activity.id}>
-          {getMapMarker(
-            activity,
-            activityIcon.backgroundColour,
-            activityIcon.colour,
-            allIcons[activityIcon.id]
-          )}
-        </div>
-      )),
-    [activities, activityIcon]
-  );
-
-  const foodMarkers = useMemo(
-    () =>
-      food.map((f) => (
-        <div key={f.id}>
-          {getMapMarker(
-            f,
-            foodIcon.backgroundColour,
-            foodIcon.colour,
-            allIcons[foodIcon.id]
-          )}
-        </div>
-      )),
-    [food, foodIcon]
-  );
-
-  const accommodationMarkers = useMemo(
-    () =>
-      accommodation.map((acc) => (
-        <div key={acc.id}>
-          {getMapMarker(
-            acc,
-            accommodationIcon.backgroundColour,
-            accommodationIcon.colour,
-            allIcons[accommodationIcon.id]
-          )}
-        </div>
-      )),
-    [accommodation, accommodationIcon]
-  );
-
-  const customSectionMarkers = useMemo(() => {
-    return Object.entries(customSections).flatMap(
-      ([sectionName, sectionData]) => {
-        return sectionData.map((location) => {
-          return (
-            <div key={location.id}>
-              {getMapMarker(
-                location,
-                customSectionColours[sectionName].backgroundColour,
-                customSectionColours[sectionName].colour,
-                allIcons.star
-              )}
-            </div>
-          );
-        });
-      }
-    );
-  }, [customSectionColours, customSections]);
-
-  return (
-    <Map
-      mapboxAccessToken={API_KEY}
-      initialViewState={{
-        longitude: activities[0]?.location.longitude || -122.4,
-        latitude: activities[0]?.location.latitude || 37.7,
-        zoom: 10,
-        padding: { left: 300 },
-      }}
-      style={{ width: "100%", height: "100vh" }}
-      mapStyle={`mapbox://styles/mapbox/${selectedMapStyle}`}
-    >
-      {activityMarkers}
-      {foodMarkers}
-      {accommodationMarkers}
-      {customSectionMarkers}
-    </Map>
   );
 };
 

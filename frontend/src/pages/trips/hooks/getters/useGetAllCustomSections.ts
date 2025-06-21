@@ -4,7 +4,7 @@ import { db, auth } from "../../../../firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
 import { LocationDetails } from "../../types";
 
-export interface SectionData {
+export interface CustomSectionData {
   [sectionName: string]: LocationDetails[];
 }
 
@@ -12,7 +12,7 @@ export const useGetAllCustomSections = (
   tripId: string,
   sectionNames: string[]
 ) => {
-  const [data, setData] = useState<SectionData>({});
+  const [data, setData] = useState<CustomSectionData>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

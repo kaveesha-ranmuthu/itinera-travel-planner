@@ -2,7 +2,8 @@ import { Marker } from "react-map-gl/mapbox";
 import { twMerge } from "tailwind-merge";
 import { PhotoCard } from "./components/LocationWithPhotoCard";
 import SimpleTooltip from "./components/SimpleTooltip";
-import { LocationDetails } from "./types";
+import { IconInfo, LocationDetails } from "./types";
+import { allIcons } from "./icon-map";
 
 export const compressAndConvertToBase64 = (
   file: File,
@@ -51,7 +52,23 @@ export const compressAndConvertToBase64 = (
   });
 };
 
-export const getMapMarker = (
+export const getMapMarkers = (
+  locations: LocationDetails[],
+  iconStyles: IconInfo
+) => {
+  return locations.map((location) => (
+    <div key={location.id}>
+      {getMarker(
+        location,
+        iconStyles.backgroundColour,
+        iconStyles.colour,
+        allIcons[iconStyles.id]
+      )}
+    </div>
+  ));
+};
+
+const getMarker = (
   location: LocationDetails,
   markerColour: string,
   iconColour: string,
