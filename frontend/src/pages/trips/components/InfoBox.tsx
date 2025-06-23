@@ -1,4 +1,5 @@
 import React, { PropsWithChildren } from "react";
+import { ClipLoader } from "react-spinners";
 
 const Box: React.FC<PropsWithChildren> = ({ children }) => {
   return (
@@ -16,6 +17,21 @@ export const ErrorBox = () => {
         <p className="text-base text-balance">
           We're having trouble right now. Please try again in a moment.
         </p>
+      </div>
+    </Box>
+  );
+};
+
+export const LoadingBox = () => {
+  return (
+    <Box>
+      <div className="flex flex-col items-center justify-center text-center">
+        <ClipLoader
+          color="#3b404384"
+          loading={true}
+          size={20}
+          speedMultiplier={0.5}
+        />
       </div>
     </Box>
   );

@@ -6,7 +6,7 @@ import { useAuth } from "../../../../hooks/useAuth";
 import { useHotToast } from "../../../../hooks/useHotToast";
 import { LocationDetails } from "../../types";
 import EstimatedCostContainer from "../EstimatedCostContainer";
-import { ErrorBox, NoDataBox } from "../InfoBox";
+import { ErrorBox, LoadingBox, NoDataBox } from "../InfoBox";
 import InfoTooltip from "../InfoTooltip";
 import ListSettings from "../ListSettings";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
@@ -29,6 +29,7 @@ import {
 } from "./helpers";
 import { useSaving } from "../../../../saving-provider/useSaving";
 import { twMerge } from "tailwind-merge";
+import { useGetLatLng } from "../../hooks/getters/useGetLatLng";
 
 interface ActivitiesProps {
   userCurrencySymbol?: string;
@@ -36,6 +37,7 @@ interface ActivitiesProps {
   tripId: string;
   error: string | null;
   activities: LocationDetails[];
+  destinationCountry: string;
 }
 
 const Activities: React.FC<ActivitiesProps> = ({
@@ -44,10 +46,13 @@ const Activities: React.FC<ActivitiesProps> = ({
   tripId,
   error,
   activities,
+  destinationCountry,
 }) => {
   const { settings } = useAuth();
   const { notify } = useHotToast();
   const { isSaving } = useSaving();
+  const { latLng, loading } = useGetLatLng(destinationCountry);
+
   const [itemToDelete, setItemToDelete] = useState<LocationDetails | null>(
     null
   );
@@ -143,7 +148,9 @@ const Activities: React.FC<ActivitiesProps> = ({
           />
         )}
       </div>
-      {error ? (
+      {loading ? (
+        <LoadingBox />
+      ) : error ? (
         <ErrorBox />
       ) : (
         <FormikProvider value={formik}>
@@ -157,6 +164,8 @@ const Activities: React.FC<ActivitiesProps> = ({
                       <div className="flex items-center justify-between">
                         <LocationSearch
                           userCurrency={userCurrencyCode}
+                          latitude={latLng?.[0]}
+                          longitude={latLng?.[1]}
                           placeholder="e.g. Sydney activities, Disneyland"
                           onSelectLocation={async (
                             location: LocationSearchResult

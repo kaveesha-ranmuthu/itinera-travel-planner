@@ -18,6 +18,8 @@ interface LocationSearchProps {
   placeholder?: string;
   onSelectLocation: (location: LocationSearchResult) => void;
   userCurrency?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface LocationSearchResult {
@@ -108,6 +110,8 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
   placeholder,
   onSelectLocation,
   userCurrency,
+  latitude,
+  longitude,
 }) => {
   const [options, setOptions] = useState<LocationSearchResult[]>([]);
   const [query, setQuery] = useState("");
@@ -120,6 +124,15 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
           "https://places.googleapis.com/v1/places:searchText",
           {
             textQuery: query,
+            locationBias: {
+              circle: {
+                center: {
+                  latitude: latitude,
+                  longitude: longitude,
+                },
+                radius: 500.0,
+              },
+            },
           },
           {
             headers: {

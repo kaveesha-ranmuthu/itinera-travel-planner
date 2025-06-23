@@ -8,7 +8,7 @@ import { useHotToast } from "../../../../hooks/useHotToast";
 import { useSaving } from "../../../../saving-provider/useSaving";
 import { LocationDetails } from "../../types";
 import EstimatedCostContainer from "../EstimatedCostContainer";
-import { ErrorBox, NoDataBox } from "../InfoBox";
+import { ErrorBox, LoadingBox, NoDataBox } from "../InfoBox";
 import InfoTooltip from "../InfoTooltip";
 import ListSettings from "../ListSettings";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
@@ -29,6 +29,7 @@ import {
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
+import { useGetLatLng } from "../../hooks/getters/useGetLatLng";
 
 interface FoodProps {
   userCurrencySymbol?: string;
@@ -36,6 +37,7 @@ interface FoodProps {
   tripId: string;
   foodItems: LocationDetails[];
   error: string | null;
+  destinationCountry: string;
 }
 
 const Food: React.FC<FoodProps> = ({
@@ -44,10 +46,12 @@ const Food: React.FC<FoodProps> = ({
   tripId,
   error,
   foodItems,
+  destinationCountry,
 }) => {
   const { settings } = useAuth();
   const { notify } = useHotToast();
   const { isSaving } = useSaving();
+  const { latLng, loading } = useGetLatLng(destinationCountry);
 
   const [itemToDelete, setItemToDelete] = useState<LocationDetails | null>(
     null
@@ -139,7 +143,9 @@ const Food: React.FC<FoodProps> = ({
           />
         )}
       </div>
-      {error ? (
+      {loading ? (
+        <LoadingBox />
+      ) : error ? (
         <ErrorBox />
       ) : (
         <FormikProvider value={formik}>
@@ -154,6 +160,8 @@ const Food: React.FC<FoodProps> = ({
                         <div className="flex items-center space-x-2">
                           <LocationSearch
                             userCurrency={userCurrencyCode}
+                            latitude={latLng?.[0]}
+                            longitude={latLng?.[1]}
                             placeholder="e.g. breakfast in Paris, Nobu LA"
                             onSelectLocation={async (
                               location: LocationSearchResult

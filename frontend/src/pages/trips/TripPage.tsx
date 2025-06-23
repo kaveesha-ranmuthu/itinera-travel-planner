@@ -132,6 +132,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
                 startDate={trip.startDate}
                 endDate={trip.endDate}
                 tripId={trip.id}
+                destinationCountry={trip.countries[0]?.name}
                 accommodationRows={accommodationRows}
                 error={accommodationError}
               />
@@ -145,6 +146,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
                 tripId={trip.id}
                 error={foodError}
                 foodItems={foodItems}
+                destinationCountry={trip.countries[0]?.name}
               />
             </FadeInSection>
           </Element>
@@ -156,6 +158,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
                 tripId={trip.id}
                 error={activitiesError}
                 activities={activities}
+                destinationCountry={trip.countries[0]?.name}
               />
             </FadeInSection>
           </Element>
@@ -165,6 +168,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
                 <CustomSection
                   userCurrencySymbol={trip.currency?.otherInfo?.symbol}
                   userCurrencyCode={trip.currency?.name}
+                  destinationCountry={trip.countries[0]?.name}
                   tripId={trip.id}
                   sectionName={col}
                   onDelete={() => {

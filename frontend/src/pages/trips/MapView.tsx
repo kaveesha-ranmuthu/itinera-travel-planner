@@ -532,6 +532,8 @@ const MapView: React.FC<MapViewProps> = ({
           <LocationSearch
             inputBoxClassname="w-full"
             optionsBoxClassname="z-50 w-[430px]"
+            latitude={latLng?.[0]}
+            longitude={latLng?.[1]}
             onSelectLocation={(location) => {
               switch (selectedLocationSection) {
                 case LocationCategories.ACCOMMODATION: {

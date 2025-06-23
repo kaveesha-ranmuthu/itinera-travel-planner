@@ -10,7 +10,7 @@ import { FontFamily } from "../../../../types";
 import { AccommodationDetails } from "../../types";
 import Checkbox from "../Checkbox";
 import EstimatedCostContainer from "../EstimatedCostContainer";
-import { ErrorBox, NoDataBox } from "../InfoBox";
+import { ErrorBox, LoadingBox, NoDataBox } from "../InfoBox";
 import InfoTooltip from "../InfoTooltip";
 import ListSettings from "../ListSettings";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
@@ -29,6 +29,7 @@ import {
   isPriceIncluded,
 } from "./helpers";
 import { useSaving } from "../../../../saving-provider/useSaving";
+import { useGetLatLng } from "../../hooks/getters/useGetLatLng";
 
 enum SortOptions {
   ID = "id",
@@ -50,6 +51,7 @@ interface AccommodationProps {
   tripId: string;
   accommodationRows: AccommodationDetails[];
   error: string | null;
+  destinationCountry: string;
 }
 
 const Accommodation: React.FC<AccommodationProps> = ({
@@ -59,11 +61,14 @@ const Accommodation: React.FC<AccommodationProps> = ({
   startDate,
   endDate,
   tripId,
+  destinationCountry,
   accommodationRows,
   error,
 }) => {
   const { settings } = useAuth();
   const { notify } = useHotToast();
+  const { latLng, loading } = useGetLatLng(destinationCountry);
+
   const [deleteRow, setDeleteRow] = useState<AccommodationDetails | null>(null);
   const finalSaveData = localStorage.getItem(
     getAccommodationLocalStorageKey(tripId)
@@ -225,7 +230,9 @@ const Accommodation: React.FC<AccommodationProps> = ({
           />
         )}
       </div>
-      {error ? (
+      {loading ? (
+        <LoadingBox />
+      ) : error ? (
         <ErrorBox />
       ) : (
         <FormikProvider value={formik}>
@@ -239,6 +246,8 @@ const Accommodation: React.FC<AccommodationProps> = ({
                       <div className="mb-4">
                         <LocationSearch
                           userCurrency={userCurrencyCode}
+                          latitude={latLng?.[0]}
+                          longitude={latLng?.[1]}
                           placeholder="e.g. hotel in Tokyo, ibis Osaka"
                           onSelectLocation={async (
                             location: LocationSearchResult
