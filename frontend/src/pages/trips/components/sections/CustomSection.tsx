@@ -9,7 +9,7 @@ import { useSaving } from "../../../../saving-provider/useSaving";
 import { useGetCustomSection } from "../../hooks/getters/useGetCustomSection";
 import { LocationDetails } from "../../types";
 import EstimatedCostContainer from "../EstimatedCostContainer";
-import { ErrorBox, NoDataBox } from "../InfoBox";
+import { ErrorBox, LoadingBox, NoDataBox } from "../InfoBox";
 import InfoTooltip from "../InfoTooltip";
 import ListSettings from "../ListSettings";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
@@ -32,6 +32,7 @@ import {
   isPriceIncluded,
 } from "./helpers";
 import { useSaveCustomSection } from "../../hooks/setters/useSaveCustomSection";
+import { useGetLatLng } from "../../hooks/getters/useGetLatLng";
 
 interface CustomSectionProps {
   userCurrencySymbol?: string;
@@ -39,6 +40,7 @@ interface CustomSectionProps {
   tripId: string;
   sectionName: string;
   onDelete: () => void;
+  destinationCountry: string;
 }
 
 const CustomSection: React.FC<CustomSectionProps> = ({
@@ -47,12 +49,14 @@ const CustomSection: React.FC<CustomSectionProps> = ({
   tripId,
   sectionName,
   onDelete,
+  destinationCountry,
 }) => {
   const { settings } = useAuth();
   const { notify } = useHotToast();
   const { isSaving } = useSaving();
   const { items, error } = useGetCustomSection(tripId, sectionName);
   const { deleteCustomSection } = useSaveCustomSection();
+  const { latLng, loading } = useGetLatLng(destinationCountry);
 
   const [itemToDelete, setItemToDelete] = useState<LocationDetails | null>(
     null
@@ -172,7 +176,9 @@ const CustomSection: React.FC<CustomSectionProps> = ({
           onDelete={handleDelete}
         />
       </div>
-      {error ? (
+      {loading ? (
+        <LoadingBox />
+      ) : error ? (
         <ErrorBox />
       ) : (
         <FormikProvider value={formik}>
@@ -187,6 +193,8 @@ const CustomSection: React.FC<CustomSectionProps> = ({
                         <div className="flex items-center space-x-2">
                           <LocationSearch
                             userCurrency={userCurrencyCode}
+                            latitude={latLng?.[0]}
+                            longitude={latLng?.[1]}
                             onSelectLocation={async (
                               location: LocationSearchResult
                             ) => {
