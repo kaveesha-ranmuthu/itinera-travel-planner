@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "itinera-dev-96788"
-  }
+    "default": "itinera-dev-96788",
+    "prod": "itinera-prod"
+  },
+  "targets": {},
+  "etags": {}
 }

@@ -31,6 +31,16 @@ jobs:
         run: npm run build
         working-directory: frontend
 
+      - name: Install Functions Dependencies
+        run: npm install
+        working-directory: functions
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Deploy Functions to Firebase Dev
+        run: firebase deploy --only functions --project itinera-dev-96788 --token ${{ secrets.FIREBASE_DEPLOY_TOKEN }}
+
       - name: Deploy to Firebase Hosting (Dev)
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
