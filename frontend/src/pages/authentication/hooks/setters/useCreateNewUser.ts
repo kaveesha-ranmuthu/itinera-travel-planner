@@ -1,6 +1,6 @@
+import { User } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../../../firebase-config";
-import { User } from "firebase/auth";
 import { FontFamily } from "../../../../types";
 
 export const useCreateNewUser = () => {
@@ -19,7 +19,8 @@ export const useCreateNewUser = () => {
       await setDoc(doc(db, `users/${user.uid}/settings/default`), {
         font: FontFamily.HANDWRITTEN,
       });
-    } catch {
+    } catch (error) {
+      console.error("Error creating user:", error);
       throw new Error("Failed to create user.");
     }
   };

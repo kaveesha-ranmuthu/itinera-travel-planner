@@ -23,6 +23,7 @@ export const ContinueWithGoogle = () => {
 
       return null;
     } catch (error) {
+      console.error("Error during Google Sign-In:", error);
       if (auth.currentUser) {
         await auth.currentUser.delete();
       }

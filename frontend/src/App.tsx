@@ -20,7 +20,6 @@ function App() {
   const { setIsSaving } = useSaving();
   const { saveAllData } = useSaveAllData();
   const [showLoading, setShowLoading] = useState(true);
-  console.log(import.meta.env.VITE_FIREBASE_PROJECT_ID);
 
   useEffect(() => {
     const interval = setInterval(async () => {
