@@ -19,7 +19,7 @@ import { sortBy } from "lodash";
 import moment from "moment";
 import React, { useEffect, useMemo } from "react";
 import { twMerge } from "tailwind-merge";
-import { useAuth } from "../../../../hooks/useAuth";
+import { useAuth } from "../../../../shared/hooks/useAuth";
 import { FontFamily } from "../../../../types";
 import EditorBubbleMenu from "../EditorBubbleMenu";
 import { ErrorBox } from "../InfoBox";

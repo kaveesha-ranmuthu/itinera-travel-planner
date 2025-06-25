@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import PopupModal from "./PopupModal";
 import TripsInput from "./TripsInput";
-import Button from "../../../components/Button";
-import { useAuth } from "../../../hooks/useAuth";
+import Button from "../../../shared/components/ui/Button";
+import { useAuth } from "../../../shared/hooks/useAuth";
 import { twMerge } from "tailwind-merge";
 import { debounce } from "lodash";
-import { useHotToast } from "../../../hooks/useHotToast";
+import { useHotToast } from "../../../shared/hooks/useHotToast";
 
 interface CreateCustomSectionPopupProps {
   isOpen: boolean;

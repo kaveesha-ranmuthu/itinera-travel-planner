@@ -8,7 +8,7 @@ import axios from "axios";
 import { debounce } from "lodash";
 import React, { useCallback, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../shared/hooks/useAuth";
 import { convertCurrency } from "./sections/helpers";
 
 interface LocationSearchProps {

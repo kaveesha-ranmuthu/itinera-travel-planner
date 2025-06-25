@@ -1,19 +1,19 @@
+import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
+import AdvancedSettings from "./pages/authentication/AdvancedSettings";
 import LoginPage from "./pages/authentication/LoginPage";
 import ResetPassword from "./pages/authentication/ResetPassword";
 import SignupPage from "./pages/authentication/SignupPage";
 import LandingPage, { LoadingState } from "./pages/landing-page/LandingPage";
-import TripsLandingPage from "./pages/trips/TripsLandingPage";
-import { useAuth } from "./hooks/useAuth";
-import TripPage from "./pages/trips/TripPage";
-import MapViewPage from "./pages/trips/MapView";
-import { useEffect, useState } from "react";
 import { saveTripData } from "./pages/trips/components/sections/helpers";
 import useSaveAllData from "./pages/trips/hooks/setters/useSaveAllData";
-import AdvancedSettings from "./pages/authentication/AdvancedSettings";
+import MapViewPage from "./pages/trips/MapView";
+import TripPage from "./pages/trips/TripPage";
+import TripsLandingPage from "./pages/trips/TripsLandingPage";
 import { useSaving } from "./saving-provider/useSaving";
+import { useAuth } from "./shared/hooks/useAuth";
 
 function App() {
   const { user, loading } = useAuth();

@@ -1,7 +1,7 @@
 import { useClose } from "@headlessui/react";
 import React from "react";
 import { Link } from "react-scroll";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../shared/hooks/useAuth";
 import { twMerge } from "tailwind-merge";
 
 interface PageNavigationProps {

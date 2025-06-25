@@ -10,11 +10,11 @@ import Text from "@tiptap/extension-text";
 import { EditorContent, useEditor } from "@tiptap/react";
 import EditorBubbleMenu from "../../trips/components/EditorBubbleMenu";
 import PopupModal from "../../trips/components/PopupModal";
-import Button from "../../../components/Button";
+import Button from "../../../shared/components/ui/Button";
 import { auth } from "../../../firebase-config";
 import { useUpdateUserSettings } from "../../trips/hooks/setters/useUpdateUserSettings";
-import { useAuth } from "../../../hooks/useAuth";
-import { useHotToast } from "../../../hooks/useHotToast";
+import { useAuth } from "../../../shared/hooks/useAuth";
+import { useHotToast } from "../../../shared/hooks/useHotToast";
 
 interface PackingListTemplateEditorProps {
   open: boolean;

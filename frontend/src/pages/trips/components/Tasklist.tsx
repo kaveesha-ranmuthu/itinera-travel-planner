@@ -4,7 +4,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { MdOutlineAddTask } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../shared/hooks/useAuth";
 import {
   addTripToLocalStorage,
   getTasklistLocalStorageKey,

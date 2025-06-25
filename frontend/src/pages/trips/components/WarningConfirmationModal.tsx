@@ -3,8 +3,8 @@ import { CiWarning } from "react-icons/ci";
 import { twMerge } from "tailwind-merge";
 import { FontFamily } from "../../../types";
 import PopupModal, { PopupModalProps } from "./PopupModal";
-import { useAuth } from "../../../hooks/useAuth";
-import Button from "../../../components/Button";
+import { useAuth } from "../../../shared/hooks/useAuth";
+import Button from "../../../shared/components/ui/Button";
 
 interface WarningConfirmationModalProps extends PopupModalProps {
   title: string;

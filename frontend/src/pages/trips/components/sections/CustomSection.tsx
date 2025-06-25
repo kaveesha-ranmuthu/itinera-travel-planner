@@ -3,10 +3,12 @@ import { FieldArray, Form, FormikProvider, useFormik } from "formik";
 import { round, sortBy } from "lodash";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { twMerge } from "tailwind-merge";
-import { useAuth } from "../../../../hooks/useAuth";
-import { useHotToast } from "../../../../hooks/useHotToast";
 import { useSaving } from "../../../../saving-provider/useSaving";
+import { useAuth } from "../../../../shared/hooks/useAuth";
+import { useHotToast } from "../../../../shared/hooks/useHotToast";
 import { useGetCustomSection } from "../../hooks/getters/useGetCustomSection";
+import { useGetLatLng } from "../../hooks/getters/useGetLatLng";
+import { useSaveCustomSection } from "../../hooks/setters/useSaveCustomSection";
 import { LocationDetails } from "../../types";
 import EstimatedCostContainer from "../EstimatedCostContainer";
 import { ErrorBox, LoadingBox, NoDataBox } from "../InfoBox";
@@ -31,8 +33,6 @@ import {
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
-import { useSaveCustomSection } from "../../hooks/setters/useSaveCustomSection";
-import { useGetLatLng } from "../../hooks/getters/useGetLatLng";
 
 interface CustomSectionProps {
   userCurrencySymbol?: string;

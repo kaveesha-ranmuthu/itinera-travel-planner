@@ -7,7 +7,7 @@ import {
   DocumentReference,
 } from "firebase/firestore";
 import { getAuth, User } from "firebase/auth";
-import { db } from "../firebase-config";
+import { db } from "../../firebase-config";
 
 interface CheckoutSessionOptions {
   successUrl?: string;

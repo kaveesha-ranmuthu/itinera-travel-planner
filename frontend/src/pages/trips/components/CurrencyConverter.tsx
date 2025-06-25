@@ -1,8 +1,8 @@
 import React from "react";
-import { useHotToast } from "../../../hooks/useHotToast";
+import { useHotToast } from "../../../shared/hooks/useHotToast";
 import { SelectOption, SingleSelect } from "./Select";
 import TripsInput from "./TripsInput";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../shared/hooks/useAuth";
 import { twMerge } from "tailwind-merge";
 import { round } from "lodash";
 import { convertCurrency } from "./sections/helpers";

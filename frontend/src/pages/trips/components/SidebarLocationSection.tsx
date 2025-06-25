@@ -3,7 +3,7 @@ import React from "react";
 import { sortBy } from "lodash";
 import { IoCloseOutline } from "react-icons/io5";
 import { twMerge } from "tailwind-merge";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../shared/hooks/useAuth";
 import { FontFamily } from "../../../types";
 import {
   AccommodationDetails,
