@@ -3,7 +3,7 @@ import BackgroundWrapper from "../../../../shared/components/ui/BackgroundWrappe
 import Logo from "../../../../shared/components/ui/Logo";
 import { useAuth } from "../../../../shared/hooks/useAuth";
 import BackArrow from "../ui/BackArrow";
-import FormWrapper from "../ui/FormWrapper";
+import FormWrapper from "../../../authentication/components/ui/FormWrapper";
 import { AccountSettings } from "./AccountSettings";
 import { UserPreferences } from "./UserPreferences";
 
