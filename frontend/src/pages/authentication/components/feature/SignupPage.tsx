@@ -2,17 +2,17 @@ import { FirebaseError } from "firebase/app";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
-import BackgroundWrapper from "../../shared/components/ui/BackgroundWrapper";
-import Button from "../../shared/components/ui/Button";
-import Logo from "../../shared/components/ui/Logo";
-import { auth } from "../../firebase-config";
-import { useHotToast } from "../../shared/hooks/useHotToast";
-import FormWrapper from "./components/FormWrapper";
-import { ContinueWithGoogle } from "./components/GoogleSignIn";
-import { AuthenticationInput } from "./components/AuthenticationInput";
-import { getFirebaseErrorMessage } from "./helpers";
+import BackgroundWrapper from "../../../../shared/components/ui/BackgroundWrapper";
+import Button from "../../../../shared/components/ui/Button";
+import Logo from "../../../../shared/components/ui/Logo";
+import { auth } from "../../../../firebase-config";
+import { useHotToast } from "../../../../shared/hooks/useHotToast";
+import FormWrapper from "../ui/FormWrapper";
+import { ContinueWithGoogle } from "./ContinueWithGoogle";
+import { AuthenticationInput } from "../ui/AuthenticationInput";
+import { getFirebaseErrorMessage } from "../../utility/helpers";
 import { LoginFormInput } from "./LoginPage";
-import { useCreateNewUser } from "./hooks/setters/useCreateNewUser";
+import { useCreateNewUser } from "../../hooks/setters/useCreateNewUser";
 
 interface SignupFormInput extends LoginFormInput {
   confirmPassword: string;

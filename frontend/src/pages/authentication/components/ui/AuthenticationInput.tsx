@@ -3,7 +3,7 @@ import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { twMerge } from "tailwind-merge";
 import { RiErrorWarningLine } from "react-icons/ri";
 import { Field, Input, Label } from "@headlessui/react";
-import StyledTooltip from "../../../shared/components/ui/StyledTooltip";
+import StyledTooltip from "../../../../shared/components/ui/StyledTooltip";
 
 interface InputProps {
   label: string;

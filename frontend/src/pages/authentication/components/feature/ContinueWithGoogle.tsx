@@ -1,11 +1,11 @@
-import { signInWithPopup } from "firebase/auth";
-import { auth, googleProvider } from "../../../firebase-config";
-import { getFirebaseErrorMessage } from "../helpers";
-import { useHotToast } from "../../../shared/hooks/useHotToast";
 import { FirebaseError } from "firebase/app";
+import { signInWithPopup } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { useCreateNewUser } from "../hooks/setters/useCreateNewUser";
-import Button from "../../../shared/components/ui/Button";
+import { auth, googleProvider } from "../../../../firebase-config";
+import { useHotToast } from "../../../../shared/hooks/useHotToast";
+import { getFirebaseErrorMessage } from "../../utility/helpers";
+import { useCreateNewUser } from "../../hooks/setters/useCreateNewUser";
+import { GoogleSignInButton } from "../ui/GoogleSignInButton";
 
 export const ContinueWithGoogle = () => {
   const { notify } = useHotToast();
@@ -45,13 +45,5 @@ export const ContinueWithGoogle = () => {
     }
   };
 
-  return (
-    <Button.Primary
-      className="border border-secondary"
-      type="button"
-      onClick={handleGoogleSignup}
-    >
-      Continue with Google
-    </Button.Primary>
-  );
+  return <GoogleSignInButton onClick={handleGoogleSignup} />;
 };

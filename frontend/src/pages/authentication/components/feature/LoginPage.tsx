@@ -1,16 +1,16 @@
-import BackgroundWrapper from "../../shared/components/ui/BackgroundWrapper";
-import Logo from "../../shared/components/ui/Logo";
-import FormWrapper from "./components/FormWrapper";
-import { AuthenticationInput } from "./components/AuthenticationInput";
-import Button from "../../shared/components/ui/Button";
-import { ContinueWithGoogle } from "./components/GoogleSignIn";
+import BackgroundWrapper from "../../../../shared/components/ui/BackgroundWrapper";
+import Logo from "../../../../shared/components/ui/Logo";
+import FormWrapper from "../ui/FormWrapper";
+import { AuthenticationInput } from "../ui/AuthenticationInput";
+import Button from "../../../../shared/components/ui/Button";
+import { ContinueWithGoogle } from "./ContinueWithGoogle";
 import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase-config";
-import { useHotToast } from "../../shared/hooks/useHotToast";
+import { auth } from "../../../../firebase-config";
+import { useHotToast } from "../../../../shared/hooks/useHotToast";
 import { FirebaseError } from "firebase/app";
-import { getFirebaseErrorMessage } from "./helpers";
+import { getFirebaseErrorMessage } from "../../utility/helpers";
 import { ResetPasswordFormInput } from "./ResetPassword";
 
 export interface LoginFormInput extends ResetPasswordFormInput {
