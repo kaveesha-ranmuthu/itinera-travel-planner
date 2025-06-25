@@ -12,6 +12,8 @@ import { useHotToast } from "../../../../shared/hooks/useHotToast";
 import { FirebaseError } from "firebase/app";
 import { getFirebaseErrorMessage } from "../../utility/helpers";
 import { ResetPasswordFormInput } from "./ResetPassword";
+import { AuthenticationHeading } from "../ui/AuthenticationHeading";
+import { OrDivider } from "../ui/OrDivider";
 
 export interface LoginFormInput extends ResetPasswordFormInput {
   password: string;
@@ -62,9 +64,7 @@ const LoginPage = () => {
         <Logo scale="scale-70" />
         <FormWrapper>
           <form className="text-secondary" onSubmit={formik.handleSubmit}>
-            <h1 className="font-brand tracking-wide italic text-2xl font-light text-center">
-              Log In
-            </h1>
+            <AuthenticationHeading>Log In</AuthenticationHeading>
             <AuthenticationInput
               label="email"
               inputId="email"
@@ -91,22 +91,18 @@ const LoginPage = () => {
             </div>
           </form>
           <div className="flex flex-col items-center mt-4 space-y-4">
-            <div className="flex items-center space-x-4">
-              <hr className="border-0 border-b border-secondary w-28" />
-              <p className="font-brand italic text-sm tracking-wide">OR</p>
-              <hr className="border-0 border-b border-secondary w-28" />
-            </div>
+            <OrDivider />
             <ContinueWithGoogle />
           </div>
         </FormWrapper>
         <div className="text-center mt-9 space-y-1">
           <Link
             to="/reset-password"
-            className="cursor-pointer text-primary font-brand tracking-wide italic underline text-lg font-light tracking-wide"
+            className="cursor-pointer text-primary font-brand italic underline text-lg font-light tracking-wide"
           >
             Forgot password?
           </Link>
-          <div className="text-primary font-brand tracking-wide italic text-lg font-light tracking-wide">
+          <div className="text-primary font-brand italic text-lg font-light tracking-wide">
             Need an account?{" "}
             <Link to="/signup" className="underline">
               Sign up
