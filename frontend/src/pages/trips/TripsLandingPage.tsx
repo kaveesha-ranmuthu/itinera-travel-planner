@@ -12,8 +12,6 @@ import { functions } from "../../firebase-config";
 import { useAuth } from "../../shared/hooks/useAuth";
 import { useHotToast } from "../../shared/hooks/useHotToast";
 import { FontFamily } from "../../types";
-import ErrorPage from "../error/ErrorPage";
-import { LoadingState } from "../landing-page/LandingPage";
 import CreateTripPopup from "./components/CreateTripPopup";
 import Header from "./components/sections/Header";
 import { deleteTripFromLocalStorage } from "./components/sections/helpers";
@@ -22,6 +20,8 @@ import WarningConfirmationModal from "./components/WarningConfirmationModal";
 import { TripData, useGetTrips } from "./hooks/getters/useGetTrips";
 import { useCreateNewTrip } from "./hooks/setters/useCreateNewTrip";
 import useDuplicateTrip from "./hooks/setters/useDuplicateTrip";
+import { LoadingPage } from "../landing-page/components/ui/LoadingPage";
+import ErrorPage from "../error/components/feature/ErrorPage";
 export interface Trip {
   tripName: string;
   startDate: string;
@@ -55,7 +55,7 @@ const TripsLandingPage = () => {
   }, [loading]);
 
   if (showLoading) {
-    return <LoadingState />;
+    return <LoadingPage />;
   }
 
   if (tripsFetchError) {

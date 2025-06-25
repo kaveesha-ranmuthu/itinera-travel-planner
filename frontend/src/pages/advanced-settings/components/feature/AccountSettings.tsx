@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { AdvancedSettingsHeading } from "../ui/AdvancedSettingsHeading";
 import { EmailAndPasswordDisplay } from "../ui/EmailAndPasswordDisplay";
 import { ResetPasswordButton } from "../ui/ResetPasswordButton";
 import DeleteAccountButton from "../ui/DeleteAccountButton";
@@ -7,10 +6,11 @@ import { sendPasswordResetEmail, signOut, User } from "firebase/auth";
 import { auth, functions } from "../../../../firebase-config";
 import { useHotToast } from "../../../../shared/hooks/useHotToast";
 import { FirebaseError } from "firebase/app";
-import { getFirebaseErrorMessage } from "../../utility/helpers";
 import WarningConfirmationModal from "../../../trips/components/WarningConfirmationModal";
 import { httpsCallable } from "firebase/functions";
 import { useNavigate } from "react-router-dom";
+import { getFirebaseErrorMessage } from "../../../authentication/utility/helpers";
+import { AdvancedSettingsHeading } from "../ui/AdvancedSettingsHeading";
 
 interface AccountSettingsProps {
   user: User;

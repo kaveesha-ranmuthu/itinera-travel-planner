@@ -7,7 +7,7 @@ import Logo from "../../../../shared/components/ui/Logo";
 import { auth } from "../../../../firebase-config";
 import { useHotToast } from "../../../../shared/hooks/useHotToast";
 import { AuthenticationInput } from "../ui/AuthenticationInput";
-import BackArrow from "../ui/BackArrow";
+import BackArrow from "../../../advanced-settings/components/ui/BackArrow";
 import FormWrapper from "../ui/FormWrapper";
 import { getFirebaseErrorMessage } from "../../utility/helpers";
 

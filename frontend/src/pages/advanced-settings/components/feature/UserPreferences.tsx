@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import InfoTooltip from "../../../trips/components/InfoTooltip";
-import { AdvancedSettingsHeading } from "../ui/AdvancedSettingsHeading";
 import { LocationViewSelectorButtons } from "../ui/LocationViewSelectorButtons";
 import Button from "../../../../shared/components/ui/Button";
 import { useAuth } from "../../../../shared/hooks/useAuth";
@@ -9,6 +8,7 @@ import { ViewDisplayOptions } from "../../../trips/components/ViewSelector";
 import { auth } from "../../../../firebase-config";
 import { useHotToast } from "../../../../shared/hooks/useHotToast";
 import PackingListTemplateEditor from "./PackingListTemplateEditor";
+import { AdvancedSettingsHeading } from "../ui/AdvancedSettingsHeading";
 
 export const UserPreferences: React.FC = () => {
   const { settings, setSettings } = useAuth();
