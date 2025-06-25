@@ -13,6 +13,7 @@ import { useUpdateUserSettings } from "../../hooks/setters/useUpdateUserSettings
 import PopoverMenu from "../PopoverMenu";
 import { saveTripData } from "./helpers";
 import { useSaving } from "../../../../saving-provider/useSaving";
+import SmallButton from "../SmallButton";
 
 const Header = () => {
   const { notify } = useHotToast();
@@ -51,11 +52,16 @@ const Header = () => {
 
   return (
     <nav className="px-6 py-2 flex items-center justify-between sticky top-0 z-10 h-16 bg-primary animate-fade">
-      <Link to="/">
-        <h1 className="text-3xl font-brand uppercase text-secondary">
-          Itinera
-        </h1>
-      </Link>
+      <div className="flex items-center space-x-4">
+        <Link to="/">
+          <h1 className="text-3xl font-brand uppercase text-secondary">
+            Itinera
+          </h1>
+        </Link>
+        <SmallButton className="text-sm" onClick={() => null}>
+          Upgrade to Premium
+        </SmallButton>
+      </div>
       {isSaving && <p>Saving...</p>}
       <PopoverMenu
         popoverWidth="w-62 h-fit pb-7"
