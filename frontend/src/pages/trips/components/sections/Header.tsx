@@ -7,13 +7,13 @@ import Button from "../../../../components/Button";
 import { auth } from "../../../../firebase-config";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useHotToast } from "../../../../hooks/useHotToast";
+import { useSaving } from "../../../../saving-provider/useSaving";
 import { FontFamily } from "../../../../types";
 import useSaveAllData from "../../hooks/setters/useSaveAllData";
 import { useUpdateUserSettings } from "../../hooks/setters/useUpdateUserSettings";
 import PopoverMenu from "../PopoverMenu";
+import { CheckoutButton } from "./CheckoutButton";
 import { saveTripData } from "./helpers";
-import { useSaving } from "../../../../saving-provider/useSaving";
-import SmallButton from "../SmallButton";
 
 const Header = () => {
   const { notify } = useHotToast();
@@ -58,9 +58,7 @@ const Header = () => {
             Itinera
           </h1>
         </Link>
-        <SmallButton className="text-sm" onClick={() => null}>
-          Upgrade to Premium
-        </SmallButton>
+        <CheckoutButton />
       </div>
       {isSaving && <p>Saving...</p>}
       <PopoverMenu
