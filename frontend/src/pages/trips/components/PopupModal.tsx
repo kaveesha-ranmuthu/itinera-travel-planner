@@ -1,6 +1,6 @@
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import React, { PropsWithChildren } from "react";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../shared/hooks/useAuth";
 import { twMerge } from "tailwind-merge";
 
 export interface PopupModalProps {

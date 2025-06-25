@@ -10,8 +10,8 @@ import Text from "@tiptap/extension-text";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
-import Button from "../../../../components/Button";
-import { useAuth } from "../../../../hooks/useAuth";
+import Button from "../../../../shared/components/ui/Button";
+import { useAuth } from "../../../../shared/hooks/useAuth";
 import EditorBubbleMenu from "../EditorBubbleMenu";
 import InfoTooltip from "../InfoTooltip";
 import {

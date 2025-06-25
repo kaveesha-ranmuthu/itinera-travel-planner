@@ -3,12 +3,11 @@ import { httpsCallable } from "firebase/functions";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
-import BackgroundWrapper from "../../components/BackgroundWrapper";
-import Button from "../../components/Button";
-import Logo from "../../components/Logo";
+import BackgroundWrapper from "../../shared/components/ui/BackgroundWrapper";
+import Button from "../../shared/components/ui/Button";
+import Logo from "../../shared/components/ui/Logo";
 import { auth, functions } from "../../firebase-config";
-import { useAuth } from "../../hooks/useAuth";
-import { useHotToast } from "../../hooks/useHotToast";
+import { useHotToast } from "../../shared/hooks/useHotToast";
 import InfoTooltip from "../trips/components/InfoTooltip";
 import SimpleTooltip from "../trips/components/SimpleTooltip";
 import { ViewDisplayOptions } from "../trips/components/ViewSelector";
@@ -19,6 +18,7 @@ import FormWrapper from "./components/FormWrapper";
 import PackingListTemplateEditor from "./components/PackingListTemplateEditor";
 import { FirebaseError } from "firebase/app";
 import { getFirebaseErrorMessage } from "./helpers";
+import { useAuth } from "../../shared/hooks/useAuth";
 
 const AdvancedSettings = () => {
   const navigate = useNavigate();

@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from "react";
-import backgroundArt from "../assets/background-art.jpg";
+import backgroundArt from "../../assets/background-art.jpg";
 
 const BackgroundWrapper: React.FC<PropsWithChildren> = ({ children }) => {
   return (

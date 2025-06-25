@@ -1,11 +1,11 @@
 import { FirebaseError } from "firebase/app";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { useFormik } from "formik";
-import BackgroundWrapper from "../../components/BackgroundWrapper";
-import Button from "../../components/Button";
-import Logo from "../../components/Logo";
+import BackgroundWrapper from "../../shared/components/ui/BackgroundWrapper";
+import Button from "../../shared/components/ui/Button";
+import Logo from "../../shared/components/ui/Logo";
 import { auth } from "../../firebase-config";
-import { useHotToast } from "../../hooks/useHotToast";
+import { useHotToast } from "../../shared/hooks/useHotToast";
 import { AuthenticationInput } from "./components/AuthenticationInput";
 import BackArrow from "./components/BackArrow";
 import FormWrapper from "./components/FormWrapper";

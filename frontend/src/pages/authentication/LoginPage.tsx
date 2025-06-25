@@ -1,14 +1,14 @@
-import BackgroundWrapper from "../../components/BackgroundWrapper";
-import Logo from "../../components/Logo";
+import BackgroundWrapper from "../../shared/components/ui/BackgroundWrapper";
+import Logo from "../../shared/components/ui/Logo";
 import FormWrapper from "./components/FormWrapper";
 import { AuthenticationInput } from "./components/AuthenticationInput";
-import Button from "../../components/Button";
+import Button from "../../shared/components/ui/Button";
 import { ContinueWithGoogle } from "./components/GoogleSignIn";
 import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase-config";
-import { useHotToast } from "../../hooks/useHotToast";
+import { useHotToast } from "../../shared/hooks/useHotToast";
 import { FirebaseError } from "firebase/app";
 import { getFirebaseErrorMessage } from "./helpers";
 import { ResetPasswordFormInput } from "./ResetPassword";

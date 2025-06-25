@@ -3,11 +3,11 @@ import PopoverMenu from "./PopoverMenu";
 import { Slider } from "radix-ui";
 import { twMerge } from "tailwind-merge";
 import SmallButton from "./SmallButton";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../shared/hooks/useAuth";
 import { HiEllipsisVertical } from "react-icons/hi2";
 import ViewSelector, { ViewDisplayOptions } from "./ViewSelector";
 import Checkbox from "./Checkbox";
-import Button from "../../../components/Button";
+import Button from "../../../shared/components/ui/Button";
 
 interface ListSettingsProps {
   locations: string[];

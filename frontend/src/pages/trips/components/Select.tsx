@@ -9,7 +9,7 @@ import {
   IoIosCheckmarkCircleOutline,
   IoIosCheckmarkCircle,
 } from "react-icons/io";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../shared/hooks/useAuth";
 import { FontFamily } from "../../../types";
 import { twMerge } from "tailwind-merge";
 

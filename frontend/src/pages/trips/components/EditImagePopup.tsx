@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import PopoverMenu from "./PopoverMenu";
 import { FiEdit } from "react-icons/fi";
 import { ImageInfo, images } from "../assets/images";
-import Button from "../../../components/Button";
+import Button from "../../../shared/components/ui/Button";
 
 interface EditImagePopupProps {
   onImageClick: (imageSrc: string) => void;

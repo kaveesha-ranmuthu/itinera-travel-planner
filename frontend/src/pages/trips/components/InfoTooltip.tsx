@@ -1,7 +1,7 @@
 import React from "react";
 import SimpleTooltip from "./SimpleTooltip";
 import { PiSealQuestionFill } from "react-icons/pi";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../shared/hooks/useAuth";
 import { twMerge } from "tailwind-merge";
 import { FontFamily } from "../../../types";
 

@@ -1,6 +1,6 @@
 import { BubbleMenu, Editor } from "@tiptap/react";
 import React from "react";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../shared/hooks/useAuth";
 import { FontFamily } from "../../../types";
 import { twMerge } from "tailwind-merge";
 import {

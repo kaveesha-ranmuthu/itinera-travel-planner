@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from "react";
-import Button from "../../../components/Button";
-import { useAuth } from "../../../hooks/useAuth";
+import Button from "../../../shared/components/ui/Button";
+import { useAuth } from "../../../shared/hooks/useAuth";
 import { twMerge } from "tailwind-merge";
 
 interface SmallButtonProps {

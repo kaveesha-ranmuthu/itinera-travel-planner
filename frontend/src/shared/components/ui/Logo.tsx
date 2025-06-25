@@ -1,5 +1,5 @@
 import { twMerge } from "tailwind-merge";
-import frontPageLogo from "../assets/title.svg";
+import frontPageLogo from "../../assets/title.svg";
 
 interface LogoProps {
   scale?: string;

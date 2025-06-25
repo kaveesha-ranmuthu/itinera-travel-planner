@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { GoCopy } from "react-icons/go";
 import { PiTrashSimple } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
-import { useAuth } from "../../../../hooks/useAuth";
+import { useAuth } from "../../../../shared/hooks/useAuth";
 import { useSaving } from "../../../../saving-provider/useSaving";
 import { FontFamily } from "../../../../types";
 import { TransportationDetails } from "../../types";
