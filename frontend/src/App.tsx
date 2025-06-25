@@ -6,7 +6,6 @@ import AdvancedSettings from "./pages/authentication/components/feature/Advanced
 import LoginPage from "./pages/authentication/components/feature/LoginPage";
 import ResetPassword from "./pages/authentication/components/feature/ResetPassword";
 import SignupPage from "./pages/authentication/components/feature/SignupPage";
-import LandingPage, { LoadingState } from "./pages/landing-page/LandingPage";
 import { saveTripData } from "./pages/trips/components/sections/helpers";
 import useSaveAllData from "./pages/trips/hooks/setters/useSaveAllData";
 import MapViewPage from "./pages/trips/MapView";
@@ -14,6 +13,8 @@ import TripPage from "./pages/trips/TripPage";
 import TripsLandingPage from "./pages/trips/TripsLandingPage";
 import { useSaving } from "./saving-provider/useSaving";
 import { useAuth } from "./shared/hooks/useAuth";
+import { LoadingPage } from "./pages/landing-page/components/ui/LoadingPage";
+import { LandingPage } from "./pages/landing-page/components/feature/LandingPage";
 
 function App() {
   const { user, loading } = useAuth();
@@ -59,7 +60,7 @@ function App() {
             path="/"
             element={
               showLoading ? (
-                <LoadingState />
+                <LoadingPage />
               ) : user ? (
                 <TripsLandingPage />
               ) : (
@@ -71,7 +72,7 @@ function App() {
             path="/login"
             element={
               showLoading ? (
-                <LoadingState />
+                <LoadingPage />
               ) : user ? (
                 <Navigate to="/" />
               ) : (
@@ -83,7 +84,7 @@ function App() {
             path="/signup"
             element={
               showLoading ? (
-                <LoadingState />
+                <LoadingPage />
               ) : user ? (
                 <Navigate to="/" />
               ) : (
@@ -95,7 +96,7 @@ function App() {
             path="/advanced-settings"
             element={
               showLoading ? (
-                <LoadingState />
+                <LoadingPage />
               ) : !user ? (
                 <Navigate to="/login" />
               ) : (
@@ -107,7 +108,7 @@ function App() {
             path="/reset-password"
             element={
               showLoading ? (
-                <LoadingState />
+                <LoadingPage />
               ) : user ? (
                 <Navigate to="/" />
               ) : (

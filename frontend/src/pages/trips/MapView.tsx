@@ -5,8 +5,6 @@ import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../shared/hooks/useAuth";
 import { useHotToast } from "../../shared/hooks/useHotToast";
 import { useSaving } from "../../saving-provider/useSaving";
-import ErrorPage from "../error/ErrorPage";
-import { LoadingState } from "../landing-page/LandingPage";
 import CustomiseMap from "./components/CustomiseMap";
 import { CustomMap } from "./components/CustomMap";
 import LocationSearch, {
@@ -51,6 +49,8 @@ import {
   MapSettings,
   MapViewSidebarSelectorOptions,
 } from "./types";
+import { LoadingPage } from "../landing-page/components/ui/LoadingPage";
+import ErrorPage from "../error/components/feature/ErrorPage";
 
 const MapViewPage = () => {
   const { tripId } = useParams();
@@ -135,7 +135,7 @@ const MapViewPage = () => {
   ]);
 
   if (showLoading) {
-    return <LoadingState />;
+    return <LoadingPage />;
   }
 
   // TODO: make more specific to type of error
@@ -596,7 +596,7 @@ const MapView: React.FC<MapViewProps> = ({
   );
 
   if (loading) {
-    return <LoadingState />;
+    return <LoadingPage />;
   }
 
   return (

@@ -5,8 +5,6 @@ import { twMerge } from "tailwind-merge";
 import Button from "../../shared/components/ui/Button";
 import { useAuth } from "../../shared/hooks/useAuth";
 import { useHotToast } from "../../shared/hooks/useHotToast";
-import ErrorPage from "../error/ErrorPage";
-import { LoadingState } from "../landing-page/LandingPage";
 import { CreateCustomSectionPopup } from "./components/CreateCustomSectionPopup";
 import CreateTripPopup from "./components/CreateTripPopup";
 import FadeInSection from "./components/FadeInSection";
@@ -23,6 +21,8 @@ import useGetTrip from "./hooks/getters/useGetTrip";
 import useGetTripData from "./hooks/getters/useGetTripData";
 import { useSaveCustomSection } from "./hooks/setters/useSaveCustomSection";
 import CustomSection from "./components/sections/CustomSection";
+import { LoadingPage } from "../landing-page/components/ui/LoadingPage";
+import ErrorPage from "../error/components/feature/ErrorPage";
 
 const TripPage = () => {
   const { tripId } = useParams();
@@ -78,7 +78,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
   }, [loading, tripDataLoading]);
 
   if (showLoading) {
-    return <LoadingState />;
+    return <LoadingPage />;
   }
 
   if (error || !trip) {
