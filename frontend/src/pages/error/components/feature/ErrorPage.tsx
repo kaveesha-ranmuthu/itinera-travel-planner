@@ -1,5 +1,5 @@
 import { twMerge } from "tailwind-merge";
-import errorGraphic from "./errorGraphic.svg";
+import errorGraphic from "../../assets/errorGraphic.svg";
 import { useAuth } from "../../../../shared/hooks/useAuth";
 
 const ErrorPage = () => {
