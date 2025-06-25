@@ -2,17 +2,19 @@ import { FirebaseError } from "firebase/app";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
-import BackgroundWrapper from "../../shared/components/ui/BackgroundWrapper";
-import Button from "../../shared/components/ui/Button";
-import Logo from "../../shared/components/ui/Logo";
-import { auth } from "../../firebase-config";
-import { useHotToast } from "../../shared/hooks/useHotToast";
-import FormWrapper from "./components/FormWrapper";
-import { ContinueWithGoogle } from "./components/GoogleSignIn";
-import { AuthenticationInput } from "./components/AuthenticationInput";
-import { getFirebaseErrorMessage } from "./helpers";
+import BackgroundWrapper from "../../../../shared/components/ui/BackgroundWrapper";
+import Button from "../../../../shared/components/ui/Button";
+import Logo from "../../../../shared/components/ui/Logo";
+import { auth } from "../../../../firebase-config";
+import { useHotToast } from "../../../../shared/hooks/useHotToast";
+import FormWrapper from "../ui/FormWrapper";
+import { ContinueWithGoogle } from "./ContinueWithGoogle";
+import { AuthenticationInput } from "../ui/AuthenticationInput";
+import { getFirebaseErrorMessage } from "../../utility/helpers";
 import { LoginFormInput } from "./LoginPage";
-import { useCreateNewUser } from "./hooks/setters/useCreateNewUser";
+import { useCreateNewUser } from "../../hooks/setters/useCreateNewUser";
+import { AuthenticationHeading } from "../ui/AuthenticationHeading";
+import { OrDivider } from "../ui/OrDivider";
 
 interface SignupFormInput extends LoginFormInput {
   confirmPassword: string;
@@ -82,9 +84,7 @@ const SignupPage = () => {
         <Logo scale="scale-70" />
         <FormWrapper>
           <form className="text-secondary" onSubmit={formik.handleSubmit}>
-            <h1 className="font-brand tracking-wide italic text-2xl font-light text-center">
-              Sign Up
-            </h1>
+            <AuthenticationHeading>Sign Up</AuthenticationHeading>
             <AuthenticationInput
               label="email"
               inputId="email"
@@ -129,15 +129,11 @@ const SignupPage = () => {
             </div>
           </form>
           <div className="flex flex-col items-center mt-4 space-y-4">
-            <div className="flex items-center space-x-4">
-              <hr className="border-0 border-b border-secondary w-28" />
-              <p className="font-brand tracking-wide italic text-sm">OR</p>
-              <hr className="border-0 border-b border-secondary w-28" />
-            </div>
+            <OrDivider />
             <ContinueWithGoogle />
           </div>
         </FormWrapper>
-        <div className="text-center mt-10 text-primary font-brand tracking-wide italic text-lg font-light tracking-wide">
+        <div className="text-center mt-10 text-primary font-brand italic text-lg font-light tracking-wide">
           Already have an account?{" "}
           <Link to="/login" className="underline">
             Log in

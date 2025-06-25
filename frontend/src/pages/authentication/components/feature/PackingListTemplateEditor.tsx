@@ -8,13 +8,14 @@ import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import Text from "@tiptap/extension-text";
 import { EditorContent, useEditor } from "@tiptap/react";
-import EditorBubbleMenu from "../../trips/components/EditorBubbleMenu";
-import PopupModal from "../../trips/components/PopupModal";
-import Button from "../../../shared/components/ui/Button";
-import { auth } from "../../../firebase-config";
-import { useUpdateUserSettings } from "../../trips/hooks/setters/useUpdateUserSettings";
-import { useAuth } from "../../../shared/hooks/useAuth";
-import { useHotToast } from "../../../shared/hooks/useHotToast";
+import { auth } from "../../../../firebase-config";
+import { Buttons } from "../../../../shared/components/ui/Buttons";
+import { Heading as Title } from "../../../../shared/components/ui/Heading";
+import { useAuth } from "../../../../shared/hooks/useAuth";
+import { useHotToast } from "../../../../shared/hooks/useHotToast";
+import EditorBubbleMenu from "../../../trips/components/EditorBubbleMenu";
+import PopupModal from "../../../trips/components/PopupModal";
+import { useUpdateUserSettings } from "../../../trips/hooks/setters/useUpdateUserSettings";
 
 interface PackingListTemplateEditorProps {
   open: boolean;
@@ -76,31 +77,19 @@ const PackingListTemplateEditor: React.FC<PackingListTemplateEditorProps> = ({
       modalWidth="w-[500px]"
     >
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-brand italic tracking-wide">
-          packing list
-        </h1>
-        <div className="space-x-2">
-          <Button.Secondary
-            onClick={() => {
-              handleSave();
-              onClose();
-            }}
-            type="submit"
-            className="border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
-          >
-            Save
-          </Button.Secondary>
-          <Button.Primary
-            onClick={() => {
-              onClose();
-              resetContent();
-            }}
-            type="button"
-            className="border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
-          >
-            Cancel
-          </Button.Primary>
-        </div>
+        <Title>packing list</Title>
+        <Buttons
+          cancelText="Cancel"
+          confirmText="Save"
+          onCancel={() => {
+            onClose();
+            resetContent();
+          }}
+          onConfirm={() => {
+            handleSave();
+            onClose();
+          }}
+        />
       </div>
       <hr className="opacity-20 mb-4 mt-3" />
       <EditorBubbleMenu
