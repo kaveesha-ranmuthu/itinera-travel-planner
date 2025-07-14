@@ -4,7 +4,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Loading } from "../components/Loading";
 import { useAuth } from "../hooks/useAuth";
 import { useSaving } from "../hooks/useSaving";
-import AdvancedSettings from "../pages-2/AdvancedSettings";
+import AdvancedSettingsPage from "../pages-2/AdvancedSettingsPage";
 import Dashboard from "../pages-2/Dashboard";
 import LandingPage from "../pages-2/LandingPage";
 import LoginPage from "../pages-2/LoginPage";
@@ -94,7 +94,7 @@ function App() {
               ) : !user ? (
                 <Navigate to="/login" />
               ) : (
-                <AdvancedSettings />
+                <AdvancedSettingsPage />
               )
             }
           />
