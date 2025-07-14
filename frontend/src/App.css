@@ -3,7 +3,7 @@
 
 @font-face {
   font-family: "ZT Bros Oskon 90s";
-  src: local("ZT Bros Oskon 90s");
+  src: url("/fonts/zt-bros-font.otf") format("opentype");
 }
 
 @theme {
