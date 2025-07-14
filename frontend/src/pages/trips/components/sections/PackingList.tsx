@@ -18,7 +18,7 @@ import {
   addTripToLocalStorage,
   getPackingListLocalStorageKey,
 } from "./helpers";
-import { useSaving } from "../../../../saving-provider/useSaving";
+import { useSaving } from "../../../../hooks/useSaving";
 
 interface PackingListProps {
   tripId: string;

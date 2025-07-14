@@ -7,7 +7,7 @@ import Button from "../../../../components/Button";
 import { auth } from "../../../../firebase-config";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useHotToast } from "../../../../hooks/useHotToast";
-import { useSaving } from "../../../../saving-provider/useSaving";
+import { useSaving } from "../../../../hooks/useSaving";
 import { FontFamily } from "../../../../types";
 import useSaveAllData from "../../hooks/setters/useSaveAllData";
 import { useUpdateUserSettings } from "../../hooks/setters/useUpdateUserSettings";

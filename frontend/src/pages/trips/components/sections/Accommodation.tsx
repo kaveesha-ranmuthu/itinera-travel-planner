@@ -28,7 +28,7 @@ import {
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
-import { useSaving } from "../../../../saving-provider/useSaving";
+import { useSaving } from "../../../../hooks/useSaving";
 import { useGetLatLng } from "../../hooks/getters/useGetLatLng";
 
 enum SortOptions {

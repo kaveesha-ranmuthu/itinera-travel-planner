@@ -25,8 +25,7 @@ import EditorBubbleMenu from "../EditorBubbleMenu";
 import { ErrorBox } from "../InfoBox";
 import InfoTooltip from "../InfoTooltip";
 import { addTripToLocalStorage, getItineraryLocalStorageKey } from "./helpers";
-import { useSaving } from "../../../../saving-provider/useSaving";
-
+import { useSaving } from "../../../../hooks/useSaving";
 export interface ItineraryDetails {
   id: string;
   dayNumber: number;
