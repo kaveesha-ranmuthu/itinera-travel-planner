@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PopupModal from "./PopupModal";
 import { useFormik } from "formik";
-import { Trip } from "../../../features/trips-landing-page/components/TripsLandingPage";
+import { Trip } from "../../../pages-2/TripsLandingPage";
 import MultiSelect, { SelectOption, SingleSelect } from "./Select";
 import { useHotToast } from "../../../hooks/useHotToast";
 import art1 from "/images/jan-brueghel-the-younger/art-1.jpg";

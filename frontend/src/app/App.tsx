@@ -11,7 +11,7 @@ import { saveTripData } from "../pages/trips/components/sections/helpers";
 import useSaveAllData from "../pages/trips/hooks/setters/useSaveAllData";
 import MapViewPage from "../pages/trips/MapView";
 import TripPage from "../pages/trips/TripPage";
-import TripsLandingPage from "../features/trips-landing-page/components/TripsLandingPage";
+import TripsLandingPage from "../pages-2/TripsLandingPage";
 import "./App.css";
 import { Loading } from "../components/Loading";
 import LandingPage from "../pages-2/LandingPage";

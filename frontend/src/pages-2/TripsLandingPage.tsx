@@ -7,24 +7,24 @@ import { GoCopy } from "react-icons/go";
 import { PiTrashSimple } from "react-icons/pi";
 import { Link } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
-import Button from "../../../components/Button";
-import { functions } from "../../../config/firebase-config";
-import { useAuth } from "../../../hooks/useAuth";
-import { useHotToast } from "../../../hooks/useHotToast";
-import CreateTripPopup from "../../../pages/trips/components/CreateTripPopup";
-import Header from "../../../pages/trips/components/sections/Header";
-import { deleteTripFromLocalStorage } from "../../../pages/trips/components/sections/helpers";
-import { SelectOption } from "../../../pages/trips/components/Select";
-import WarningConfirmationModal from "../../../pages/trips/components/WarningConfirmationModal";
+import Button from "../components/Button";
+import { functions } from "../config/firebase-config";
+import { useAuth } from "../hooks/useAuth";
+import { useHotToast } from "../hooks/useHotToast";
+import CreateTripPopup from "../pages/trips/components/CreateTripPopup";
+import Header from "../pages/trips/components/sections/Header";
+import { deleteTripFromLocalStorage } from "../pages/trips/components/sections/helpers";
+import { SelectOption } from "../pages/trips/components/Select";
+import WarningConfirmationModal from "../pages/trips/components/WarningConfirmationModal";
 import {
   TripData,
   useGetTrips,
-} from "../../../pages/trips/hooks/getters/useGetTrips";
-import { useCreateNewTrip } from "../../../pages/trips/hooks/setters/useCreateNewTrip";
-import useDuplicateTrip from "../../../pages/trips/hooks/setters/useDuplicateTrip";
-import { FontFamily } from "../../../types/types";
-import ErrorPage from "../../error/components/ErrorPage";
-import { Loading } from "../../../components/Loading";
+} from "../pages/trips/hooks/getters/useGetTrips";
+import { useCreateNewTrip } from "../pages/trips/hooks/setters/useCreateNewTrip";
+import useDuplicateTrip from "../pages/trips/hooks/setters/useDuplicateTrip";
+import { FontFamily } from "../types/types";
+import ErrorPage from "../features/error/components/ErrorPage";
+import { Loading } from "../components/Loading";
 
 export interface Trip {
   tripName: string;
