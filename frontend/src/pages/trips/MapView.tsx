@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 import { Loading } from "../../components/Loading";
-import ErrorPage from "../../features/error/components/ErrorPage";
+import ErrorPage from "../../pages-2/ErrorPage";
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
 import { useSaving } from "../../hooks/useSaving";

@@ -23,7 +23,7 @@ import {
 import { useCreateNewTrip } from "../pages/trips/hooks/setters/useCreateNewTrip";
 import useDuplicateTrip from "../pages/trips/hooks/setters/useDuplicateTrip";
 import { FontFamily } from "../types/types";
-import ErrorPage from "../features/error/components/ErrorPage";
+import ErrorPage from "./ErrorPage";
 import { Loading } from "../components/Loading";
 
 export interface Trip {
