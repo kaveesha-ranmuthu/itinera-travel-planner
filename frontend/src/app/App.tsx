@@ -8,7 +8,7 @@ import AdvancedSettings from "../pages-2/AdvancedSettings";
 import Dashboard from "../pages-2/Dashboard";
 import LandingPage from "../pages-2/LandingPage";
 import LoginPage from "../pages-2/LoginPage";
-import ResetPassword from "../pages-2/ResetPassword";
+import ResetPasswordPage from "../pages-2/ResetPasswordPage";
 import SignupPage from "../pages-2/SignupPage";
 import { saveTripData } from "../pages/trips/components/sections/helpers";
 import useSaveAllData from "../pages/trips/hooks/setters/useSaveAllData";
@@ -106,7 +106,7 @@ function App() {
               ) : user ? (
                 <Navigate to="/" />
               ) : (
-                <ResetPassword />
+                <ResetPasswordPage />
               )
             }
           />

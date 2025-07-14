@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { twMerge } from "tailwind-merge";
 import { RiErrorWarningLine } from "react-icons/ri";
-import StyledTooltip from "../../../components/StyledTooltip";
+import StyledTooltip from "../../components/StyledTooltip";
 import { Field, Input, Label } from "@headlessui/react";
 
 interface InputProps {

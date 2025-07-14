@@ -1,21 +1,21 @@
 import { FirebaseError } from "firebase/app";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { useFormik } from "formik";
-import BackgroundWrapper from "../components/BackgroundWrapper";
-import Button from "../components/Button";
-import Logo from "../components/Logo";
-import { auth } from "../config/firebase-config";
-import { useHotToast } from "../hooks/useHotToast";
-import { AuthenticationInput } from "../features/authentication-input/components/AuthenticationInput";
-import BackArrow from "../components/BackArrow";
-import FormWrapper from "../components/FormWrapper";
-import { getFirebaseErrorMessage } from "../utils/helpers";
+import BackArrow from "../../components/BackArrow";
+import BackgroundWrapper from "../../components/BackgroundWrapper";
+import Button from "../../components/Button";
+import FormWrapper from "../../components/FormWrapper";
+import Logo from "../../components/Logo";
+import { auth } from "../../config/firebase-config";
+import { useHotToast } from "../../hooks/useHotToast";
+import { getFirebaseErrorMessage } from "../../utils/helpers";
+import { AuthenticationInput } from "./AuthenticationInput";
 
 export interface ResetPasswordFormInput {
   email: string;
 }
 
-const ResetPassword = () => {
+export const ResetPassword = () => {
   const { notify } = useHotToast();
 
   const formik = useFormik<ResetPasswordFormInput>({
@@ -82,5 +82,3 @@ const ResetPassword = () => {
     </BackgroundWrapper>
   );
 };
-
-export default ResetPassword;
