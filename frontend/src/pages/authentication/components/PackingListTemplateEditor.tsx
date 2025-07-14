@@ -11,7 +11,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import EditorBubbleMenu from "../../trips/components/EditorBubbleMenu";
 import PopupModal from "../../trips/components/PopupModal";
 import Button from "../../../components/Button";
-import { auth } from "../../../firebase-config";
+import { auth } from "../../../config/firebase-config";
 import { useUpdateUserSettings } from "../../trips/hooks/setters/useUpdateUserSettings";
 import { useAuth } from "../../../hooks/useAuth";
 import { useHotToast } from "../../../hooks/useHotToast";

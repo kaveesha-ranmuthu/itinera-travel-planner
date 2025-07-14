@@ -1,6 +1,6 @@
 import { doc, updateDoc } from "firebase/firestore";
 import { UserSettings } from "../../../../types";
-import { auth, db } from "../../../../firebase-config";
+import { auth, db } from "../../../../config/firebase-config";
 
 export function useUpdateUserSettings() {
   const updateSettings = async (newSettings: UserSettings) => {

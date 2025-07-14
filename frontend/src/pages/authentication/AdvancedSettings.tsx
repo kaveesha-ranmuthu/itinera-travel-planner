@@ -6,7 +6,7 @@ import { twMerge } from "tailwind-merge";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
 import Button from "../../components/Button";
 import Logo from "../../components/Logo";
-import { auth, functions } from "../../firebase-config";
+import { auth, functions } from "../../config/firebase-config";
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
 import InfoTooltip from "../trips/components/InfoTooltip";

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
-import { db, auth } from "../../../../firebase-config";
+import { db, auth } from "../../../../config/firebase-config";
 import { ItineraryDetails } from "../../components/sections/Itinerary";
 import { onAuthStateChanged } from "firebase/auth";
 

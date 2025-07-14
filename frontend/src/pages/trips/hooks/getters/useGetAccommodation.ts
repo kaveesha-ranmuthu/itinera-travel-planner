@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
-import { db, auth } from "../../../../firebase-config"; // Update path as needed
+import { db, auth } from "../../../../config/firebase-config"; // Update path as needed
 import { onAuthStateChanged } from "firebase/auth";
 import { AccommodationDetails } from "../../types";
 

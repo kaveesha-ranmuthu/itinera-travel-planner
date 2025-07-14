@@ -1,6 +1,6 @@
 import { collection, doc, writeBatch } from "firebase/firestore";
 import { useCallback } from "react";
-import { auth, db } from "../../../../firebase-config";
+import { auth, db } from "../../../../config/firebase-config";
 import { ItineraryDetails } from "../../components/sections/Itinerary";
 import { getItineraryLocalStorageKey } from "../../components/sections/helpers";
 

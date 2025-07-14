@@ -1,6 +1,6 @@
 import { collection, deleteDoc, doc, writeBatch } from "firebase/firestore";
 import { useCallback } from "react";
-import { auth, db } from "../../../../firebase-config";
+import { auth, db } from "../../../../config/firebase-config";
 import { getAccommodationLocalStorageKey } from "../../components/sections/helpers";
 import { AccommodationDetails } from "../../types";
 

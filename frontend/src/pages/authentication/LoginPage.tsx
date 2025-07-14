@@ -7,7 +7,7 @@ import { ContinueWithGoogle } from "./components/GoogleSignIn";
 import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase-config";
+import { auth } from "../../config/firebase-config";
 import { useHotToast } from "../../hooks/useHotToast";
 import { FirebaseError } from "firebase/app";
 import { getFirebaseErrorMessage } from "./helpers";

@@ -1,5 +1,5 @@
 import { signInWithPopup } from "firebase/auth";
-import { auth, googleProvider } from "../../../firebase-config";
+import { auth, googleProvider } from "../../../config/firebase-config";
 import { getFirebaseErrorMessage } from "../helpers";
 import { useHotToast } from "../../../hooks/useHotToast";
 import { FirebaseError } from "firebase/app";

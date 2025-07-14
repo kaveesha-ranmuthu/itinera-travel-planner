@@ -7,7 +7,7 @@ import { GoPerson } from "react-icons/go";
 import { HiArrowLongRight } from "react-icons/hi2";
 import { IoCalendarClearOutline } from "react-icons/io5";
 import { twMerge } from "tailwind-merge";
-import { db } from "../../../../firebase-config";
+import { db } from "../../../../config/firebase-config";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useHotToast } from "../../../../hooks/useHotToast";
 import { FontFamily } from "../../../../types";

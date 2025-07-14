@@ -8,7 +8,7 @@ import { PiTrashSimple } from "react-icons/pi";
 import { Link } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 import Button from "../../components/Button";
-import { functions } from "../../firebase-config";
+import { functions } from "../../config/firebase-config";
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
 import { FontFamily } from "../../types";

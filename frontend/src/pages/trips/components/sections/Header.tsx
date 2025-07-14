@@ -4,7 +4,7 @@ import { HiOutlineCog6Tooth } from "react-icons/hi2";
 import { Link, useNavigate } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 import Button from "../../../../components/Button";
-import { auth } from "../../../../firebase-config";
+import { auth } from "../../../../config/firebase-config";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useHotToast } from "../../../../hooks/useHotToast";
 import { useSaving } from "../../../../hooks/useSaving";

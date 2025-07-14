@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
 import Button from "../../components/Button";
 import Logo from "../../components/Logo";
-import { auth } from "../../firebase-config";
+import { auth } from "../../config/firebase-config";
 import { useHotToast } from "../../hooks/useHotToast";
 import FormWrapper from "./components/FormWrapper";
 import { ContinueWithGoogle } from "./components/GoogleSignIn";

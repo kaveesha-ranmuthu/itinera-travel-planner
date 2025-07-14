@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
 import Button from "../../components/Button";
 import Logo from "../../components/Logo";
-import { auth } from "../../firebase-config";
+import { auth } from "../../config/firebase-config";
 import { useHotToast } from "../../hooks/useHotToast";
 import { AuthenticationInput } from "./components/AuthenticationInput";
 import BackArrow from "./components/BackArrow";

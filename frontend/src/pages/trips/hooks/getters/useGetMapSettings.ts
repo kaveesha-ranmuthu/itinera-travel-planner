@@ -1,7 +1,7 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { auth, db } from "../../../../firebase-config";
+import { auth, db } from "../../../../config/firebase-config";
 import { DEFAULT_ICON_STYLES } from "../../constants";
 import { MapSettings, MapViewStyles } from "../../types";
 

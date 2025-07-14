@@ -6,7 +6,7 @@ import {
   setDoc,
   addDoc,
 } from "firebase/firestore";
-import { auth, db } from "../../../../firebase-config";
+import { auth, db } from "../../../../config/firebase-config";
 
 const useDuplicateTrip = () => {
   const duplicateTrip = async (sourceTripId: string) => {
