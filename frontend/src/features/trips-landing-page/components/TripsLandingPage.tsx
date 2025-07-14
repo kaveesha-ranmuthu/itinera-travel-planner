@@ -24,7 +24,7 @@ import { useCreateNewTrip } from "../../../pages/trips/hooks/setters/useCreateNe
 import useDuplicateTrip from "../../../pages/trips/hooks/setters/useDuplicateTrip";
 import { FontFamily } from "../../../types/types";
 import ErrorPage from "../../error/components/ErrorPage";
-import { LoadingState } from "../../landing-page/components/LandingPage";
+import { Loading } from "../../../components/Loading";
 
 export interface Trip {
   tripName: string;
@@ -59,7 +59,7 @@ const TripsLandingPage = () => {
   }, [loading]);
 
   if (showLoading) {
-    return <LoadingState />;
+    return <Loading />;
   }
 
   if (tripsFetchError) {

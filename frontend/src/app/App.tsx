@@ -5,9 +5,6 @@ import AdvancedSettings from "../pages-2/AdvancedSettings";
 import LoginPage from "../features/authentication/components/LoginPage";
 import ResetPassword from "../features/authentication/components/ResetPassword";
 import SignupPage from "../features/authentication/components/SignupPage";
-import LandingPage, {
-  LoadingState,
-} from "../features/landing-page/components/LandingPage";
 import { useAuth } from "../hooks/useAuth";
 import { useSaving } from "../hooks/useSaving";
 import { saveTripData } from "../pages/trips/components/sections/helpers";
@@ -16,6 +13,8 @@ import MapViewPage from "../pages/trips/MapView";
 import TripPage from "../pages/trips/TripPage";
 import TripsLandingPage from "../features/trips-landing-page/components/TripsLandingPage";
 import "./App.css";
+import { Loading } from "../components/Loading";
+import LandingPage from "../pages-2/LandingPage";
 
 function App() {
   const { user, loading } = useAuth();
@@ -61,7 +60,7 @@ function App() {
             path="/"
             element={
               showLoading ? (
-                <LoadingState />
+                <Loading />
               ) : user ? (
                 <TripsLandingPage />
               ) : (
@@ -73,7 +72,7 @@ function App() {
             path="/login"
             element={
               showLoading ? (
-                <LoadingState />
+                <Loading />
               ) : user ? (
                 <Navigate to="/" />
               ) : (
@@ -85,7 +84,7 @@ function App() {
             path="/signup"
             element={
               showLoading ? (
-                <LoadingState />
+                <Loading />
               ) : user ? (
                 <Navigate to="/" />
               ) : (
@@ -97,7 +96,7 @@ function App() {
             path="/advanced-settings"
             element={
               showLoading ? (
-                <LoadingState />
+                <Loading />
               ) : !user ? (
                 <Navigate to="/login" />
               ) : (
@@ -109,7 +108,7 @@ function App() {
             path="/reset-password"
             element={
               showLoading ? (
-                <LoadingState />
+                <Loading />
               ) : user ? (
                 <Navigate to="/" />
               ) : (

@@ -2,10 +2,11 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
+import { Loading } from "../../components/Loading";
+import ErrorPage from "../../features/error/components/ErrorPage";
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
 import { useSaving } from "../../hooks/useSaving";
-import { LoadingState } from "../../features/landing-page/components/LandingPage";
 import CustomiseMap from "./components/CustomiseMap";
 import { CustomMap } from "./components/CustomMap";
 import LocationSearch, {
@@ -50,7 +51,6 @@ import {
   MapSettings,
   MapViewSidebarSelectorOptions,
 } from "./types";
-import ErrorPage from "../../features/error/components/ErrorPage";
 
 const MapViewPage = () => {
   const { tripId } = useParams();
@@ -135,7 +135,7 @@ const MapViewPage = () => {
   ]);
 
   if (showLoading) {
-    return <LoadingState />;
+    return <Loading />;
   }
 
   // TODO: make more specific to type of error
@@ -596,7 +596,7 @@ const MapView: React.FC<MapViewProps> = ({
   );
 
   if (loading) {
-    return <LoadingState />;
+    return <Loading />;
   }
 
   return (
