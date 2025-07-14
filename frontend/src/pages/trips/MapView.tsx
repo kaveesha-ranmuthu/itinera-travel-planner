@@ -5,7 +5,6 @@ import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
 import { useSaving } from "../../hooks/useSaving";
-import ErrorPage from "../error/ErrorPage";
 import { LoadingState } from "../landing-page/LandingPage";
 import CustomiseMap from "./components/CustomiseMap";
 import { CustomMap } from "./components/CustomMap";
@@ -51,6 +50,7 @@ import {
   MapSettings,
   MapViewSidebarSelectorOptions,
 } from "./types";
+import ErrorPage from "../../features/error/components/ErrorPage";
 
 const MapViewPage = () => {
   const { tripId } = useParams();
