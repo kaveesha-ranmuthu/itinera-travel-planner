@@ -11,7 +11,7 @@ import { saveTripData } from "../pages/trips/components/sections/helpers";
 import useSaveAllData from "../pages/trips/hooks/setters/useSaveAllData";
 import MapViewPage from "../pages/trips/MapView";
 import TripPage from "../pages/trips/TripPage";
-import TripsLandingPage from "../pages-2/TripsLandingPage";
+import Dashboard from "../pages-2/Dashboard";
 import "./App.css";
 import { Loading } from "../components/Loading";
 import LandingPage from "../pages-2/LandingPage";
@@ -59,13 +59,7 @@ function App() {
           <Route
             path="/"
             element={
-              showLoading ? (
-                <Loading />
-              ) : user ? (
-                <TripsLandingPage />
-              ) : (
-                <LandingPage />
-              )
+              showLoading ? <Loading /> : user ? <Dashboard /> : <LandingPage />
             }
           />
           <Route

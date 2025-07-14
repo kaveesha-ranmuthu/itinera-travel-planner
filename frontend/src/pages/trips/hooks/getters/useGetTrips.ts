@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Trip } from "../../../../pages-2/TripsLandingPage";
+import { Trip } from "../../../../pages-2/Dashboard";
 import { collection, query, onSnapshot, orderBy } from "firebase/firestore";
 import { auth, db } from "../../../../config/firebase-config";
 

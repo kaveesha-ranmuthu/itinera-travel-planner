@@ -37,7 +37,7 @@ export interface Trip {
   imageData: string;
 }
 
-const TripsLandingPage = () => {
+const Dashboard = () => {
   const { settings } = useAuth();
   const { trips, error: tripsFetchError, loading } = useGetTrips();
   const { createNewTrip } = useCreateNewTrip();
@@ -200,4 +200,4 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
   );
 };
 
-export default TripsLandingPage;
+export default Dashboard;
