@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import AdvancedSettings from "../features/advanced-settings/components/AdvancedSettings";
+import AdvancedSettings from "../pages-2/AdvancedSettings";
 import LoginPage from "../features/authentication/components/LoginPage";
 import ResetPassword from "../features/authentication/components/ResetPassword";
 import SignupPage from "../features/authentication/components/SignupPage";
