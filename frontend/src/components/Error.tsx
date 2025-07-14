@@ -1,8 +1,8 @@
 import { twMerge } from "tailwind-merge";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../hooks/useAuth";
 import errorGraphic from "./errorGraphic.svg";
 
-const ErrorPage = () => {
+const Error = () => {
   const { settings } = useAuth();
   return (
     <div
@@ -24,4 +24,4 @@ const ErrorPage = () => {
   );
 };
 
-export default ErrorPage;
+export default Error;

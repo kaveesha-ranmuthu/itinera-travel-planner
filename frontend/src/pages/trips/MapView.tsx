@@ -2,8 +2,8 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
+import Error from "../../components/Error";
 import { Loading } from "../../components/Loading";
-import ErrorPage from "../../pages-2/ErrorPage";
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
 import { useSaving } from "../../hooks/useSaving";
@@ -149,7 +149,7 @@ const MapViewPage = () => {
   }
 
   if (!tripId || error || !trip || mapSettingsError) {
-    return <ErrorPage />;
+    return <Error />;
   }
 
   return (

@@ -23,8 +23,8 @@ import {
 import { useCreateNewTrip } from "../pages/trips/hooks/setters/useCreateNewTrip";
 import useDuplicateTrip from "../pages/trips/hooks/setters/useDuplicateTrip";
 import { FontFamily } from "../types/types";
-import ErrorPage from "./ErrorPage";
 import { Loading } from "../components/Loading";
+import Error from "../components/Error";
 
 export interface Trip {
   tripName: string;
@@ -63,7 +63,7 @@ const Dashboard = () => {
   }
 
   if (tripsFetchError) {
-    return <ErrorPage />;
+    return <Error />;
   }
 
   const sortedTrips = sortBy(trips, "createdAt");
