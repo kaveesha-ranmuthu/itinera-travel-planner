@@ -5,7 +5,7 @@ import { Loading } from "../components/Loading";
 import { useAuth } from "../hooks/useAuth";
 import { useSaving } from "../hooks/useSaving";
 import AdvancedSettingsPage from "../pages-2/AdvancedSettingsPage";
-import Dashboard from "../pages-2/Dashboard";
+import DashboardPage from "../pages-2/DashboardPage";
 import LandingPage from "../pages-2/LandingPage";
 import LoginPage from "../pages-2/LoginPage";
 import ResetPasswordPage from "../pages-2/ResetPasswordPage";
@@ -59,7 +59,13 @@ function App() {
           <Route
             path="/"
             element={
-              showLoading ? <Loading /> : user ? <Dashboard /> : <LandingPage />
+              showLoading ? (
+                <Loading />
+              ) : user ? (
+                <DashboardPage />
+              ) : (
+                <LandingPage />
+              )
             }
           />
           <Route

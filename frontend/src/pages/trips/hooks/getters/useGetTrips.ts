@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Trip } from "../../../../pages-2/Dashboard";
 import { collection, query, onSnapshot, orderBy } from "firebase/firestore";
 import { auth, db } from "../../../../config/firebase-config";
+import { Trip } from "../../../../features/dashboard/Dashboard";
 
 export interface TripData extends Trip {
   id: string;

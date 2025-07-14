@@ -1,0 +1,107 @@
+import Grid from "@mui/material/Grid";
+import { sortBy } from "lodash";
+import { useEffect, useState } from "react";
+import { twMerge } from "tailwind-merge";
+import Button from "../../components/Button";
+import Error from "../../components/Error";
+import { Loading } from "../../components/Loading";
+import { useAuth } from "../../hooks/useAuth";
+import CreateTripPopup from "../../pages/trips/components/CreateTripPopup";
+import Header from "../../pages/trips/components/sections/Header";
+import { SelectOption } from "../../pages/trips/components/Select";
+import { useGetTrips } from "../../pages/trips/hooks/getters/useGetTrips";
+import { useCreateNewTrip } from "../../pages/trips/hooks/setters/useCreateNewTrip";
+import { FontFamily } from "../../types/types";
+import { TripCard } from "./TripCard";
+
+export interface Trip {
+  tripName: string;
+  startDate: string;
+  endDate: string;
+  countries: SelectOption[];
+  numberOfPeople: number;
+  currency: SelectOption | null;
+  budget: number;
+  imageData: string;
+}
+
+const Dashboard = () => {
+  const { settings } = useAuth();
+  const { trips, error: tripsFetchError, loading } = useGetTrips();
+  const { createNewTrip } = useCreateNewTrip();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [showLoading, setShowLoading] = useState(true);
+
+  useEffect(() => {
+    if (loading) {
+      setShowLoading(true); // Ensure loading state stays while data is loading
+    } else {
+      const timeout = setTimeout(() => {
+        setShowLoading(false); // Only hide loading after delay
+      }, 1500);
+
+      return () => clearTimeout(timeout); // Cleanup timeout
+    }
+  }, [loading]);
+
+  if (showLoading) {
+    return <Loading />;
+  }
+
+  if (tripsFetchError) {
+    return <Error />;
+  }
+
+  const sortedTrips = sortBy(trips, "createdAt");
+
+  const handleCreateNewTrip = async (trip: Trip) => {
+    const error = await createNewTrip(trip);
+    return error;
+  };
+
+  return (
+    <div className={settings?.font ?? FontFamily.HANDWRITTEN}>
+      <Header />
+      <div className="px-20 animate-fade">
+        <div className="flex justify-center flex-col items-center space-y-8">
+          <h1 className="text-5xl tracking-widest">my trips</h1>
+          <Button.Primary
+            className={twMerge(
+              "border border-secondary normal-case text-lg hover:bg-secondary hover:text-primary hover:opacity-100 transition ease-in-out duration-500",
+              settings?.font
+            )}
+            onClick={() => setIsModalOpen(true)}
+            type="button"
+          >
+            Create new trip
+          </Button.Primary>
+        </div>
+        <div className="py-14">
+          <Grid
+            container
+            spacing={5}
+            display={"flex"}
+            justifyContent={"center"}
+          >
+            {sortedTrips.map((trip) => {
+              return (
+                <Grid key={trip.id}>
+                  <TripCard trip={trip} />
+                </Grid>
+              );
+            })}
+          </Grid>
+          <CreateTripPopup
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onSubmit={handleCreateNewTrip}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Dashboard;
