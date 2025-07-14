@@ -14,7 +14,7 @@ import { saveTripData } from "../pages/trips/components/sections/helpers";
 import useSaveAllData from "../pages/trips/hooks/setters/useSaveAllData";
 import MapViewPage from "../pages/trips/MapView";
 import TripPage from "../pages/trips/TripPage";
-import TripsLandingPage from "../pages/trips/TripsLandingPage";
+import TripsLandingPage from "../features/trips-landing-page/components/TripsLandingPage";
 import "./App.css";
 
 function App() {

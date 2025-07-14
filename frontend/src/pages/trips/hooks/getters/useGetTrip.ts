@@ -3,7 +3,7 @@ import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { auth, db } from "../../../../config/firebase-config";
 import { TripData } from "./useGetTrips";
-import { Trip } from "../../TripsLandingPage";
+import { Trip } from "../../../../features/trips-landing-page/components/TripsLandingPage";
 
 const useGetTrip = (tripId: string) => {
   const [trip, setTrip] = useState<TripData | null>(null);

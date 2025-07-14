@@ -1,6 +1,6 @@
 import { addDoc, collection } from "firebase/firestore";
 import { auth, db } from "../../../../config/firebase-config";
-import { Trip } from "../../TripsLandingPage";
+import { Trip } from "../../../../features/trips-landing-page/components/TripsLandingPage";
 
 export function useCreateNewTrip() {
   const createNewTrip = async (trip: Trip) => {
