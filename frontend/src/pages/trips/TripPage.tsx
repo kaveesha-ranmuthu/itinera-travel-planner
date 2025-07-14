@@ -6,7 +6,7 @@ import Button from "../../components/Button";
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
 import ErrorPage from "../error/ErrorPage";
-import { LoadingState } from "../landing-page/LandingPage";
+import { LoadingState } from "../../features/landing-page/components/LandingPage";
 import { CreateCustomSectionPopup } from "./components/CreateCustomSectionPopup";
 import CreateTripPopup from "./components/CreateTripPopup";
 import FadeInSection from "./components/FadeInSection";

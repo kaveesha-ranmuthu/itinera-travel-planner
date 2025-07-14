@@ -5,7 +5,7 @@ import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
 import { useSaving } from "../../hooks/useSaving";
-import { LoadingState } from "../landing-page/LandingPage";
+import { LoadingState } from "../../features/landing-page/components/LandingPage";
 import CustomiseMap from "./components/CustomiseMap";
 import { CustomMap } from "./components/CustomMap";
 import LocationSearch, {

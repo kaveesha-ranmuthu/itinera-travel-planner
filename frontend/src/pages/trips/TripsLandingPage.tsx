@@ -13,7 +13,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
 import { FontFamily } from "../../types";
 import ErrorPage from "../error/ErrorPage";
-import { LoadingState } from "../landing-page/LandingPage";
+import { LoadingState } from "../../features/landing-page/components/LandingPage";
 import CreateTripPopup from "./components/CreateTripPopup";
 import Header from "./components/sections/Header";
 import { deleteTripFromLocalStorage } from "./components/sections/helpers";

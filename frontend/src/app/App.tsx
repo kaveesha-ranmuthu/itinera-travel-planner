@@ -6,7 +6,9 @@ import AdvancedSettings from "../features/authentication/components/AdvancedSett
 import LoginPage from "../features/authentication/components/LoginPage";
 import ResetPassword from "../features/authentication/components/ResetPassword";
 import SignupPage from "../features/authentication/components/SignupPage";
-import LandingPage, { LoadingState } from "../pages/landing-page/LandingPage";
+import LandingPage, {
+  LoadingState,
+} from "../features/landing-page/components/LandingPage";
 import { saveTripData } from "../pages/trips/components/sections/helpers";
 import useSaveAllData from "../pages/trips/hooks/setters/useSaveAllData";
 import MapViewPage from "../pages/trips/MapView";

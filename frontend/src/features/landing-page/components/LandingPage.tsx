@@ -1,7 +1,7 @@
-import Logo from "../../components/Logo";
-import BackgroundWrapper from "../../components/BackgroundWrapper";
+import Logo from "../../../components/Logo";
+import BackgroundWrapper from "../../../components/BackgroundWrapper";
 import { useNavigate } from "react-router-dom";
-import Button from "../../components/Button";
+import Button from "../../../components/Button";
 
 const LandingPage = () => {
   const navigate = useNavigate();
