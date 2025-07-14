@@ -1,11 +1,11 @@
 import { signInWithPopup } from "firebase/auth";
-import { auth, googleProvider } from "../../../config/firebase-config";
-import { getFirebaseErrorMessage } from "../../../utils/helpers";
-import { useHotToast } from "../../../hooks/useHotToast";
+import { auth, googleProvider } from "../../config/firebase-config";
+import { getFirebaseErrorMessage } from "../../utils/helpers";
+import { useHotToast } from "../../hooks/useHotToast";
 import { FirebaseError } from "firebase/app";
 import { useNavigate } from "react-router-dom";
-import { useCreateNewUser } from "../hooks/setters/useCreateNewUser";
-import Button from "../../../components/Button";
+import Button from "../../components/Button";
+import { useCreateNewUser } from "../../hooks/useCreateNewUser";
 
 export const ContinueWithGoogle = () => {
   const { notify } = useHotToast();

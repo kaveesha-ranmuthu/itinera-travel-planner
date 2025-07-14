@@ -2,17 +2,17 @@ import { FirebaseError } from "firebase/app";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
-import BackgroundWrapper from "../../../components/BackgroundWrapper";
-import Button from "../../../components/Button";
-import Logo from "../../../components/Logo";
-import { auth } from "../../../config/firebase-config";
-import { useHotToast } from "../../../hooks/useHotToast";
-import FormWrapper from "../../../components/FormWrapper";
-import { ContinueWithGoogle } from "./GoogleSignIn";
-import { AuthenticationInput } from "./AuthenticationInput";
-import { getFirebaseErrorMessage } from "../../../utils/helpers";
+import BackgroundWrapper from "../components/BackgroundWrapper";
+import Button from "../components/Button";
+import Logo from "../components/Logo";
+import { auth } from "../config/firebase-config";
+import { useHotToast } from "../hooks/useHotToast";
+import FormWrapper from "../components/FormWrapper";
+import { getFirebaseErrorMessage } from "../utils/helpers";
 import { LoginFormInput } from "./LoginPage";
-import { useCreateNewUser } from "../hooks/setters/useCreateNewUser";
+import { AuthenticationInput } from "../features/authentication-input/AuthenticationInput";
+import { ContinueWithGoogle } from "../features/google-sign-in-button/GoogleSignIn";
+import { useCreateNewUser } from "../hooks/useCreateNewUser";
 
 interface SignupFormInput extends LoginFormInput {
   confirmPassword: string;
