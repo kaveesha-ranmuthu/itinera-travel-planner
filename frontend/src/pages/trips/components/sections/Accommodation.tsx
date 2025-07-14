@@ -6,7 +6,6 @@ import { PiTrashSimple } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useHotToast } from "../../../../hooks/useHotToast";
-import { FontFamily } from "../../../../types";
 import { AccommodationDetails } from "../../types";
 import Checkbox from "../Checkbox";
 import EstimatedCostContainer from "../EstimatedCostContainer";
@@ -30,6 +29,7 @@ import {
 } from "./helpers";
 import { useSaving } from "../../../../hooks/useSaving";
 import { useGetLatLng } from "../../hooks/getters/useGetLatLng";
+import { FontFamily } from "../../../../types/types";
 
 enum SortOptions {
   ID = "id",
