@@ -7,9 +7,9 @@ import Logo from "../../../components/Logo";
 import { auth } from "../../../config/firebase-config";
 import { useHotToast } from "../../../hooks/useHotToast";
 import { AuthenticationInput } from "./AuthenticationInput";
-import BackArrow from "./BackArrow";
-import FormWrapper from "./FormWrapper";
-import { getFirebaseErrorMessage } from "../utils/helpers";
+import BackArrow from "../../../components/BackArrow";
+import FormWrapper from "../../../components/FormWrapper";
+import { getFirebaseErrorMessage } from "../../../utils/helpers";
 
 export interface ResetPasswordFormInput {
   email: string;

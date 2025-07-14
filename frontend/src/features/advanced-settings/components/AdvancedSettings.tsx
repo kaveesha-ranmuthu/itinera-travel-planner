@@ -1,10 +1,13 @@
+import { FirebaseError } from "firebase/app";
 import { sendPasswordResetEmail, signOut } from "firebase/auth";
 import { httpsCallable } from "firebase/functions";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
+import BackArrow from "../../../components/BackArrow";
 import BackgroundWrapper from "../../../components/BackgroundWrapper";
 import Button from "../../../components/Button";
+import FormWrapper from "../../../components/FormWrapper";
 import Logo from "../../../components/Logo";
 import { auth, functions } from "../../../config/firebase-config";
 import { useAuth } from "../../../hooks/useAuth";
@@ -14,11 +17,8 @@ import SimpleTooltip from "../../../pages/trips/components/SimpleTooltip";
 import { ViewDisplayOptions } from "../../../pages/trips/components/ViewSelector";
 import WarningConfirmationModal from "../../../pages/trips/components/WarningConfirmationModal";
 import { useUpdateUserSettings } from "../../../pages/trips/hooks/setters/useUpdateUserSettings";
-import BackArrow from "./BackArrow";
-import FormWrapper from "./FormWrapper";
 import PackingListTemplateEditor from "./PackingListTemplateEditor";
-import { FirebaseError } from "firebase/app";
-import { getFirebaseErrorMessage } from "../utils/helpers";
+import { getFirebaseErrorMessage } from "../../../utils/helpers";
 
 const AdvancedSettings = () => {
   const navigate = useNavigate();

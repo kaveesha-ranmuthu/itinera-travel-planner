@@ -1,6 +1,6 @@
 import BackgroundWrapper from "../../../components/BackgroundWrapper";
 import Logo from "../../../components/Logo";
-import FormWrapper from "./FormWrapper";
+import FormWrapper from "../../../components/FormWrapper";
 import { AuthenticationInput } from "./AuthenticationInput";
 import Button from "../../../components/Button";
 import { ContinueWithGoogle } from "./GoogleSignIn";
@@ -10,7 +10,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../config/firebase-config";
 import { useHotToast } from "../../../hooks/useHotToast";
 import { FirebaseError } from "firebase/app";
-import { getFirebaseErrorMessage } from "../utils/helpers";
+import { getFirebaseErrorMessage } from "../../../utils/helpers";
 import { ResetPasswordFormInput } from "./ResetPassword";
 
 export interface LoginFormInput extends ResetPasswordFormInput {

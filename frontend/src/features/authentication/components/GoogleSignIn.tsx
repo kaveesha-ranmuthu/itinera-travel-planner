@@ -1,6 +1,6 @@
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../../../config/firebase-config";
-import { getFirebaseErrorMessage } from "../utils/helpers";
+import { getFirebaseErrorMessage } from "../../../utils/helpers";
 import { useHotToast } from "../../../hooks/useHotToast";
 import { FirebaseError } from "firebase/app";
 import { useNavigate } from "react-router-dom";

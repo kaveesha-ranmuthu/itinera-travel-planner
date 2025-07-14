@@ -7,10 +7,10 @@ import Button from "../../../components/Button";
 import Logo from "../../../components/Logo";
 import { auth } from "../../../config/firebase-config";
 import { useHotToast } from "../../../hooks/useHotToast";
-import FormWrapper from "./FormWrapper";
+import FormWrapper from "../../../components/FormWrapper";
 import { ContinueWithGoogle } from "./GoogleSignIn";
 import { AuthenticationInput } from "./AuthenticationInput";
-import { getFirebaseErrorMessage } from "../utils/helpers";
+import { getFirebaseErrorMessage } from "../../../utils/helpers";
 import { LoginFormInput } from "./LoginPage";
 import { useCreateNewUser } from "../hooks/setters/useCreateNewUser";
 
