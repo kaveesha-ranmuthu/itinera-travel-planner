@@ -2,17 +2,17 @@ import { FirebaseError } from "firebase/app";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
-import BackgroundWrapper from "../../components/BackgroundWrapper";
-import Button from "../../components/Button";
-import Logo from "../../components/Logo";
-import { auth } from "../../config/firebase-config";
-import { useHotToast } from "../../hooks/useHotToast";
-import FormWrapper from "./components/FormWrapper";
-import { ContinueWithGoogle } from "./components/GoogleSignIn";
-import { AuthenticationInput } from "./components/AuthenticationInput";
-import { getFirebaseErrorMessage } from "./helpers";
+import BackgroundWrapper from "../../../components/BackgroundWrapper";
+import Button from "../../../components/Button";
+import Logo from "../../../components/Logo";
+import { auth } from "../../../config/firebase-config";
+import { useHotToast } from "../../../hooks/useHotToast";
+import FormWrapper from "./FormWrapper";
+import { ContinueWithGoogle } from "./GoogleSignIn";
+import { AuthenticationInput } from "./AuthenticationInput";
+import { getFirebaseErrorMessage } from "../utils/helpers";
 import { LoginFormInput } from "./LoginPage";
-import { useCreateNewUser } from "./hooks/setters/useCreateNewUser";
+import { useCreateNewUser } from "../hooks/setters/useCreateNewUser";
 
 interface SignupFormInput extends LoginFormInput {
   confirmPassword: string;
@@ -137,7 +137,7 @@ const SignupPage = () => {
             <ContinueWithGoogle />
           </div>
         </FormWrapper>
-        <div className="text-center mt-10 text-primary font-brand tracking-wide italic text-lg font-light tracking-wide">
+        <div className="text-center mt-10 text-primary font-brand italic text-lg font-light tracking-wide">
           Already have an account?{" "}
           <Link to="/login" className="underline">
             Log in

@@ -8,11 +8,11 @@ import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import Text from "@tiptap/extension-text";
 import { EditorContent, useEditor } from "@tiptap/react";
-import EditorBubbleMenu from "../../trips/components/EditorBubbleMenu";
-import PopupModal from "../../trips/components/PopupModal";
+import EditorBubbleMenu from "../../../pages/trips/components/EditorBubbleMenu";
+import PopupModal from "../../../pages/trips/components/PopupModal";
 import Button from "../../../components/Button";
 import { auth } from "../../../config/firebase-config";
-import { useUpdateUserSettings } from "../../trips/hooks/setters/useUpdateUserSettings";
+import { useUpdateUserSettings } from "../../../pages/trips/hooks/setters/useUpdateUserSettings";
 import { useAuth } from "../../../hooks/useAuth";
 import { useHotToast } from "../../../hooks/useHotToast";
 
