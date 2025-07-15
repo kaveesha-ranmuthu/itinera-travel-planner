@@ -3,55 +3,32 @@ import { sendPasswordResetEmail, signOut } from "firebase/auth";
 import { httpsCallable } from "firebase/functions";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { twMerge } from "tailwind-merge";
 import BackArrow from "../../components/BackArrow";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
+import Button from "../../components/Button";
 import FormWrapper from "../../components/FormWrapper";
 import Logo from "../../components/Logo";
+import WarningConfirmationModal from "../../components/WarningConfirmationModal";
 import { auth, functions } from "../../config/firebase-config";
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
-import InfoTooltip from "../../pages/trips/components/InfoTooltip";
 import SimpleTooltip from "../../pages/trips/components/SimpleTooltip";
-import { ViewDisplayOptions } from "../../pages/trips/components/ViewSelector";
-import WarningConfirmationModal from "../../components/WarningConfirmationModal";
-import { useUpdateUserSettings } from "../../pages/trips/hooks/setters/useUpdateUserSettings";
 import { getFirebaseErrorMessage } from "../../utils/helpers";
-import PackingListTemplateEditor from "./PackingListTemplateEditor";
-import Button from "../../components/Button";
+import { Heading } from "./Heading";
+import { Preferences } from "./Preferences";
 
 const AdvancedSettings = () => {
   const navigate = useNavigate();
-  const { user, settings, setSettings } = useAuth();
-  const { updateSettings } = useUpdateUserSettings();
+  const { user } = useAuth();
   const { notify } = useHotToast();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
-  const currentView = settings?.preferredDisplay || "gallery";
-
-  const [isPackingListEditorOpen, setIsPackingListEditorOpen] = useState(false);
-  const currentPackingList = settings?.packingList;
 
   if (!user) navigate("/");
 
   const isPasswordResetAllowed = user?.providerData
     .map((provider) => provider.providerId)
     .includes("password");
-
-  const updateDefaultView = async (view: ViewDisplayOptions) => {
-    if (auth.currentUser) {
-      try {
-        await updateSettings({
-          ...settings!,
-          preferredDisplay: view,
-        });
-        setSettings({ ...settings!, preferredDisplay: view });
-      } catch {
-        notify("Something went wrong. Please try again.", "error");
-      }
-    }
-  };
 
   const deleteUser = async () => {
     const deleteUserFn = httpsCallable(functions, "deleteUser");
@@ -86,10 +63,6 @@ const AdvancedSettings = () => {
       <BackArrow />
       <div className="font-brand tracking-wide italic absolute left-0 top-0 flex flex-col items-center justify-center w-full animate-fade-in-top">
         <Logo scale="scale-70" />
-        <PackingListTemplateEditor
-          open={isPackingListEditorOpen}
-          onClose={() => setIsPackingListEditorOpen(false)}
-        />
         <WarningConfirmationModal
           font="font-brand italic tracking-wide"
           hideIcon={true}
@@ -102,68 +75,7 @@ const AdvancedSettings = () => {
         <FormWrapper className="py-9">
           <h1 className="text-2xl mb-3 text-center">Settings</h1>
           <div className="space-y-6">
-            <div className="space-y-2">
-              <Heading title="Preferences" />
-              <div className="space-y-3">
-                <div>
-                  <div className="flex items-center space-x-2">
-                    <p className="text-lg">packing list template</p>
-                    <InfoTooltip
-                      className="font-brand italic tracking-wide text-sm"
-                      theme="dark"
-                      width="w-60"
-                      content="Create a reusable packing list you can quickly copy into any trip."
-                    />
-                  </div>
-                  <Button.Primary
-                    onClick={() => setIsPackingListEditorOpen(true)}
-                    type="submit"
-                    className="mt-1 border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
-                  >
-                    {currentPackingList
-                      ? "Edit packing list template"
-                      : "Create packing list template"}
-                  </Button.Primary>
-                </div>
-                <div>
-                  <div className="flex items-center space-x-2">
-                    <p className="text-lg">preferred content view</p>
-                    <InfoTooltip
-                      className="font-brand italic tracking-wide text-sm"
-                      theme="dark"
-                      width="w-60"
-                      content="Choose how you'd like to view food and activity content by default. You can switch between gallery and list view anytime."
-                    />
-                  </div>
-                  <div className="space-x-2">
-                    <Button.Primary
-                      onClick={() => updateDefaultView("gallery")}
-                      type="submit"
-                      className={twMerge(
-                        "mt-1 border border-secondary hover:opacity-100 px-4 py-1 w-20 text-base transition ease-in-out duration-300",
-                        currentView === "gallery"
-                          ? "opacity-100"
-                          : "opacity-60 "
-                      )}
-                      disabled={currentView === "gallery"}
-                    >
-                      Gallery
-                    </Button.Primary>
-                    <Button.Primary
-                      onClick={() => updateDefaultView("list")}
-                      type="submit"
-                      className={twMerge(
-                        "mt-1 border border-secondary hover:opacity-100 px-4 py-1 w-20 text-base transition ease-in-out duration-300",
-                        currentView === "list" ? "opacity-100" : "opacity-60"
-                      )}
-                      disabled={currentView === "list"}
-                    >
-                      List
-                    </Button.Primary>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <Preferences />
             <div>
               <Heading title="Account" />
               <div className="space-y-2">
@@ -215,19 +127,6 @@ const AdvancedSettings = () => {
         </FormWrapper>
       </div>
     </BackgroundWrapper>
-  );
-};
-
-interface HeadingProps {
-  title: string;
-}
-
-const Heading: React.FC<HeadingProps> = ({ title }) => {
-  return (
-    <>
-      <h1 className="text-xl">{title}</h1>
-      <hr className="opacity-20 mb-2 mt-1" />
-    </>
   );
 };
 
