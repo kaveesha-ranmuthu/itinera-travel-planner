@@ -5,10 +5,10 @@ import InfoTooltip from "../../components/InfoTooltip";
 import { auth } from "../../config/firebase-config";
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
-import { ViewDisplayOptions } from "../../pages/trips/components/ViewSelector";
 import { useUpdateUserSettings } from "../../pages/trips/hooks/setters/useUpdateUserSettings";
 import { Heading } from "./Heading";
 import PackingListTemplateEditor from "./PackingListTemplateEditor";
+import { ViewDisplayOptions } from "../../types/types";
 
 export const Preferences = () => {
   const { settings, setSettings } = useAuth();

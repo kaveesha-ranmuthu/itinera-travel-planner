@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from "react";
 import { twMerge } from "tailwind-merge";
 
-interface ButtonProps {
+export interface ButtonProps {
   onClick?: () => void;
   className?: string;
   type?: "button" | "submit" | "reset";
