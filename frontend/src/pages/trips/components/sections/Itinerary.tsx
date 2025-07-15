@@ -20,12 +20,12 @@ import moment from "moment";
 import React, { useEffect, useMemo } from "react";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
-import { FontFamily } from "../../../../types";
-import EditorBubbleMenu from "../EditorBubbleMenu";
 import { ErrorBox } from "../InfoBox";
-import InfoTooltip from "../InfoTooltip";
 import { addTripToLocalStorage, getItineraryLocalStorageKey } from "./helpers";
 import { useSaving } from "../../../../hooks/useSaving";
+import InfoTooltip from "../../../../components/InfoTooltip";
+import EditorBubbleMenu from "../../../../components/EditorBubbleMenu";
+import { FontFamily } from "../../../../types/types";
 export interface ItineraryDetails {
   id: string;
   dayNumber: number;

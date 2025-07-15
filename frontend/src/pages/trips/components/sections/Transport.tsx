@@ -6,12 +6,10 @@ import { PiTrashSimple } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useSaving } from "../../../../hooks/useSaving";
-import { FontFamily } from "../../../../types";
 import { TransportationDetails } from "../../types";
 import Checkbox from "../../../../components/Checkbox";
 import EstimatedCostContainer from "../EstimatedCostContainer";
 import { ErrorBox, NoDataBox } from "../InfoBox";
-import InfoTooltip from "../InfoTooltip";
 import SmallButton from "../SmallButton";
 import Table from "../Table";
 import WarningConfirmationModal from "../../../../components/WarningConfirmationModal";
@@ -21,6 +19,8 @@ import {
   getSortArrowComponent,
   getTransportLocalStorageKey,
 } from "./helpers";
+import InfoTooltip from "../../../../components/InfoTooltip";
+import { FontFamily } from "../../../../types/types";
 
 enum SortOptions {
   ID = "id",

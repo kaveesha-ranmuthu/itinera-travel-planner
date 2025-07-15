@@ -2,20 +2,21 @@ import { Grid } from "@mui/material";
 import { FieldArray, Form, FormikProvider, useFormik } from "formik";
 import { round, sortBy } from "lodash";
 import { Fragment, useEffect, useMemo, useState } from "react";
+import { twMerge } from "tailwind-merge";
+import WarningConfirmationModal from "../../../../components/WarningConfirmationModal";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useHotToast } from "../../../../hooks/useHotToast";
+import { useSaving } from "../../../../hooks/useSaving";
+import { useGetLatLng } from "../../hooks/getters/useGetLatLng";
 import { LocationDetails } from "../../types";
 import EstimatedCostContainer from "../EstimatedCostContainer";
 import { ErrorBox, LoadingBox, NoDataBox } from "../InfoBox";
-import InfoTooltip from "../InfoTooltip";
 import ListSettings from "../ListSettings";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
 import {
   LocationListItem,
   LocationWithPhotoCard,
 } from "../LocationWithPhotoCard";
-import { ViewDisplayOptions } from "../ViewSelector";
-import WarningConfirmationModal from "../../../../components/WarningConfirmationModal";
 import {
   addTripToLocalStorage,
   getActivitiesLocalStorageKey,
@@ -27,9 +28,8 @@ import {
   isLocationIncluded,
   isPriceIncluded,
 } from "./helpers";
-import { useSaving } from "../../../../hooks/useSaving";
-import { twMerge } from "tailwind-merge";
-import { useGetLatLng } from "../../hooks/getters/useGetLatLng";
+import InfoTooltip from "../../../../components/InfoTooltip";
+import { ViewDisplayOptions } from "../../../../types/types";
 
 interface ActivitiesProps {
   userCurrencySymbol?: string;

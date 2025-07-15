@@ -1,9 +1,9 @@
 import React from "react";
-import SimpleTooltip from "./SimpleTooltip";
 import { PiSealQuestionFill } from "react-icons/pi";
-import { useAuth } from "../../../hooks/useAuth";
 import { twMerge } from "tailwind-merge";
-import { FontFamily } from "../../../types";
+import { useAuth } from "../hooks/useAuth";
+import SimpleTooltip from "./SimpleTooltip";
+import { FontFamily } from "../types/types";
 
 interface InfoTooltipProps {
   content: string;

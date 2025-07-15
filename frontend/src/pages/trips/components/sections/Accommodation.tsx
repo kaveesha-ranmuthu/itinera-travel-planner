@@ -10,7 +10,6 @@ import { AccommodationDetails } from "../../types";
 import Checkbox from "../../../../components/Checkbox";
 import EstimatedCostContainer from "../EstimatedCostContainer";
 import { ErrorBox, LoadingBox, NoDataBox } from "../InfoBox";
-import InfoTooltip from "../InfoTooltip";
 import ListSettings from "../ListSettings";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
 import Table from "../Table";
@@ -30,6 +29,7 @@ import {
 import { useSaving } from "../../../../hooks/useSaving";
 import { useGetLatLng } from "../../hooks/getters/useGetLatLng";
 import { FontFamily } from "../../../../types/types";
+import InfoTooltip from "../../../../components/InfoTooltip";
 
 enum SortOptions {
   ID = "id",

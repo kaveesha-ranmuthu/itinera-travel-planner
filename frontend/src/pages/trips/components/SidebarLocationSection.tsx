@@ -4,7 +4,6 @@ import { sortBy } from "lodash";
 import { IoCloseOutline } from "react-icons/io5";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../hooks/useAuth";
-import { FontFamily } from "../../../types";
 import {
   AccommodationDetails,
   LocationCategories,
@@ -12,6 +11,7 @@ import {
 } from "../types";
 import Checkbox from "../../../components/Checkbox";
 import WarningConfirmationModal from "../../../components/WarningConfirmationModal";
+import { FontFamily } from "../../../types/types";
 
 export interface SidebarLocationDetails {
   locations: LocationDetails[];

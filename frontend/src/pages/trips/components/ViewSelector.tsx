@@ -1,7 +1,6 @@
 import React from "react";
 import { twMerge } from "tailwind-merge";
-
-export type ViewDisplayOptions = "gallery" | "list";
+import { ViewDisplayOptions } from "../../../types/types";
 
 interface ViewSelectorProps {
   selectedView: ViewDisplayOptions;

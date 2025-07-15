@@ -1,6 +1,5 @@
 import { BubbleMenu, Editor } from "@tiptap/react";
 import React from "react";
-import { useAuth } from "../../../hooks/useAuth";
 import { twMerge } from "tailwind-merge";
 import {
   BsListOl,
@@ -11,7 +10,8 @@ import {
   BsTypeStrikethrough,
 } from "react-icons/bs";
 import { LuHeading1, LuHeading2, LuHeading3 } from "react-icons/lu";
-import { FontFamily } from "../../../types/types";
+import { useAuth } from "../hooks/useAuth";
+import { FontFamily } from "../types/types";
 
 interface EditorBubbleMenuActions {
   bold?: boolean;

@@ -10,8 +10,8 @@ import {
   IoIosCheckmarkCircle,
 } from "react-icons/io";
 import { useAuth } from "../../../hooks/useAuth";
-import { FontFamily } from "../../../types";
 import { twMerge } from "tailwind-merge";
+import { FontFamily } from "../../../types/types";
 
 export type SelectOption = {
   id: string;

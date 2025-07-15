@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
-import { FontFamily } from "../../../types";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
+import { FontFamily } from "../../../types/types";
 
 interface PopoverProps {
   popoverTrigger: ReactNode;

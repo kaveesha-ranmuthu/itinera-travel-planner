@@ -1,6 +1,6 @@
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../hooks/useAuth";
-import errorGraphic from "./errorGraphic.svg";
+import errorGraphic from "../assets/errorGraphic.svg";
 
 const Error = () => {
   const { settings } = useAuth();

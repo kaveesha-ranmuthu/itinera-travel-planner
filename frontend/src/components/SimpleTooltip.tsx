@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from "react";
 import { Tooltip } from "radix-ui";
 import { twMerge } from "tailwind-merge";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../hooks/useAuth";
 
 interface TooltipProps {
   content: string | React.ReactNode;

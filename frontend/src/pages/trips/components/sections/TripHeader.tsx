@@ -10,10 +10,10 @@ import { twMerge } from "tailwind-merge";
 import { db } from "../../../../config/firebase-config";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useHotToast } from "../../../../hooks/useHotToast";
-import { FontFamily } from "../../../../types";
 import { TripData } from "../../hooks/getters/useGetTrips";
-import SimpleTooltip from "../SimpleTooltip";
+import SimpleTooltip from "../../../../components/SimpleTooltip";
 import TripsInput from "../TripsInput";
+import { FontFamily } from "../../../../types/types";
 
 export interface TripHeaderProps {
   trip: TripData;

@@ -12,7 +12,7 @@ import WarningConfirmationModal from "../../components/WarningConfirmationModal"
 import { auth, functions } from "../../config/firebase-config";
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
-import SimpleTooltip from "../../pages/trips/components/SimpleTooltip";
+import SimpleTooltip from "../../components/SimpleTooltip";
 import { getFirebaseErrorMessage } from "../../utils/helpers";
 import { Heading } from "./Heading";
 import { Preferences } from "./Preferences";

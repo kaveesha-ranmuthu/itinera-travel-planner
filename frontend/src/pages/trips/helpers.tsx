@@ -1,7 +1,7 @@
 import { Marker } from "react-map-gl/mapbox";
 import { twMerge } from "tailwind-merge";
 import { PhotoCard } from "./components/LocationWithPhotoCard";
-import SimpleTooltip from "./components/SimpleTooltip";
+import SimpleTooltip from "../../components/SimpleTooltip";
 import { IconInfo, LocationDetails } from "./types";
 import { allIcons } from "./icon-map";
 

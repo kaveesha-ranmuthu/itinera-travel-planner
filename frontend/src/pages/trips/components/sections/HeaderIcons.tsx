@@ -13,7 +13,7 @@ import CurrencyConverter from "../CurrencyConverter";
 import PageNavigation from "../PageNavigation";
 import PopoverMenu from "../PopoverMenu";
 import { SelectOption } from "../Select";
-import SimpleTooltip from "../SimpleTooltip";
+import SimpleTooltip from "../../../../components/SimpleTooltip";
 import Tasklist from "../Tasklist";
 import FadeInSection from "../FadeInSection";
 import { useSaving } from "../../../../hooks/useSaving";

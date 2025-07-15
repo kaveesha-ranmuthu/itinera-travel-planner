@@ -1,7 +1,7 @@
 import { User } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "../../../config/firebase-config";
-import { FontFamily } from "../../../../types";
+import { db } from "../config/firebase-config";
+import { FontFamily } from "../types/types";
 
 export const useCreateNewUser = () => {
   const createUser = async (user: User) => {

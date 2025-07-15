@@ -1,4 +1,4 @@
-import { ViewDisplayOptions } from "./pages/trips/components/ViewSelector";
+export type ViewDisplayOptions = "gallery" | "list";
 
 export enum FontFamily {
   HANDWRITTEN = "font-family-handwritten",

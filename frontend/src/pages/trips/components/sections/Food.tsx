@@ -9,14 +9,12 @@ import { useSaving } from "../../../../hooks/useSaving";
 import { LocationDetails } from "../../types";
 import EstimatedCostContainer from "../EstimatedCostContainer";
 import { ErrorBox, LoadingBox, NoDataBox } from "../InfoBox";
-import InfoTooltip from "../InfoTooltip";
 import ListSettings from "../ListSettings";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
 import {
   LocationListItem,
   LocationWithPhotoCard,
 } from "../LocationWithPhotoCard";
-import { ViewDisplayOptions } from "../ViewSelector";
 import WarningConfirmationModal from "../../../../components/WarningConfirmationModal";
 import {
   addTripToLocalStorage,
@@ -30,6 +28,8 @@ import {
   isPriceIncluded,
 } from "./helpers";
 import { useGetLatLng } from "../../hooks/getters/useGetLatLng";
+import InfoTooltip from "../../../../components/InfoTooltip";
+import { ViewDisplayOptions } from "../../../../types/types";
 
 interface FoodProps {
   userCurrencySymbol?: string;
