@@ -34,7 +34,7 @@ import {
   getUnsavedSectionsStorageKey,
   isLocationIncluded,
   isPriceIncluded,
-} from "../../pages/trips/components/sections/helpers";
+} from "./utils/helpers";
 import { useSaveCustomSection } from "../../pages/trips/hooks/setters/useSaveCustomSection";
 import { useGetLatLng } from "../../pages/trips/hooks/getters/useGetLatLng";
 import InfoTooltip from "../../components/InfoTooltip";

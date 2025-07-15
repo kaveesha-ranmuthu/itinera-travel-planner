@@ -2,75 +2,22 @@ import axios from "axios";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { round, uniqBy } from "lodash";
 import { IoIosArrowRoundDown, IoIosArrowRoundUp } from "react-icons/io";
-import { LocationDetails } from "../../types";
-import { LocationSearchResult } from "../LocationSearch";
+import {
+  getAccommodationLocalStorageKey,
+  getActivitiesLocalStorageKey,
+  getCustomSectionLocalStorageKey,
+  getFoodLocalStorageKey,
+  getItineraryLocalStorageKey,
+  getPackingListLocalStorageKey,
+  getTasklistLocalStorageKey,
+  getTransportLocalStorageKey,
+  getUnsavedSectionsStorageKey,
+  getUnsavedTripsStorageKey,
+} from "../../../utils/helpers";
+import { LocationDetails } from "../../../pages/trips/types";
+import { LocationSearchResult } from "../../../pages/trips/components/LocationSearch";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-
-export const getAccommodationLocalStorageKey = (tripId: string) =>
-  `unsaved-accommodation-${tripId}`;
-
-export const getFoodLocalStorageKey = (tripId: string) =>
-  `unsaved-food-${tripId}`;
-
-export const getActivitiesLocalStorageKey = (tripId: string) =>
-  `unsaved-activities-${tripId}`;
-
-export const getTransportLocalStorageKey = (tripId: string) =>
-  `unsaved-transport-${tripId}`;
-
-export const getItineraryLocalStorageKey = (tripId: string) =>
-  `unsaved-itinerary-${tripId}`;
-
-export const getTasklistLocalStorageKey = (tripId: string) =>
-  `unsaved-tasklist-${tripId}`;
-
-export const getPackingListLocalStorageKey = (tripId: string) =>
-  `unsaved-packing-list-${tripId}`;
-
-export const getCustomSectionLocalStorageKey = (
-  tripId: string,
-  sectionName: string
-) => {
-  const sectionNameHyphenated = sectionName.toLowerCase().replace(/\s+/g, "-");
-  return `unsaved-${sectionNameHyphenated}-${tripId}`;
-};
-
-export const getUnsavedTripsStorageKey = () => `unsaved-trips`;
-export const getUnsavedSectionsStorageKey = (tripId: string) =>
-  `unsaved-sections-${tripId}`;
-
-export const addTripToLocalStorage = (tripId: string, sectionName?: string) => {
-  const unsavedTripsStorageKey = getUnsavedTripsStorageKey();
-  const unsavedTrips = localStorage.getItem(unsavedTripsStorageKey);
-  if (unsavedTrips) {
-    const unsavedTripsArray = JSON.parse(unsavedTrips);
-    if (!unsavedTripsArray.includes(tripId)) {
-      localStorage.setItem(
-        unsavedTripsStorageKey,
-        JSON.stringify([...unsavedTripsArray, tripId])
-      );
-    }
-  } else {
-    localStorage.setItem(unsavedTripsStorageKey, JSON.stringify([tripId]));
-  }
-
-  if (sectionName) {
-    const unsavedSectionKey = getUnsavedSectionsStorageKey(tripId);
-    const unsavedSections = localStorage.getItem(unsavedSectionKey);
-    if (unsavedSections) {
-      const unsavedSectionsArray = JSON.parse(unsavedSections);
-      if (!unsavedSectionsArray.includes(sectionName)) {
-        localStorage.setItem(
-          unsavedSectionKey,
-          JSON.stringify([...unsavedSectionsArray, sectionName])
-        );
-      }
-    } else {
-      localStorage.setItem(unsavedSectionKey, JSON.stringify([sectionName]));
-    }
-  }
-};
 
 export const deleteTripFromLocalStorage = (tripId: string) => {
   const unsavedTripsStorageKey = getUnsavedTripsStorageKey();

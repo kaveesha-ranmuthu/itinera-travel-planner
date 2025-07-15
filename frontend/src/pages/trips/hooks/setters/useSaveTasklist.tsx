@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../../../../config/firebase-config";
-import { getTasklistLocalStorageKey } from "../../components/sections/helpers";
+import { getTasklistLocalStorageKey } from "../../../../features/trip/utils/helpers";
 
 const useSaveTasklist = () => {
   const [userId, setUserId] = useState<string | null>(null);

@@ -23,7 +23,7 @@ import {
   getFoodLocalStorageKey,
   getLocationDetails,
   getPhotoDownloadUrl,
-} from "./components/sections/helpers";
+} from "../../features/trip/utils/helpers";
 import Itinerary, { ItineraryDetails } from "./components/sections/Itinerary";
 import SidebarLocationSection, {
   SidebarLocationDetails,

@@ -2,7 +2,7 @@ import { collection, deleteDoc, doc, writeBatch } from "firebase/firestore";
 import { useCallback } from "react";
 import { auth, db } from "../../../../config/firebase-config";
 import { TransportationDetails } from "../../types";
-import { getTransportLocalStorageKey } from "../../components/sections/helpers";
+import { getTransportLocalStorageKey } from "../../../../features/trip/utils/helpers";
 
 export const useSaveTransport = () => {
   const saveTransport = useCallback(

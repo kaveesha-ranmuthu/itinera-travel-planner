@@ -21,8 +21,6 @@ import LocationSearch, {
 import Table from "../../pages/trips/components/Table";
 import WarningConfirmationModal from "../../components/WarningConfirmationModal";
 import {
-  addTripToLocalStorage,
-  getAccommodationLocalStorageKey,
   getEstimatedCost,
   getLocationDetails,
   getPhotoDownloadUrl,
@@ -31,11 +29,15 @@ import {
   getUniqueLocations,
   isLocationIncluded,
   isPriceIncluded,
-} from "../../pages/trips/components/sections/helpers";
+} from "./utils/helpers";
 import { useSaving } from "../../hooks/useSaving";
 import { useGetLatLng } from "../../pages/trips/hooks/getters/useGetLatLng";
 import { FontFamily } from "../../types/types";
 import InfoTooltip from "../../components/InfoTooltip";
+import {
+  getAccommodationLocalStorageKey,
+  addTripToLocalStorage,
+} from "../../utils/helpers";
 
 enum SortOptions {
   ID = "id",

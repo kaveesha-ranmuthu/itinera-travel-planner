@@ -8,7 +8,7 @@ import { useAuth } from "../../../hooks/useAuth";
 import {
   addTripToLocalStorage,
   getTasklistLocalStorageKey,
-} from "./sections/helpers";
+} from "../../../features/trip/utils/helpers";
 
 interface TasklistProps {
   savedTaskList: string;

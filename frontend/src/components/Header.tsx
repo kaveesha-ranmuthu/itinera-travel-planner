@@ -11,8 +11,8 @@ import { useSaving } from "../hooks/useSaving";
 import useSaveAllData from "../pages/trips/hooks/setters/useSaveAllData";
 import { useUpdateUserSettings } from "../pages/trips/hooks/setters/useUpdateUserSettings";
 import PopoverMenu from "../pages/trips/components/PopoverMenu";
-import { CheckoutButton } from "../pages/trips/components/sections/CheckoutButton";
-import { saveTripData } from "../pages/trips/components/sections/helpers";
+import { CheckoutButton } from "./CheckoutButton";
+import { saveTripData } from "../features/trip/utils/helpers";
 import { FontFamily } from "../types/types";
 
 const Header = () => {

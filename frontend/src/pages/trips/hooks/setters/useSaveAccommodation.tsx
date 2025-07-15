@@ -1,7 +1,7 @@
 import { collection, deleteDoc, doc, writeBatch } from "firebase/firestore";
 import { useCallback } from "react";
 import { auth, db } from "../../../../config/firebase-config";
-import { getAccommodationLocalStorageKey } from "../../components/sections/helpers";
+import { getAccommodationLocalStorageKey } from "../../../../features/trip/utils/helpers";
 import { AccommodationDetails } from "../../types";
 
 export const useSaveAccommodation = () => {

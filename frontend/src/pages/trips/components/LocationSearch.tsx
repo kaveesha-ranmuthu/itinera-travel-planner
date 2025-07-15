@@ -9,7 +9,7 @@ import { debounce } from "lodash";
 import React, { useCallback, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../hooks/useAuth";
-import { convertCurrency } from "./sections/helpers";
+import { convertCurrency } from "../../../features/trip/utils/helpers";
 
 interface LocationSearchProps {
   disabled?: boolean;

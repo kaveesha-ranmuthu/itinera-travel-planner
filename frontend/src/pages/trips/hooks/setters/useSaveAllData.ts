@@ -8,7 +8,7 @@ import {
   getTasklistLocalStorageKey,
   getTransportLocalStorageKey,
   getUnsavedSectionsStorageKey,
-} from "../../components/sections/helpers";
+} from "../../../../features/trip/utils/helpers";
 import { LocationDetails } from "../../types";
 import { useSaveAccommodation } from "./useSaveAccommodation";
 import { useSaveActivities } from "./useSaveActivities";

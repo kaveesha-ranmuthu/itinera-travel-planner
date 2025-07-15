@@ -2,7 +2,7 @@ import { collection, doc, writeBatch } from "firebase/firestore";
 import { useCallback } from "react";
 import { auth, db } from "../../../../config/firebase-config";
 import { ItineraryDetails } from "../../components/sections/Itinerary";
-import { getItineraryLocalStorageKey } from "../../components/sections/helpers";
+import { getItineraryLocalStorageKey } from "../../../../features/trip/utils/helpers";
 
 export const useSaveItinerary = () => {
   const saveItinerary = useCallback(

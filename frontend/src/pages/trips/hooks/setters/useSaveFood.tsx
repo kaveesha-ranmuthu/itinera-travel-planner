@@ -1,7 +1,7 @@
 import { collection, deleteDoc, doc, writeBatch } from "firebase/firestore";
 import { useCallback } from "react";
 import { auth, db } from "../../../../config/firebase-config";
-import { getFoodLocalStorageKey } from "../../components/sections/helpers";
+import { getFoodLocalStorageKey } from "../../../../features/trip/utils/helpers";
 import { LocationDetails } from "../../types";
 
 export const useSaveFood = () => {

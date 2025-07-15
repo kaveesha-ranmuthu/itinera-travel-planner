@@ -19,13 +19,16 @@ import { sortBy } from "lodash";
 import moment from "moment";
 import React, { useEffect, useMemo } from "react";
 import { twMerge } from "tailwind-merge";
-import { useAuth } from "../../../../hooks/useAuth";
-import { ErrorBox } from "../InfoBox";
-import { addTripToLocalStorage, getItineraryLocalStorageKey } from "./helpers";
-import { useSaving } from "../../../../hooks/useSaving";
-import InfoTooltip from "../../../../components/InfoTooltip";
 import EditorBubbleMenu from "../../../../components/EditorBubbleMenu";
+import InfoTooltip from "../../../../components/InfoTooltip";
+import { useAuth } from "../../../../hooks/useAuth";
+import { useSaving } from "../../../../hooks/useSaving";
 import { FontFamily } from "../../../../types/types";
+import {
+  addTripToLocalStorage,
+  getItineraryLocalStorageKey,
+} from "../../../../utils/helpers";
+import { ErrorBox } from "../InfoBox";
 export interface ItineraryDetails {
   id: string;
   dayNumber: number;

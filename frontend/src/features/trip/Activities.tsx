@@ -33,7 +33,7 @@ import {
   getUniqueLocations,
   isLocationIncluded,
   isPriceIncluded,
-} from "../../pages/trips/components/sections/helpers";
+} from "./utils/helpers";
 import InfoTooltip from "../../components/InfoTooltip";
 import { ViewDisplayOptions } from "../../types/types";
 

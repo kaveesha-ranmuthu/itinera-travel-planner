@@ -15,7 +15,7 @@ import { useAuth } from "../../hooks/useAuth";
 import {
   addTripToLocalStorage,
   getPackingListLocalStorageKey,
-} from "../../pages/trips/components/sections/helpers";
+} from "./utils/helpers";
 import { useSaving } from "../../hooks/useSaving";
 import EditorBubbleMenu from "../../components/EditorBubbleMenu";
 import InfoTooltip from "../../components/InfoTooltip";

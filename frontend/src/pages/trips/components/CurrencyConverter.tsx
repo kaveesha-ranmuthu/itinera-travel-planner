@@ -5,7 +5,7 @@ import TripsInput from "./TripsInput";
 import { useAuth } from "../../../hooks/useAuth";
 import { twMerge } from "tailwind-merge";
 import { round } from "lodash";
-import { convertCurrency } from "./sections/helpers";
+import { convertCurrency } from "../../../features/trip/utils/helpers";
 
 interface CurrencyConverterProps {
   userCurrency?: string;

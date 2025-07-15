@@ -18,7 +18,7 @@ import {
   getEstimatedCost,
   getSortArrowComponent,
   getTransportLocalStorageKey,
-} from "../../pages/trips/components/sections/helpers";
+} from "./utils/helpers";
 import InfoTooltip from "../../components/InfoTooltip";
 import { FontFamily } from "../../types/types";
 

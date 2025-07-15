@@ -10,7 +10,7 @@ import LandingPage from "../pages-2/LandingPage";
 import LoginPage from "../pages-2/LoginPage";
 import ResetPasswordPage from "../pages-2/ResetPasswordPage";
 import SignupPage from "../pages-2/SignupPage";
-import { saveTripData } from "../pages/trips/components/sections/helpers";
+import { saveTripData } from "../features/trip/utils/helpers";
 import useSaveAllData from "../pages/trips/hooks/setters/useSaveAllData";
 import MapViewPage from "../pages/trips/MapView";
 import "./App.css";
