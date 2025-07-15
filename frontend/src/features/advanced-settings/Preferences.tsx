@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { twMerge } from "tailwind-merge";
 import Button from "../../components/Button";
 import InfoTooltip from "../../components/InfoTooltip";
 import { auth } from "../../config/firebase-config";
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
 import { useUpdateUserSettings } from "../../pages/trips/hooks/setters/useUpdateUserSettings";
+import { ViewDisplayOptions } from "../../types/types";
 import { Heading } from "./Heading";
 import PackingListTemplateEditor from "./PackingListTemplateEditor";
-import { ViewDisplayOptions } from "../../types/types";
+import { LocationViewSelector } from "./LocationViewSelector";
 
 export const Preferences = () => {
   const { settings, setSettings } = useAuth();
@@ -69,30 +69,10 @@ export const Preferences = () => {
                 content="Choose how you'd like to view food and activity content by default. You can switch between gallery and list view anytime."
               />
             </div>
-            <div className="space-x-2">
-              <Button.Primary
-                onClick={() => updateDefaultView("gallery")}
-                type="submit"
-                className={twMerge(
-                  "mt-1 border border-secondary hover:opacity-100 px-4 py-1 w-20 text-base transition ease-in-out duration-300",
-                  currentView === "gallery" ? "opacity-100" : "opacity-60 "
-                )}
-                disabled={currentView === "gallery"}
-              >
-                Gallery
-              </Button.Primary>
-              <Button.Primary
-                onClick={() => updateDefaultView("list")}
-                type="submit"
-                className={twMerge(
-                  "mt-1 border border-secondary hover:opacity-100 px-4 py-1 w-20 text-base transition ease-in-out duration-300",
-                  currentView === "list" ? "opacity-100" : "opacity-60"
-                )}
-                disabled={currentView === "list"}
-              >
-                List
-              </Button.Primary>
-            </div>
+            <LocationViewSelector
+              currentView={currentView}
+              onChange={updateDefaultView}
+            />
           </div>
         </div>
       </div>
