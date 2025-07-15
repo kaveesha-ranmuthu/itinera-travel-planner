@@ -2,57 +2,58 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
-import Error from "../../components/Error";
+import Header from "../../components/Header";
 import { Loading } from "../../components/Loading";
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
 import { useSaving } from "../../hooks/useSaving";
-import CustomiseMap from "./components/CustomiseMap";
-import { CustomMap } from "./components/CustomMap";
+import CustomiseMap from "../../pages/trips/components/CustomiseMap";
+import { CustomMap } from "../../pages/trips/components/CustomMap";
 import LocationSearch, {
   LocationSearchResult,
-} from "./components/LocationSearch";
-import MapViewSidebarSelector from "./components/MapViewSidebarSelector";
-import CondensedTripHeader from "./components/sections/CondensedTripHeader";
-import Header from "../../components/Header";
-import {
-  addTripToLocalStorage,
-  getAccommodationLocalStorageKey,
-  getActivitiesLocalStorageKey,
-  getCustomSectionLocalStorageKey,
-  getFoodLocalStorageKey,
-  getLocationDetails,
-  getPhotoDownloadUrl,
-} from "../../features/trip/utils/helpers";
-import Itinerary, { ItineraryDetails } from "./components/sections/Itinerary";
+} from "../../pages/trips/components/LocationSearch";
+import MapViewSidebarSelector from "../../pages/trips/components/MapViewSidebarSelector";
+import CondensedTripHeader from "../../pages/trips/components/sections/CondensedTripHeader";
+import Itinerary, {
+  ItineraryDetails,
+} from "../../pages/trips/components/sections/Itinerary";
 import SidebarLocationSection, {
   SidebarLocationDetails,
-} from "./components/SidebarLocationSection";
-import { useGetAccommodation } from "./hooks/getters/useGetAccommodation";
-import { useGetActivities } from "./hooks/getters/useGetActivities";
+} from "../../pages/trips/components/SidebarLocationSection";
+import { useGetAccommodation } from "../../pages/trips/hooks/getters/useGetAccommodation";
+import { useGetActivities } from "../../pages/trips/hooks/getters/useGetActivities";
 import {
-  CustomSectionData,
   useGetAllCustomSections,
-} from "./hooks/getters/useGetAllCustomSections";
+  CustomSectionData,
+} from "../../pages/trips/hooks/getters/useGetAllCustomSections";
 import {
-  CustomSectionStyles,
   useGetCustomSectionStyles,
-} from "./hooks/getters/useGetCustomSectionStyles";
-import { useGetFood } from "./hooks/getters/useGetFood";
-import { useGetItinerary } from "./hooks/getters/useGetItinerary";
-import { useGetLatLng } from "./hooks/getters/useGetLatLng";
-import { useGetMapSettings } from "./hooks/getters/useGetMapSettings";
-import useGetTrip from "./hooks/getters/useGetTrip";
-import { TripData } from "./hooks/getters/useGetTrips";
+  CustomSectionStyles,
+} from "../../pages/trips/hooks/getters/useGetCustomSectionStyles";
+import { useGetFood } from "../../pages/trips/hooks/getters/useGetFood";
+import { useGetItinerary } from "../../pages/trips/hooks/getters/useGetItinerary";
+import { useGetLatLng } from "../../pages/trips/hooks/getters/useGetLatLng";
+import { useGetMapSettings } from "../../pages/trips/hooks/getters/useGetMapSettings";
+import useGetTrip from "../../pages/trips/hooks/getters/useGetTrip";
 import {
   AccommodationDetails,
-  LocationCategories,
   LocationDetails,
   MapSettings,
   MapViewSidebarSelectorOptions,
-} from "./types";
+  LocationCategories,
+} from "../../pages/trips/types";
+import { TripData } from "../../types/types";
+import {
+  getAccommodationLocalStorageKey,
+  getFoodLocalStorageKey,
+  getActivitiesLocalStorageKey,
+  getCustomSectionLocalStorageKey,
+  addTripToLocalStorage,
+} from "../../utils/helpers";
+import { getLocationDetails, getPhotoDownloadUrl } from "../trip/utils/helpers";
+import Error from "../../components/Error";
 
-const MapViewPage = () => {
+const MapView = () => {
   const { tripId } = useParams();
   const { error, loading, trip } = useGetTrip(tripId ?? "");
 
@@ -154,7 +155,7 @@ const MapViewPage = () => {
 
   return (
     <div className="max-h-screen h-screen overflow-hidden">
-      <MapView
+      <MapViewContent
         trip={trip}
         accommodationRows={accommodationRows}
         activitiesData={activitiesData}
@@ -183,7 +184,7 @@ interface MapViewProps {
   defaultCustomSectionStyles: CustomSectionStyles;
 }
 
-const MapView: React.FC<MapViewProps> = ({
+const MapViewContent: React.FC<MapViewProps> = ({
   trip,
   accommodationRows,
   foodItems,
@@ -638,4 +639,4 @@ const MapView: React.FC<MapViewProps> = ({
   );
 };
 
-export default MapViewPage;
+export default MapView;

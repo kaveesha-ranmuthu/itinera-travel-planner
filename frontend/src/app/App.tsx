@@ -12,7 +12,7 @@ import ResetPasswordPage from "../pages-2/ResetPasswordPage";
 import SignupPage from "../pages-2/SignupPage";
 import { saveTripData } from "../features/trip/utils/helpers";
 import useSaveAllData from "../pages/trips/hooks/setters/useSaveAllData";
-import MapViewPage from "../pages/trips/MapView";
+import MapViewPage from "../pages-2/MapViewPage";
 import "./App.css";
 import TripPage from "../pages-2/TripPage";
 
