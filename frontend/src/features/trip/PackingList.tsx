@@ -10,15 +10,15 @@ import Text from "@tiptap/extension-text";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
-import Button from "../../../../components/Button";
-import { useAuth } from "../../../../hooks/useAuth";
+import Button from "../../components/Button";
+import { useAuth } from "../../hooks/useAuth";
 import {
   addTripToLocalStorage,
   getPackingListLocalStorageKey,
-} from "./helpers";
-import { useSaving } from "../../../../hooks/useSaving";
-import EditorBubbleMenu from "../../../../components/EditorBubbleMenu";
-import InfoTooltip from "../../../../components/InfoTooltip";
+} from "../../pages/trips/components/sections/helpers";
+import { useSaving } from "../../hooks/useSaving";
+import EditorBubbleMenu from "../../components/EditorBubbleMenu";
+import InfoTooltip from "../../components/InfoTooltip";
 
 interface PackingListProps {
   tripId: string;

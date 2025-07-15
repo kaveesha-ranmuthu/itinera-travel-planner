@@ -4,7 +4,7 @@ import Error from "../../components/Error";
 import { Loading } from "../../components/Loading";
 import { useAuth } from "../../hooks/useAuth";
 import CreateTripPopup from "../../pages/trips/components/CreateTripPopup";
-import Header from "../../pages/trips/components/sections/Header";
+import Header from "../../components/Header";
 import { useGetTrips } from "../../pages/trips/hooks/getters/useGetTrips";
 import { useCreateNewTrip } from "../../pages/trips/hooks/setters/useCreateNewTrip";
 import { FontFamily, Trip } from "../../types/types";

@@ -7,13 +7,12 @@ import { GoPerson } from "react-icons/go";
 import { HiArrowLongRight } from "react-icons/hi2";
 import { IoCalendarClearOutline } from "react-icons/io5";
 import { twMerge } from "tailwind-merge";
-import { db } from "../../../../config/firebase-config";
-import { useAuth } from "../../../../hooks/useAuth";
-import { useHotToast } from "../../../../hooks/useHotToast";
-import { TripData } from "../../hooks/getters/useGetTrips";
-import SimpleTooltip from "../../../../components/SimpleTooltip";
-import TripsInput from "../TripsInput";
-import { FontFamily } from "../../../../types/types";
+import { db } from "../../config/firebase-config";
+import { useAuth } from "../../hooks/useAuth";
+import { useHotToast } from "../../hooks/useHotToast";
+import SimpleTooltip from "../../components/SimpleTooltip";
+import TripsInput from "../../pages/trips/components/TripsInput";
+import { FontFamily, TripData } from "../../types/types";
 
 export interface TripHeaderProps {
   trip: TripData;

@@ -4,16 +4,22 @@ import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { PiTrashSimple } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
-import { useAuth } from "../../../../hooks/useAuth";
-import { useHotToast } from "../../../../hooks/useHotToast";
-import { AccommodationDetails } from "../../types";
-import Checkbox from "../../../../components/Checkbox";
-import EstimatedCostContainer from "../EstimatedCostContainer";
-import { ErrorBox, LoadingBox, NoDataBox } from "../InfoBox";
-import ListSettings from "../ListSettings";
-import LocationSearch, { LocationSearchResult } from "../LocationSearch";
-import Table from "../Table";
-import WarningConfirmationModal from "../../../../components/WarningConfirmationModal";
+import { useAuth } from "../../hooks/useAuth";
+import { useHotToast } from "../../hooks/useHotToast";
+import { AccommodationDetails } from "../../pages/trips/types";
+import Checkbox from "../../components/Checkbox";
+import EstimatedCostContainer from "../../pages/trips/components/EstimatedCostContainer";
+import {
+  ErrorBox,
+  LoadingBox,
+  NoDataBox,
+} from "../../pages/trips/components/InfoBox";
+import ListSettings from "../../pages/trips/components/ListSettings";
+import LocationSearch, {
+  LocationSearchResult,
+} from "../../pages/trips/components/LocationSearch";
+import Table from "../../pages/trips/components/Table";
+import WarningConfirmationModal from "../../components/WarningConfirmationModal";
 import {
   addTripToLocalStorage,
   getAccommodationLocalStorageKey,
@@ -25,11 +31,11 @@ import {
   getUniqueLocations,
   isLocationIncluded,
   isPriceIncluded,
-} from "./helpers";
-import { useSaving } from "../../../../hooks/useSaving";
-import { useGetLatLng } from "../../hooks/getters/useGetLatLng";
-import { FontFamily } from "../../../../types/types";
-import InfoTooltip from "../../../../components/InfoTooltip";
+} from "../../pages/trips/components/sections/helpers";
+import { useSaving } from "../../hooks/useSaving";
+import { useGetLatLng } from "../../pages/trips/hooks/getters/useGetLatLng";
+import { FontFamily } from "../../types/types";
+import InfoTooltip from "../../components/InfoTooltip";
 
 enum SortOptions {
   ID = "id",

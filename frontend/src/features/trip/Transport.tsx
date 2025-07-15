@@ -4,23 +4,23 @@ import { useEffect, useMemo, useState } from "react";
 import { GoCopy } from "react-icons/go";
 import { PiTrashSimple } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
-import { useAuth } from "../../../../hooks/useAuth";
-import { useSaving } from "../../../../hooks/useSaving";
-import { TransportationDetails } from "../../types";
-import Checkbox from "../../../../components/Checkbox";
-import EstimatedCostContainer from "../EstimatedCostContainer";
-import { ErrorBox, NoDataBox } from "../InfoBox";
-import SmallButton from "../SmallButton";
-import Table from "../Table";
-import WarningConfirmationModal from "../../../../components/WarningConfirmationModal";
+import { useAuth } from "../../hooks/useAuth";
+import { useSaving } from "../../hooks/useSaving";
+import { TransportationDetails } from "../../pages/trips/types";
+import Checkbox from "../../components/Checkbox";
+import EstimatedCostContainer from "../../pages/trips/components/EstimatedCostContainer";
+import { ErrorBox, NoDataBox } from "../../pages/trips/components/InfoBox";
+import SmallButton from "../../pages/trips/components/SmallButton";
+import Table from "../../pages/trips/components/Table";
+import WarningConfirmationModal from "../../components/WarningConfirmationModal";
 import {
   addTripToLocalStorage,
   getEstimatedCost,
   getSortArrowComponent,
   getTransportLocalStorageKey,
-} from "./helpers";
-import InfoTooltip from "../../../../components/InfoTooltip";
-import { FontFamily } from "../../../../types/types";
+} from "../../pages/trips/components/sections/helpers";
+import InfoTooltip from "../../components/InfoTooltip";
+import { FontFamily } from "../../types/types";
 
 enum SortOptions {
   ID = "id",

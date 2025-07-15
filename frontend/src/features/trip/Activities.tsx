@@ -1,72 +1,71 @@
-import Grid from "@mui/material/Grid";
+import { Grid } from "@mui/material";
 import { FieldArray, Form, FormikProvider, useFormik } from "formik";
 import { round, sortBy } from "lodash";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { twMerge } from "tailwind-merge";
-import { useAuth } from "../../../../hooks/useAuth";
-import { useHotToast } from "../../../../hooks/useHotToast";
-import { useSaving } from "../../../../hooks/useSaving";
-import { useGetCustomSection } from "../../hooks/getters/useGetCustomSection";
-import { LocationDetails } from "../../types";
-import EstimatedCostContainer from "../EstimatedCostContainer";
-import { ErrorBox, LoadingBox, NoDataBox } from "../InfoBox";
-import ListSettings from "../ListSettings";
-import LocationSearch, { LocationSearchResult } from "../LocationSearch";
+import WarningConfirmationModal from "../../components/WarningConfirmationModal";
+import { useAuth } from "../../hooks/useAuth";
+import { useHotToast } from "../../hooks/useHotToast";
+import { useSaving } from "../../hooks/useSaving";
+import { useGetLatLng } from "../../pages/trips/hooks/getters/useGetLatLng";
+import { LocationDetails } from "../../pages/trips/types";
+import EstimatedCostContainer from "../../pages/trips/components/EstimatedCostContainer";
+import {
+  ErrorBox,
+  LoadingBox,
+  NoDataBox,
+} from "../../pages/trips/components/InfoBox";
+import ListSettings from "../../pages/trips/components/ListSettings";
+import LocationSearch, {
+  LocationSearchResult,
+} from "../../pages/trips/components/LocationSearch";
 import {
   LocationListItem,
   LocationWithPhotoCard,
-} from "../LocationWithPhotoCard";
-import WarningConfirmationModal from "../../../../components/WarningConfirmationModal";
+} from "../../pages/trips/components/LocationWithPhotoCard";
 import {
   addTripToLocalStorage,
-  getCustomSectionLocalStorageKey,
+  getActivitiesLocalStorageKey,
   getEstimatedCost,
   getLocationDetails,
   getPhotoDownloadUrl,
   getPricesList,
   getUniqueLocations,
-  getUnsavedSectionsStorageKey,
   isLocationIncluded,
   isPriceIncluded,
-} from "./helpers";
-import { useSaveCustomSection } from "../../hooks/setters/useSaveCustomSection";
-import { useGetLatLng } from "../../hooks/getters/useGetLatLng";
-import InfoTooltip from "../../../../components/InfoTooltip";
-import { ViewDisplayOptions } from "../../../../types/types";
+} from "../../pages/trips/components/sections/helpers";
+import InfoTooltip from "../../components/InfoTooltip";
+import { ViewDisplayOptions } from "../../types/types";
 
-interface CustomSectionProps {
+interface ActivitiesProps {
   userCurrencySymbol?: string;
   userCurrencyCode?: string;
   tripId: string;
-  sectionName: string;
-  onDelete: () => void;
+  error: string | null;
+  activities: LocationDetails[];
   destinationCountry: string;
 }
 
-const CustomSection: React.FC<CustomSectionProps> = ({
+const Activities: React.FC<ActivitiesProps> = ({
   userCurrencySymbol,
   userCurrencyCode,
   tripId,
-  sectionName,
-  onDelete,
+  error,
+  activities,
   destinationCountry,
 }) => {
   const { settings } = useAuth();
   const { notify } = useHotToast();
   const { isSaving } = useSaving();
-  const { items, error } = useGetCustomSection(tripId, sectionName);
-  const { deleteCustomSection } = useSaveCustomSection();
   const { latLng, loading } = useGetLatLng(destinationCountry);
 
   const [itemToDelete, setItemToDelete] = useState<LocationDetails | null>(
     null
   );
-
-  const customSectionStorageKey = getCustomSectionLocalStorageKey(
-    tripId,
-    sectionName
+  const finalSaveData = localStorage.getItem(
+    getActivitiesLocalStorageKey(tripId)
   );
-  const finalSaveData = localStorage.getItem(customSectionStorageKey);
+
   const [selectedFilterLocations, setSelectedFilterLocations] = useState<
     string[]
   >([]);
@@ -77,19 +76,11 @@ const CustomSection: React.FC<CustomSectionProps> = ({
   );
 
   const allRows: LocationDetails[] = useMemo(
-    () =>
-      finalSaveData
-        ? JSON.parse(finalSaveData).data
-        : items.filter((item) => Object.keys(item).length),
-    [finalSaveData, items]
+    () => (finalSaveData ? JSON.parse(finalSaveData).data : activities),
+    [finalSaveData, activities]
   );
 
   const sortedRows = sortBy(allRows, "createdAt");
-
-  const handleFormSubmit = (values: { data: LocationDetails[] }) => {
-    localStorage.setItem(customSectionStorageKey, JSON.stringify(values));
-    addTripToLocalStorage(tripId, sectionName);
-  };
 
   const formik = useFormik<{ data: LocationDetails[] }>({
     initialValues: {
@@ -100,6 +91,14 @@ const CustomSection: React.FC<CustomSectionProps> = ({
       handleFormSubmit(values);
     },
   });
+
+  const handleFormSubmit = (values: { data: LocationDetails[] }) => {
+    localStorage.setItem(
+      getActivitiesLocalStorageKey(tripId),
+      JSON.stringify(values)
+    );
+    addTripToLocalStorage(tripId);
+  };
 
   const estimatedTotalCost = round(
     getEstimatedCost(formik.values.data.filter((row) => !row._deleted)),
@@ -123,33 +122,11 @@ const CustomSection: React.FC<CustomSectionProps> = ({
     }
 
     if (selectedFilterPrices && selectedFilterPrices[1] > Math.max(...prices)) {
-      setSelectedFilterPrices([0, Math.max(...prices)]);
+      setSelectedFilterPrices(
+        prices.length ? [0, Math.max(...prices)] : undefined
+      );
     }
   }, [locations, prices, selectedFilterLocations, selectedFilterPrices]);
-
-  const handleDelete = () => {
-    try {
-      onDelete();
-      deleteCustomSection(tripId, sectionName);
-      localStorage.removeItem(customSectionStorageKey);
-
-      const unsavedSections = localStorage.getItem(
-        getUnsavedSectionsStorageKey(tripId)
-      );
-      if (unsavedSections) {
-        const sections = JSON.parse(unsavedSections);
-        const updatedSections = sections.filter(
-          (section: string) => section !== sectionName
-        );
-        localStorage.setItem(
-          getUnsavedSectionsStorageKey(tripId),
-          JSON.stringify(updatedSections)
-        );
-      }
-    } catch {
-      notify(`Something went wrong. Please try again.`, "error");
-    }
-  };
 
   return (
     <div
@@ -160,21 +137,22 @@ const CustomSection: React.FC<CustomSectionProps> = ({
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <h1 className="text-3xl">{sectionName}</h1>
-          <InfoTooltip content="Find places to eat by searching for a specific place or a general term like 'breakfast in Paris'." />
+          <h1 className="text-3xl">activities</h1>
+          <InfoTooltip content="Find things to do by searching for a specific place or a general term like 'Sydney activities'." />
         </div>
-        <ListSettings
-          locations={locations}
-          selectedLocations={selectedFilterLocations}
-          handleLocationSelect={setSelectedFilterLocations}
-          maxPrice={Math.max(...prices)}
-          selectedPrices={selectedFilterPrices}
-          handlePriceChange={setSelectedFilterPrices}
-          userCurrencySymbol={userCurrencySymbol}
-          selectedListView={view}
-          onSelectView={setView}
-          onDelete={handleDelete}
-        />
+        {!!formik.values.data.filter((row) => !row._deleted).length && (
+          <ListSettings
+            locations={locations}
+            selectedLocations={selectedFilterLocations}
+            handleLocationSelect={setSelectedFilterLocations}
+            maxPrice={prices.length ? Math.max(...prices) : undefined}
+            selectedPrices={selectedFilterPrices}
+            handlePriceChange={setSelectedFilterPrices}
+            userCurrencySymbol={userCurrencySymbol}
+            onSelectView={setView}
+            selectedListView={view}
+          />
+        )}
       </div>
       {loading ? (
         <LoadingBox />
@@ -190,42 +168,39 @@ const CustomSection: React.FC<CustomSectionProps> = ({
                   <div>
                     <div className="mb-4">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <LocationSearch
-                            userCurrency={userCurrencyCode}
-                            latitude={latLng?.[0]}
-                            longitude={latLng?.[1]}
-                            onSelectLocation={async (
-                              location: LocationSearchResult
-                            ) => {
-                              const locationIds = formik.values.data
-                                .filter((row) => !row._deleted)
-                                .map((location) => location.googleId);
-                              if (locationIds.includes(location.id)) {
-                                notify(
-                                  "This location has already been added.",
-                                  "info"
-                                );
-                                return;
-                              }
-                              if (!location) return;
-                              const newItem = getLocationDetails(
-                                location,
-                                null
+                        <LocationSearch
+                          userCurrency={userCurrencyCode}
+                          latitude={latLng?.[0]}
+                          longitude={latLng?.[1]}
+                          placeholder="e.g. Sydney activities, Disneyland"
+                          onSelectLocation={async (
+                            location: LocationSearchResult
+                          ) => {
+                            const locationIds = formik.values.data
+                              .filter((row) => !row._deleted)
+                              .map((location) => location.googleId);
+                            if (locationIds.includes(location.id)) {
+                              notify(
+                                "This location has already been added.",
+                                "info"
                               );
-                              const index = formik.values.data.length;
-                              arrayHelpers.push(newItem);
-                              const photoUrl = await getPhotoDownloadUrl(
-                                location
-                              );
-                              await formik.setFieldValue(
-                                `data.${index}.photoUrl`,
-                                photoUrl
-                              );
-                              setTimeout(() => formik.submitForm(), 0);
-                            }}
-                          />
-                        </div>
+                              return;
+                            }
+                            if (!location) return;
+                            const newItem = getLocationDetails(location, null);
+                            const index = formik.values.data.length;
+                            arrayHelpers.push(newItem);
+                            const photoUrl = await getPhotoDownloadUrl(
+                              location
+                            );
+                            await formik.setFieldValue(
+                              `data.${index}.photoUrl`,
+                              photoUrl
+                            );
+                            setTimeout(() => formik.submitForm(), 0);
+                          }}
+                        />
+
                         <EstimatedCostContainer
                           estimatedTotalCost={estimatedTotalCost}
                           userCurrencySymbol={userCurrencySymbol}
@@ -241,30 +216,30 @@ const CustomSection: React.FC<CustomSectionProps> = ({
                             container
                             spacing={view === "gallery" ? 2.8 : 2}
                           >
-                            {formik.values.data.map((place, index) => {
+                            {formik.values.data.map((activity, index) => {
                               const isIncluded =
-                                !place._deleted &&
+                                !activity._deleted &&
                                 isLocationIncluded(
                                   selectedFilterLocations,
-                                  place.location.name
+                                  activity.location.name
                                 ) &&
                                 isPriceIncluded(
                                   selectedFilterPrices,
-                                  place.price
+                                  activity.price
                                 );
 
                               if (!isIncluded) {
                                 return null;
                               }
                               return (
-                                <Fragment key={`${place.id}-${index}`}>
+                                <Fragment key={`${activity.id}-${index}`}>
                                   {view === "gallery" ? (
                                     <Grid>
                                       <LocationWithPhotoCard
-                                        location={place}
+                                        location={activity}
                                         currencySymbol={userCurrencySymbol}
                                         onDelete={() => {
-                                          setItemToDelete(place);
+                                          setItemToDelete(activity);
                                         }}
                                         locationFieldName={`data.${index}.location.name`}
                                         priceFieldName={`data.${index}.price`}
@@ -273,10 +248,10 @@ const CustomSection: React.FC<CustomSectionProps> = ({
                                   ) : (
                                     <Grid size={6}>
                                       <LocationListItem
-                                        location={place}
+                                        location={activity}
                                         currencySymbol={userCurrencySymbol}
                                         onDelete={() => {
-                                          setItemToDelete(place);
+                                          setItemToDelete(activity);
                                         }}
                                         locationFieldName={`data.${index}.location.name`}
                                         priceFieldName={`data.${index}.price`}
@@ -285,8 +260,8 @@ const CustomSection: React.FC<CustomSectionProps> = ({
                                   )}
                                   <WarningConfirmationModal
                                     description="Once deleted, this is gone forever. Are you sure you want to continue?"
-                                    title={`Are you sure you want to delete "${place.name}"?`}
-                                    isOpen={itemToDelete?.id === place.id}
+                                    title={`Are you sure you want to delete "${activity.name}"?`}
+                                    isOpen={itemToDelete?.id === activity.id}
                                     onClose={() => setItemToDelete(null)}
                                     onConfirm={() => {
                                       formik.setFieldValue(
@@ -315,4 +290,4 @@ const CustomSection: React.FC<CustomSectionProps> = ({
   );
 };
 
-export default CustomSection;
+export default Activities;

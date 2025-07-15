@@ -13,8 +13,8 @@ import SignupPage from "../pages-2/SignupPage";
 import { saveTripData } from "../pages/trips/components/sections/helpers";
 import useSaveAllData from "../pages/trips/hooks/setters/useSaveAllData";
 import MapViewPage from "../pages/trips/MapView";
-import TripPage from "../pages/trips/TripPage";
 import "./App.css";
+import TripPage from "../pages-2/TripPage";
 
 function App() {
   const { user, loading } = useAuth();

@@ -1,51 +1,57 @@
-import { Grid } from "@mui/material";
+import Grid from "@mui/material/Grid";
 import { FieldArray, Form, FormikProvider, useFormik } from "formik";
 import { round, sortBy } from "lodash";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { twMerge } from "tailwind-merge";
-import WarningConfirmationModal from "../../../../components/WarningConfirmationModal";
-import { useAuth } from "../../../../hooks/useAuth";
-import { useHotToast } from "../../../../hooks/useHotToast";
-import { useSaving } from "../../../../hooks/useSaving";
-import { useGetLatLng } from "../../hooks/getters/useGetLatLng";
-import { LocationDetails } from "../../types";
-import EstimatedCostContainer from "../EstimatedCostContainer";
-import { ErrorBox, LoadingBox, NoDataBox } from "../InfoBox";
-import ListSettings from "../ListSettings";
-import LocationSearch, { LocationSearchResult } from "../LocationSearch";
+import { useAuth } from "../../hooks/useAuth";
+import { useHotToast } from "../../hooks/useHotToast";
+import { useSaving } from "../../hooks/useSaving";
+import { LocationDetails } from "../../pages/trips/types";
+import EstimatedCostContainer from "../../pages/trips/components/EstimatedCostContainer";
+import {
+  ErrorBox,
+  LoadingBox,
+  NoDataBox,
+} from "../../pages/trips/components/InfoBox";
+import ListSettings from "../../pages/trips/components/ListSettings";
+import LocationSearch, {
+  LocationSearchResult,
+} from "../../pages/trips/components/LocationSearch";
 import {
   LocationListItem,
   LocationWithPhotoCard,
-} from "../LocationWithPhotoCard";
+} from "../../pages/trips/components/LocationWithPhotoCard";
+import WarningConfirmationModal from "../../components/WarningConfirmationModal";
 import {
   addTripToLocalStorage,
-  getActivitiesLocalStorageKey,
   getEstimatedCost,
+  getFoodLocalStorageKey,
   getLocationDetails,
   getPhotoDownloadUrl,
   getPricesList,
   getUniqueLocations,
   isLocationIncluded,
   isPriceIncluded,
-} from "./helpers";
-import InfoTooltip from "../../../../components/InfoTooltip";
-import { ViewDisplayOptions } from "../../../../types/types";
+} from "../../pages/trips/components/sections/helpers";
+import { useGetLatLng } from "../../pages/trips/hooks/getters/useGetLatLng";
+import InfoTooltip from "../../components/InfoTooltip";
+import { ViewDisplayOptions } from "../../types/types";
 
-interface ActivitiesProps {
+interface FoodProps {
   userCurrencySymbol?: string;
   userCurrencyCode?: string;
   tripId: string;
+  foodItems: LocationDetails[];
   error: string | null;
-  activities: LocationDetails[];
   destinationCountry: string;
 }
 
-const Activities: React.FC<ActivitiesProps> = ({
+const Food: React.FC<FoodProps> = ({
   userCurrencySymbol,
   userCurrencyCode,
   tripId,
   error,
-  activities,
+  foodItems,
   destinationCountry,
 }) => {
   const { settings } = useAuth();
@@ -56,10 +62,7 @@ const Activities: React.FC<ActivitiesProps> = ({
   const [itemToDelete, setItemToDelete] = useState<LocationDetails | null>(
     null
   );
-  const finalSaveData = localStorage.getItem(
-    getActivitiesLocalStorageKey(tripId)
-  );
-
+  const finalSaveData = localStorage.getItem(getFoodLocalStorageKey(tripId));
   const [selectedFilterLocations, setSelectedFilterLocations] = useState<
     string[]
   >([]);
@@ -70,11 +73,19 @@ const Activities: React.FC<ActivitiesProps> = ({
   );
 
   const allRows: LocationDetails[] = useMemo(
-    () => (finalSaveData ? JSON.parse(finalSaveData).data : activities),
-    [finalSaveData, activities]
+    () => (finalSaveData ? JSON.parse(finalSaveData).data : foodItems),
+    [finalSaveData, foodItems]
   );
 
   const sortedRows = sortBy(allRows, "createdAt");
+
+  const handleFormSubmit = (values: { data: LocationDetails[] }) => {
+    localStorage.setItem(
+      getFoodLocalStorageKey(tripId),
+      JSON.stringify(values)
+    );
+    addTripToLocalStorage(tripId);
+  };
 
   const formik = useFormik<{ data: LocationDetails[] }>({
     initialValues: {
@@ -85,14 +96,6 @@ const Activities: React.FC<ActivitiesProps> = ({
       handleFormSubmit(values);
     },
   });
-
-  const handleFormSubmit = (values: { data: LocationDetails[] }) => {
-    localStorage.setItem(
-      getActivitiesLocalStorageKey(tripId),
-      JSON.stringify(values)
-    );
-    addTripToLocalStorage(tripId);
-  };
 
   const estimatedTotalCost = round(
     getEstimatedCost(formik.values.data.filter((row) => !row._deleted)),
@@ -116,9 +119,7 @@ const Activities: React.FC<ActivitiesProps> = ({
     }
 
     if (selectedFilterPrices && selectedFilterPrices[1] > Math.max(...prices)) {
-      setSelectedFilterPrices(
-        prices.length ? [0, Math.max(...prices)] : undefined
-      );
+      setSelectedFilterPrices([0, Math.max(...prices)]);
     }
   }, [locations, prices, selectedFilterLocations, selectedFilterPrices]);
 
@@ -131,20 +132,20 @@ const Activities: React.FC<ActivitiesProps> = ({
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <h1 className="text-3xl">activities</h1>
-          <InfoTooltip content="Find things to do by searching for a specific place or a general term like 'Sydney activities'." />
+          <h1 className="text-3xl">food</h1>
+          <InfoTooltip content="Find places to eat by searching for a specific place or a general term like 'breakfast in Paris'." />
         </div>
-        {!!formik.values.data.filter((row) => !row._deleted).length && (
+        {!!formik.values.data.length && (
           <ListSettings
             locations={locations}
             selectedLocations={selectedFilterLocations}
             handleLocationSelect={setSelectedFilterLocations}
-            maxPrice={prices.length ? Math.max(...prices) : undefined}
+            maxPrice={Math.max(...prices)}
             selectedPrices={selectedFilterPrices}
             handlePriceChange={setSelectedFilterPrices}
             userCurrencySymbol={userCurrencySymbol}
-            onSelectView={setView}
             selectedListView={view}
+            onSelectView={setView}
           />
         )}
       </div>
@@ -162,39 +163,43 @@ const Activities: React.FC<ActivitiesProps> = ({
                   <div>
                     <div className="mb-4">
                       <div className="flex items-center justify-between">
-                        <LocationSearch
-                          userCurrency={userCurrencyCode}
-                          latitude={latLng?.[0]}
-                          longitude={latLng?.[1]}
-                          placeholder="e.g. Sydney activities, Disneyland"
-                          onSelectLocation={async (
-                            location: LocationSearchResult
-                          ) => {
-                            const locationIds = formik.values.data
-                              .filter((row) => !row._deleted)
-                              .map((location) => location.googleId);
-                            if (locationIds.includes(location.id)) {
-                              notify(
-                                "This location has already been added.",
-                                "info"
+                        <div className="flex items-center space-x-2">
+                          <LocationSearch
+                            userCurrency={userCurrencyCode}
+                            latitude={latLng?.[0]}
+                            longitude={latLng?.[1]}
+                            placeholder="e.g. breakfast in Paris, Nobu LA"
+                            onSelectLocation={async (
+                              location: LocationSearchResult
+                            ) => {
+                              const locationIds = formik.values.data
+                                .filter((row) => !row._deleted)
+                                .map((location) => location.googleId);
+                              if (locationIds.includes(location.id)) {
+                                notify(
+                                  "This location has already been added.",
+                                  "info"
+                                );
+                                return;
+                              }
+                              if (!location) return;
+                              const newItem = getLocationDetails(
+                                location,
+                                null
                               );
-                              return;
-                            }
-                            if (!location) return;
-                            const newItem = getLocationDetails(location, null);
-                            const index = formik.values.data.length;
-                            arrayHelpers.push(newItem);
-                            const photoUrl = await getPhotoDownloadUrl(
-                              location
-                            );
-                            await formik.setFieldValue(
-                              `data.${index}.photoUrl`,
-                              photoUrl
-                            );
-                            setTimeout(() => formik.submitForm(), 0);
-                          }}
-                        />
-
+                              const index = formik.values.data.length;
+                              arrayHelpers.push(newItem);
+                              const photoUrl = await getPhotoDownloadUrl(
+                                location
+                              );
+                              await formik.setFieldValue(
+                                `data.${index}.photoUrl`,
+                                photoUrl
+                              );
+                              setTimeout(() => formik.submitForm(), 0);
+                            }}
+                          />
+                        </div>
                         <EstimatedCostContainer
                           estimatedTotalCost={estimatedTotalCost}
                           userCurrencySymbol={userCurrencySymbol}
@@ -210,30 +215,30 @@ const Activities: React.FC<ActivitiesProps> = ({
                             container
                             spacing={view === "gallery" ? 2.8 : 2}
                           >
-                            {formik.values.data.map((activity, index) => {
+                            {formik.values.data.map((foodPlace, index) => {
                               const isIncluded =
-                                !activity._deleted &&
+                                !foodPlace._deleted &&
                                 isLocationIncluded(
                                   selectedFilterLocations,
-                                  activity.location.name
+                                  foodPlace.location.name
                                 ) &&
                                 isPriceIncluded(
                                   selectedFilterPrices,
-                                  activity.price
+                                  foodPlace.price
                                 );
 
                               if (!isIncluded) {
                                 return null;
                               }
                               return (
-                                <Fragment key={`${activity.id}-${index}`}>
+                                <Fragment key={`${foodPlace.id}-${index}`}>
                                   {view === "gallery" ? (
                                     <Grid>
                                       <LocationWithPhotoCard
-                                        location={activity}
+                                        location={foodPlace}
                                         currencySymbol={userCurrencySymbol}
                                         onDelete={() => {
-                                          setItemToDelete(activity);
+                                          setItemToDelete(foodPlace);
                                         }}
                                         locationFieldName={`data.${index}.location.name`}
                                         priceFieldName={`data.${index}.price`}
@@ -242,10 +247,10 @@ const Activities: React.FC<ActivitiesProps> = ({
                                   ) : (
                                     <Grid size={6}>
                                       <LocationListItem
-                                        location={activity}
+                                        location={foodPlace}
                                         currencySymbol={userCurrencySymbol}
                                         onDelete={() => {
-                                          setItemToDelete(activity);
+                                          setItemToDelete(foodPlace);
                                         }}
                                         locationFieldName={`data.${index}.location.name`}
                                         priceFieldName={`data.${index}.price`}
@@ -254,8 +259,8 @@ const Activities: React.FC<ActivitiesProps> = ({
                                   )}
                                   <WarningConfirmationModal
                                     description="Once deleted, this is gone forever. Are you sure you want to continue?"
-                                    title={`Are you sure you want to delete "${activity.name}"?`}
-                                    isOpen={itemToDelete?.id === activity.id}
+                                    title={`Are you sure you want to delete "${foodPlace.name}"?`}
+                                    isOpen={itemToDelete?.id === foodPlace.id}
                                     onClose={() => setItemToDelete(null)}
                                     onConfirm={() => {
                                       formik.setFieldValue(
@@ -284,4 +289,4 @@ const Activities: React.FC<ActivitiesProps> = ({
   );
 };
 
-export default Activities;
+export default Food;

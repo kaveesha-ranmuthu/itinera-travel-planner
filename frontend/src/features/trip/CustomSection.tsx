@@ -3,60 +3,76 @@ import { FieldArray, Form, FormikProvider, useFormik } from "formik";
 import { round, sortBy } from "lodash";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { twMerge } from "tailwind-merge";
-import { useAuth } from "../../../../hooks/useAuth";
-import { useHotToast } from "../../../../hooks/useHotToast";
-import { useSaving } from "../../../../hooks/useSaving";
-import { LocationDetails } from "../../types";
-import EstimatedCostContainer from "../EstimatedCostContainer";
-import { ErrorBox, LoadingBox, NoDataBox } from "../InfoBox";
-import ListSettings from "../ListSettings";
-import LocationSearch, { LocationSearchResult } from "../LocationSearch";
+import { useAuth } from "../../hooks/useAuth";
+import { useHotToast } from "../../hooks/useHotToast";
+import { useSaving } from "../../hooks/useSaving";
+import { useGetCustomSection } from "../../pages/trips/hooks/getters/useGetCustomSection";
+import { LocationDetails } from "../../pages/trips/types";
+import EstimatedCostContainer from "../../pages/trips/components/EstimatedCostContainer";
+import {
+  ErrorBox,
+  LoadingBox,
+  NoDataBox,
+} from "../../pages/trips/components/InfoBox";
+import ListSettings from "../../pages/trips/components/ListSettings";
+import LocationSearch, {
+  LocationSearchResult,
+} from "../../pages/trips/components/LocationSearch";
 import {
   LocationListItem,
   LocationWithPhotoCard,
-} from "../LocationWithPhotoCard";
-import WarningConfirmationModal from "../../../../components/WarningConfirmationModal";
+} from "../../pages/trips/components/LocationWithPhotoCard";
+import WarningConfirmationModal from "../../components/WarningConfirmationModal";
 import {
   addTripToLocalStorage,
+  getCustomSectionLocalStorageKey,
   getEstimatedCost,
-  getFoodLocalStorageKey,
   getLocationDetails,
   getPhotoDownloadUrl,
   getPricesList,
   getUniqueLocations,
+  getUnsavedSectionsStorageKey,
   isLocationIncluded,
   isPriceIncluded,
-} from "./helpers";
-import { useGetLatLng } from "../../hooks/getters/useGetLatLng";
-import InfoTooltip from "../../../../components/InfoTooltip";
-import { ViewDisplayOptions } from "../../../../types/types";
+} from "../../pages/trips/components/sections/helpers";
+import { useSaveCustomSection } from "../../pages/trips/hooks/setters/useSaveCustomSection";
+import { useGetLatLng } from "../../pages/trips/hooks/getters/useGetLatLng";
+import InfoTooltip from "../../components/InfoTooltip";
+import { ViewDisplayOptions } from "../../types/types";
 
-interface FoodProps {
+interface CustomSectionProps {
   userCurrencySymbol?: string;
   userCurrencyCode?: string;
   tripId: string;
-  foodItems: LocationDetails[];
-  error: string | null;
+  sectionName: string;
+  onDelete: () => void;
   destinationCountry: string;
 }
 
-const Food: React.FC<FoodProps> = ({
+const CustomSection: React.FC<CustomSectionProps> = ({
   userCurrencySymbol,
   userCurrencyCode,
   tripId,
-  error,
-  foodItems,
+  sectionName,
+  onDelete,
   destinationCountry,
 }) => {
   const { settings } = useAuth();
   const { notify } = useHotToast();
   const { isSaving } = useSaving();
+  const { items, error } = useGetCustomSection(tripId, sectionName);
+  const { deleteCustomSection } = useSaveCustomSection();
   const { latLng, loading } = useGetLatLng(destinationCountry);
 
   const [itemToDelete, setItemToDelete] = useState<LocationDetails | null>(
     null
   );
-  const finalSaveData = localStorage.getItem(getFoodLocalStorageKey(tripId));
+
+  const customSectionStorageKey = getCustomSectionLocalStorageKey(
+    tripId,
+    sectionName
+  );
+  const finalSaveData = localStorage.getItem(customSectionStorageKey);
   const [selectedFilterLocations, setSelectedFilterLocations] = useState<
     string[]
   >([]);
@@ -67,18 +83,18 @@ const Food: React.FC<FoodProps> = ({
   );
 
   const allRows: LocationDetails[] = useMemo(
-    () => (finalSaveData ? JSON.parse(finalSaveData).data : foodItems),
-    [finalSaveData, foodItems]
+    () =>
+      finalSaveData
+        ? JSON.parse(finalSaveData).data
+        : items.filter((item) => Object.keys(item).length),
+    [finalSaveData, items]
   );
 
   const sortedRows = sortBy(allRows, "createdAt");
 
   const handleFormSubmit = (values: { data: LocationDetails[] }) => {
-    localStorage.setItem(
-      getFoodLocalStorageKey(tripId),
-      JSON.stringify(values)
-    );
-    addTripToLocalStorage(tripId);
+    localStorage.setItem(customSectionStorageKey, JSON.stringify(values));
+    addTripToLocalStorage(tripId, sectionName);
   };
 
   const formik = useFormik<{ data: LocationDetails[] }>({
@@ -117,6 +133,30 @@ const Food: React.FC<FoodProps> = ({
     }
   }, [locations, prices, selectedFilterLocations, selectedFilterPrices]);
 
+  const handleDelete = () => {
+    try {
+      onDelete();
+      deleteCustomSection(tripId, sectionName);
+      localStorage.removeItem(customSectionStorageKey);
+
+      const unsavedSections = localStorage.getItem(
+        getUnsavedSectionsStorageKey(tripId)
+      );
+      if (unsavedSections) {
+        const sections = JSON.parse(unsavedSections);
+        const updatedSections = sections.filter(
+          (section: string) => section !== sectionName
+        );
+        localStorage.setItem(
+          getUnsavedSectionsStorageKey(tripId),
+          JSON.stringify(updatedSections)
+        );
+      }
+    } catch {
+      notify(`Something went wrong. Please try again.`, "error");
+    }
+  };
+
   return (
     <div
       className={twMerge(
@@ -126,22 +166,21 @@ const Food: React.FC<FoodProps> = ({
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <h1 className="text-3xl">food</h1>
+          <h1 className="text-3xl">{sectionName}</h1>
           <InfoTooltip content="Find places to eat by searching for a specific place or a general term like 'breakfast in Paris'." />
         </div>
-        {!!formik.values.data.length && (
-          <ListSettings
-            locations={locations}
-            selectedLocations={selectedFilterLocations}
-            handleLocationSelect={setSelectedFilterLocations}
-            maxPrice={Math.max(...prices)}
-            selectedPrices={selectedFilterPrices}
-            handlePriceChange={setSelectedFilterPrices}
-            userCurrencySymbol={userCurrencySymbol}
-            selectedListView={view}
-            onSelectView={setView}
-          />
-        )}
+        <ListSettings
+          locations={locations}
+          selectedLocations={selectedFilterLocations}
+          handleLocationSelect={setSelectedFilterLocations}
+          maxPrice={Math.max(...prices)}
+          selectedPrices={selectedFilterPrices}
+          handlePriceChange={setSelectedFilterPrices}
+          userCurrencySymbol={userCurrencySymbol}
+          selectedListView={view}
+          onSelectView={setView}
+          onDelete={handleDelete}
+        />
       </div>
       {loading ? (
         <LoadingBox />
@@ -162,7 +201,6 @@ const Food: React.FC<FoodProps> = ({
                             userCurrency={userCurrencyCode}
                             latitude={latLng?.[0]}
                             longitude={latLng?.[1]}
-                            placeholder="e.g. breakfast in Paris, Nobu LA"
                             onSelectLocation={async (
                               location: LocationSearchResult
                             ) => {
@@ -209,30 +247,30 @@ const Food: React.FC<FoodProps> = ({
                             container
                             spacing={view === "gallery" ? 2.8 : 2}
                           >
-                            {formik.values.data.map((foodPlace, index) => {
+                            {formik.values.data.map((place, index) => {
                               const isIncluded =
-                                !foodPlace._deleted &&
+                                !place._deleted &&
                                 isLocationIncluded(
                                   selectedFilterLocations,
-                                  foodPlace.location.name
+                                  place.location.name
                                 ) &&
                                 isPriceIncluded(
                                   selectedFilterPrices,
-                                  foodPlace.price
+                                  place.price
                                 );
 
                               if (!isIncluded) {
                                 return null;
                               }
                               return (
-                                <Fragment key={`${foodPlace.id}-${index}`}>
+                                <Fragment key={`${place.id}-${index}`}>
                                   {view === "gallery" ? (
                                     <Grid>
                                       <LocationWithPhotoCard
-                                        location={foodPlace}
+                                        location={place}
                                         currencySymbol={userCurrencySymbol}
                                         onDelete={() => {
-                                          setItemToDelete(foodPlace);
+                                          setItemToDelete(place);
                                         }}
                                         locationFieldName={`data.${index}.location.name`}
                                         priceFieldName={`data.${index}.price`}
@@ -241,10 +279,10 @@ const Food: React.FC<FoodProps> = ({
                                   ) : (
                                     <Grid size={6}>
                                       <LocationListItem
-                                        location={foodPlace}
+                                        location={place}
                                         currencySymbol={userCurrencySymbol}
                                         onDelete={() => {
-                                          setItemToDelete(foodPlace);
+                                          setItemToDelete(place);
                                         }}
                                         locationFieldName={`data.${index}.location.name`}
                                         priceFieldName={`data.${index}.price`}
@@ -253,8 +291,8 @@ const Food: React.FC<FoodProps> = ({
                                   )}
                                   <WarningConfirmationModal
                                     description="Once deleted, this is gone forever. Are you sure you want to continue?"
-                                    title={`Are you sure you want to delete "${foodPlace.name}"?`}
-                                    isOpen={itemToDelete?.id === foodPlace.id}
+                                    title={`Are you sure you want to delete "${place.name}"?`}
+                                    isOpen={itemToDelete?.id === place.id}
                                     onClose={() => setItemToDelete(null)}
                                     onConfirm={() => {
                                       formik.setFieldValue(
@@ -283,4 +321,4 @@ const Food: React.FC<FoodProps> = ({
   );
 };
 
-export default Food;
+export default CustomSection;

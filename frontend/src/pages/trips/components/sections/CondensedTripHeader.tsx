@@ -1,5 +1,5 @@
 import React from "react";
-import { TripHeaderProps } from "./TripHeader";
+import { TripHeaderProps } from "../../../../features/trip/TripHeader";
 import { FaArrowLeft } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 

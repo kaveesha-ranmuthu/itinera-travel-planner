@@ -3,17 +3,17 @@ import React from "react";
 import { HiOutlineCog6Tooth } from "react-icons/hi2";
 import { Link, useNavigate } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
-import Button from "../../../../components/Button";
-import { auth } from "../../../../config/firebase-config";
-import { useAuth } from "../../../../hooks/useAuth";
-import { useHotToast } from "../../../../hooks/useHotToast";
-import { useSaving } from "../../../../hooks/useSaving";
-import useSaveAllData from "../../hooks/setters/useSaveAllData";
-import { useUpdateUserSettings } from "../../hooks/setters/useUpdateUserSettings";
-import PopoverMenu from "../PopoverMenu";
-import { CheckoutButton } from "./CheckoutButton";
-import { saveTripData } from "./helpers";
-import { FontFamily } from "../../../../types/types";
+import Button from "./Button";
+import { auth } from "../config/firebase-config";
+import { useAuth } from "../hooks/useAuth";
+import { useHotToast } from "../hooks/useHotToast";
+import { useSaving } from "../hooks/useSaving";
+import useSaveAllData from "../pages/trips/hooks/setters/useSaveAllData";
+import { useUpdateUserSettings } from "../pages/trips/hooks/setters/useUpdateUserSettings";
+import PopoverMenu from "../pages/trips/components/PopoverMenu";
+import { CheckoutButton } from "../pages/trips/components/sections/CheckoutButton";
+import { saveTripData } from "../pages/trips/components/sections/helpers";
+import { FontFamily } from "../types/types";
 
 const Header = () => {
   const { notify } = useHotToast();

@@ -7,16 +7,15 @@ import { MdOutlineMenuBook } from "react-icons/md";
 import { PiMoneyWavy } from "react-icons/pi";
 import { Link } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
-import { useGetCurrencies } from "../../hooks/getters/useGetCurrencies";
-import { TripData } from "../../hooks/getters/useGetTrips";
-import CurrencyConverter from "../CurrencyConverter";
-import PageNavigation from "../PageNavigation";
-import PopoverMenu from "../PopoverMenu";
-import { SelectOption } from "../Select";
-import SimpleTooltip from "../../../../components/SimpleTooltip";
-import Tasklist from "../Tasklist";
-import FadeInSection from "../FadeInSection";
-import { useSaving } from "../../../../hooks/useSaving";
+import { useGetCurrencies } from "../../pages/trips/hooks/getters/useGetCurrencies";
+import CurrencyConverter from "../../pages/trips/components/CurrencyConverter";
+import PageNavigation from "../../pages/trips/components/PageNavigation";
+import PopoverMenu from "../../pages/trips/components/PopoverMenu";
+import SimpleTooltip from "../../components/SimpleTooltip";
+import Tasklist from "../../pages/trips/components/Tasklist";
+import FadeInSection from "./FadeInSection";
+import { useSaving } from "../../hooks/useSaving";
+import { SelectOption, TripData } from "../../types/types";
 
 type HeaderIcon = {
   icon: React.ReactNode;

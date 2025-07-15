@@ -14,7 +14,7 @@ import LocationSearch, {
 } from "./components/LocationSearch";
 import MapViewSidebarSelector from "./components/MapViewSidebarSelector";
 import CondensedTripHeader from "./components/sections/CondensedTripHeader";
-import Header from "./components/sections/Header";
+import Header from "../../components/Header";
 import {
   addTripToLocalStorage,
   getAccommodationLocalStorageKey,

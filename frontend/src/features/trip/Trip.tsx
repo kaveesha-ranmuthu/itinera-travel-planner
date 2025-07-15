@@ -4,27 +4,27 @@ import { Element } from "react-scroll";
 import { twMerge } from "tailwind-merge";
 import Button from "../../components/Button";
 import { useAuth } from "../../hooks/useAuth";
-import { useHotToast } from "../../hooks/useHotToast";
-import { CreateCustomSectionPopup } from "./components/CreateCustomSectionPopup";
-import CreateTripPopup from "./components/CreateTripPopup";
-import FadeInSection from "./components/FadeInSection";
-import Accommodation from "./components/sections/Accommodation";
-import Activities from "./components/sections/Activities";
-import Food from "./components/sections/Food";
-import Header from "./components/sections/Header";
-import HeaderIcons from "./components/sections/HeaderIcons";
-import Itinerary from "./components/sections/Itinerary";
-import PackingList from "./components/sections/PackingList";
-import Transport from "./components/sections/Transport";
-import TripHeader from "./components/sections/TripHeader";
-import useGetTrip from "./hooks/getters/useGetTrip";
-import useGetTripData from "./hooks/getters/useGetTripData";
-import { useSaveCustomSection } from "./hooks/setters/useSaveCustomSection";
-import CustomSection from "./components/sections/CustomSection";
 import { Loading } from "../../components/Loading";
 import Error from "../../components/Error";
+import { useHotToast } from "../../hooks/useHotToast";
+import { CreateCustomSectionPopup } from "../../pages/trips/components/CreateCustomSectionPopup";
+import CreateTripPopup from "../../pages/trips/components/CreateTripPopup";
+import FadeInSection from "./FadeInSection";
+import Accommodation from "./Accommodation";
+import Activities from "./Activities";
+import CustomSection from "./CustomSection";
+import Food from "./Food";
+import Header from "../../components/Header";
+import HeaderIcons from "./HeaderIcons";
+import Itinerary from "../../pages/trips/components/sections/Itinerary";
+import PackingList from "./PackingList";
+import Transport from "./Transport";
+import TripHeader from "./TripHeader";
+import useGetTrip from "../../pages/trips/hooks/getters/useGetTrip";
+import useGetTripData from "../../pages/trips/hooks/getters/useGetTripData";
+import { useSaveCustomSection } from "../../pages/trips/hooks/setters/useSaveCustomSection";
 
-const TripPage = () => {
+export const Trip = () => {
   const { tripId } = useParams();
 
   if (!tripId) {
@@ -232,5 +232,3 @@ const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
     </div>
   );
 };
-
-export default TripPage;

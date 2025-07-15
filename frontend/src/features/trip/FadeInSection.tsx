@@ -1,5 +1,5 @@
 import { twMerge } from "tailwind-merge";
-import { useInView } from "../hooks/useInView";
+import { useInView } from "../../pages/trips/hooks/useInView";
 
 const FadeInSection = ({
   children,
