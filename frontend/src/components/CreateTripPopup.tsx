@@ -4,7 +4,6 @@ import { useFormik } from "formik";
 import MultiSelect, { SingleSelect } from "./Select";
 import { useHotToast } from "../hooks/useHotToast";
 import art1 from "/images/jan-brueghel-the-younger/art-1.jpg";
-import { compressAndConvertToBase64 } from "../features/map-view/utils/helpers";
 import EditImagePopup from "./EditImagePopup";
 import TripsInput from "./TripsInput";
 import Button from "./Button";
@@ -15,6 +14,7 @@ import { useGetCurrencies } from "../hooks/useGetCurrencies";
 import moment from "moment";
 import { uniqBy } from "lodash";
 import { Trip, SelectOption } from "../types/types";
+import { compressAndConvertToBase64 } from "../utils/helpers";
 
 interface CreateTripPopupProps {
   isOpen: boolean;

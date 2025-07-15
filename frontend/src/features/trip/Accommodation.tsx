@@ -6,7 +6,6 @@ import { PiTrashSimple } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
-import { AccommodationDetails } from "../../pages/trips/types";
 import Checkbox from "../../components/Checkbox";
 import EstimatedCostContainer from "./EstimatedCostContainer";
 import { ErrorBox, LoadingBox, NoDataBox } from "../../components/InfoBox";
@@ -28,7 +27,7 @@ import {
 } from "./utils/helpers";
 import { useSaving } from "../../hooks/useSaving";
 import { useGetLatLng } from "../../hooks/useGetLatLng";
-import { FontFamily } from "../../types/types";
+import { AccommodationDetails, FontFamily } from "../../types/types";
 import InfoTooltip from "../../components/InfoTooltip";
 import {
   getAccommodationLocalStorageKey,

@@ -8,7 +8,6 @@ import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
 import { useSaving } from "../../hooks/useSaving";
 import { useGetLatLng } from "../../hooks/useGetLatLng";
-import { LocationDetails } from "../../pages/trips/types";
 import EstimatedCostContainer from "./EstimatedCostContainer";
 import { ErrorBox, LoadingBox, NoDataBox } from "../../components/InfoBox";
 import ListSettings from "./ListSettings";
@@ -20,8 +19,6 @@ import {
   LocationWithPhotoCard,
 } from "./LocationWithPhotoCard";
 import {
-  addTripToLocalStorage,
-  getActivitiesLocalStorageKey,
   getEstimatedCost,
   getLocationDetails,
   getPhotoDownloadUrl,
@@ -31,7 +28,11 @@ import {
   isPriceIncluded,
 } from "./utils/helpers";
 import InfoTooltip from "../../components/InfoTooltip";
-import { ViewDisplayOptions } from "../../types/types";
+import { LocationDetails, ViewDisplayOptions } from "../../types/types";
+import {
+  getActivitiesLocalStorageKey,
+  addTripToLocalStorage,
+} from "../../utils/helpers";
 
 interface ActivitiesProps {
   userCurrencySymbol?: string;

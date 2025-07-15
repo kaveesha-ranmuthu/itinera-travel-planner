@@ -12,13 +12,13 @@ import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import Button from "../../components/Button";
 import { useAuth } from "../../hooks/useAuth";
-import {
-  addTripToLocalStorage,
-  getPackingListLocalStorageKey,
-} from "./utils/helpers";
 import { useSaving } from "../../hooks/useSaving";
 import EditorBubbleMenu from "../../components/EditorBubbleMenu";
 import InfoTooltip from "../../components/InfoTooltip";
+import {
+  getPackingListLocalStorageKey,
+  addTripToLocalStorage,
+} from "../../utils/helpers";
 
 interface PackingListProps {
   tripId: string;

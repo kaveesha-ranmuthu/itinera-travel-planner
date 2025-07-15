@@ -7,7 +7,6 @@ import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
 import { useSaving } from "../../hooks/useSaving";
 import { useGetCustomSection } from "./hooks/useGetCustomSection";
-import { LocationDetails } from "../../pages/trips/types";
 import EstimatedCostContainer from "./EstimatedCostContainer";
 import { ErrorBox, LoadingBox, NoDataBox } from "../../components/InfoBox";
 import ListSettings from "./ListSettings";
@@ -20,21 +19,23 @@ import {
 } from "./LocationWithPhotoCard";
 import WarningConfirmationModal from "../../components/WarningConfirmationModal";
 import {
-  addTripToLocalStorage,
-  getCustomSectionLocalStorageKey,
   getEstimatedCost,
   getLocationDetails,
   getPhotoDownloadUrl,
   getPricesList,
   getUniqueLocations,
-  getUnsavedSectionsStorageKey,
   isLocationIncluded,
   isPriceIncluded,
 } from "./utils/helpers";
 import { useSaveCustomSection } from "../../hooks/useSaveCustomSection";
 import { useGetLatLng } from "../../hooks/useGetLatLng";
 import InfoTooltip from "../../components/InfoTooltip";
-import { ViewDisplayOptions } from "../../types/types";
+import { LocationDetails, ViewDisplayOptions } from "../../types/types";
+import {
+  getCustomSectionLocalStorageKey,
+  addTripToLocalStorage,
+  getUnsavedSectionsStorageKey,
+} from "../../utils/helpers";
 
 interface CustomSectionProps {
   userCurrencySymbol?: string;

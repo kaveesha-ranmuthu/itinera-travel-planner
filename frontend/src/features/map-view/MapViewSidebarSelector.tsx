@@ -1,6 +1,6 @@
 import React from "react";
 import { twMerge } from "tailwind-merge";
-import { MapViewSidebarSelectorOptions } from "../../pages/trips/types";
+import { MapViewSidebarSelectorOptions } from "./types/types";
 
 interface MapViewSidebarSelectorProps {
   selectedView: MapViewSidebarSelectorOptions;

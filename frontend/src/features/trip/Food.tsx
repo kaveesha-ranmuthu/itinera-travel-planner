@@ -6,7 +6,6 @@ import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
 import { useSaving } from "../../hooks/useSaving";
-import { LocationDetails } from "../../pages/trips/types";
 import EstimatedCostContainer from "./EstimatedCostContainer";
 import { ErrorBox, LoadingBox, NoDataBox } from "../../components/InfoBox";
 import ListSettings from "./ListSettings";
@@ -19,9 +18,7 @@ import {
 } from "./LocationWithPhotoCard";
 import WarningConfirmationModal from "../../components/WarningConfirmationModal";
 import {
-  addTripToLocalStorage,
   getEstimatedCost,
-  getFoodLocalStorageKey,
   getLocationDetails,
   getPhotoDownloadUrl,
   getPricesList,
@@ -31,7 +28,11 @@ import {
 } from "./utils/helpers";
 import { useGetLatLng } from "../../hooks/useGetLatLng";
 import InfoTooltip from "../../components/InfoTooltip";
-import { ViewDisplayOptions } from "../../types/types";
+import { LocationDetails, ViewDisplayOptions } from "../../types/types";
+import {
+  getFoodLocalStorageKey,
+  addTripToLocalStorage,
+} from "../../utils/helpers";
 
 interface FoodProps {
   userCurrencySymbol?: string;
