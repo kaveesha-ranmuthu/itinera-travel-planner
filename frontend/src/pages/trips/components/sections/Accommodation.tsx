@@ -7,14 +7,14 @@ import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useHotToast } from "../../../../hooks/useHotToast";
 import { AccommodationDetails } from "../../types";
-import Checkbox from "../Checkbox";
+import Checkbox from "../../../../components/Checkbox";
 import EstimatedCostContainer from "../EstimatedCostContainer";
 import { ErrorBox, LoadingBox, NoDataBox } from "../InfoBox";
 import InfoTooltip from "../InfoTooltip";
 import ListSettings from "../ListSettings";
 import LocationSearch, { LocationSearchResult } from "../LocationSearch";
 import Table from "../Table";
-import WarningConfirmationModal from "../WarningConfirmationModal";
+import WarningConfirmationModal from "../../../../components/WarningConfirmationModal";
 import {
   addTripToLocalStorage,
   getAccommodationLocalStorageKey,

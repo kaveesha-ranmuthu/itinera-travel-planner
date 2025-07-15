@@ -1,10 +1,12 @@
 import React from "react";
 import { CiWarning } from "react-icons/ci";
 import { twMerge } from "tailwind-merge";
-import { FontFamily } from "../../../types";
-import PopupModal, { PopupModalProps } from "./PopupModal";
-import { useAuth } from "../../../hooks/useAuth";
-import Button from "../../../components/Button";
+import PopupModal, {
+  PopupModalProps,
+} from "../pages/trips/components/PopupModal";
+import { useAuth } from "../hooks/useAuth";
+import Button from "./Button";
+import { FontFamily } from "../types/types";
 
 interface WarningConfirmationModalProps extends PopupModalProps {
   title: string;

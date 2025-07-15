@@ -10,8 +10,8 @@ import {
   LocationCategories,
   LocationDetails,
 } from "../types";
-import Checkbox from "./Checkbox";
-import WarningConfirmationModal from "./WarningConfirmationModal";
+import Checkbox from "../../../components/Checkbox";
+import WarningConfirmationModal from "../../../components/WarningConfirmationModal";
 
 export interface SidebarLocationDetails {
   locations: LocationDetails[];

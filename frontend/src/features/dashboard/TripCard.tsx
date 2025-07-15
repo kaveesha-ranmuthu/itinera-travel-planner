@@ -6,7 +6,7 @@ import { PiTrashSimple } from "react-icons/pi";
 import { Link } from "react-router-dom";
 import { useHotToast } from "../../hooks/useHotToast";
 import { deleteTripFromLocalStorage } from "../../pages/trips/components/sections/helpers";
-import WarningConfirmationModal from "../../pages/trips/components/WarningConfirmationModal";
+import WarningConfirmationModal from "../../components/WarningConfirmationModal";
 import { TripData } from "../../pages/trips/hooks/getters/useGetTrips";
 import useDuplicateTrip from "../../pages/trips/hooks/setters/useDuplicateTrip";
 import { functions } from "../../config/firebase-config";

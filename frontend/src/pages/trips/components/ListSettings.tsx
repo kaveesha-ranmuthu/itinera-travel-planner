@@ -6,7 +6,7 @@ import SmallButton from "./SmallButton";
 import { useAuth } from "../../../hooks/useAuth";
 import { HiEllipsisVertical } from "react-icons/hi2";
 import ViewSelector, { ViewDisplayOptions } from "./ViewSelector";
-import Checkbox from "./Checkbox";
+import Checkbox from "../../../components/Checkbox";
 import Button from "../../../components/Button";
 
 interface ListSettingsProps {

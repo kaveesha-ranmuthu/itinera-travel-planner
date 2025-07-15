@@ -18,7 +18,7 @@ import {
   LocationWithPhotoCard,
 } from "../LocationWithPhotoCard";
 import { ViewDisplayOptions } from "../ViewSelector";
-import WarningConfirmationModal from "../WarningConfirmationModal";
+import WarningConfirmationModal from "../../../../components/WarningConfirmationModal";
 import {
   addTripToLocalStorage,
   getCustomSectionLocalStorageKey,

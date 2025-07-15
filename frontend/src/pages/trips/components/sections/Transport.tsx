@@ -8,13 +8,13 @@ import { useAuth } from "../../../../hooks/useAuth";
 import { useSaving } from "../../../../hooks/useSaving";
 import { FontFamily } from "../../../../types";
 import { TransportationDetails } from "../../types";
-import Checkbox from "../Checkbox";
+import Checkbox from "../../../../components/Checkbox";
 import EstimatedCostContainer from "../EstimatedCostContainer";
 import { ErrorBox, NoDataBox } from "../InfoBox";
 import InfoTooltip from "../InfoTooltip";
 import SmallButton from "../SmallButton";
 import Table from "../Table";
-import WarningConfirmationModal from "../WarningConfirmationModal";
+import WarningConfirmationModal from "../../../../components/WarningConfirmationModal";
 import {
   addTripToLocalStorage,
   getEstimatedCost,

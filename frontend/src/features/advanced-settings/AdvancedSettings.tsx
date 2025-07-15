@@ -14,7 +14,7 @@ import { useHotToast } from "../../hooks/useHotToast";
 import InfoTooltip from "../../pages/trips/components/InfoTooltip";
 import SimpleTooltip from "../../pages/trips/components/SimpleTooltip";
 import { ViewDisplayOptions } from "../../pages/trips/components/ViewSelector";
-import WarningConfirmationModal from "../../pages/trips/components/WarningConfirmationModal";
+import WarningConfirmationModal from "../../components/WarningConfirmationModal";
 import { useUpdateUserSettings } from "../../pages/trips/hooks/setters/useUpdateUserSettings";
 import { getFirebaseErrorMessage } from "../../utils/helpers";
 import PackingListTemplateEditor from "./PackingListTemplateEditor";
