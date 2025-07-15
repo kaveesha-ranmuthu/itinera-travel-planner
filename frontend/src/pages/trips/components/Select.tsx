@@ -1,23 +1,17 @@
-import React, { useState } from "react";
 import {
   Combobox,
   ComboboxInput,
   ComboboxOption,
   ComboboxOptions,
 } from "@headlessui/react";
+import React, { useState } from "react";
 import {
-  IoIosCheckmarkCircleOutline,
   IoIosCheckmarkCircle,
+  IoIosCheckmarkCircleOutline,
 } from "react-icons/io";
-import { useAuth } from "../../../hooks/useAuth";
 import { twMerge } from "tailwind-merge";
-import { FontFamily } from "../../../types/types";
-
-export type SelectOption = {
-  id: string;
-  name: string;
-  otherInfo?: { [x in string]: string };
-};
+import { useAuth } from "../../../hooks/useAuth";
+import { FontFamily, SelectOption } from "../../../types/types";
 
 interface SelectProps {
   options: SelectOption[];

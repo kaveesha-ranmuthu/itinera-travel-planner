@@ -1,17 +1,7 @@
 import { useEffect, useState } from "react";
 import { collection, query, onSnapshot, orderBy } from "firebase/firestore";
 import { auth, db } from "../../../../config/firebase-config";
-import { Trip } from "../../../../features/dashboard/Dashboard";
-
-export interface TripData extends Trip {
-  id: string;
-  updatedAt: Date;
-  subCollections: string[];
-  customCollections: string[];
-  currentSavings: number;
-  taskList: string;
-  packingList?: string;
-}
+import { TripData } from "../../../../types/types";
 
 export function useGetTrips() {
   const [trips, setTrips] = useState<TripData[]>([]);
