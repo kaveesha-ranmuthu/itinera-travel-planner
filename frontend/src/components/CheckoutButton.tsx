@@ -1,4 +1,4 @@
-import SmallButton from "../pages/trips/components/SmallButton";
+import SmallButton from "./SmallButton";
 import { useStripeSubscriptionCheckout } from "../hooks/useStripeSubscriptionCheckout";
 
 const PRICE_ID = "price_1RdhfoBQXwlrXuqxAtxzWpqN";

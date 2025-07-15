@@ -4,17 +4,17 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Loading } from "../components/Loading";
 import { useAuth } from "../hooks/useAuth";
 import { useSaving } from "../hooks/useSaving";
-import AdvancedSettingsPage from "../pages-2/AdvancedSettingsPage";
-import DashboardPage from "../pages-2/DashboardPage";
-import LandingPage from "../pages-2/LandingPage";
-import LoginPage from "../pages-2/LoginPage";
-import ResetPasswordPage from "../pages-2/ResetPasswordPage";
-import SignupPage from "../pages-2/SignupPage";
+import AdvancedSettingsPage from "../pages/AdvancedSettingsPage";
+import DashboardPage from "../pages/DashboardPage";
+import LandingPage from "../pages/LandingPage";
+import LoginPage from "../pages/LoginPage";
+import ResetPasswordPage from "../pages/ResetPasswordPage";
+import SignupPage from "../pages/SignupPage";
 import { saveTripData } from "../features/trip/utils/helpers";
-import useSaveAllData from "../pages/trips/hooks/setters/useSaveAllData";
-import MapViewPage from "../pages-2/MapViewPage";
+import useSaveAllData from "../hooks/useSaveAllData";
+import MapViewPage from "../pages/MapViewPage";
 import "./App.css";
-import TripPage from "../pages-2/TripPage";
+import TripPage from "../pages/TripPage";
 
 function App() {
   const { user, loading } = useAuth();

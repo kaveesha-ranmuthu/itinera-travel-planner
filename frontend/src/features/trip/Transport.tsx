@@ -8,10 +8,10 @@ import { useAuth } from "../../hooks/useAuth";
 import { useSaving } from "../../hooks/useSaving";
 import { TransportationDetails } from "../../pages/trips/types";
 import Checkbox from "../../components/Checkbox";
-import EstimatedCostContainer from "../../pages/trips/components/EstimatedCostContainer";
-import { ErrorBox, NoDataBox } from "../../pages/trips/components/InfoBox";
-import SmallButton from "../../pages/trips/components/SmallButton";
-import Table from "../../pages/trips/components/Table";
+import EstimatedCostContainer from "./EstimatedCostContainer";
+import { ErrorBox, NoDataBox } from "../../components/InfoBox";
+import SmallButton from "../../components/SmallButton";
+import Table from "./Table";
 import WarningConfirmationModal from "../../components/WarningConfirmationModal";
 import {
   addTripToLocalStorage,

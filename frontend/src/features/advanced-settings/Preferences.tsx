@@ -4,11 +4,11 @@ import InfoTooltip from "../../components/InfoTooltip";
 import { auth } from "../../config/firebase-config";
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
-import { useUpdateUserSettings } from "../../pages/trips/hooks/setters/useUpdateUserSettings";
 import { ViewDisplayOptions } from "../../types/types";
 import { Heading } from "./Heading";
 import PackingListTemplateEditor from "./PackingListTemplateEditor";
 import { LocationViewSelector } from "./LocationViewSelector";
+import { useUpdateUserSettings } from "../../hooks/useUpdateUserSettings";
 
 export const Preferences = () => {
   const { settings, setSettings } = useAuth();

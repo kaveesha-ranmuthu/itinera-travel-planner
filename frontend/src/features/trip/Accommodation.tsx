@@ -8,17 +8,13 @@ import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
 import { AccommodationDetails } from "../../pages/trips/types";
 import Checkbox from "../../components/Checkbox";
-import EstimatedCostContainer from "../../pages/trips/components/EstimatedCostContainer";
-import {
-  ErrorBox,
-  LoadingBox,
-  NoDataBox,
-} from "../../pages/trips/components/InfoBox";
-import ListSettings from "../../pages/trips/components/ListSettings";
+import EstimatedCostContainer from "./EstimatedCostContainer";
+import { ErrorBox, LoadingBox, NoDataBox } from "../../components/InfoBox";
+import ListSettings from "./ListSettings";
 import LocationSearch, {
   LocationSearchResult,
-} from "../../pages/trips/components/LocationSearch";
-import Table from "../../pages/trips/components/Table";
+} from "../../components/LocationSearch";
+import Table from "./Table";
 import WarningConfirmationModal from "../../components/WarningConfirmationModal";
 import {
   getEstimatedCost,
@@ -31,7 +27,7 @@ import {
   isPriceIncluded,
 } from "./utils/helpers";
 import { useSaving } from "../../hooks/useSaving";
-import { useGetLatLng } from "../../pages/trips/hooks/getters/useGetLatLng";
+import { useGetLatLng } from "../../hooks/useGetLatLng";
 import { FontFamily } from "../../types/types";
 import InfoTooltip from "../../components/InfoTooltip";
 import {

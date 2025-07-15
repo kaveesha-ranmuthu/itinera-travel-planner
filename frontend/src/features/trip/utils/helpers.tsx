@@ -15,7 +15,7 @@ import {
   getUnsavedTripsStorageKey,
 } from "../../../utils/helpers";
 import { LocationDetails } from "../../../pages/trips/types";
-import { LocationSearchResult } from "../../../pages/trips/components/LocationSearch";
+import { LocationSearchResult } from "../../../components/LocationSearch";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 

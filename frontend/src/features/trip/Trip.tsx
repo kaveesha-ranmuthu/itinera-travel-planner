@@ -7,8 +7,8 @@ import { useAuth } from "../../hooks/useAuth";
 import { Loading } from "../../components/Loading";
 import Error from "../../components/Error";
 import { useHotToast } from "../../hooks/useHotToast";
-import { CreateCustomSectionPopup } from "../../pages/trips/components/CreateCustomSectionPopup";
-import CreateTripPopup from "../../pages/trips/components/CreateTripPopup";
+import { CreateCustomSectionPopup } from "./CreateCustomSectionPopup";
+import CreateTripPopup from "../../components/CreateTripPopup";
 import FadeInSection from "./FadeInSection";
 import Accommodation from "./Accommodation";
 import Activities from "./Activities";
@@ -16,13 +16,13 @@ import CustomSection from "./CustomSection";
 import Food from "./Food";
 import Header from "../../components/Header";
 import HeaderIcons from "./HeaderIcons";
-import Itinerary from "../../pages/trips/components/sections/Itinerary";
+import Itinerary from "../../components/Itinerary";
 import PackingList from "./PackingList";
 import Transport from "./Transport";
 import TripHeader from "./TripHeader";
-import useGetTrip from "../../pages/trips/hooks/getters/useGetTrip";
-import useGetTripData from "../../pages/trips/hooks/getters/useGetTripData";
-import { useSaveCustomSection } from "../../pages/trips/hooks/setters/useSaveCustomSection";
+import useGetTrip from "../../hooks/useGetTrip";
+import useGetTripData from "./hooks/useGetTripData";
+import { useSaveCustomSection } from "../../hooks/useSaveCustomSection";
 
 export const Trip = () => {
   const { tripId } = useParams();

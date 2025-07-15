@@ -11,7 +11,7 @@ import { db } from "../../config/firebase-config";
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
 import SimpleTooltip from "../../components/SimpleTooltip";
-import TripsInput from "../../pages/trips/components/TripsInput";
+import TripsInput from "../../components/TripsInput";
 import { FontFamily, TripData } from "../../types/types";
 
 export interface TripHeaderProps {

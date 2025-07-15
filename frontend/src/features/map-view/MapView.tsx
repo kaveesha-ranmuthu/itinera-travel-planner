@@ -7,42 +7,37 @@ import { Loading } from "../../components/Loading";
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
 import { useSaving } from "../../hooks/useSaving";
-import CustomiseMap from "../../pages/trips/components/CustomiseMap";
-import { CustomMap } from "../../pages/trips/components/CustomMap";
+import CustomiseMap from "./CustomiseMap";
+import { CustomMap } from "./CustomMap";
 import LocationSearch, {
   LocationSearchResult,
-} from "../../pages/trips/components/LocationSearch";
-import MapViewSidebarSelector from "../../pages/trips/components/MapViewSidebarSelector";
-import CondensedTripHeader from "../../pages/trips/components/sections/CondensedTripHeader";
-import Itinerary, {
-  ItineraryDetails,
-} from "../../pages/trips/components/sections/Itinerary";
+} from "../../components/LocationSearch";
+import MapViewSidebarSelector from "./MapViewSidebarSelector";
+import CondensedTripHeader from "./CondensedTripHeader";
+import Itinerary, { ItineraryDetails } from "../../components/Itinerary";
 import SidebarLocationSection, {
   SidebarLocationDetails,
-} from "../../pages/trips/components/SidebarLocationSection";
-import { useGetAccommodation } from "../../pages/trips/hooks/getters/useGetAccommodation";
-import { useGetActivities } from "../../pages/trips/hooks/getters/useGetActivities";
+} from "./SidebarLocationSection";
+import { useGetAccommodation } from "../../hooks/useGetAccommodation";
+import { useGetActivities } from "../../hooks/useGetActivities";
 import {
   useGetAllCustomSections,
   CustomSectionData,
-} from "../../pages/trips/hooks/getters/useGetAllCustomSections";
+} from "./hooks/useGetAllCustomSections";
 import {
   useGetCustomSectionStyles,
   CustomSectionStyles,
-} from "../../pages/trips/hooks/getters/useGetCustomSectionStyles";
-import { useGetFood } from "../../pages/trips/hooks/getters/useGetFood";
-import { useGetItinerary } from "../../pages/trips/hooks/getters/useGetItinerary";
-import { useGetLatLng } from "../../pages/trips/hooks/getters/useGetLatLng";
-import { useGetMapSettings } from "../../pages/trips/hooks/getters/useGetMapSettings";
-import useGetTrip from "../../pages/trips/hooks/getters/useGetTrip";
+} from "./hooks/useGetCustomSectionStyles";
+import { useGetFood } from "../../hooks/useGetFood";
+import { useGetItinerary } from "../../hooks/useGetItinerary";
+import { useGetLatLng } from "../../hooks/useGetLatLng";
+import { useGetMapSettings } from "./hooks/useGetMapSettings";
+import useGetTrip from "../../hooks/useGetTrip";
 import {
   AccommodationDetails,
   LocationDetails,
-  MapSettings,
-  MapViewSidebarSelectorOptions,
-  LocationCategories,
-} from "../../pages/trips/types";
-import { TripData } from "../../types/types";
+  TripData,
+} from "../../types/types";
 import {
   getAccommodationLocalStorageKey,
   getFoodLocalStorageKey,
@@ -52,6 +47,11 @@ import {
 } from "../../utils/helpers";
 import { getLocationDetails, getPhotoDownloadUrl } from "../trip/utils/helpers";
 import Error from "../../components/Error";
+import {
+  LocationCategories,
+  MapSettings,
+  MapViewSidebarSelectorOptions,
+} from "./types/types";
 
 const MapView = () => {
   const { tripId } = useParams();

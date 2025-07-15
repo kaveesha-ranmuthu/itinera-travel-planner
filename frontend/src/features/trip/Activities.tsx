@@ -7,22 +7,18 @@ import WarningConfirmationModal from "../../components/WarningConfirmationModal"
 import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
 import { useSaving } from "../../hooks/useSaving";
-import { useGetLatLng } from "../../pages/trips/hooks/getters/useGetLatLng";
+import { useGetLatLng } from "../../hooks/useGetLatLng";
 import { LocationDetails } from "../../pages/trips/types";
-import EstimatedCostContainer from "../../pages/trips/components/EstimatedCostContainer";
-import {
-  ErrorBox,
-  LoadingBox,
-  NoDataBox,
-} from "../../pages/trips/components/InfoBox";
-import ListSettings from "../../pages/trips/components/ListSettings";
+import EstimatedCostContainer from "./EstimatedCostContainer";
+import { ErrorBox, LoadingBox, NoDataBox } from "../../components/InfoBox";
+import ListSettings from "./ListSettings";
 import LocationSearch, {
   LocationSearchResult,
-} from "../../pages/trips/components/LocationSearch";
+} from "../../components/LocationSearch";
 import {
   LocationListItem,
   LocationWithPhotoCard,
-} from "../../pages/trips/components/LocationWithPhotoCard";
+} from "./LocationWithPhotoCard";
 import {
   addTripToLocalStorage,
   getActivitiesLocalStorageKey,

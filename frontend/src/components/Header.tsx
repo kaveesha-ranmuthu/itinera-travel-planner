@@ -8,12 +8,12 @@ import { auth } from "../config/firebase-config";
 import { useAuth } from "../hooks/useAuth";
 import { useHotToast } from "../hooks/useHotToast";
 import { useSaving } from "../hooks/useSaving";
-import useSaveAllData from "../pages/trips/hooks/setters/useSaveAllData";
-import { useUpdateUserSettings } from "../pages/trips/hooks/setters/useUpdateUserSettings";
-import PopoverMenu from "../pages/trips/components/PopoverMenu";
+import useSaveAllData from "../hooks/useSaveAllData";
+import PopoverMenu from "./PopoverMenu";
 import { CheckoutButton } from "./CheckoutButton";
 import { saveTripData } from "../features/trip/utils/helpers";
 import { FontFamily } from "../types/types";
+import { useUpdateUserSettings } from "../hooks/useUpdateUserSettings";
 
 const Header = () => {
   const { notify } = useHotToast();

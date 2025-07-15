@@ -1,4 +1,4 @@
-import { MapViewStyles } from "../types";
+import { MapViewStyles } from "../../map-view/types/types";
 
 type MapPicture = {
   id: MapViewStyles;
