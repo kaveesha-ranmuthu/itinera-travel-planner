@@ -1,17 +1,19 @@
 import { FirebaseError } from "firebase/app";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useFormik } from "formik";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import BackgroundWrapper from "../../components/BackgroundWrapper";
 import FormWrapper from "../../components/FormWrapper";
 import Logo from "../../components/Logo";
 import { auth } from "../../config/firebase-config";
 import { useHotToast } from "../../hooks/useHotToast";
 import { getFirebaseErrorMessage } from "../../utils/helpers";
-import { ContinueWithGoogle } from "./GoogleSignIn";
 import { AuthenticationInput } from "./AuthenticationInput";
-import Button from "../../components/Button";
+import { ContinueWithGoogle } from "./GoogleSignIn";
+import { Heading } from "./Heading";
 import { ResetPasswordFormInput } from "./ResetPassword";
+import { SubmitButton } from "./SubmitButton";
+import { OrDivider } from "./OrDivider";
 
 export interface LoginFormInput extends ResetPasswordFormInput {
   password: string;
@@ -62,9 +64,7 @@ const Login = () => {
         <Logo scale="scale-70" />
         <FormWrapper>
           <form className="text-secondary" onSubmit={formik.handleSubmit}>
-            <h1 className="font-brand tracking-wide italic text-2xl font-light text-center">
-              Log In
-            </h1>
+            <Heading>Log In</Heading>
             <AuthenticationInput
               label="email"
               inputId="email"
@@ -87,15 +87,11 @@ const Login = () => {
               />
             </div>
             <div className="text-center mt-8">
-              <Button.Secondary type="submit">Log In</Button.Secondary>
+              <SubmitButton disabled={!formik.isValid}>Log In</SubmitButton>
             </div>
           </form>
           <div className="flex flex-col items-center mt-4 space-y-4">
-            <div className="flex items-center space-x-4">
-              <hr className="border-0 border-b border-secondary w-28" />
-              <p className="font-brand italic text-sm tracking-wide">OR</p>
-              <hr className="border-0 border-b border-secondary w-28" />
-            </div>
+            <OrDivider />
             <ContinueWithGoogle />
           </div>
         </FormWrapper>

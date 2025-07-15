@@ -9,10 +9,12 @@ import { auth } from "../../config/firebase-config";
 import { useCreateNewUser } from "../../hooks/useCreateNewUser";
 import { useHotToast } from "../../hooks/useHotToast";
 import { getFirebaseErrorMessage } from "../../utils/helpers";
-import { ContinueWithGoogle } from "./GoogleSignIn";
 import { AuthenticationInput } from "./AuthenticationInput";
+import { ContinueWithGoogle } from "./GoogleSignIn";
+import { Heading } from "./Heading";
 import { LoginFormInput } from "./Login";
-import Button from "../../components/Button";
+import { SubmitButton } from "./SubmitButton";
+import { OrDivider } from "./OrDivider";
 
 interface SignupFormInput extends LoginFormInput {
   confirmPassword: string;
@@ -82,9 +84,7 @@ const Signup = () => {
         <Logo scale="scale-70" />
         <FormWrapper>
           <form className="text-secondary" onSubmit={formik.handleSubmit}>
-            <h1 className="font-brand tracking-wide italic text-2xl font-light text-center">
-              Sign Up
-            </h1>
+            <Heading>Sign Up</Heading>
             <AuthenticationInput
               label="email"
               inputId="email"
@@ -123,17 +123,11 @@ const Signup = () => {
               </div>
             </div>
             <div className="text-center mt-8">
-              <Button.Secondary type="submit" disabled={!formik.isValid}>
-                Sign Up
-              </Button.Secondary>
+              <SubmitButton disabled={!formik.isValid}>Sign Up</SubmitButton>
             </div>
           </form>
           <div className="flex flex-col items-center mt-4 space-y-4">
-            <div className="flex items-center space-x-4">
-              <hr className="border-0 border-b border-secondary w-28" />
-              <p className="font-brand tracking-wide italic text-sm">OR</p>
-              <hr className="border-0 border-b border-secondary w-28" />
-            </div>
+            <OrDivider />
             <ContinueWithGoogle />
           </div>
         </FormWrapper>
