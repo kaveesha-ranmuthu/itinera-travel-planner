@@ -26,7 +26,7 @@ import { ErrorBox } from "../InfoBox";
 import InfoTooltip from "../InfoTooltip";
 import { addTripToLocalStorage, getItineraryLocalStorageKey } from "./helpers";
 import { useSaving } from "../../../../saving-provider/useSaving";
-import { UndoRedo } from "@tiptap/extensions";
+
 export interface ItineraryDetails {
   id: string;
   dayNumber: number;
@@ -188,7 +188,6 @@ const ItineraryBox: React.FC<ItineraryBoxProps> = ({
       Heading.configure({
         levels: [2, 3, 4],
       }),
-      UndoRedo
     ],
     content: plans,
   });
