@@ -19,7 +19,6 @@ import {
   getPackingListLocalStorageKey,
 } from "./helpers";
 import { useSaving } from "../../../../saving-provider/useSaving";
-import { UndoRedo } from '@tiptap/extensions';
 
 interface PackingListProps {
   tripId: string;
@@ -49,7 +48,6 @@ const PackingList: React.FC<PackingListProps> = ({
       Heading.configure({
         levels: [2, 3, 4],
       }),
-      UndoRedo
     ],
     content: lastChanges || savedPackingList,
     onUpdate: ({ editor }) => {

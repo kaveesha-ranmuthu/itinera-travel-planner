@@ -15,7 +15,6 @@ import { auth } from "../../../firebase-config";
 import { useUpdateUserSettings } from "../../trips/hooks/setters/useUpdateUserSettings";
 import { useAuth } from "../../../hooks/useAuth";
 import { useHotToast } from "../../../hooks/useHotToast";
-import { UndoRedo } from "@tiptap/extensions";
 
 interface PackingListTemplateEditorProps {
   open: boolean;
@@ -44,7 +43,6 @@ const PackingListTemplateEditor: React.FC<PackingListTemplateEditorProps> = ({
       Heading.configure({
         levels: [2, 3, 4],
       }),
-      UndoRedo
     ],
     content: currentPackingList || `<p>Start typing...</p>`,
   });
