@@ -1,0 +1,234 @@
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Element } from "react-scroll";
+import { twMerge } from "tailwind-merge";
+import Button from "../../components/Button";
+import { useAuth } from "../../hooks/useAuth";
+import { Loading } from "../../components/Loading";
+import Error from "../../components/Error";
+import { useHotToast } from "../../hooks/useHotToast";
+import { CreateCustomSectionPopup } from "./CreateCustomSectionPopup";
+import CreateTripPopup from "../../components/CreateTripPopup";
+import FadeInSection from "./FadeInSection";
+import Accommodation from "./Accommodation";
+import Activities from "./Activities";
+import CustomSection from "./CustomSection";
+import Food from "./Food";
+import Header from "../../components/Header";
+import HeaderIcons from "./HeaderIcons";
+import Itinerary from "../../components/Itinerary";
+import PackingList from "./PackingList";
+import Transport from "./Transport";
+import TripHeader from "./TripHeader";
+import useGetTrip from "../../hooks/useGetTrip";
+import useGetTripData from "./hooks/useGetTripData";
+import { useSaveCustomSection } from "../../hooks/useSaveCustomSection";
+
+export const Trip = () => {
+  const { tripId } = useParams();
+
+  if (!tripId) {
+    return <Error />;
+  }
+
+  return <TripInfo tripId={tripId} />;
+};
+
+interface TripInfoProps {
+  tripId: string;
+}
+
+const TripInfo: React.FC<TripInfoProps> = ({ tripId }) => {
+  const { error, loading, trip, updateTripDetails } = useGetTrip(tripId);
+  const {
+    accommodationError,
+    accommodationRows,
+    foodError,
+    foodItems,
+    activitiesError,
+    activities,
+    transportError,
+    transportRows,
+    itineraryError,
+    itinerary,
+    loading: tripDataLoading,
+  } = useGetTripData(tripId);
+  const { saveCustomSection } = useSaveCustomSection();
+
+  const { settings } = useAuth();
+  const [isEditTripModalOpen, setIsEditTripModalOpen] = useState(false);
+  const [isCreateSectionModalOpen, setIsCreateSectionModalOpen] =
+    useState(false);
+  const [showLoading, setShowLoading] = useState(true);
+
+  const { notify } = useHotToast();
+
+  useEffect(() => {
+    const isLoading = loading || tripDataLoading;
+
+    if (isLoading) {
+      setShowLoading(true);
+    } else {
+      const timeout = setTimeout(() => {
+        setShowLoading(false);
+      }, 1500);
+
+      return () => clearTimeout(timeout); // Cleanup timeout
+    }
+  }, [loading, tripDataLoading]);
+
+  if (showLoading) {
+    return <Loading />;
+  }
+
+  if (error || !trip) {
+    return <Error />;
+  }
+
+  const handleCreateNewSection = (sectionName: string) => {
+    try {
+      saveCustomSection(trip.id, sectionName, []);
+      updateTripDetails({
+        ...trip,
+        customCollections: [...trip.customCollections, sectionName],
+      });
+    } catch {
+      notify("Something went wrong. Please try again.", "error");
+    }
+  };
+
+  return (
+    <div className={twMerge(settings?.font, "pb-16")}>
+      <Header />
+      <FadeInSection>
+        <div className="px-10">
+          <TripHeader trip={trip} />
+        </div>
+      </FadeInSection>
+      <div className="px-16">
+        <HeaderIcons
+          trip={trip}
+          onEditButtonClick={() => setIsEditTripModalOpen(true)}
+        />
+        <div className="space-y-10">
+          <Element name="transport">
+            <FadeInSection>
+              <Transport
+                userCurrency={trip.currency?.otherInfo?.symbol}
+                startDate={trip.startDate}
+                endDate={trip.endDate}
+                tripId={trip.id}
+                transportRows={transportRows}
+                error={transportError}
+              />
+            </FadeInSection>
+          </Element>
+          <Element name="accommodation">
+            <FadeInSection>
+              <Accommodation
+                userCurrencySymbol={trip.currency?.otherInfo?.symbol}
+                userCurrencyCode={trip.currency?.name}
+                numberOfPeople={trip.numberOfPeople}
+                startDate={trip.startDate}
+                endDate={trip.endDate}
+                tripId={trip.id}
+                destinationCountry={trip.countries[0]?.name}
+                accommodationRows={accommodationRows}
+                error={accommodationError}
+              />
+            </FadeInSection>
+          </Element>
+          <Element name="food">
+            <FadeInSection>
+              <Food
+                userCurrencySymbol={trip.currency?.otherInfo?.symbol}
+                userCurrencyCode={trip.currency?.name}
+                tripId={trip.id}
+                error={foodError}
+                foodItems={foodItems}
+                destinationCountry={trip.countries[0]?.name}
+              />
+            </FadeInSection>
+          </Element>
+          <Element name="activities">
+            <FadeInSection>
+              <Activities
+                userCurrencySymbol={trip.currency?.otherInfo?.symbol}
+                userCurrencyCode={trip.currency?.name}
+                tripId={trip.id}
+                error={activitiesError}
+                activities={activities}
+                destinationCountry={trip.countries[0]?.name}
+              />
+            </FadeInSection>
+          </Element>
+          {trip.customCollections.map((col) => {
+            return (
+              <FadeInSection key={col}>
+                <CustomSection
+                  userCurrencySymbol={trip.currency?.otherInfo?.symbol}
+                  userCurrencyCode={trip.currency?.name}
+                  destinationCountry={trip.countries[0]?.name}
+                  tripId={trip.id}
+                  sectionName={col}
+                  onDelete={() => {
+                    updateTripDetails({
+                      ...trip,
+                      customCollections: trip.customCollections.filter(
+                        (c) => c !== col
+                      ),
+                    });
+                  }}
+                />
+              </FadeInSection>
+            );
+          })}
+          <FadeInSection>
+            <Button.Primary
+              className={twMerge(
+                "border border-secondary normal-case not-italic mt-5",
+                settings?.font
+              )}
+              onClick={() => setIsCreateSectionModalOpen(true)}
+            >
+              <span>+ Create custom list</span>
+            </Button.Primary>
+          </FadeInSection>
+          <Element name="itinerary">
+            <FadeInSection>
+              <div className="flex space-x-10 items-start">
+                <div className="w-2/3">
+                  <Itinerary
+                    startDate={trip.startDate}
+                    endDate={trip.endDate}
+                    tripId={trip.id}
+                    error={itineraryError}
+                    itinerary={itinerary}
+                  />
+                </div>
+                <div className="w-1/3">
+                  <PackingList
+                    tripId={trip.id}
+                    savedPackingList={trip.packingList}
+                  />
+                </div>
+              </div>
+            </FadeInSection>
+          </Element>
+        </div>
+      </div>
+      <CreateTripPopup
+        isOpen={isEditTripModalOpen}
+        onClose={() => setIsEditTripModalOpen(false)}
+        initialValues={trip}
+        onSubmit={updateTripDetails}
+      />
+      <CreateCustomSectionPopup
+        isOpen={isCreateSectionModalOpen}
+        onClose={() => setIsCreateSectionModalOpen(false)}
+        currentCollections={[...trip.subCollections, ...trip.customCollections]}
+        onConfirm={handleCreateNewSection}
+      />
+    </div>
+  );
+};
