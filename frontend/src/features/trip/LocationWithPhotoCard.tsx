@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { PiTrashSimple } from "react-icons/pi";
 import { MdPhoto } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
-import { LocationDetails } from "../../pages/trips/types";
+import { LocationDetails } from "../../types/types";
 
 interface LocationItemProps {
   location: LocationDetails;

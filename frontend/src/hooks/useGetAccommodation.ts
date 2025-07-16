@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db, auth } from "../config/firebase-config"; // Update path as needed
 import { onAuthStateChanged } from "firebase/auth";
-import { AccommodationDetails } from "../pages/trips/types";
+import { AccommodationDetails } from "../types/types";
 
 export const useGetAccommodation = (tripId: string) => {
   const [accommodationRows, setAccommodationRows] = useState<

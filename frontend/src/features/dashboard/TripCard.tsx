@@ -7,9 +7,9 @@ import { Link } from "react-router-dom";
 import { useHotToast } from "../../hooks/useHotToast";
 import { deleteTripFromLocalStorage } from "../trip/utils/helpers";
 import WarningConfirmationModal from "../../components/WarningConfirmationModal";
-import { TripData } from "./hooks/useGetTrips";
 import useDuplicateTrip from "./hooks/useDuplicateTrip";
 import { functions } from "../../config/firebase-config";
+import { TripData } from "../../types/types";
 
 interface TripCardProps {
   trip: TripData;

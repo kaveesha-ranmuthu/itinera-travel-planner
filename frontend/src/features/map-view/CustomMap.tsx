@@ -4,11 +4,8 @@ import { DEFAULT_ICON_STYLES } from "./utils/constants";
 import { getMapMarkers } from "./utils/helpers";
 import { CustomSectionData } from "./hooks/useGetAllCustomSections";
 import { CustomSectionStyles } from "./hooks/useGetCustomSectionStyles";
-import {
-  AccommodationDetails,
-  LocationDetails,
-  MapSettings,
-} from "../../pages/trips/types";
+import { AccommodationDetails, LocationDetails } from "../../types/types";
+import { MapSettings } from "./types/types";
 
 const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
 

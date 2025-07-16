@@ -4,14 +4,14 @@ import { sortBy } from "lodash";
 import { IoCloseOutline } from "react-icons/io5";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../hooks/useAuth";
-import {
-  AccommodationDetails,
-  LocationCategories,
-  LocationDetails,
-} from "../../pages/trips/types";
 import Checkbox from "../../components/Checkbox";
 import WarningConfirmationModal from "../../components/WarningConfirmationModal";
-import { FontFamily } from "../../types/types";
+import {
+  AccommodationDetails,
+  FontFamily,
+  LocationDetails,
+} from "../../types/types";
+import { LocationCategories } from "./types/types";
 
 export interface SidebarLocationDetails {
   locations: LocationDetails[];

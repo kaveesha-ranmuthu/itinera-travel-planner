@@ -6,8 +6,8 @@ import { CustomSectionStyles } from "./hooks/useGetCustomSectionStyles";
 import { useSaveIconStyles } from "./hooks/useSaveIconStyles";
 import { useSaveMapStyle } from "./hooks/useSaveMapStyle";
 import { allIcons, iconColours, IconId } from "./utils/icon-map";
-import { MapSettings } from "../../pages/trips/types";
 import PopoverMenu from "../../components/PopoverMenu";
+import { MapSettings } from "./types/types";
 interface CustomiseMapProps {
   tripId: string;
   customSectionStyles: CustomSectionStyles;
