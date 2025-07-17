@@ -9,7 +9,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
 import { getFirebaseErrorMessage } from "../../utils/helpers";
 import { Heading } from "./Heading";
-import { DeletePasswordButton } from "./DeletePasswordButton";
+import { DeleteAccountButton } from "./DeletePasswordButton";
 import { ResetPasswordButton } from "./ResetPasswordButton";
 
 export const AccountSettings = () => {
@@ -18,12 +18,14 @@ export const AccountSettings = () => {
   const navigate = useNavigate();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const isPasswordResetAllowed = user?.providerData
     .map((provider) => provider.providerId)
     .includes("password");
 
   const deleteUser = async () => {
+    setIsDeleting(true);
     const deleteUserFn = httpsCallable(functions, "deleteUser");
     try {
       await deleteUserFn();
@@ -34,6 +36,7 @@ export const AccountSettings = () => {
       console.error("Failed to delete user:", error);
       notify("Something went wrong. Please try again.", "error");
     }
+    setIsDeleting(false);
   };
 
   const sendResetLink = async () => {
@@ -70,7 +73,7 @@ export const AccountSettings = () => {
             isPasswordResetAllowed={isPasswordResetAllowed}
             onClick={sendResetLink}
           />
-          <DeletePasswordButton onClick={() => setIsDeleteModalOpen(true)} />
+          <DeleteAccountButton onClick={() => setIsDeleteModalOpen(true)} />
         </div>
       </div>
       <WarningConfirmationModal
@@ -79,6 +82,8 @@ export const AccountSettings = () => {
         isOpen={isDeleteModalOpen}
         onConfirm={deleteUser}
         onClose={() => setIsDeleteModalOpen(false)}
+        buttonsDisabled={isDeleting}
+        className={isDeleting ? "opacity-50" : ""}
         title="Are you sure you want to delete your account?"
         description="This action is permanent and cannot be undone. All of your saved trips and data will be permanently deleted."
       />

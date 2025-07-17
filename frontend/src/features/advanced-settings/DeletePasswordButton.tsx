@@ -1,6 +1,6 @@
 import Button, { ButtonProps } from "../../components/Button";
 
-export const DeletePasswordButton: React.FC<ButtonProps> = ({ onClick }) => {
+export const DeleteAccountButton: React.FC<ButtonProps> = ({ onClick }) => {
   return (
     <Button.Danger
       type="button"
