@@ -31,6 +31,7 @@ export const TripCard: React.FC<TripCardProps> = ({ trip }) => {
       : `${startDateFormat} - ${endDateFormat}`;
 
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const { notify } = useHotToast();
   const { duplicateTrip } = useDuplicateTrip();
@@ -89,7 +90,13 @@ export const TripCard: React.FC<TripCardProps> = ({ trip }) => {
         onClose={() => setShowDeleteWarning(false)}
         title={`Are you sure you want to delete "${tripName}"?`}
         description="Once deleted, this trip is gone forever. Are you sure you want to continue?"
-        onConfirm={() => deleteTrip(tripId)}
+        className={isDeleting ? "opacity-50" : ""}
+        buttonsDisabled={isDeleting}
+        onConfirm={async () => {
+          setIsDeleting(true);
+          await deleteTrip(tripId);
+          setIsDeleting(false);
+        }}
       />
     </>
   );

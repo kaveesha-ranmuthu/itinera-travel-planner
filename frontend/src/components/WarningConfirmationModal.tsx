@@ -13,6 +13,8 @@ interface WarningConfirmationModalProps extends PopupModalProps {
   primaryButtonText?: string;
   font?: string;
   hideIcon?: boolean;
+  className?: string;
+  buttonsDisabled?: boolean;
 }
 
 const WarningConfirmationModal: React.FC<WarningConfirmationModalProps> = ({
@@ -24,12 +26,18 @@ const WarningConfirmationModal: React.FC<WarningConfirmationModalProps> = ({
   primaryButtonText,
   font,
   hideIcon = false,
+  className,
+  buttonsDisabled,
 }) => {
   const { settings } = useAuth();
 
   return (
-    <PopupModal isOpen={isOpen} onClose={onClose} className={font}>
-      <div className="flex items-start space-x-4">
+    <PopupModal
+      isOpen={buttonsDisabled ? true : isOpen}
+      onClose={onClose}
+      className={font}
+    >
+      <div className={twMerge("flex items-start space-x-4", className)}>
         {!hideIcon && (
           <span
             className={settings?.font === FontFamily.HANDWRITTEN ? "mt-1" : ""}
@@ -50,6 +58,7 @@ const WarningConfirmationModal: React.FC<WarningConfirmationModalProps> = ({
               )}
               type="button"
               onClick={onConfirm}
+              disabled={buttonsDisabled}
             >
               {primaryButtonText ?? "Delete"}
             </Button.Secondary>
@@ -59,6 +68,7 @@ const WarningConfirmationModal: React.FC<WarningConfirmationModalProps> = ({
                 font ?? settings?.font
               )}
               onClick={onClose}
+              disabled={buttonsDisabled}
             >
               Cancel
             </Button.Primary>

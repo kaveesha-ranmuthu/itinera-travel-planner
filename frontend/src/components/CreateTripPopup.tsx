@@ -33,6 +33,7 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
   const [displayImage, setDisplayImage] = useState(
     initialValues?.imageData || art1
   );
+
   const { settings } = useAuth();
   const { countries, error: countryFetchError } = useGetCountries();
   const { currencies, error: currencyFetchError } = useGetCurrencies();
@@ -140,8 +141,14 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
   };
 
   return (
-    <PopupModal isOpen={isOpen} onClose={handleCloseModal}>
-      <form onSubmit={formik.handleSubmit}>
+    <PopupModal
+      isOpen={formik.isSubmitting ? true : isOpen}
+      onClose={handleCloseModal}
+    >
+      <form
+        onSubmit={formik.handleSubmit}
+        className={formik.isSubmitting ? "opacity-50" : ""}
+      >
         <div className="relative">
           <img
             src={displayImage}
