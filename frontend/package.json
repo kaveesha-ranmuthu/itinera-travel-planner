@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "engines": {
-    "node": "22.x"
+    "node": "23.x"
   },
   "engineStrict": true,
   "dependencies": {
