@@ -1,4 +1,5 @@
-import { BubbleMenu, Editor } from "@tiptap/react";
+import { Editor } from "@tiptap/react";
+import { BubbleMenu } from "@tiptap/react/menus";
 import React from "react";
 import { twMerge } from "tailwind-merge";
 import {
@@ -39,7 +40,6 @@ const EditorBubbleMenu: React.FC<EditorBubbleMenuProps> = ({
   return (
     <BubbleMenu
       editor={editor}
-      tippyOptions={{ duration: 100 }}
       className="bg-primary drop-shadow-(--drop-shadow-default)"
     >
       <div className="bubble-menu flex items-center">
