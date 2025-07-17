@@ -1,7 +1,9 @@
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
+import Document from "@tiptap/extension-document";
+import Paragraph from "@tiptap/extension-paragraph";
+import Text from "@tiptap/extension-text";
 import { EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
 import { MdOutlineAddTask } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "../../hooks/useAuth";
@@ -21,7 +23,7 @@ const Tasklist: React.FC<TasklistProps> = ({ savedTaskList, tripId }) => {
   const lastChanges = localStorage.getItem(getTasklistLocalStorageKey(tripId));
 
   const editor = useEditor({
-    extensions: [StarterKit, TaskList, TaskItem, UndoRedo],
+    extensions: [Document, Paragraph, Text, TaskList, TaskItem, UndoRedo],
     content: lastChanges || savedTaskList,
     onUpdate: ({ editor }) => {
       localStorage.setItem(
