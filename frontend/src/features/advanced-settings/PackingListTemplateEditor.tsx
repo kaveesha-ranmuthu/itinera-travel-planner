@@ -15,6 +15,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useHotToast } from "../../hooks/useHotToast";
 import EditorBubbleMenu from "../../components/EditorBubbleMenu";
 import { useUpdateUserSettings } from "../../hooks/useUpdateUserSettings";
+import { UndoRedo } from "@tiptap/extensions";
 
 interface PackingListTemplateEditorProps {
   open: boolean;
@@ -43,6 +44,7 @@ const PackingListTemplateEditor: React.FC<PackingListTemplateEditorProps> = ({
       Heading.configure({
         levels: [2, 3, 4],
       }),
+      UndoRedo
     ],
     content: currentPackingList || `<p>Start typing...</p>`,
   });

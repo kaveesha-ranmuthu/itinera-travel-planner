@@ -9,6 +9,7 @@ import {
   getTasklistLocalStorageKey,
   addTripToLocalStorage,
 } from "../../utils/helpers";
+import { UndoRedo } from "@tiptap/extensions";
 
 interface TasklistProps {
   savedTaskList: string;
@@ -20,7 +21,7 @@ const Tasklist: React.FC<TasklistProps> = ({ savedTaskList, tripId }) => {
   const lastChanges = localStorage.getItem(getTasklistLocalStorageKey(tripId));
 
   const editor = useEditor({
-    extensions: [StarterKit, TaskList, TaskItem],
+    extensions: [StarterKit, TaskList, TaskItem, UndoRedo],
     content: lastChanges || savedTaskList,
     onUpdate: ({ editor }) => {
       localStorage.setItem(
