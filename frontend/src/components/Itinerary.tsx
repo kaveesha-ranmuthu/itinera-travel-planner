@@ -219,7 +219,7 @@ const ItineraryBox: React.FC<ItineraryBoxProps> = ({
         >
           <span className="text-xl">day {dayNumber}</span>
           <span className="text-sm opacity-70">
-            {moment(date).format("MMM D, YYYY")}
+            {moment(date).format("dddd - MMM D, YYYY")}
           </span>
         </div>
       </DisclosureButton>
