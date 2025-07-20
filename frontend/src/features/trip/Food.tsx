@@ -186,6 +186,7 @@ const Food: React.FC<FoodProps> = ({
                               );
                               const index = formik.values.data.length;
                               arrayHelpers.push(newItem);
+                              formik.submitForm();
                               const photoUrl = await getPhotoDownloadUrl(
                                 location
                               );
