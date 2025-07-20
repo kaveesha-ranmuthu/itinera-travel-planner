@@ -8,7 +8,6 @@ import { Loading } from "../../components/Loading";
 import Error from "../../components/Error";
 import { useHotToast } from "../../hooks/useHotToast";
 import { CreateCustomSectionPopup } from "./CreateCustomSectionPopup";
-import CreateTripPopup from "../../components/CreateTripPopup";
 import FadeInSection from "./FadeInSection";
 import Accommodation from "./Accommodation";
 import Activities from "./Activities";
@@ -23,6 +22,7 @@ import TripHeader from "./TripHeader";
 import useGetTrip from "../../hooks/useGetTrip";
 import useGetTripData from "./hooks/useGetTripData";
 import { useSaveCustomSection } from "../../hooks/useSaveCustomSection";
+import CreateTripPopup from "../../components/create-trip-popup/CreateTripPopup";
 
 export const Trip = () => {
   const { tripId } = useParams();
