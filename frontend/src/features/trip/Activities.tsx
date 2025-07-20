@@ -187,6 +187,7 @@ const Activities: React.FC<ActivitiesProps> = ({
                             const newItem = getLocationDetails(location, null);
                             const index = formik.values.data.length;
                             arrayHelpers.push(newItem);
+                            formik.submitForm();
                             const photoUrl = await getPhotoDownloadUrl(
                               location
                             );
