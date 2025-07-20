@@ -126,13 +126,14 @@ const Transport: React.FC<TransportProps> = ({
     return (
       <button
         type="button"
-        className="cursor-pointer w-full items-center flex justify-between"
+        className="cursor-pointer w-full items-center flex justify-between group"
         onClick={() => setSorting(selectedSortOption)}
       >
         <span>{headerTitle}</span>
         <div
           className={twMerge(
-            sortOption === selectedSortOption ? "visible" : "invisible",
+            "group-hover:opacity-100 transition ease-in-out duration-300",
+            sortOption === selectedSortOption ? "opacity-100" : "opacity-0",
             settings?.font === FontFamily.HANDWRITTEN ? "mt-1.5 " : ""
           )}
         >
