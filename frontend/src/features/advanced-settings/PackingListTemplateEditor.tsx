@@ -44,7 +44,7 @@ const PackingListTemplateEditor: React.FC<PackingListTemplateEditorProps> = ({
       Heading.configure({
         levels: [2, 3, 4],
       }),
-      UndoRedo
+      UndoRedo,
     ],
     content: currentPackingList || `<p>Start typing...</p>`,
   });
@@ -72,52 +72,58 @@ const PackingListTemplateEditor: React.FC<PackingListTemplateEditorProps> = ({
 
   return (
     <PopupModal
-      className="h-[550px] max-h-[550px] overflow-scroll"
+      className="h-[550px] max-h-[550px]"
       isOpen={open}
       onClose={onClose}
       modalWidth="w-[500px]"
     >
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-brand italic tracking-wide">
-          packing list
-        </h1>
-        <div className="space-x-2">
-          <Button.Secondary
-            onClick={() => {
-              handleSave();
-              onClose();
-            }}
-            type="submit"
-            className="border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
-          >
-            Save
-          </Button.Secondary>
-          <Button.Primary
-            onClick={() => {
-              onClose();
-              resetContent();
-            }}
-            type="button"
-            className="border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
-          >
-            Cancel
-          </Button.Primary>
+      <div className="h-full flex-col flex">
+        <div className="bg-primary sticky top-0">
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-brand italic tracking-wide">
+              packing list
+            </h1>
+            <div className="space-x-2">
+              <Button.Secondary
+                onClick={() => {
+                  handleSave();
+                  onClose();
+                }}
+                type="submit"
+                className="border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
+              >
+                Save
+              </Button.Secondary>
+              <Button.Primary
+                onClick={() => {
+                  onClose();
+                  resetContent();
+                }}
+                type="button"
+                className="border border-secondary px-4 py-1 text-base transition ease-in-out duration-300"
+              >
+                Cancel
+              </Button.Primary>
+            </div>
+          </div>
+          <hr className="opacity-20 mb-4 mt-3" />
         </div>
+        <EditorBubbleMenu
+          editor={editor}
+          actionsToShow={{
+            heading1: true,
+            heading2: true,
+            heading3: true,
+            taskList: true,
+          }}
+        />
+        <EditorContent
+          editor={editor}
+          className={
+            "mt-2 mb-3 font-brand italic tracking-wide overflow-scroll"
+          }
+        />
       </div>
-      <hr className="opacity-20 mb-4 mt-3" />
-      <EditorBubbleMenu
-        editor={editor}
-        actionsToShow={{
-          heading1: true,
-          heading2: true,
-          heading3: true,
-          taskList: true,
-        }}
-      />
-      <EditorContent
-        editor={editor}
-        className={"mt-2 mb-3 font-brand italic tracking-wide"}
-      />
     </PopupModal>
   );
 };
