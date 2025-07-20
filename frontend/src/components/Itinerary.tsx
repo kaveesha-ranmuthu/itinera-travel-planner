@@ -140,7 +140,7 @@ const Itinerary: React.FC<ItineraryProps> = ({
                                 );
                                 submitForm();
                               }}
-                              defaultOpen={index === 0}
+                              defaultOpen={true}
                             />
                           );
                         })}
@@ -191,7 +191,7 @@ const ItineraryBox: React.FC<ItineraryBoxProps> = ({
       Heading.configure({
         levels: [2, 3, 4],
       }),
-      UndoRedo
+      UndoRedo,
     ],
     content: plans,
   });
