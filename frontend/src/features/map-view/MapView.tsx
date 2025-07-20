@@ -341,10 +341,19 @@ const MapViewContent: React.FC<MapViewProps> = ({
       notify("This location has already been added.", "info");
       return;
     }
-    setAccommodation([...currentData, newLocationDetails]);
+    let dataToSave = [...currentData, newLocationDetails];
+    setAccommodation(dataToSave);
+    localStorage.setItem(
+      localStorageKey,
+      JSON.stringify({
+        data: dataToSave,
+      })
+    );
 
+    // Get photo URL then save data again
     const photoUrl = await getPhotoDownloadUrl(location);
-    const dataToSave = [...currentData, { ...newLocationDetails, photoUrl }];
+    dataToSave = [...currentData, { ...newLocationDetails, photoUrl }];
+    setAccommodation(dataToSave);
     localStorage.setItem(
       localStorageKey,
       JSON.stringify({
@@ -363,10 +372,19 @@ const MapViewContent: React.FC<MapViewProps> = ({
       notify("This location has already been added.", "info");
       return;
     }
-    setFood([...currentData, newLocationDetails]);
+    let dataToSave = [...currentData, newLocationDetails];
+    setFood(dataToSave);
+    localStorage.setItem(
+      localStorageKey,
+      JSON.stringify({
+        data: dataToSave,
+      })
+    );
 
+    // Get photo URL then save data again
     const photoUrl = await getPhotoDownloadUrl(location);
-    const dataToSave = [...currentData, { ...newLocationDetails, photoUrl }];
+    dataToSave = [...currentData, { ...newLocationDetails, photoUrl }];
+    setFood(dataToSave);
     localStorage.setItem(
       localStorageKey,
       JSON.stringify({
@@ -387,10 +405,19 @@ const MapViewContent: React.FC<MapViewProps> = ({
       notify("This location has already been added.", "info");
       return;
     }
-    setActivities([...currentData, newLocationDetails]);
+    let dataToSave = [...currentData, newLocationDetails];
+    setActivities(dataToSave);
+    localStorage.setItem(
+      localStorageKey,
+      JSON.stringify({
+        data: dataToSave,
+      })
+    );
 
+    // Get photo URL then save data again
     const photoUrl = await getPhotoDownloadUrl(location);
-    const dataToSave = [...currentData, { ...newLocationDetails, photoUrl }];
+    dataToSave = [...currentData, { ...newLocationDetails, photoUrl }];
+    setActivities(dataToSave);
     localStorage.setItem(
       localStorageKey,
       JSON.stringify({
@@ -415,13 +442,25 @@ const MapViewContent: React.FC<MapViewProps> = ({
       notify("This location has already been added.", "info");
       return;
     }
+    let dataToSave = [...currentData, newLocationDetails];
     setCustomSections({
       ...customSections,
-      [sectionName]: [...currentData, newLocationDetails],
+      [sectionName]: dataToSave,
     });
+    localStorage.setItem(
+      localStorageKey,
+      JSON.stringify({
+        data: dataToSave,
+      })
+    );
 
+    // Get photo URL then save data again
     const photoUrl = await getPhotoDownloadUrl(location);
-    const dataToSave = [...currentData, { ...newLocationDetails, photoUrl }];
+    dataToSave = [...currentData, { ...newLocationDetails, photoUrl }];
+    setCustomSections({
+      ...customSections,
+      [sectionName]: dataToSave,
+    });
     localStorage.setItem(
       localStorageKey,
       JSON.stringify({
