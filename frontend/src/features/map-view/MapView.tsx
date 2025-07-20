@@ -622,6 +622,7 @@ const MapViewContent: React.FC<MapViewProps> = ({
             optionsBoxClassname="z-50 w-[430px]"
             latitude={latLng?.[0]}
             longitude={latLng?.[1]}
+            userCurrency={trip.currency?.name}
             onSelectLocation={(location) => {
               switch (selectedLocationSection) {
                 case LocationCategories.ACCOMMODATION: {
