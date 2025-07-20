@@ -140,7 +140,7 @@ const Itinerary: React.FC<ItineraryProps> = ({
                                 );
                                 submitForm();
                               }}
-                              defaultOpen={index === 0}
+                              defaultOpen={true}
                             />
                           );
                         })}
@@ -191,7 +191,7 @@ const ItineraryBox: React.FC<ItineraryBoxProps> = ({
       Heading.configure({
         levels: [2, 3, 4],
       }),
-      UndoRedo
+      UndoRedo,
     ],
     content: plans,
   });
@@ -219,7 +219,7 @@ const ItineraryBox: React.FC<ItineraryBoxProps> = ({
         >
           <span className="text-xl">day {dayNumber}</span>
           <span className="text-sm opacity-70">
-            {moment(date).format("MMM D, YYYY")}
+            {moment(date).format("dddd - MMM D, YYYY")}
           </span>
         </div>
       </DisclosureButton>
