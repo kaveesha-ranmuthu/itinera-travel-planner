@@ -352,6 +352,18 @@ const MapViewContent: React.FC<MapViewProps> = ({
 
     // Get photo URL then save data again
     const photoUrl = await getPhotoDownloadUrl(location);
+
+    const currentLocalStorageData = localStorage.getItem(localStorageKey);
+    const currentLocalStorageDataParsed: AccommodationDetails[] =
+      currentLocalStorageData ? JSON.parse(currentLocalStorageData).data : [];
+
+    // NOTE: This is a workaround to avoid adding the location again if
+    // it gets deleted while fetching the photo URL.
+    const hasLocationBeenDeleted = currentLocalStorageDataParsed.find(
+      (a) => a.googleId === location.id && a._deleted
+    );
+    if (hasLocationBeenDeleted) return;
+
     dataToSave = [...currentData, { ...newLocationDetails, photoUrl }];
     setAccommodation(dataToSave);
     localStorage.setItem(
@@ -383,6 +395,18 @@ const MapViewContent: React.FC<MapViewProps> = ({
 
     // Get photo URL then save data again
     const photoUrl = await getPhotoDownloadUrl(location);
+
+    const currentLocalStorageData = localStorage.getItem(localStorageKey);
+    const currentLocalStorageDataParsed: LocationDetails[] =
+      currentLocalStorageData ? JSON.parse(currentLocalStorageData).data : [];
+
+    // NOTE: This is a workaround to avoid adding the location again if
+    // it gets deleted while fetching the photo URL.
+    const hasLocationBeenDeleted = currentLocalStorageDataParsed.find(
+      (a) => a.googleId === location.id && a._deleted
+    );
+    if (hasLocationBeenDeleted) return;
+
     dataToSave = [...currentData, { ...newLocationDetails, photoUrl }];
     setFood(dataToSave);
     localStorage.setItem(
@@ -416,6 +440,18 @@ const MapViewContent: React.FC<MapViewProps> = ({
 
     // Get photo URL then save data again
     const photoUrl = await getPhotoDownloadUrl(location);
+
+    const currentLocalStorageData = localStorage.getItem(localStorageKey);
+    const currentLocalStorageDataParsed: LocationDetails[] =
+      currentLocalStorageData ? JSON.parse(currentLocalStorageData).data : [];
+
+    // NOTE: This is a workaround to avoid adding the location again if
+    // it gets deleted while fetching the photo URL.
+    const hasLocationBeenDeleted = currentLocalStorageDataParsed.find(
+      (a) => a.googleId === location.id && a._deleted
+    );
+    if (hasLocationBeenDeleted) return;
+
     dataToSave = [...currentData, { ...newLocationDetails, photoUrl }];
     setActivities(dataToSave);
     localStorage.setItem(
@@ -456,6 +492,18 @@ const MapViewContent: React.FC<MapViewProps> = ({
 
     // Get photo URL then save data again
     const photoUrl = await getPhotoDownloadUrl(location);
+
+    const currentLocalStorageData = localStorage.getItem(localStorageKey);
+    const currentLocalStorageDataParsed: LocationDetails[] =
+      currentLocalStorageData ? JSON.parse(currentLocalStorageData).data : [];
+
+    // NOTE: This is a workaround to avoid adding the location again if
+    // it gets deleted while fetching the photo URL.
+    const hasLocationBeenDeleted = currentLocalStorageDataParsed.find(
+      (a) => a.googleId === location.id && a._deleted
+    );
+    if (hasLocationBeenDeleted) return;
+
     dataToSave = [...currentData, { ...newLocationDetails, photoUrl }];
     setCustomSections({
       ...customSections,
