@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import Map from "react-map-gl/mapbox";
-import { DEFAULT_ICON_STYLES } from "./utils/constants";
-import { getMapMarkers } from "./utils/helpers";
+import { AccommodationDetails, LocationDetails } from "../../types/types";
 import { CustomSectionData } from "./hooks/useGetAllCustomSections";
 import { CustomSectionStyles } from "./hooks/useGetCustomSectionStyles";
-import { AccommodationDetails, LocationDetails } from "../../types/types";
 import { MapSettings } from "./types/types";
+import { DEFAULT_ICON_STYLES } from "./utils/constants";
+import { getMapMarkers } from "./utils/helpers";
 
 const API_KEY = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -18,6 +18,7 @@ interface CustomMapProps {
   customSectionStyles: CustomSectionStyles;
   longitude?: number;
   latitude?: number;
+  hoveredLocation: string | null;
 }
 
 export const CustomMap: React.FC<CustomMapProps> = ({
@@ -29,13 +30,18 @@ export const CustomMap: React.FC<CustomMapProps> = ({
   customSectionStyles,
   longitude = -122.4,
   latitude = 37.8,
+  hoveredLocation,
 }) => {
   const getCustomSectionMarkers = useCallback(
     () =>
       Object.entries(customSections).flatMap(([sectionName, locations]) => {
-        return getMapMarkers(locations, customSectionStyles[sectionName]);
+        return getMapMarkers(
+          locations,
+          customSectionStyles[sectionName],
+          hoveredLocation
+        );
       }),
-    [customSections, customSectionStyles]
+    [customSections, hoveredLocation, customSectionStyles]
   );
 
   const [customSectionMarkers, setCustomSectionMarkers] = useState(
@@ -66,9 +72,17 @@ export const CustomMap: React.FC<CustomMapProps> = ({
     },
   };
 
-  const activityMarkers = getMapMarkers(activities, activityIcon);
-  const foodMarkers = getMapMarkers(food, foodIcon);
-  const accommodationMarkers = getMapMarkers(accommodation, accommodationIcon);
+  const activityMarkers = getMapMarkers(
+    activities,
+    activityIcon,
+    hoveredLocation
+  );
+  const foodMarkers = getMapMarkers(food, foodIcon, hoveredLocation);
+  const accommodationMarkers = getMapMarkers(
+    accommodation,
+    accommodationIcon,
+    hoveredLocation
+  );
 
   const [activityLong, activityLang] = [
     activities[0]?.location.longitude,

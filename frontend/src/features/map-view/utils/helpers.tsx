@@ -8,7 +8,8 @@ import { IconInfo } from "../types/types";
 
 export const getMapMarkers = (
   locations: LocationDetails[],
-  iconStyles: IconInfo
+  iconStyles: IconInfo,
+  hoveredLocationId: string | null
 ) => {
   return locations.map((location) => (
     <div key={location.id}>
@@ -16,7 +17,8 @@ export const getMapMarkers = (
         location,
         iconStyles.backgroundColour,
         iconStyles.colour,
-        allIcons[iconStyles.id]
+        allIcons[iconStyles.id],
+        hoveredLocationId === location.id
       )}
     </div>
   ));
@@ -26,7 +28,8 @@ const getMarker = (
   location: LocationDetails,
   markerColour: string,
   iconColour: string,
-  icon: React.ReactNode
+  icon: React.ReactNode,
+  isHoveredOver: boolean
 ) => {
   if (!location.location.latitude || !location.location.longitude) return;
 
@@ -55,6 +58,7 @@ const getMarker = (
           className={twMerge(
             markerColour,
             iconColour,
+            isHoveredOver && "scale-130 transition ease-in-out duration-100",
             "p-2 rounded-full border-2 border-primary/70"
           )}
         >

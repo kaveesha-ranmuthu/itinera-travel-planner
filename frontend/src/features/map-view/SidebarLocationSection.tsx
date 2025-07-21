@@ -25,6 +25,7 @@ interface SidebarLocationSectionProps extends SidebarLocationDetails {
   selected: boolean;
   onSelect: () => void;
   onDelete: (locationId: string) => void;
+  onHover: (locationId: string | null) => void;
 }
 
 const SidebarLocationSection: React.FC<SidebarLocationSectionProps> = ({
@@ -36,6 +37,7 @@ const SidebarLocationSection: React.FC<SidebarLocationSectionProps> = ({
   onDelete,
   toggleVisibility,
   isHidden,
+  onHover,
 }) => {
   const sortedLocations = sortBy(locations, ["name"]);
   const { settings } = useAuth();
@@ -74,6 +76,8 @@ const SidebarLocationSection: React.FC<SidebarLocationSectionProps> = ({
                 selected &&
                   "hover:bg-secondary/5 transition ease-in-out duration-500"
               )}
+              onMouseEnter={() => onHover(l.id)}
+              onMouseLeave={() => onHover(null)}
             >
               <p className="truncate max-w-[85%]">{l.name}</p>
               {!isAccommodationDetails(l) && l.price !== undefined && (

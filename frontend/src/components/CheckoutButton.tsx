@@ -4,10 +4,7 @@ import { useStripeSubscriptionCheckout } from "../hooks/useStripeSubscriptionChe
 const PRICE_ID = "price_1RdhfoBQXwlrXuqxAtxzWpqN";
 
 export const CheckoutButton = () => {
-  const { createCheckoutSession, error, loading } =
-    useStripeSubscriptionCheckout();
-
-  console.log(error, loading);
+  const { createCheckoutSession } = useStripeSubscriptionCheckout();
 
   const handleClick = () => {
     createCheckoutSession(PRICE_ID, {
