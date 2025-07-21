@@ -2,51 +2,51 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
+import Error from "../../components/Error";
 import Header from "../../components/Header";
+import Itinerary, { ItineraryDetails } from "../../components/Itinerary";
 import { Loading } from "../../components/Loading";
-import { useAuth } from "../../hooks/useAuth";
-import { useHotToast } from "../../hooks/useHotToast";
-import { useSaving } from "../../hooks/useSaving";
-import CustomiseMap from "./CustomiseMap";
-import { CustomMap } from "./CustomMap";
 import LocationSearch, {
   LocationSearchResult,
 } from "../../components/LocationSearch";
-import MapViewSidebarSelector from "./MapViewSidebarSelector";
-import CondensedTripHeader from "./CondensedTripHeader";
-import Itinerary, { ItineraryDetails } from "../../components/Itinerary";
-import SidebarLocationSection, {
-  SidebarLocationDetails,
-} from "./SidebarLocationSection";
+import { useAuth } from "../../hooks/useAuth";
 import { useGetAccommodation } from "../../hooks/useGetAccommodation";
 import { useGetActivities } from "../../hooks/useGetActivities";
-import {
-  useGetAllCustomSections,
-  CustomSectionData,
-} from "./hooks/useGetAllCustomSections";
-import {
-  useGetCustomSectionStyles,
-  CustomSectionStyles,
-} from "./hooks/useGetCustomSectionStyles";
 import { useGetFood } from "../../hooks/useGetFood";
 import { useGetItinerary } from "../../hooks/useGetItinerary";
 import { useGetLatLng } from "../../hooks/useGetLatLng";
-import { useGetMapSettings } from "./hooks/useGetMapSettings";
 import useGetTrip from "../../hooks/useGetTrip";
+import { useHotToast } from "../../hooks/useHotToast";
+import { useSaving } from "../../hooks/useSaving";
 import {
   AccommodationDetails,
   LocationDetails,
   TripData,
 } from "../../types/types";
 import {
+  addTripToLocalStorage,
   getAccommodationLocalStorageKey,
-  getFoodLocalStorageKey,
   getActivitiesLocalStorageKey,
   getCustomSectionLocalStorageKey,
-  addTripToLocalStorage,
+  getFoodLocalStorageKey,
 } from "../../utils/helpers";
 import { getLocationDetails, getPhotoDownloadUrl } from "../trip/utils/helpers";
-import Error from "../../components/Error";
+import CondensedTripHeader from "./CondensedTripHeader";
+import CustomiseMap from "./CustomiseMap";
+import { CustomMap } from "./CustomMap";
+import {
+  CustomSectionData,
+  useGetAllCustomSections,
+} from "./hooks/useGetAllCustomSections";
+import {
+  CustomSectionStyles,
+  useGetCustomSectionStyles,
+} from "./hooks/useGetCustomSectionStyles";
+import { useGetMapSettings } from "./hooks/useGetMapSettings";
+import MapViewSidebarSelector from "./MapViewSidebarSelector";
+import SidebarLocationSection, {
+  SidebarLocationDetails,
+} from "./SidebarLocationSection";
 import {
   LocationCategories,
   MapSettings,
@@ -208,6 +208,10 @@ const MapViewContent: React.FC<MapViewProps> = ({
   const [selectedLocationSection, setSelectedLocationSection] = useState<
     LocationCategories | string
   >(LocationCategories.ACCOMMODATION);
+
+  const [currentlyHoveredLocation, setCurrentlyHoveredLocation] = useState<
+    string | null
+  >(null);
 
   const accommodationLocalStorage = localStorage.getItem(
     getAccommodationLocalStorageKey(trip.id)
@@ -602,6 +606,14 @@ const MapViewContent: React.FC<MapViewProps> = ({
     addTripToLocalStorage(trip.id);
   };
 
+  const handleHoverLocation = (locationId: string | null) => {
+    if (!locationId) {
+      setCurrentlyHoveredLocation(null);
+      return;
+    }
+    setCurrentlyHoveredLocation(locationId);
+  };
+
   const getSelectedViewDisplay = () => {
     if (selectedView === MapViewSidebarSelectorOptions.ITINERARY) {
       return (
@@ -663,6 +675,7 @@ const MapViewContent: React.FC<MapViewProps> = ({
                   }}
                   toggleVisibility={location.toggleVisibility}
                   isHidden={location.isHidden}
+                  onHover={handleHoverLocation}
                 />
               );
             })}
@@ -722,6 +735,7 @@ const MapViewContent: React.FC<MapViewProps> = ({
         customSectionStyles={customSectionStyles}
         latitude={latLng?.[0]}
         longitude={latLng?.[1]}
+        hoveredLocation={currentlyHoveredLocation}
       />
     </div>
   );
