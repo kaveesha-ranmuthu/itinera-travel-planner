@@ -52,6 +52,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
       multiple
     >
       <ComboboxInput
+        aria-label="multi-select"
         placeholder={currentlySelectedOptions.map((opt) => opt.name).join(", ")}
         onChange={(event) => setQuery(event.target.value)}
         className="focus:outline-secondary border border-secondary rounded-xl px-2 py-1 w-full placeholder:text-secondary focus:placeholder:text-secondary/50"
@@ -139,6 +140,7 @@ export const SingleSelect: React.FC<SingleSelectProps> = ({
       disabled={disabled}
     >
       <ComboboxInput
+        aria-label="single-select"
         placeholder={currentlySelectedOption?.name}
         onChange={(event) => setQuery(event.target.value)}
         className={twMerge(

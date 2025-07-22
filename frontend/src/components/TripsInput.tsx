@@ -26,6 +26,7 @@ const TripsInput: React.FC<TripsInputProps> = ({
     <input
       type={type}
       id={id}
+      aria-label={id}
       defaultValue={defaultValue}
       onChange={onChange}
       placeholder={placeholder}

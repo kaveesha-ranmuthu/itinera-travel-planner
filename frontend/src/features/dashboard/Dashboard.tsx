@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import Error from "../../components/Error";
 import { Loading } from "../../components/Loading";
 import { useAuth } from "../../hooks/useAuth";
-import CreateTripPopup from "../../components/CreateTripPopup";
 import Header from "../../components/Header";
 import { useGetTrips } from "./hooks/useGetTrips";
 import { useCreateNewTrip } from "./hooks/useCreateNewTrip";
 import { FontFamily, Trip } from "../../types/types";
 import { CreateTripButton } from "./CreateTripButton";
 import { TripsGrid } from "./TripsGrid";
+import CreateTripPopup from "../../components/create-trip-popup/CreateTripPopup";
 
 const Dashboard = () => {
   const { settings } = useAuth();

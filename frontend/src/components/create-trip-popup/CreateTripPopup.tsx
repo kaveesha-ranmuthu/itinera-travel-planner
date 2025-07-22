@@ -1,20 +1,20 @@
-import React, { useState } from "react";
-import PopupModal from "./PopupModal";
 import { useFormik } from "formik";
-import MultiSelect, { SingleSelect } from "./Select";
-import { useHotToast } from "../hooks/useHotToast";
-import art1 from "/images/jan-brueghel-the-younger/art-1.jpg";
-import EditImagePopup from "./EditImagePopup";
-import TripsInput from "./TripsInput";
-import Button from "./Button";
-import { twMerge } from "tailwind-merge";
-import { useAuth } from "../hooks/useAuth";
-import { useGetCountries } from "../hooks/useGetCountries";
-import { useGetCurrencies } from "../hooks/useGetCurrencies";
-import moment from "moment";
 import { uniqBy } from "lodash";
-import { Trip, SelectOption } from "../types/types";
-import { compressAndConvertToBase64 } from "../utils/helpers";
+import moment from "moment";
+import React, { useState } from "react";
+import { twMerge } from "tailwind-merge";
+import art1 from "/images/jan-brueghel-the-younger/art-1.jpg";
+import { useAuth } from "../../hooks/useAuth";
+import { useGetCountries } from "../../hooks/useGetCountries";
+import { useGetCurrencies } from "../../hooks/useGetCurrencies";
+import { useHotToast } from "../../hooks/useHotToast";
+import { Trip, SelectOption } from "../../types/types";
+import { compressAndConvertToBase64 } from "../../utils/helpers";
+import EditImagePopup from "../EditImagePopup";
+import PopupModal from "../PopupModal";
+import MultiSelect, { SingleSelect } from "../Select";
+import TripsInput from "../TripsInput";
+import Button from "../Button";
 
 interface CreateTripPopupProps {
   isOpen: boolean;
@@ -162,6 +162,8 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
         </div>
         <div className="px-3 mt-3 text-secondary text-lg space-y-6">
           <input
+            type="text"
+            aria-label="trip name"
             className="text-4xl opacity-45 focus:opacity-100 focus:outline-0 underline underline-offset-4"
             defaultValue={formik.values.tripName}
             id="tripName"
@@ -172,6 +174,7 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
             <div className="space-x-4 flex items-center mt-3.5">
               <input
                 type="date"
+                aria-label="start date"
                 id="startDate"
                 defaultValue={formik.values.startDate}
                 onChange={formik.handleChange}
@@ -180,6 +183,7 @@ const CreateTripPopup: React.FC<CreateTripPopupProps> = ({
               <p>to</p>
               <input
                 type="date"
+                aria-label="end date"
                 id="endDate"
                 defaultValue={formik.values.endDate}
                 onChange={formik.handleChange}
