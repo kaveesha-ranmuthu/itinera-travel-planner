@@ -14,6 +14,7 @@ import { CheckoutButton } from "./CheckoutButton";
 import { saveTripData } from "../features/trip/utils/helpers";
 import { FontFamily } from "../types/types";
 import { useUpdateUserSettings } from "../hooks/useUpdateUserSettings";
+import { isProductionEnvironment } from "../utils/flags";
 
 const Header = () => {
   const { notify } = useHotToast();
@@ -58,7 +59,7 @@ const Header = () => {
             Itinera
           </h1>
         </Link>
-        <CheckoutButton />
+        {!isProductionEnvironment() && <CheckoutButton />}
       </div>
       {isSaving && <p>Saving...</p>}
       <PopoverMenu
